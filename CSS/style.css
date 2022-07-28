@@ -3,13 +3,27 @@
     margin: 0 auto;
     text-align: center;
     font-size: 3.5vmin;
+}
+
+.color-theme-1 {
     --color-font: hsl(0, 50%, 100%);
-    /* --color-bckgrnd-2: hsl(55, 25%, 87%); */
     --color-bckgrnd-2: hsl(55, 0%, 18%);
     --color-bckgrnd-3: hsl(55, 0%, 24%);
     --color-border-1: hsl(0, 0%, 50%);
     --color-border-2: hsl(0, 0%, 67%);
+    --color-border-3: hsl(0, 0%, 12%);
     --color-fill-2: hsl(250, 25%, 18%);
+    --color-screen: hsl(130, 20%, 70%);
+}
+
+.color-theme-2 {
+    --color-font: hsl(0, 50%, 0%);
+    --color-bckgrnd-2: hsl(55, 25%, 91%);
+    --color-bckgrnd-3: hsl(55, 25%, 89%);
+    --color-border-1: hsl(55, 25%, 80%);
+    --color-border-2: hsl(55, 10%, 67%);
+    --color-border-3: hsl(55, 25%, 75%);
+    --color-fill-2: hsl(55, 25%, 80%);
     --color-screen: hsl(130, 20%, 70%);
 }
 
@@ -68,11 +82,11 @@
 }
 .button.normal {
     background: var(--color-fill-2);
-    border: .5vmin solid hsl(0, 0%, 12%);
-    border-bottom: .8vmin solid hsl(0, 0%, 12%);
+    border: .5vmin solid var(--color-border-3);
+    border-bottom: .8vmin solid var(--color-border-3);
 }
 .button.normal:active {
-    border: .5vmin solid hsl(0, 0%, 12%);
+    border: .5vmin solid var(--color-border-3);
     border-bottom: hidden;
     top: .25vmin;
 }
