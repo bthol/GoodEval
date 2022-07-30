@@ -6,25 +6,51 @@
 }
 
 .color-theme-1 {
-    --color-font: hsl(0, 50%, 100%);
-    --color-bckgrnd-2: hsl(55, 0%, 18%);
-    --color-bckgrnd-3: hsl(55, 0%, 24%);
-    --color-border-1: hsl(0, 0%, 50%);
-    --color-border-2: hsl(0, 0%, 67%);
-    --color-border-3: hsl(0, 0%, 12%);
-    --color-fill-2: hsl(250, 25%, 18%);
-    --color-screen: hsl(130, 20%, 70%);
+    --color-font: #ffffff;
+    --color-bckgrnd-2: #2e2e2e;
+    --color-bckgrnd-3: #3d3d3d;
+    --color-border-1: #808080;
+    --color-border-2: #ababab;
+    --color-border-3: #1f1f1f;
+    --color-border-4: #ababab;
+    --color-fill-2: #262239;
+    --color-screen: #a3c2a8;
 }
 
 .color-theme-2 {
-    --color-font: hsl(0, 50%, 0%);
-    --color-bckgrnd-2: hsl(55, 25%, 91%);
-    --color-bckgrnd-3: hsl(55, 25%, 89%);
-    --color-border-1: hsl(55, 25%, 80%);
-    --color-border-2: hsl(55, 10%, 67%);
-    --color-border-3: hsl(55, 25%, 75%);
-    --color-fill-2: hsl(55, 25%, 80%);
-    --color-screen: hsl(130, 20%, 70%);
+    --color-font: #000000;
+    --color-bckgrnd-2: #eeede2;
+    --color-bckgrnd-3: #eae9dc;
+    --color-border-1: #d9d7bf;
+    --color-border-2: #e2dcca;
+    --color-border-3: #cfcdaf;
+    --color-border-4: #c3c0b6;
+    --color-fill-2: #d9d7bf;
+    --color-screen: #a3c2a8;
+}
+
+.color-theme-3 {
+    --color-font: #000000;
+    --color-bckgrnd-2: #e9eff1;
+    --color-bckgrnd-3: #edf1f2;
+    --color-border-1: #fefef5;
+    --color-border-2: #ffffff;
+    --color-border-3: #c6c5b9;
+    --color-border-4: #e3e0dd;
+    --color-fill-2: #eff4f5;
+    --color-screen: #a3c2a8;
+}
+
+.color-theme-4 {
+    --color-font: #ffffff;
+    --color-bckgrnd-2: #242031;
+    --color-bckgrnd-3: #0e0c27;
+    --color-border-1: #574063;
+    --color-border-2: #333333;
+    --color-border-3: #131311;
+    --color-border-4: #70665c;
+    --color-fill-2: #30312b;
+    --color-screen: #a3c2a8;
 }
 
 .app-container {
@@ -42,7 +68,7 @@
     width: 60vmin;
     height: 12vmin;
     background: var(--color-screen);
-    border: 2.5px solid var(--color-border-2);
+    border: 2.5px solid var(--color-border-4);
 }
 .screen > div {
     display: grid;
