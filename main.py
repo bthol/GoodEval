@@ -39,7 +39,7 @@ def subtract(*args):
 # subtract(10, 3, 2)
 
 calc = "2*2+2*3/2-5"
-calc_mult = "24+26-789*2"
+calc_mult = "24+26-12*2/2"
 
 def str_array(str):
     arr = []
@@ -50,6 +50,7 @@ def str_array(str):
         except:
             arr.append(digits)
             digits = ""
+            arr.append(str[i])
         else:
             digits = digits + "%s" % str[i]
         finally:
@@ -60,26 +61,24 @@ def str_array(str):
 # str_array(calc_mult)
 
 def calculate(str):
-    print(str)
-
     arr = str_array(str)
     print(arr)
-    
-    m = ""
+
+    m = []
     place = -1
-    for i in range(0, len(str)):
+    for i in range(0, len(arr)):
         if (i == place):
             continue
-        if str[i] == "*":
+        if arr[i] == "*":
             m = m[:-1]
-            val = int(str[i - 1]) * int(str[i + 1])
-            m = m + "%s" % val
+            val = int(arr[i - 1]) * int(arr[i + 1])
+            m.append("%s" % val)
             place = i + 1
         else:
-            m = m + str[i]
+            m.append(arr[i])
     print(m)
 
-    d = ""
+    d = []
     place = -1
     for i in range(0, len(m)):
         if (i == place):
@@ -87,13 +86,13 @@ def calculate(str):
         if m[i] == "/":
             d = d[:-1]
             val = int(int(m[i - 1]) / int(m[i + 1]))
-            d = d + "%s" % val
+            d.append("%s" % val)
             place = i + 1
         else:
-            d = d + m[i]
+            d.append(m[i])
     print(d)
     
-    a = ""
+    a = []
     place = -1
     for i in range(0, len(d)):
         if (i == place):
@@ -101,13 +100,13 @@ def calculate(str):
         if d[i] == "+":
             a = a[:-1]
             val = int(d[i - 1]) + int(d[i + 1])
-            a = a + "%s" % val
+            a.append("%s" % val)
             place = i + 1
         else:
-            a = a + d[i]
+            a.append(d[i])
     print(a)
     
-    s = ""
+    s = []
     place = -1
     for i in range(0, len(a)):
         if (i == place):
@@ -115,10 +114,10 @@ def calculate(str):
         if a[i] == "-":
             s = s[:-1]
             val = int(a[i - 1]) - int(a[i + 1])
-            s = s + "%s" % val
+            s.append("%s" % val)
             place = i + 1
         else:
-            s = s + a[i]
+            s.append(a[i])
     print(s)
 
-# calculate(calc)
+calculate(calc_mult)
