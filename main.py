@@ -39,10 +39,32 @@ def subtract(*args):
 # subtract(10, 3, 2)
 
 calc = "2*2+2*3/2-5"
+calc_mult = "24+26-789*2"
+
+def str_array(str):
+    arr = []
+    digits = ""
+    for i in range(0, len(str)):
+        try:
+            int(str[i])
+        except:
+            arr.append(digits)
+            digits = ""
+        else:
+            digits = digits + "%s" % str[i]
+        finally:
+            if (i == len(str) - 1):
+                arr.append(digits)
+    return arr
+
+# str_array(calc_mult)
 
 def calculate(str):
     print(str)
 
+    arr = str_array(str)
+    print(arr)
+    
     m = ""
     place = -1
     for i in range(0, len(str)):
@@ -99,4 +121,4 @@ def calculate(str):
             s = s + a[i]
     print(s)
 
-calculate(calc)
+# calculate(calc)
