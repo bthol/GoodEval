@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 
-# URL Configuration
+# urlConf
 urlpatterns = [
-    path("~/", views.render_root),
+    path("", views.render_index, name="index"),
+    path("urls/", views.urls_root),
     path("hello/", views.say_hello),
 ]
