@@ -72,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-# static files
+# Static Files
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static_files')
 ]
