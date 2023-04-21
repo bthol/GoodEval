@@ -6,9 +6,7 @@ def divide(*args):
         i = i + 1
     print(dividend)
 
-
-divide(20, 2, 5)
-
+# divide(20, 2, 5)
 
 def multiply(*args):
     i = 1
@@ -18,9 +16,7 @@ def multiply(*args):
         i = i + 1
     print(val)
 
-
-multiply(5, 5, 5)
-
+# multiply(5, 5, 5)
 
 def add(*args):
     i = 1
@@ -30,9 +26,7 @@ def add(*args):
         i = i + 1
     print(sum)
 
-
-add(1, 2, 1)
-
+# add(1, 2, 1)
 
 def subtract(*args):
     i = 1
@@ -42,5 +36,23 @@ def subtract(*args):
         i = i + 1
     print(difference)
 
+# subtract(10, 3, 2)
 
-subtract(10, 3, 2)
+calc = "2*2-7*8+2*3"
+
+def calculate(str):
+    m = ""
+    place = -1
+    for i in range(0, len(str)):
+        if (i == place):
+            continue
+        if str[i] == "*":
+            m = m[:-1]
+            val = int(str[i - 1]) * int(str[i + 1])
+            m = m + "%s" % val
+            place = i + 1
+        else:
+            m = m + str[i]
+    print(m)
+    # subtract(add(divide(multiply())))
+calculate(calc)

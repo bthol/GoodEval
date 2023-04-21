@@ -5,6 +5,4 @@ from . import views
 # urlConf
 urlpatterns = [
     path("", views.render_index, name="index"),
-    path("urls/", views.urls_root),
-    path("hello/", views.say_hello),
 ]
