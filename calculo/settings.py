@@ -30,6 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -69,6 +70,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+# static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static_files')
 ]
 
 WSGI_APPLICATION = "calculo.wsgi.application"
