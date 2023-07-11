@@ -39,9 +39,9 @@ def subtract(*args):
 # subtract(10, 3, 2)
 
 # calc = "2*2+2*3/2-5"
-"3*(100-5+5*(2+8)-18)+(48/12)"
-calc = "(2-((15+2)-16))-(5+2)"
-
+"3*(100-5*(2+8)-18)"
+calc = "(5-2)+(5+2)-(250-249)"
+"()()()"
 def structure_string(str):
     arr = []
     digits = ""
@@ -136,18 +136,26 @@ def calculate(str):
         if arr[i] == ")":
             paren_close.append(i)
     
-    nested_pairs = []
-    for i in range(0, len(paren_open)):
-        if paren_open[i] < paren_close[len(paren_close) - 1 - i]:
-            nested_pairs.append([paren_open[i], paren_close[len(paren_close) - 1 - i]])
-        else:
-            print(i)
-    
     print(paren_open)
     print(paren_close)
-    print(nested_pairs)
 
+    paren_pairs = []
 
+    for i in range(0, len(paren_close)):
+        search = True
+        for j in range(0, len(paren_open)):
+            if search and paren_close[i] < paren_open[j]:
+                search = False
+                # test if there are multiple open parens between the last two close parens from current i index
+
+                paren_pairs.append([paren_open[j - 1], paren_close[i]])
+                    
+
+    # for i in range(0, len(paren_open)):
+    #     if paren_open[i] < paren_close[len(paren_close) - 1 - i]:
+    #         paren_pairs.append([paren_open[i], paren_close[len(paren_close) - 1 - i]])
+
+    print(paren_pairs)
 
     # Run operations 
     # operations(arr)
