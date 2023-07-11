@@ -40,7 +40,7 @@ def subtract(*args):
 
 # calc = "2*2+2*3/2-5"
 "3*(100-5+5*(2+8)-18)+(48/12)"
-calc = "8+(2-1)/2"
+calc = "9+(2-1)/(2-1)"
 
 def structure_string(str):
     arr = []
@@ -56,7 +56,7 @@ def structure_string(str):
         else:
             digits = digits + "%s" % str[i]
         finally:
-            if (i == len(str) - 1):
+            if (i == len(str) - 1 and len(digits) > 0):
                 arr.append(digits)
     return arr
 
