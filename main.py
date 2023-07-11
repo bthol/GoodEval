@@ -40,7 +40,7 @@ def subtract(*args):
 
 # calc = "2*2+2*3/2-5"
 "3*(100-5+5*(2+8)-18)+(48/12)"
-calc = "9+(2-1)/(2-1)"
+calc = "(2-((15+2)-16))-(5+2)"
 
 def structure_string(str):
     arr = []
@@ -127,7 +127,7 @@ def calculate(str):
     arr = structure_string(str)
     print(arr)
     
-    # Test for parenthesis
+    # Test for indices of parenthesis
     paren_open = []
     paren_close = []
     for i in range(0, len(arr)):
@@ -135,9 +135,19 @@ def calculate(str):
             paren_open.append(i)
         if arr[i] == ")":
             paren_close.append(i)
+    
+    nested_pairs = []
+    for i in range(0, len(paren_open)):
+        if paren_open[i] < paren_close[len(paren_close) - 1 - i]:
+            nested_pairs.append([paren_open[i], paren_close[len(paren_close) - 1 - i]])
+        else:
+            print(i)
+    
     print(paren_open)
-    # for i in range(len(paren_open), 0):
-    #     print(paren_open[i])
+    print(paren_close)
+    print(nested_pairs)
+
+
 
     # Run operations 
     # operations(arr)
