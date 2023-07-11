@@ -38,17 +38,19 @@ def subtract(*args):
 
 # subtract(10, 3, 2)
 
-calc = "2*2+2*3/2-5"
-calc_mult = "24+26-12*2/2"
+# calc = "2*2+2*3/2-5"
+"3*(100-5+5*(2+8)-18)+(48/12)"
+calc = "8+(2-1)/2"
 
-def str_array(str):
+def structure_string(str):
     arr = []
     digits = ""
     for i in range(0, len(str)):
         try:
             int(str[i])
         except:
-            arr.append(digits)
+            if len(digits) > 0:
+                arr.append(digits)
             digits = ""
             arr.append(str[i])
         else:
@@ -58,12 +60,8 @@ def str_array(str):
                 arr.append(digits)
     return arr
 
-# str_array(calc_mult)
-
-def calculate(str):
-    arr = str_array(str)
-    print(arr)
-
+def operations(arr):
+    # Perform all multiplications
     m = []
     place = -1
     for i in range(0, len(arr)):
@@ -78,6 +76,7 @@ def calculate(str):
             m.append(arr[i])
     print(m)
 
+    # Perform all divisions
     d = []
     place = -1
     for i in range(0, len(m)):
@@ -92,6 +91,7 @@ def calculate(str):
             d.append(m[i])
     print(d)
     
+    # Perform all additions 
     a = []
     place = -1
     for i in range(0, len(d)):
@@ -106,6 +106,7 @@ def calculate(str):
             a.append(d[i])
     print(a)
     
+    # perform all subtractions
     s = []
     place = -1
     for i in range(0, len(a)):
@@ -119,5 +120,26 @@ def calculate(str):
         else:
             s.append(a[i])
     print(s)
+    return s
 
-calculate(calc_mult)
+def calculate(str):
+    # structure string for improved manipulation
+    arr = structure_string(str)
+    print(arr)
+    
+    # Test for parenthesis
+    paren_open = []
+    paren_close = []
+    for i in range(0, len(arr)):
+        if arr[i] == "(":
+            paren_open.append(i)
+        if arr[i] == ")":
+            paren_close.append(i)
+    print(paren_open)
+    # for i in range(len(paren_open), 0):
+    #     print(paren_open[i])
+
+    # Run operations 
+    # operations(arr)
+
+calculate(calc)
