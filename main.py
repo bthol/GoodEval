@@ -40,8 +40,8 @@ def subtract(*args):
 
 # calc = "2*2+2*3/2-5"
 "3*(100-5*(2+8)-18)"
-calc = "(5-2)+(5+2)-(250-249)"
-"()()()"
+calc = "(5-(5-3))+(5+2)-(250-249)"
+"(()))()()"
 def structure_string(str):
     arr = []
     digits = ""
@@ -74,7 +74,7 @@ def operations(arr):
             place = i + 1
         else:
             m.append(arr[i])
-    print(m)
+    # print(m)
 
     # Perform all divisions
     d = []
@@ -89,7 +89,7 @@ def operations(arr):
             place = i + 1
         else:
             d.append(m[i])
-    print(d)
+    # print(d)
     
     # Perform all additions 
     a = []
@@ -104,7 +104,7 @@ def operations(arr):
             place = i + 1
         else:
             a.append(d[i])
-    print(a)
+    # print(a)
     
     # perform all subtractions
     s = []
@@ -119,7 +119,7 @@ def operations(arr):
             place = i + 1
         else:
             s.append(a[i])
-    print(s)
+    # print(s)
     return s
 
 def calculate(str):
@@ -128,36 +128,30 @@ def calculate(str):
     print(arr)
     
     # Test for indices of parenthesis
-    paren_open = []
-    paren_close = []
-    for i in range(0, len(arr)):
-        if arr[i] == "(":
-            paren_open.append(i)
-        if arr[i] == ")":
-            paren_close.append(i)
-    
-    print(paren_open)
-    print(paren_close)
+    parens = []
+    arrVar = arr
+    more_parens = True
+    while more_parens:
+        count = 0
+        for i in range(0, len(arrVar)):
+            if arrVar[i] == "(":
+                count = count + 1
+                parens.append({"index": i, "char": "("})
+            elif arrVar[i] == ")":
+                count = count + 1
+                parens.append({"index": i, "char": ")"})
+        if count == 0:
+            more_parens = False
+        osme = []
+        for i in range(0, len(parens)):
+            if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
+                arr_sect = arr[parens[i]["index"] + 1:parens[i + 1]["index"]]
+                osme.append({"solution": operations(arr_sect)[0], "idx_start": parens[i]["index"] + 1, "idx_end": parens[i + 1]["index"]})
+                print(arrVar)
+        # figure out how to use osme idx info to build new array accounting for solutions in every iteration
+        # then assign that to arrVar
+        
 
-    paren_pairs = []
-
-    for i in range(0, len(paren_close)):
-        search = True
-        for j in range(0, len(paren_open)):
-            if search and paren_close[i] < paren_open[j]:
-                search = False
-                # test if there are multiple open parens between the last two close parens from current i index
-
-                paren_pairs.append([paren_open[j - 1], paren_close[i]])
-                    
-
-    # for i in range(0, len(paren_open)):
-    #     if paren_open[i] < paren_close[len(paren_close) - 1 - i]:
-    #         paren_pairs.append([paren_open[i], paren_close[len(paren_close) - 1 - i]])
-
-    print(paren_pairs)
-
-    # Run operations 
-    # operations(arr)
+        more_parens = False
 
 calculate(calc)
