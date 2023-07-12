@@ -39,7 +39,7 @@ def subtract(*args):
 # subtract(10, 3, 2)
 
 "3*(100-5*(2+8)-18)"
-calc = "(5-(5-3))+(5+2)-(251-249)"
+calc = "(5-(5-3))+(5+(10-8))-(251-249+2)"
 # calc = "(5-2)+7-1"
 
 def structure_string(str):
@@ -152,8 +152,10 @@ def solve(arr):
             arr_before.append(osme[len(osme) - 1 - i]["solution"])
             arrVar = arr_before + arr_after
         print(arrVar)
+    print(operations(arrVar)[0])
 
 def calculate(str):
+    print(str)
     arr = structure_string(str)
     print(arr)
     solve(arr)
