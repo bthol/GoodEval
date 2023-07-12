@@ -38,10 +38,10 @@ def subtract(*args):
 
 # subtract(10, 3, 2)
 
-# calc = "2*2+2*3/2-5"
 "3*(100-5*(2+8)-18)"
-calc = "(5-(5-3))+(5+2)-(250-249)"
-"(()))()()"
+calc = "(5-(5-3))+(5+2)-(251-249)"
+# calc = "(5-2)+7-1"
+
 def structure_string(str):
     arr = []
     digits = ""
@@ -122,16 +122,12 @@ def operations(arr):
     # print(s)
     return s
 
-def calculate(str):
-    # structure string for improved manipulation
-    arr = structure_string(str)
-    print(arr)
-    
-    # Test for indices of parenthesis
+def solve(arr):
     parens = []
     arrVar = arr
     more_parens = True
     while more_parens:
+        parens = []
         count = 0
         for i in range(0, len(arrVar)):
             if arrVar[i] == "(":
@@ -145,13 +141,21 @@ def calculate(str):
         osme = []
         for i in range(0, len(parens)):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
-                arr_sect = arr[parens[i]["index"] + 1:parens[i + 1]["index"]]
+                arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
                 osme.append({"solution": operations(arr_sect)[0], "idx_start": parens[i]["index"] + 1, "idx_end": parens[i + 1]["index"]})
-                print(arrVar)
+       
         # figure out how to use osme idx info to build new array accounting for solutions in every iteration
         # then assign that to arrVar
-        
+        for i in range(0, len(osme)):
+            arr_before = arrVar[0:osme[len(osme) - 1 - i]["idx_start"] - 1]
+            arr_after = arrVar[osme[len(osme) - 1 - i]["idx_end"] + 1:len(arrVar)]
+            arr_before.append(osme[len(osme) - 1 - i]["solution"])
+            arrVar = arr_before + arr_after
+        print(arrVar)
 
-        more_parens = False
+def calculate(str):
+    arr = structure_string(str)
+    print(arr)
+    solve(arr)
 
 calculate(calc)
