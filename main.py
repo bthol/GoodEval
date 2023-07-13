@@ -39,7 +39,8 @@ def subtract(*args):
 # subtract(10, 3, 2)
 
 "3*(100-5*(2+8)-18)"
-calc = "(5-(5-3))+(5+(10-8))-(251-249+2)"
+calc = "10-0.5"
+# calc = "(5-(5-3))+(5+(10-8))-(251-249+2)"
 # calc = "(5-2)+7-1"
 
 def structure_string(str):
@@ -47,7 +48,7 @@ def structure_string(str):
     digits = ""
     for i in range(0, len(str)):
         try:
-            int(str[i])
+            str[i] == "." or int(str[i])
         except:
             if len(digits) > 0:
                 arr.append(digits)
@@ -69,8 +70,19 @@ def operations(arr):
             continue
         if arr[i] == "*":
             m = m[:-1]
-            val = int(arr[i - 1]) * int(arr[i + 1])
-            m.append("%s" % val)
+
+            multiplicand = float(arr[i - 1])
+            if multiplicand / 1 % 1 == 0:
+                multiplicand = int(multiplicand)
+
+            multiplier = float(arr[i + 1])
+            if multiplier / 1 % 1 == 0:
+                multiplier = int(multiplier)
+
+            product = multiplicand * multiplier
+
+            m.append("%s" % product)
+
             place = i + 1
         else:
             m.append(arr[i])
@@ -84,8 +96,19 @@ def operations(arr):
             continue
         if m[i] == "/":
             d = d[:-1]
-            val = int(int(m[i - 1]) / int(m[i + 1]))
-            d.append("%s" % val)
+
+            dividend = float(m[i - 1])
+            if dividend / 1 % 1 == 0:
+                dividend = int(dividend)
+
+            divisor = float(m[i + 1])
+            if divisor / 1 % 1 == 0:
+                divisor = int(divisor)
+            
+            quotient = dividend / divisor
+
+            d.append("%s" % quotient)
+
             place = i + 1
         else:
             d.append(m[i])
@@ -99,8 +122,19 @@ def operations(arr):
             continue
         if d[i] == "+":
             a = a[:-1]
-            val = int(d[i - 1]) + int(d[i + 1])
-            a.append("%s" % val)
+
+            augend = float(m[i - 1])
+            if augend / 1 % 1 == 0:
+                augend = int(augend)
+
+            addend = float(m[i + 1])
+            if addend / 1 % 1 == 0:
+                addend = int(addend)
+            
+            total = augend + addend
+
+            a.append("%s" % total)
+
             place = i + 1
         else:
             a.append(d[i])
@@ -114,8 +148,18 @@ def operations(arr):
             continue
         if a[i] == "-":
             s = s[:-1]
-            val = int(a[i - 1]) - int(a[i + 1])
-            s.append("%s" % val)
+            
+            minuend = float(m[i - 1])
+            if minuend / 1 % 1 == 0:
+                minuend = int(minuend)
+
+            subtrahend = float(m[i + 1])
+            if subtrahend / 1 % 1 == 0:
+                subtrahend = int(subtrahend)
+            
+            difference = minuend - subtrahend
+
+            s.append("%s" % difference)
             place = i + 1
         else:
             s.append(a[i])
