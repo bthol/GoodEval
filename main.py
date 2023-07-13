@@ -38,10 +38,8 @@ def subtract(*args):
 
 # subtract(10, 3, 2)
 
-"3*(100-5*(2+8)-18)"
 calc = "10-0.5"
 # calc = "(5-(5-3))+(5+(10-8))-(251-249+2)"
-# calc = "(5-2)+7-1"
 
 def structure_string(str):
     arr = []
