@@ -1,3 +1,5 @@
+import math
+
 def divide(*args):
     i = 1
     dividend = args[0]
@@ -38,7 +40,7 @@ def subtract(*args):
 
 # subtract(10, 3, 2)
 
-calc = "10-0.5"
+calc = "10^(1)-(2^(3)*10+20)"
 # calc = "(5-(5-3))+(5+(10-8))-(251-249+2)"
 
 def structure_string(str):
@@ -178,19 +180,35 @@ def solve(arr):
             elif arrVar[i] == ")":
                 count = count + 1
                 parens.append({"index": i, "char": ")"})
+            elif arrVar[i] == "^":
+                parens.append({"index": i, "char": "^"})
         if count == 0:
             more_parens = False
+            continue
+        
         osme = []
         for i in range(0, len(parens)):
-            if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
-                arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
-                osme.append({"solution": operations(arr_sect)[0], "idx_start": parens[i]["index"] + 1, "idx_end": parens[i + 1]["index"]})
-       
-        # figure out how to use osme idx info to build new array accounting for solutions in every iteration
-        # then assign that to arrVar
+            if parens[i]["char"] == "(":
+                if parens[i - 1]["char"] == "^" and parens[i + 1]["index"] - parens[i]["index"] == 2:
+                    base = float(arrVar[parens[i]["index"] - 2])
+                    exponent = float(arrVar[parens[i]["index"] + 1])
+                    osme.append({"solution": math.pow(base, exponent), "idx_start": parens[i]["index"] - 2, "idx_end": parens[i]["index"] + 2, "exp": True})
+                elif parens[i + 1]["char"] == ")":
+                    arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
+                    osme.append({"solution": operations(arr_sect)[0], "idx_start": parens[i]["index"] + 1, "idx_end": parens[i + 1]["index"], "exp": False})
+        # print(osme)
         for i in range(0, len(osme)):
-            arr_before = arrVar[0:osme[len(osme) - 1 - i]["idx_start"] - 1]
-            arr_after = arrVar[osme[len(osme) - 1 - i]["idx_end"] + 1:len(arrVar)]
+            start_val = 0
+            end_val = 0
+            if osme[len(osme) - 1 - i]["exp"] == True:
+                start_val = osme[len(osme) - 1 - i]["idx_start"]
+                end_val = osme[len(osme) - 1 - i]["idx_end"] + 1
+            else:
+                start_val = osme[len(osme) - 1 - i]["idx_start"] - 1
+                end_val = osme[len(osme) - 1 - i]["idx_end"] + 1
+
+            arr_before = arrVar[0:start_val]
+            arr_after = arrVar[end_val:len(arrVar)]
             arr_before.append(osme[len(osme) - 1 - i]["solution"])
             arrVar = arr_before + arr_after
         print(arrVar)
