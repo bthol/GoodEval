@@ -40,9 +40,10 @@ def subtract(*args):
 
 # subtract(10, 3, 2)
 
-calc = "5+8-10"
-# calc = "10^(1)-(2^(3)*10+20)"
+# calc = "5+8-10"
 # calc = "(5-(5-3))+(5+(10-8))-(251-249)"
+# calc = "10^(1+1)-(2^(3)*10+20)"
+calc = "10^2"
 
 def structure_string(str):
     arr = []
@@ -63,13 +64,36 @@ def structure_string(str):
     return arr
 
 def operations(arr):
-    # Perform all multiplications
-    m = []
+    # perform all exponentiations
+    e = []
     place = -1
     for i in range(0, len(arr)):
         if (i == place):
             continue
-        if arr[i] == "*":
+        if arr[i] == "^":
+            e = e[:-1]
+
+            base = float(arr[i - 1])
+            if base / 1 % 1 == 0:
+                base = int(base)
+
+            power = float(arr[i + 1])
+            if power / 1 % 1 == 0:
+                power = int(power)
+
+            exponentiation = math.pow(base, power)
+
+            e.append("%s" % exponentiation)
+        else:
+            e.append(arr[i])
+
+    # Perform all multiplications
+    m = []
+    place = -1
+    for i in range(0, len(e)):
+        if (i == place):
+            continue
+        if e[i] == "*":
             m = m[:-1]
 
             multiplicand = float(arr[i - 1])
@@ -86,7 +110,7 @@ def operations(arr):
 
             place = i + 1
         else:
-            m.append(arr[i])
+            m.append(e[i])
     # print(m)
 
     # Perform all divisions
@@ -139,7 +163,7 @@ def operations(arr):
             place = i + 1
         else:
             a.append(d[i])
-    print(a)
+    # print(a)
     
     # perform all subtractions
     s = []
@@ -164,7 +188,7 @@ def operations(arr):
             place = i + 1
         else:
             s.append(a[i])
-    print(s)
+    # print(s)
     return s
 
 def solve(arr):
@@ -187,23 +211,20 @@ def solve(arr):
         for i in range(0, len(parens)):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
-                osme.append({"solution": operations(arr_sect)[0], "id_start": parens[i]["index"] + 1, "id_end": parens[i + 1]["index"]})
+                osme.append({"solution": operations(arr_sect)[0], "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
         print(osme)
 
         for i in range(0, len(osme)):
-            start_val = osme[len(osme) - 1 - i]["id_start"] - 1
-            end_val = osme[len(osme) - 1 - i]["id_end"] + 1
-            arr_before = arrVar[0:start_val]
-            arr_after = arrVar[end_val:len(arrVar)]
+            start = osme[len(osme) - 1 - i]["start"] - 1
+            end = osme[len(osme) - 1 - i]["end"] + 1
+            arr_before = arrVar[0:start]
+            arr_after = arrVar[end:len(arrVar)]
             arr_before.append(osme[len(osme) - 1 - i]["solution"])
             arrVar = arr_before + arr_after
 
-        print(arrVar)
-
-    # for i in range(0, len(arrVar)):
-        
-
+        print(arrVar)    
+    
     print(operations(arrVar)[0])
 
 def calculate(str):
