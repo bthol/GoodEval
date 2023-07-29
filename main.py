@@ -237,11 +237,13 @@ def solve(arr):
             arrVar = arr_before + arr_after
 
         print(arrVar)
-    print(operations(arrVar)[0])
+
+    answer = operations(arrVar)
+    return answer[0]
 
 def calculate(str):
     print(str)
-    solve(structure_string(str))
+    return solve(structure_string(str))
 
-calc = "2*(5*3^(2+45-44))+1"
-calculate(calc)
+answer = calculate("2*(5*3^(1+45-44))+10")
+print(answer)
