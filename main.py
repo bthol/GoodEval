@@ -43,7 +43,8 @@ def subtract(*args):
 # calc = "5+8-10"
 # calc = "(5-(5-3))+(5+(10-8))-(251-249)"
 # calc = "10^(1+1)-(2^(3)*10+20)"
-calc = "10^2"
+# calc = "10^(1+(5-4))*8"
+calc = "2*5*3*2"
 
 def structure_string(str):
     arr = []
@@ -63,133 +64,147 @@ def structure_string(str):
                 arr.append(digits)
     return arr
 
+def getVals(str, arr):
+    vals = []
+    for i in range(0, len(arr)):
+        if arr[i] == str:
+            vals.append(arr[i - 1])
+            vals.append(arr[i + 1])
+            vals.append(i)
+            break
+    return vals
+
 def operations(arr):
     # perform all exponentiations
-    e = []
-    place = -1
-    for i in range(0, len(arr)):
-        if (i == place):
-            continue
-        if arr[i] == "^":
-            e = e[:-1]
+    # e = []
+    # place = -1
+    # for i in range(0, len(arr)):
+    #     if (i == place):
+    #         continue
+    #     if arr[i] == "^":
+    #         e = e[:-1]
 
-            base = float(arr[i - 1])
-            if base / 1 % 1 == 0:
-                base = int(base)
+    #         base = float(arr[i - 1])
+    #         if base / 1 % 1 == 0:
+    #             base = int(base)
 
-            power = float(arr[i + 1])
-            if power / 1 % 1 == 0:
-                power = int(power)
+    #         power = float(arr[i + 1])
+    #         if power / 1 % 1 == 0:
+    #             power = int(power)
 
-            exponentiation = math.pow(base, power)
+    #         exponentiation = math.pow(base, power)
 
-            e.append("%s" % exponentiation)
-        else:
-            e.append(arr[i])
+    #         e.append("%s" % exponentiation)
+    #     else:
+    #         e.append(arr[i])
+    # print(e)
 
     # Perform all multiplications
-    m = []
-    place = -1
-    for i in range(0, len(e)):
-        if (i == place):
-            continue
-        if e[i] == "*":
-            m = m[:-1]
+    arrVar = arr
+    print(arrVar)
 
-            multiplicand = float(arr[i - 1])
-            if multiplicand / 1 % 1 == 0:
-                multiplicand = int(multiplicand)
+    ref = getVals("*", arrVar)
 
-            multiplier = float(arr[i + 1])
-            if multiplier / 1 % 1 == 0:
-                multiplier = int(multiplier)
+    while len(ref) != 0:
+        multiplicand = float(ref[0])
+        if multiplicand / 1 % 1 == 0:
+            multiplicand = int(multiplicand)
 
-            product = multiplicand * multiplier
+        multiplier = float(ref[1])
+        if multiplier / 1 % 1 == 0:
+            multiplier = int(multiplier)
 
-            m.append("%s" % product)
+        product = multiplicand * multiplier
 
-            place = i + 1
-        else:
-            m.append(e[i])
+        before = arrVar[0:ref[2] - 1]
+        after = []
+        if ref[2] < len(arrVar) - 2:
+            after = arrVar[ref[2] + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % product)
+        arrVar = arrVar + after
+        print(arrVar)
+        ref = getVals("*", arrVar)
+    return arrVar
     # print(m)
 
     # Perform all divisions
-    d = []
-    place = -1
-    for i in range(0, len(m)):
-        if (i == place):
-            continue
-        if m[i] == "/":
-            d = d[:-1]
+    # d = []
+    # place = -1
+    # for i in range(0, len(e)):
+    #     if (i == place):
+    #         continue
+    #     if e[i] == "/":
+    #         d = d[:-1]
 
-            dividend = float(m[i - 1])
-            if dividend / 1 % 1 == 0:
-                dividend = int(dividend)
+    #         dividend = float(e[i - 1])
+    #         if dividend / 1 % 1 == 0:
+    #             dividend = int(dividend)
 
-            divisor = float(m[i + 1])
-            if divisor / 1 % 1 == 0:
-                divisor = int(divisor)
+    #         divisor = float(e[i + 1])
+    #         if divisor / 1 % 1 == 0:
+    #             divisor = int(divisor)
             
-            quotient = dividend / divisor
+    #         quotient = dividend / divisor
 
-            d.append("%s" % quotient)
+    #         d.append("%s" % quotient)
 
-            place = i + 1
-        else:
-            d.append(m[i])
+    #         place = i + 1
+    #     else:
+    #         d.append(m[i])
     # print(d)
     
     # Perform all additions 
-    a = []
-    place = -1
-    for i in range(0, len(d)):
-        if (i == place):
-            continue
-        if d[i] == "+":
-            a = a[:-1]
+    # a = []
+    # place = -1
+    # for i in range(0, len(d)):
+    #     if (i == place):
+    #         continue
+    #     if d[i] == "+":
+    #         a = a[:-1]
 
-            augend = float(m[i - 1])
-            if augend / 1 % 1 == 0:
-                augend = int(augend)
+    #         augend = float(m[i - 1])
+    #         if augend / 1 % 1 == 0:
+    #             augend = int(augend)
 
-            addend = float(m[i + 1])
-            if addend / 1 % 1 == 0:
-                addend = int(addend)
+    #         addend = float(m[i + 1])
+    #         if addend / 1 % 1 == 0:
+    #             addend = int(addend)
             
-            total = augend + addend
+    #         total = augend + addend
 
-            a.append("%s" % total)
+    #         a.append("%s" % total)
 
-            place = i + 1
-        else:
-            a.append(d[i])
+    #         place = i + 1
+    #     else:
+    #         a.append(d[i])
     # print(a)
     
     # perform all subtractions
-    s = []
-    place = -1
-    for i in range(0, len(a)):
-        if (i == place):
-            continue
-        if a[i] == "-":
-            s = s[:-1]
+    # s = []
+    # place = -1
+    # for i in range(0, len(a)):
+    #     if (i == place):
+    #         continue
+    #     if a[i] == "-":
+    #         s = s[:-1]
             
-            minuend = float(m[i + 1])
-            if minuend / 1 % 1 == 0:
-                minuend = int(minuend)
+    #         minuend = float(m[i - 1])
+    #         if minuend / 1 % 1 == 0:
+    #             minuend = int(minuend)
 
-            subtrahend = float(m[i - 1])
-            if subtrahend / 1 % 1 == 0:
-                subtrahend = int(subtrahend)
+    #         subtrahend = float(m[i + 1])
+    #         if subtrahend / 1 % 1 == 0:
+    #             subtrahend = int(subtrahend)
             
-            difference = minuend - subtrahend
+    #         difference = minuend - subtrahend
 
-            s.append("%s" % difference)
-            place = i + 1
-        else:
-            s.append(a[i])
+    #         s.append("%s" % difference)
+    #         place = i + 1
+    #     else:
+    #         s.append(a[i])
     # print(s)
-    return s
+    # return s
 
 def solve(arr):
     arrVar = arr
@@ -213,7 +228,7 @@ def solve(arr):
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
                 osme.append({"solution": operations(arr_sect)[0], "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
-        print(osme)
+        # print(osme)
 
         for i in range(0, len(osme)):
             start = osme[len(osme) - 1 - i]["start"] - 1
@@ -223,14 +238,12 @@ def solve(arr):
             arr_before.append(osme[len(osme) - 1 - i]["solution"])
             arrVar = arr_before + arr_after
 
-        print(arrVar)    
-    
+        # print(arrVar)    
     print(operations(arrVar)[0])
 
 def calculate(str):
     print(str)
     arr = structure_string(str)
-    print(arr)
     solve(arr)
 
 calculate(calc)
