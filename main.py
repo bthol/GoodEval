@@ -40,7 +40,7 @@ def subtract(*args):
 
 # subtract(10, 3, 2)
 
-calc = "2*5*3^2-45"
+
 
 def structure_string(str):
     arr = []
@@ -58,6 +58,7 @@ def structure_string(str):
         finally:
             if (i == len(str) - 1 and len(digits) > 0):
                 arr.append(digits)
+    print(arr)
     return arr
 
 def getVals(str, arr):
@@ -72,7 +73,6 @@ def getVals(str, arr):
 
 def operations(arr):
     arrVar = arr
-    print(arrVar)
 
     # perform all exponentiations
     ref = getVals("^", arrVar)
@@ -95,8 +95,8 @@ def operations(arr):
         arrVar = before
         arrVar.append("%s" % exponentiation)
         arrVar = arrVar + after
-        print(arrVar)
         ref = getVals("^", arrVar)
+        print(arrVar)
 
     # print(arrVar)
 
@@ -121,8 +121,8 @@ def operations(arr):
         arrVar = before
         arrVar.append("%s" % product)
         arrVar = arrVar + after
-        print(arrVar)
         ref = getVals("*", arrVar)
+        print(arrVar)
 
     # print(arrVar)
 
@@ -147,8 +147,8 @@ def operations(arr):
         arrVar = before
         arrVar.append("%s" % quotient)
         arrVar = arrVar + after
-        print(arrVar)
         ref = getVals("/", arrVar)
+        print(arrVar)
     
     # print(arrVar)
     
@@ -173,8 +173,8 @@ def operations(arr):
         arrVar = before
         arrVar.append("%s" % total)
         arrVar = arrVar + after
-        print(arrVar)
         ref = getVals("+", arrVar)
+        print(arrVar)
     
     # print(arrVar)
     
@@ -199,8 +199,8 @@ def operations(arr):
         arrVar = before
         arrVar.append("%s" % difference)
         arrVar = arrVar + after
-        print(arrVar)
         ref = getVals("-", arrVar)
+        print(arrVar)
     
     return arrVar
 
@@ -236,11 +236,12 @@ def solve(arr):
             arr_before.append(osme[len(osme) - 1 - i]["solution"])
             arrVar = arr_before + arr_after
 
-        # print(arrVar)    
+        print(arrVar)
     print(operations(arrVar)[0])
 
 def calculate(str):
     print(str)
     solve(structure_string(str))
 
-calculate()
+calc = "2*(5*3^(2+45-44))+1"
+calculate(calc)
