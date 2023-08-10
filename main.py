@@ -7,10 +7,14 @@ def structure_string(str):
         try:
             str[i] == "." or int(str[i])
         except:
-            if len(digits) > 0:
-                arr.append(digits)
-            digits = ""
-            arr.append(str[i])
+            # handle negatives
+            if str[i - 1] == "(" and str[i] == "-":
+                digits = digits + "%s" % str[i]
+            else:
+                if len(digits) > 0:
+                    arr.append(digits)
+                digits = ""
+                arr.append(str[i])
         else:
             digits = digits + "%s" % str[i]
         finally:
@@ -203,6 +207,9 @@ def calculate(str):
     print(str)
     return solve(structure_string(str))
 
-problem = "4+(8*4/2)-(10+2^(2+1)+2)"
-answer = calculate(problem)
-print(answer)
+# problem = "4+(8*4/2)-(10+2^(2+1)+2)"
+problem = "10+(-4)"
+# answer = calculate(problem)
+# print(answer)
+
+print(calculate(structure_string(problem)))
