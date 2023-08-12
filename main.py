@@ -31,6 +31,33 @@ def getIdx(str, arr):
             break
     return val
 
+def getWord(str, arr):
+    strLen = len(str)
+    ref = {}
+    for i in range(0, len(arr) - 1):
+        if arr[i] == str[0] and arr[i + strLen - 1] == str[strLen - 1]:
+            print(i)
+            # check first and last letters for alllowed keywords in problem string
+            ref = {"first": i, "last": i + strLen - 1}
+            break
+
+        # check every letter in keyword for exact match
+        # if arr[i] == str[0]:
+        #     word = ""
+        #     for j in range(0, len(str)):
+        #         if arr[i + j] == str[j]:
+        #             word = word + arr[i]
+        #     if str == word:
+        #         ref.append(word)
+    return ref
+                
+def trigonomic(arr):
+    arrVar = arr
+    # Perform all Sine functions
+    ref = getWord("sin", arrVar)
+    print(ref)
+    return arrVar
+
 def operations(arr):
     arrVar = arr
 
@@ -208,8 +235,12 @@ def solve(arr):
         osme = []
         for i in range(0, len(parens)):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
+                # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
-                osme.append({"solution": operations(arr_sect)[0], "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
+                # solve section
+                solution = operations(trigonomic(arr_sect))[0]
+                # send to osme for restructing
+                osme.append({"solution": solution, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
         # print(osme)
 
@@ -230,7 +261,17 @@ def calculate(str):
     print(str)
     return solve(structure_string(str))
 
-# problem = "4+(8*4/2)-(10+2^(2+1)+2)"
-problem = "(2)√(4)"
-answer = calculate(problem)
-print(answer)
+# problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
+problem = "(sin(1-1)+2)/2"
+print(trigonomic(structure_string(problem)))
+# answer = calculate(problem)
+# print(answer)
+
+# trigonomic functions
+# print(math.sin(0))
+# sn cs tn an as at
+# print(math.cos(0))
+# print(math.tan(0))
+# print(math.asin(0))
+# print(math.acos(0))
+# print(math.atan(0))
