@@ -1,5 +1,39 @@
 import math
 
+keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
+
+def getWord(word, arr):
+    wordLen = len(word)
+    ref = None
+    for i in range(0, len(arr) - 1):
+        # test for first and last letter of word
+        if arr[i] == word[0] and arr[i + wordLen - 1] == word[wordLen - 1]:
+            # get string between first and last letter index
+            str = ""
+            for l in range(0, wordLen):
+                str = str + arr[i + l]
+            # compare string with word
+            if str == word:
+                if i == 0:
+                    ref = {"first": i, "last": i + wordLen}
+                else:
+                    ref = {"first": i - 1, "last": i + wordLen}
+                break
+    return ref
+
+def word_struct(word, arr):
+    arrVar = arr
+    ref = getWord(word, arrVar)
+    while ref is not None:
+        before = arrVar[0:ref["first"]]
+        after = arrVar[ref["last"]: len(arrVar)]
+        arrVar = before
+        arrVar.append(word)
+        arrVar = arrVar + after
+        ref = getWord(word, arrVar)
+
+    return arrVar
+
 def structure_string(str):
     arr = []
     digits = ""
@@ -21,6 +55,11 @@ def structure_string(str):
             if (i == len(str) - 1 and len(digits) > 0):
                 arr.append(digits)
     print(arr)
+    
+    # structure for keywords
+    for i in range(0, len(keywords)):
+        arr = word_struct(keywords[i], arr)
+    print(arr)
     return arr
 
 def getIdx(str, arr):
@@ -30,33 +69,6 @@ def getIdx(str, arr):
             val = i
             break
     return val
-
-def getWord(str, arr):
-    strLen = len(str)
-    ref = {}
-    for i in range(0, len(arr) - 1):
-        if arr[i] == str[0] and arr[i + strLen - 1] == str[strLen - 1]:
-            print(i)
-            # check first and last letters for alllowed keywords in problem string
-            ref = {"first": i, "last": i + strLen - 1}
-            break
-
-        # check every letter in keyword for exact match
-        # if arr[i] == str[0]:
-        #     word = ""
-        #     for j in range(0, len(str)):
-        #         if arr[i + j] == str[j]:
-        #             word = word + arr[i]
-        #     if str == word:
-        #         ref.append(word)
-    return ref
-                
-def trigonomic(arr):
-    arrVar = arr
-    # Perform all Sine functions
-    ref = getWord("sin", arrVar)
-    print(ref)
-    return arrVar
 
 def operations(arr):
     arrVar = arr
@@ -78,7 +90,6 @@ def operations(arr):
         after = []
         if ref < len(arrVar) - 2:
             after = arrVar[ref + 2: len(arrVar)]
-            
         arrVar = before
         arrVar.append("%s" % power)
         arrVar = arrVar + after
@@ -104,7 +115,6 @@ def operations(arr):
         after = []
         if ref < len(arrVar) - 2:
             after = arrVar[ref + 2: len(arrVar)]
-            
         arrVar = before
         arrVar.append("%s" % root)
         arrVar = arrVar + after
@@ -129,7 +139,6 @@ def operations(arr):
         after = []
         if ref < len(arrVar) - 2:
             after = arrVar[ref + 2: len(arrVar)]
-            
         arrVar = before
         arrVar.append("%s" % product)
         arrVar = arrVar + after
@@ -155,7 +164,6 @@ def operations(arr):
         after = []
         if ref < len(arrVar) - 2:
             after = arrVar[ref + 2: len(arrVar)]
-            
         arrVar = before
         arrVar.append("%s" % quotient)
         arrVar = arrVar + after
@@ -181,7 +189,6 @@ def operations(arr):
         after = []
         if ref < len(arrVar) - 2:
             after = arrVar[ref + 2: len(arrVar)]
-            
         arrVar = before
         arrVar.append("%s" % total)
         arrVar = arrVar + after
@@ -207,7 +214,6 @@ def operations(arr):
         after = []
         if ref < len(arrVar) - 2:
             after = arrVar[ref + 2: len(arrVar)]
-            
         arrVar = before
         arrVar.append("%s" % difference)
         arrVar = arrVar + after
@@ -238,7 +244,7 @@ def solve(arr):
                 # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
                 # solve section
-                solution = operations(trigonomic(arr_sect))[0]
+                solution = operations(arr_sect)[0]
                 # send to osme for restructing
                 osme.append({"solution": solution, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
@@ -262,8 +268,8 @@ def calculate(str):
     return solve(structure_string(str))
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
-problem = "(sin(1-1)+2)/2"
-print(trigonomic(structure_string(problem)))
+problem = "cos(48)*(atan(1-1)+2-sin(0))/2"
+structure_string(problem)
 # answer = calculate(problem)
 # print(answer)
 
