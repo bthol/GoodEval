@@ -60,29 +60,30 @@ def operations(arr):
 
     # print(arrVar)
 
-    # perform all roots
-    # ref = getVals("√", arrVar)
-    # while len(ref) != 0:
-    #     base = float(ref[0])
-    #     if base / 1 % 1 == 0:
-    #         base = int(base)
+    # Perform all roots
+    ref = getIdx("√", arrVar)
+    while ref is not None:
+        degree = float(arrVar[ref - 1])
+        if degree / 1 % 1 == 0:
+            degree = int(degree)
 
-    #     exponent = float(ref[1])
-    #     if exponent / 1 % 1 == 0:
-    #         exponent = int(exponent)
+        radicand = float(arrVar[ref + 1])
+        if radicand / 1 % 1 == 0:
+            radicand = int(radicand)
 
-    #     power = math.pow(base, exponent)
+        root = math.pow(radicand, 1/degree)
 
-    #     before = arrVar[0:ref[2] - 1]
-    #     after = []
-    #     if ref[2] < len(arrVar) - 2:
-    #         after = arrVar[ref[2] + 2: len(arrVar)]
+        before = arrVar[0:ref - 1]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
             
-    #     arrVar = before
-    #     arrVar.append("%s" % power)
-    #     arrVar = arrVar + after
-    #     ref = getVals("√", arrVar)
-    #     print(arrVar)
+        arrVar = before
+        arrVar.append("%s" % root)
+        arrVar = arrVar + after
+        ref = getIdx("√", arrVar)
+        print(arrVar)
+
 
     # Perform all multiplications
     ref = getIdx("*", arrVar)
@@ -229,8 +230,7 @@ def calculate(str):
     print(str)
     return solve(structure_string(str))
 
-problem = "4+(8*4/2)-(10+2^(2+1)+2)"
-# problem = "√(4)"
-# problem = "4^2*2"
+# problem = "4+(8*4/2)-(10+2^(2+1)+2)"
+problem = "(2)√(4)"
 answer = calculate(problem)
 print(answer)
