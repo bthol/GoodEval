@@ -23,145 +23,167 @@ def structure_string(str):
     print(arr)
     return arr
 
-def getVals(str, arr):
-    vals = []
+def getIdx(str, arr):
+    val = None
     for i in range(0, len(arr)):
         if arr[i] == str:
-            vals.append(arr[i - 1])
-            vals.append(arr[i + 1])
-            vals.append(i)
+            val = i
             break
-    return vals
+    return val
 
 def operations(arr):
     arrVar = arr
 
     # perform all exponentiations
-    ref = getVals("^", arrVar)
-    while len(ref) != 0:
-        base = float(ref[0])
+    ref = getIdx("^", arrVar)
+    while ref is not None:
+        base = float(arrVar[ref - 1])
         if base / 1 % 1 == 0:
             base = int(base)
 
-        power = float(ref[1])
-        if power / 1 % 1 == 0:
-            power = int(power)
+        exponent = float(arrVar[ref + 1])
+        if exponent / 1 % 1 == 0:
+            exponent = int(exponent)
 
-        exponentiation = math.pow(base, power)
+        power = math.pow(base, exponent)
 
-        before = arrVar[0:ref[2] - 1]
+        before = arrVar[0:ref - 1]
         after = []
-        if ref[2] < len(arrVar) - 2:
-            after = arrVar[ref[2] + 2: len(arrVar)]
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
             
         arrVar = before
-        arrVar.append("%s" % exponentiation)
+        arrVar.append("%s" % power)
         arrVar = arrVar + after
-        ref = getVals("^", arrVar)
+        ref = getIdx("^", arrVar)
         print(arrVar)
 
     # print(arrVar)
 
+    # perform all roots
+    # ref = getVals("√", arrVar)
+    # while len(ref) != 0:
+    #     base = float(ref[0])
+    #     if base / 1 % 1 == 0:
+    #         base = int(base)
+
+    #     exponent = float(ref[1])
+    #     if exponent / 1 % 1 == 0:
+    #         exponent = int(exponent)
+
+    #     power = math.pow(base, exponent)
+
+    #     before = arrVar[0:ref[2] - 1]
+    #     after = []
+    #     if ref[2] < len(arrVar) - 2:
+    #         after = arrVar[ref[2] + 2: len(arrVar)]
+            
+    #     arrVar = before
+    #     arrVar.append("%s" % power)
+    #     arrVar = arrVar + after
+    #     ref = getVals("√", arrVar)
+    #     print(arrVar)
+
     # Perform all multiplications
-    ref = getVals("*", arrVar)
-    while len(ref) != 0:
-        multiplicand = float(ref[0])
+    ref = getIdx("*", arrVar)
+    while ref is not None:
+        multiplicand = float(arrVar[ref - 1])
         if multiplicand / 1 % 1 == 0:
             multiplicand = int(multiplicand)
 
-        multiplier = float(ref[1])
+        multiplier = float(arrVar[ref + 1])
         if multiplier / 1 % 1 == 0:
             multiplier = int(multiplier)
 
         product = multiplicand * multiplier
 
-        before = arrVar[0:ref[2] - 1]
+        before = arrVar[0:ref - 1]
         after = []
-        if ref[2] < len(arrVar) - 2:
-            after = arrVar[ref[2] + 2: len(arrVar)]
-
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+            
         arrVar = before
         arrVar.append("%s" % product)
         arrVar = arrVar + after
-        ref = getVals("*", arrVar)
+        ref = getIdx("*", arrVar)
         print(arrVar)
 
-    # print(arrVar)
+    # # print(arrVar)
 
-    # Perform all divisions
-    ref = getVals("/", arrVar)
-    while len(ref) != 0:
-        dividend = float(ref[0])
+    # # Perform all divisions
+    ref = getIdx("/", arrVar)
+    while ref is not None:
+        dividend = float(arrVar[ref - 1])
         if dividend / 1 % 1 == 0:
             dividend = int(dividend)
 
-        divisor = float(ref[1])
+        divisor = float(arrVar[ref + 1])
         if divisor / 1 % 1 == 0:
             divisor = int(divisor)
 
         quotient = dividend / divisor
 
-        before = arrVar[0:ref[2] - 1]
+        before = arrVar[0:ref - 1]
         after = []
-        if ref[2] < len(arrVar) - 2:
-            after = arrVar[ref[2] + 2: len(arrVar)]
-
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+            
         arrVar = before
         arrVar.append("%s" % quotient)
         arrVar = arrVar + after
-        ref = getVals("/", arrVar)
+        ref = getIdx("/", arrVar)
         print(arrVar)
     
-    # print(arrVar)
+    # # print(arrVar)
     
-    # Perform all additions
-    ref = getVals("+", arrVar)
-    while len(ref) != 0:
-        augend = float(ref[0])
+    # # Perform all additions
+    ref = getIdx("+", arrVar)
+    while ref is not None:
+        augend = float(arrVar[ref - 1])
         if augend / 1 % 1 == 0:
             augend = int(augend)
 
-        addend = float(ref[1])
+        addend = float(arrVar[ref + 1])
         if addend / 1 % 1 == 0:
             addend = int(addend)
 
         total = augend + addend
 
-        before = arrVar[0:ref[2] - 1]
+        before = arrVar[0:ref - 1]
         after = []
-        if ref[2] < len(arrVar) - 2:
-            after = arrVar[ref[2] + 2: len(arrVar)]
-
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+            
         arrVar = before
         arrVar.append("%s" % total)
         arrVar = arrVar + after
-        ref = getVals("+", arrVar)
+        ref = getIdx("+", arrVar)
         print(arrVar)
     
-    # print(arrVar)
+    # # print(arrVar)
     
-    # perform all subtractions
-    ref = getVals("-", arrVar)
-    while len(ref) != 0:
-        minuend = float(ref[0])
+    # # perform all subtractions
+    ref = getIdx("-", arrVar)
+    while ref is not None:
+        minuend = float(arrVar[ref - 1])
         if minuend / 1 % 1 == 0:
-            subtrahend = int(minuend)
+            minuend = int(minuend)
 
-        subtrahend = float(ref[1])
+        subtrahend = float(arrVar[ref + 1])
         if subtrahend / 1 % 1 == 0:
             subtrahend = int(subtrahend)
 
         difference = minuend - subtrahend
 
-        before = arrVar[0:ref[2] - 1]
+        before = arrVar[0:ref - 1]
         after = []
-        if ref[2] < len(arrVar) - 2:
-            after = arrVar[ref[2] + 2: len(arrVar)]
-
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+            
         arrVar = before
         arrVar.append("%s" % difference)
         arrVar = arrVar + after
-        ref = getVals("-", arrVar)
+        ref = getIdx("-", arrVar)
         print(arrVar)
     
     return arrVar
@@ -207,9 +229,8 @@ def calculate(str):
     print(str)
     return solve(structure_string(str))
 
-# problem = "4+(8*4/2)-(10+2^(2+1)+2)"
-problem = "10+(-4)"
-# answer = calculate(problem)
-# print(answer)
-
-print(calculate(structure_string(problem)))
+problem = "4+(8*4/2)-(10+2^(2+1)+2)"
+# problem = "√(4)"
+# problem = "4^2*2"
+answer = calculate(problem)
+print(answer)
