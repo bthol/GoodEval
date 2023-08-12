@@ -96,8 +96,6 @@ def operations(arr):
         ref = getIdx("^", arrVar)
         print(arrVar)
 
-    # print(arrVar)
-
     # Perform all roots
     ref = getIdx("√", arrVar)
     while ref is not None:
@@ -145,9 +143,7 @@ def operations(arr):
         ref = getIdx("*", arrVar)
         print(arrVar)
 
-    # # print(arrVar)
-
-    # # Perform all divisions
+    # Perform all divisions
     ref = getIdx("/", arrVar)
     while ref is not None:
         dividend = float(arrVar[ref - 1])
@@ -170,9 +166,7 @@ def operations(arr):
         ref = getIdx("/", arrVar)
         print(arrVar)
     
-    # # print(arrVar)
-    
-    # # Perform all additions
+    # Perform all additions
     ref = getIdx("+", arrVar)
     while ref is not None:
         augend = float(arrVar[ref - 1])
@@ -195,9 +189,7 @@ def operations(arr):
         ref = getIdx("+", arrVar)
         print(arrVar)
     
-    # # print(arrVar)
-    
-    # # perform all subtractions
+    # perform all subtractions
     ref = getIdx("-", arrVar)
     while ref is not None:
         minuend = float(arrVar[ref - 1])
@@ -218,6 +210,25 @@ def operations(arr):
         arrVar.append("%s" % difference)
         arrVar = arrVar + after
         ref = getIdx("-", arrVar)
+        print(arrVar)
+
+    # perform all sine functions
+    ref = getIdx("sin", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.sin(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("sin", arrVar)
         print(arrVar)
     
     return arrVar
@@ -244,6 +255,7 @@ def solve(arr):
                 # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
                 # solve section
+                print(arr_sect)
                 solution = operations(arr_sect)[0]
                 # send to osme for restructing
                 osme.append({"solution": solution, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
@@ -265,11 +277,13 @@ def solve(arr):
 
 def calculate(str):
     print(str)
-    return solve(structure_string(str))
+    structured = structure_string(str)
+    return solve(structured)
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
-problem = "cos(48)*(atan(1-1)+2-sin(0))/2"
-structure_string(problem)
+# problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
+problem = "sin90"
+operations(structure_string(problem))
 # answer = calculate(problem)
 # print(answer)
 
