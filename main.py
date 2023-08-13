@@ -1,6 +1,6 @@
 import math
 
-keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
+keywords = ["sin", "cos", "tan", "asin", "acos", "atan"]
 
 def getWord(word, arr):
     wordLen = len(word)
@@ -25,7 +25,9 @@ def word_struct(word, arr):
     arrVar = arr
     ref = getWord(word, arrVar)
     while ref is not None:
-        before = arrVar[0:ref["first"]]
+        before = []
+        if ref["first"] != 0:
+            before = arrVar[0:ref["first"] + 1]
         after = arrVar[ref["last"]: len(arrVar)]
         arrVar = before
         arrVar.append(word)
@@ -70,8 +72,129 @@ def getIdx(str, arr):
             break
     return val
 
+def trigonomic(arr):
+    arrVar = arr
+
+    # perform all sine functions
+    ref = getIdx("sin", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.sin(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("sin", arrVar)
+        print(arrVar)
+
+    # perform all cosine functions
+    ref = getIdx("cos", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.cos(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("cos", arrVar)
+        print(arrVar)
+
+    # perform all tangent functions
+    ref = getIdx("tan", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.tan(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("tan", arrVar)
+        print(arrVar)
+    
+    # perform all arc sine functions
+    ref = getIdx("asin", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.asin(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("asin", arrVar)
+        print(arrVar)
+
+    # perform all arc cosine functions
+    ref = getIdx("acos", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.acos(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("acos", arrVar)
+        print(arrVar)
+
+    # perform all arc tangent functions
+    ref = getIdx("atan", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.atan(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("atan", arrVar)
+        print(arrVar)
+
+    return arrVar
+
 def operations(arr):
     arrVar = arr
+
+    arrVar = trigonomic(arrVar)
 
     # perform all exponentiations
     ref = getIdx("^", arrVar)
@@ -96,6 +219,8 @@ def operations(arr):
         ref = getIdx("^", arrVar)
         print(arrVar)
 
+    arrVar = trigonomic(arrVar)
+
     # Perform all roots
     ref = getIdx("√", arrVar)
     while ref is not None:
@@ -119,6 +244,7 @@ def operations(arr):
         ref = getIdx("√", arrVar)
         print(arrVar)
 
+    arrVar = trigonomic(arrVar)
 
     # Perform all multiplications
     ref = getIdx("*", arrVar)
@@ -143,6 +269,8 @@ def operations(arr):
         ref = getIdx("*", arrVar)
         print(arrVar)
 
+    arrVar = trigonomic(arrVar)
+
     # Perform all divisions
     ref = getIdx("/", arrVar)
     while ref is not None:
@@ -166,6 +294,8 @@ def operations(arr):
         ref = getIdx("/", arrVar)
         print(arrVar)
     
+    arrVar = trigonomic(arrVar)
+
     # Perform all additions
     ref = getIdx("+", arrVar)
     while ref is not None:
@@ -189,6 +319,8 @@ def operations(arr):
         ref = getIdx("+", arrVar)
         print(arrVar)
     
+    arrVar = trigonomic(arrVar)
+
     # perform all subtractions
     ref = getIdx("-", arrVar)
     while ref is not None:
@@ -212,6 +344,8 @@ def operations(arr):
         ref = getIdx("-", arrVar)
         print(arrVar)
 
+    arrVar = trigonomic(arrVar)
+
     # perform all sine functions
     ref = getIdx("sin", arrVar)
     while ref is not None:
@@ -231,6 +365,29 @@ def operations(arr):
         ref = getIdx("sin", arrVar)
         print(arrVar)
     
+    arrVar = trigonomic(arrVar)
+
+    # perform all cosine functions
+    ref = getIdx("cos", arrVar)
+    while ref is not None:
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = math.cos(x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % y)
+        arrVar = arrVar + after
+        ref = getIdx("cos", arrVar)
+        print(arrVar)
+    
+    arrVar = trigonomic(arrVar)
+
     return arrVar
 
 def solve(arr):
@@ -282,10 +439,11 @@ def calculate(str):
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
-problem = "sin90"
-operations(structure_string(problem))
-# answer = calculate(problem)
-# print(answer)
+
+# doesn't properly restructure
+problem = "tan(50)+2-sin(0)"
+answer = calculate(problem)
+print(answer)
 
 # trigonomic functions
 # print(math.sin(0))
