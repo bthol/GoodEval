@@ -390,7 +390,7 @@ def operations(arr):
 
     return arrVar
 
-def solve(arr):
+def section(arr):
     arrVar = arr
     more_parens = True
     while more_parens:
@@ -435,21 +435,11 @@ def solve(arr):
 def calculate(str):
     print(str)
     structured = structure_string(str)
-    return solve(structured)
+    return section(structured)
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
 
-# doesn't properly restructure
-problem = "tan(50)+2-sin(0)"
+problem = "tan(35+15-5)+2-sin(7334*sin(0))"
 answer = calculate(problem)
 print(answer)
-
-# trigonomic functions
-# print(math.sin(0))
-# sn cs tn an as at
-# print(math.cos(0))
-# print(math.tan(0))
-# print(math.asin(0))
-# print(math.acos(0))
-# print(math.atan(0))
