@@ -12,6 +12,7 @@ def restructure(solution, start, end, arr):
         else:
             structure.append(solution)
     if end != len(arr) - 1:
+        print(structure)
         structure = structure + arr[end + 1:len(arr)]
     return structure
 
@@ -34,12 +35,10 @@ def getWord(word, arr):
 def word_struct(word, arr):
     arrVar = arr
     ref = getWord(word, arrVar)
-    while ref is not None:
-        before = arrVar[0:ref["first"]]
-        after = arrVar[ref["last"]: len(arrVar)]
-        arrVar = before
-        arrVar.append(word)
-        arrVar = arrVar + after
+    thresh = 0
+    while ref is not None and thresh < 100:
+        thresh = thresh + 1
+        arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
         ref = getWord(word, arrVar)
 
     return arrVar
@@ -443,8 +442,8 @@ def section(arr):
                         section = restructure([section[i + 3], "*", distVal], i + 3, i + 3, section)
                         print(section)
 
-            arrVar = restructure(operations(section), start, end, arrVar)
-        arrVar = restructure(None, 0, 1, arrVar)
+            arrVar = restructure(operations(section), start, end - 1, arrVar)
+
         print(arrVar)
 
     answer = operations(arrVar)
@@ -458,7 +457,7 @@ def calculate(str):
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
 # problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
 
-problem = "5*(4/2)"
+problem = "sin(5*(4/2))"
 # problem = "(5*4/5*2)"
 
 answer = calculate(problem)
