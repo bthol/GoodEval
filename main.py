@@ -1,5 +1,8 @@
 import math
 
+# limit over which while loops stop to prevent infinite loop
+itr_limit = 100
+
 keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
 
 def restructure(solution, start, end, arr):
@@ -12,7 +15,6 @@ def restructure(solution, start, end, arr):
         else:
             structure.append(solution)
     if end != len(arr) - 1:
-        print(structure)
         structure = structure + arr[end + 1:len(arr)]
     return structure
 
@@ -36,7 +38,7 @@ def word_struct(word, arr):
     arrVar = arr
     ref = getWord(word, arrVar)
     thresh = 0
-    while ref is not None and thresh < 100:
+    while ref is not None and thresh < itr_limit:
         thresh = thresh + 1
         arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
         ref = getWord(word, arrVar)
@@ -402,7 +404,7 @@ def section(arr):
     arrVar = arr
     more_parens = True
     thresh = 0
-    while more_parens and thresh < 100:
+    while more_parens and thresh < itr_limit:
         thresh = thresh + 1
         parens = []
         count = 0
@@ -421,6 +423,8 @@ def section(arr):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
                 # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
+                # distribution
+                # if parens[i]["index"] - 1
                 # send to osme for restructing
                 osme.append({"section": arr_sect, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
@@ -435,7 +439,7 @@ def section(arr):
             if arrVar[start - 1] == "*":
                 distVal = arrVar[start - 2]
                 for i in range(0, len(section)):
-                    if section[i] == "/":
+                    if section[i] == "+" or  section[i] == "-" or section[i] == "*" or section[i] == "/":
                         # distribute across terms
                         section = restructure([section[i - 1], "*", distVal], i - 1, i - 1, section)
                         print(section)
@@ -457,7 +461,7 @@ def calculate(str):
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
 # problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
 
-problem = "sin(5*(4/2))"
+problem = "5*(4/2)"
 # problem = "(5*4/5*2)"
 
 answer = calculate(problem)
