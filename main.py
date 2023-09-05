@@ -23,7 +23,6 @@ def word_struct(word, arr):
     ref = getWord(word, arrVar)
     while ref is not None:
         before = arrVar[0:ref["first"]]
-        print(ref["first"])
         after = arrVar[ref["last"]: len(arrVar)]
         arrVar = before
         arrVar.append(word)
@@ -33,7 +32,7 @@ def word_struct(word, arr):
     return arrVar
 
 def structure_string(str):
-    # structure for character
+    # structure values & characters
     arr = []
     digits = ""
     for i in range(0, len(str)):
@@ -55,7 +54,7 @@ def structure_string(str):
                 arr.append(digits)
     print(arr)
     
-    # structure for keywords
+    # structure keywords
     for i in range(0, len(keywords)):
         arr = word_struct(keywords[i], arr)
     print(arr)
@@ -408,20 +407,29 @@ def section(arr):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
                 # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
-                # solve section
-                print(arr_sect)
-                solution = operations(arr_sect)[0]
+                # structure for distribution
+                if arrVar[parens[i]["index"] - 1] == "*":
+                    distVal = arrVar[parens[i]["index"] - 2]
                 # send to osme for restructing
-                osme.append({"solution": solution, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
+                osme.append({"section": arr_sect, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
-        # print(osme)
+        print(osme)
 
         for i in range(0, len(osme)):
             start = osme[len(osme) - 1 - i]["start"] - 1
             end = osme[len(osme) - 1 - i]["end"] + 1
+            print(start)
+            print(end)
+            section = osme[len(osme) - 1 - i]["section"]
+            if arrVar[start - 1] == "*":
+                distVal = arrVar[start - 2]
+                for i in range(0, len(section)):
+                    if section[i] == "/":
+                        print(i)
+
             arr_before = arrVar[0:start]
             arr_after = arrVar[end:len(arrVar)]
-            arr_before.append(osme[len(osme) - 1 - i]["solution"])
+            arr_before.append(operations(section)[0])
             arrVar = arr_before + arr_after
 
         print(arrVar)
@@ -437,11 +445,21 @@ def calculate(str):
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
 # problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
 
-# problem = "(5*(2+3))-(-5)"
-problem = "sin(5)"
-print(structure_string(problem))
+problem = "5*(4/2)"
+# problem = "(5*4/5*2)"
+
+# ["5", "*", "(", "3", "+", "2", ")"] => ["(", "3", "*", "5", "+", "2", "*", "5", ")"]
 # answer = calculate(problem)
 # print(answer)
 
-# issues
-#  - does not account for the distribution property of multiplication
+test_arr = ["10", "+", "10", "-", "2", "+", "8"]
+def restructure(solution, start, end, arr):
+    structure = []
+    if start != 0:
+        structure = structure + arr[0:start]
+    structure.append(solution)
+    if end != len(arr) - 1:
+        structure = structure + arr[end + 1:len(arr)]
+    return structure
+
+print(restructure("20", 0, 2, test_arr))
