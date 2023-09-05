@@ -1,6 +1,6 @@
 import math
 
-keywords = ["sin", "cos", "tan", "asin", "acos", "atan"]
+keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
 
 def getWord(word, arr):
     wordLen = len(word)
@@ -14,10 +14,7 @@ def getWord(word, arr):
                 str = str + arr[i + l]
             # compare string with word
             if str == word:
-                if i == 0:
-                    ref = {"first": i, "last": i + wordLen}
-                else:
-                    ref = {"first": i - 1, "last": i + wordLen}
+                ref = {"first": i, "last": i + wordLen}
                 break
     return ref
 
@@ -25,9 +22,8 @@ def word_struct(word, arr):
     arrVar = arr
     ref = getWord(word, arrVar)
     while ref is not None:
-        before = []
-        if ref["first"] != 0:
-            before = arrVar[0:ref["first"] + 1]
+        before = arrVar[0:ref["first"]]
+        print(ref["first"])
         after = arrVar[ref["last"]: len(arrVar)]
         arrVar = before
         arrVar.append(word)
@@ -37,6 +33,7 @@ def word_struct(word, arr):
     return arrVar
 
 def structure_string(str):
+    # structure for character
     arr = []
     digits = ""
     for i in range(0, len(str)):
@@ -72,7 +69,7 @@ def getIdx(str, arr):
             break
     return val
 
-def trigonomic(arr):
+def specialFunctions(arr):
     arrVar = arr
 
     # perform all sine functions
@@ -194,7 +191,7 @@ def trigonomic(arr):
 def operations(arr):
     arrVar = arr
 
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # perform all exponentiations
     ref = getIdx("^", arrVar)
@@ -219,7 +216,7 @@ def operations(arr):
         ref = getIdx("^", arrVar)
         print(arrVar)
 
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # Perform all roots
     ref = getIdx("√", arrVar)
@@ -244,7 +241,7 @@ def operations(arr):
         ref = getIdx("√", arrVar)
         print(arrVar)
 
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # Perform all multiplications
     ref = getIdx("*", arrVar)
@@ -269,7 +266,7 @@ def operations(arr):
         ref = getIdx("*", arrVar)
         print(arrVar)
 
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # Perform all divisions
     ref = getIdx("/", arrVar)
@@ -294,7 +291,7 @@ def operations(arr):
         ref = getIdx("/", arrVar)
         print(arrVar)
     
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # Perform all additions
     ref = getIdx("+", arrVar)
@@ -319,7 +316,7 @@ def operations(arr):
         ref = getIdx("+", arrVar)
         print(arrVar)
     
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # perform all subtractions
     ref = getIdx("-", arrVar)
@@ -344,7 +341,7 @@ def operations(arr):
         ref = getIdx("-", arrVar)
         print(arrVar)
 
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # perform all sine functions
     ref = getIdx("sin", arrVar)
@@ -365,7 +362,7 @@ def operations(arr):
         ref = getIdx("sin", arrVar)
         print(arrVar)
     
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     # perform all cosine functions
     ref = getIdx("cos", arrVar)
@@ -386,7 +383,7 @@ def operations(arr):
         ref = getIdx("cos", arrVar)
         print(arrVar)
     
-    arrVar = trigonomic(arrVar)
+    arrVar = specialFunctions(arrVar)
 
     return arrVar
 
@@ -434,12 +431,17 @@ def section(arr):
 
 def calculate(str):
     print(str)
-    structured = structure_string(str)
-    return section(structured)
+    return section(structure_string(str))
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
+# problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
 
-problem = "tan(35+15-5)+2-sin(7334*sin(0))"
-answer = calculate(problem)
-print(answer)
+# problem = "(5*(2+3))-(-5)"
+problem = "sin(5)"
+print(structure_string(problem))
+# answer = calculate(problem)
+# print(answer)
+
+# issues
+#  - does not account for the distribution property of multiplication
