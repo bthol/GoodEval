@@ -2,6 +2,19 @@ import math
 
 keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
 
+def restructure(solution, start, end, arr):
+    structure = []
+    if start != 0:
+        structure = structure + arr[0:start]
+    if solution != None:
+        if isinstance(solution, list):
+            structure = structure + solution
+        else:
+            structure.append(solution)
+    if end != len(arr) - 1:
+        structure = structure + arr[end + 1:len(arr)]
+    return structure
+
 def getWord(word, arr):
     wordLen = len(word)
     ref = None
@@ -384,12 +397,14 @@ def operations(arr):
     
     arrVar = specialFunctions(arrVar)
 
-    return arrVar
+    return arrVar[0]
 
 def section(arr):
     arrVar = arr
     more_parens = True
-    while more_parens:
+    thresh = 0
+    while more_parens and thresh < 100:
+        thresh = thresh + 1
         parens = []
         count = 0
         for i in range(0, len(arrVar)):
@@ -407,35 +422,33 @@ def section(arr):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
                 # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
-                # structure for distribution
-                if arrVar[parens[i]["index"] - 1] == "*":
-                    distVal = arrVar[parens[i]["index"] - 2]
                 # send to osme for restructing
                 osme.append({"section": arr_sect, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
-        print(osme)
+        # print(osme)
 
         for i in range(0, len(osme)):
             start = osme[len(osme) - 1 - i]["start"] - 1
             end = osme[len(osme) - 1 - i]["end"] + 1
-            print(start)
-            print(end)
             section = osme[len(osme) - 1 - i]["section"]
+            print(section)
+
             if arrVar[start - 1] == "*":
                 distVal = arrVar[start - 2]
                 for i in range(0, len(section)):
                     if section[i] == "/":
-                        print(i)
+                        # distribute across terms
+                        section = restructure([section[i - 1], "*", distVal], i - 1, i - 1, section)
+                        print(section)
+                        section = restructure([section[i + 3], "*", distVal], i + 3, i + 3, section)
+                        print(section)
 
-            arr_before = arrVar[0:start]
-            arr_after = arrVar[end:len(arrVar)]
-            arr_before.append(operations(section)[0])
-            arrVar = arr_before + arr_after
-
+            arrVar = restructure(operations(section), start, end, arrVar)
+        arrVar = restructure(None, 0, 1, arrVar)
         print(arrVar)
 
     answer = operations(arrVar)
-    return answer[0]
+    return answer
 
 def calculate(str):
     print(str)
@@ -448,18 +461,5 @@ def calculate(str):
 problem = "5*(4/2)"
 # problem = "(5*4/5*2)"
 
-# ["5", "*", "(", "3", "+", "2", ")"] => ["(", "3", "*", "5", "+", "2", "*", "5", ")"]
-# answer = calculate(problem)
-# print(answer)
-
-test_arr = ["10", "+", "10", "-", "2", "+", "8"]
-def restructure(solution, start, end, arr):
-    structure = []
-    if start != 0:
-        structure = structure + arr[0:start]
-    structure.append(solution)
-    if end != len(arr) - 1:
-        structure = structure + arr[end + 1:len(arr)]
-    return structure
-
-print(restructure("20", 0, 2, test_arr))
+answer = calculate(problem)
+print(answer)
