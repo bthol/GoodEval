@@ -3,6 +3,7 @@ import math
 # limit over which while loops stop to prevent infinite loop
 itr_limit = 100
 
+# keywords listed from longest to shortest strings
 keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
 
 def restructure(solution, start, end, arr):
@@ -82,7 +83,7 @@ def getIdx(str, arr):
             break
     return val
 
-def specialFunctions(arr):
+def keyFunctions(arr):
     arrVar = arr
 
     # perform all sine functions
@@ -203,8 +204,76 @@ def specialFunctions(arr):
 
 def operations(arr):
     arrVar = arr
+    # perform all Multiplications and Divisions as they apear from left to right
+    m_ref = getIdx("*", arrVar)
+    d_ref = getIdx("/", arrVar)
+    while m_ref is not None or d_ref is not None:
+        if d_ref is None and m_ref is not None or m_ref is not None and d_ref is not None and m_ref < d_ref:
+            multiplicand = float(arrVar[m_ref - 1])
+            if multiplicand / 1 % 1 == 0:
+                multiplicand = int(multiplicand)
 
-    arrVar = specialFunctions(arrVar)
+            multiplier = float(arrVar[m_ref + 1])
+            if multiplier / 1 % 1 == 0:
+                multiplier = int(multiplier)
+
+            product = multiplicand * multiplier
+            arrVar = restructure(product, m_ref - 1, m_ref + 1, arrVar)
+            m_ref = getIdx("*", arrVar)
+            d_ref = getIdx("/", arrVar)
+            print(arrVar)
+        elif m_ref is None and d_ref is not None or d_ref is not None and m_ref is not None and d_ref < m_ref:
+            dividend = float(arrVar[d_ref - 1])
+            if dividend / 1 % 1 == 0:
+                dividend = int(dividend)
+
+            divisor = float(arrVar[d_ref + 1])
+            if divisor / 1 % 1 == 0:
+                divisor = int(divisor)
+
+            quotient = dividend / divisor
+            arrVar = restructure(quotient, d_ref - 1, d_ref + 1, arrVar)
+            m_ref = getIdx("*", arrVar)
+            d_ref = getIdx("/", arrVar)
+            print(arrVar)
+
+    # perform all Additions and Subtractions as they apear from left to right
+    a_ref = getIdx("+", arrVar)
+    s_ref = getIdx("-", arrVar)
+    while a_ref is not None or s_ref is not None:
+        if s_ref is None and a_ref is not None or a_ref is not None and s_ref is not None and a_ref < s_ref:
+            augend = float(arrVar[a_ref - 1])
+            if augend / 1 % 1 == 0:
+                augend = int(augend)
+
+            addend = float(arrVar[a_ref + 1])
+            if addend / 1 % 1 == 0:
+                addend = int(addend)
+
+            total = augend + addend
+            arrVar = restructure(total, a_ref - 1, a_ref + 1, arrVar)
+            a_ref = getIdx("+", arrVar)
+            s_ref = getIdx("-", arrVar)
+            print(arrVar)
+        elif a_ref is None and s_ref is not None or s_ref is not None and a_ref is not None and s_ref < a_ref:
+            minuend = float(arrVar[s_ref - 1])
+            if minuend / 1 % 1 == 0:
+                minuend = int(minuend)
+
+            subtrahend = float(arrVar[s_ref + 1])
+            if subtrahend / 1 % 1 == 0:
+                subtrahend = int(subtrahend)
+
+            difference = minuend - subtrahend
+            arrVar = restructure(difference, s_ref - 1, s_ref + 1, arrVar)
+            a_ref = getIdx("+", arrVar)
+            s_ref = getIdx("-", arrVar)
+            print(arrVar)
+
+def calculate(arr):
+    arrVar = arr
+
+    arrVar = keyFunctions(arrVar)
 
     # perform all exponentiations
     ref = getIdx("^", arrVar)
@@ -229,7 +298,7 @@ def operations(arr):
         ref = getIdx("^", arrVar)
         print(arrVar)
 
-    arrVar = specialFunctions(arrVar)
+    arrVar = keyFunctions(arrVar)
 
     # Perform all roots
     ref = getIdx("√", arrVar)
@@ -254,149 +323,7 @@ def operations(arr):
         ref = getIdx("√", arrVar)
         print(arrVar)
 
-    arrVar = specialFunctions(arrVar)
-
-    # Perform all multiplications
-    ref = getIdx("*", arrVar)
-    while ref is not None:
-        multiplicand = float(arrVar[ref - 1])
-        if multiplicand / 1 % 1 == 0:
-            multiplicand = int(multiplicand)
-
-        multiplier = float(arrVar[ref + 1])
-        if multiplier / 1 % 1 == 0:
-            multiplier = int(multiplier)
-
-        product = multiplicand * multiplier
-
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % product)
-        arrVar = arrVar + after
-        ref = getIdx("*", arrVar)
-        print(arrVar)
-
-    arrVar = specialFunctions(arrVar)
-
-    # Perform all divisions
-    ref = getIdx("/", arrVar)
-    while ref is not None:
-        dividend = float(arrVar[ref - 1])
-        if dividend / 1 % 1 == 0:
-            dividend = int(dividend)
-
-        divisor = float(arrVar[ref + 1])
-        if divisor / 1 % 1 == 0:
-            divisor = int(divisor)
-
-        quotient = dividend / divisor
-
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % quotient)
-        arrVar = arrVar + after
-        ref = getIdx("/", arrVar)
-        print(arrVar)
-    
-    arrVar = specialFunctions(arrVar)
-
-    # Perform all additions
-    ref = getIdx("+", arrVar)
-    while ref is not None:
-        augend = float(arrVar[ref - 1])
-        if augend / 1 % 1 == 0:
-            augend = int(augend)
-
-        addend = float(arrVar[ref + 1])
-        if addend / 1 % 1 == 0:
-            addend = int(addend)
-
-        total = augend + addend
-
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % total)
-        arrVar = arrVar + after
-        ref = getIdx("+", arrVar)
-        print(arrVar)
-    
-    arrVar = specialFunctions(arrVar)
-
-    # perform all subtractions
-    ref = getIdx("-", arrVar)
-    while ref is not None:
-        minuend = float(arrVar[ref - 1])
-        if minuend / 1 % 1 == 0:
-            minuend = int(minuend)
-
-        subtrahend = float(arrVar[ref + 1])
-        if subtrahend / 1 % 1 == 0:
-            subtrahend = int(subtrahend)
-
-        difference = minuend - subtrahend
-
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % difference)
-        arrVar = arrVar + after
-        ref = getIdx("-", arrVar)
-        print(arrVar)
-
-    arrVar = specialFunctions(arrVar)
-
-    # perform all sine functions
-    ref = getIdx("sin", arrVar)
-    while ref is not None:
-        x = float(arrVar[ref + 1])
-        if x / 1 % 1 == 0:
-            x = int(x)
-        
-        y = math.sin(x)
-
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
-        ref = getIdx("sin", arrVar)
-        print(arrVar)
-    
-    arrVar = specialFunctions(arrVar)
-
-    # perform all cosine functions
-    ref = getIdx("cos", arrVar)
-    while ref is not None:
-        x = float(arrVar[ref + 1])
-        if x / 1 % 1 == 0:
-            x = int(x)
-        
-        y = math.cos(x)
-
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
-        ref = getIdx("cos", arrVar)
-        print(arrVar)
-    
-    arrVar = specialFunctions(arrVar)
+    arrVar = operations(arrVar)
 
     return arrVar[0]
 
@@ -446,23 +373,25 @@ def section(arr):
                         section = restructure([section[i + 3], "*", distVal], i + 3, i + 3, section)
                         print(section)
 
-            arrVar = restructure(operations(section), start, end - 1, arrVar)
+            arrVar = restructure(calculate(section), start, end - 1, arrVar)
 
         print(arrVar)
 
-    answer = operations(arrVar)
+    answer = calculate(arrVar)
     return answer
 
-def calculate(str):
+def evaluate(str):
     print(str)
     return section(structure_string(str))
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
 # problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
+# problem = "5*(4/2)"
+# problem = "8/2*8/32"
+# problem = "8-2+4-9"
 
-problem = "5*(4/2)"
-# problem = "(5*4/5*2)"
-
-answer = calculate(problem)
-print(answer)
+problem = "100-50/2*3+25"
+operations(structure_string(problem))
+# answer = evaluate(problem)
+# print(answer)
