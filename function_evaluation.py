@@ -236,7 +236,7 @@ def operations(arr):
             m_ref = getIdx("*", arrVar)
             d_ref = getIdx("/", arrVar)
             print(arrVar)
-
+    
     # perform all Additions and Subtractions as they apear from left to right
     a_ref = getIdx("+", arrVar)
     s_ref = getIdx("-", arrVar)
@@ -269,6 +269,7 @@ def operations(arr):
             a_ref = getIdx("+", arrVar)
             s_ref = getIdx("-", arrVar)
             print(arrVar)
+    return arrVar
 
 def calculate(arr):
     arrVar = arr
@@ -322,7 +323,6 @@ def calculate(arr):
         arrVar = arrVar + after
         ref = getIdx("√", arrVar)
         print(arrVar)
-
     arrVar = operations(arrVar)
 
     return arrVar[0]
@@ -376,7 +376,6 @@ def section(arr):
             arrVar = restructure(calculate(section), start, end - 1, arrVar)
 
         print(arrVar)
-
     answer = calculate(arrVar)
     return answer
 
@@ -392,6 +391,5 @@ def evaluate(str):
 # problem = "8-2+4-9"
 
 problem = "100-50/2*3+25"
-operations(structure_string(problem))
-# answer = evaluate(problem)
-# print(answer)
+answer = evaluate(problem)
+print(answer)
