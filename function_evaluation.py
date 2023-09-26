@@ -274,6 +274,7 @@ def operations(arr):
 def calculate(arr):
     arrVar = arr
 
+    # perform all key functions
     arrVar = keyFunctions(arrVar)
 
     # perform all exponentiations
@@ -299,8 +300,6 @@ def calculate(arr):
         ref = getIdx("^", arrVar)
         print(arrVar)
 
-    arrVar = keyFunctions(arrVar)
-
     # Perform all roots
     ref = getIdx("√", arrVar)
     while ref is not None:
@@ -323,6 +322,8 @@ def calculate(arr):
         arrVar = arrVar + after
         ref = getIdx("√", arrVar)
         print(arrVar)
+    
+    # perform arithmetic operations in operator precedence
     arrVar = operations(arrVar)
 
     return arrVar[0]
@@ -350,8 +351,6 @@ def section(arr):
             if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
                 # get section to be solved
                 arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
-                # distribution
-                # if parens[i]["index"] - 1
                 # send to osme for restructing
                 osme.append({"section": arr_sect, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
         
@@ -363,17 +362,38 @@ def section(arr):
             section = osme[len(osme) - 1 - i]["section"]
             print(section)
 
+            # distribution
+            isDist = False
             if arrVar[start - 1] == "*":
-                distVal = arrVar[start - 2]
+                isDist = True
+                val = arrVar[start - 2]
+                terms = []
                 for i in range(0, len(section)):
-                    if section[i] == "+" or  section[i] == "-" or section[i] == "*" or section[i] == "/":
-                        # distribute across terms
-                        section = restructure([section[i - 1], "*", distVal], i - 1, i - 1, section)
-                        print(section)
-                        section = restructure([section[i + 3], "*", distVal], i + 3, i + 3, section)
-                        print(section)
-
-            arrVar = restructure(calculate(section), start, end - 1, arrVar)
+                    isNum = False
+                    try:
+                        int(section[i]) or float(section[i])
+                        isNum = True
+                    except:
+                        continue
+                    finally:
+                        if isNum == True:
+                            terms.append(i)
+                print("start")
+                terms_dist = []
+                for i in range(0, len(terms)):
+                    # distribute across terms
+                    term = section[terms[i]]
+                    if i < len(terms) - 1:
+                        operation = section[terms[i] + 1]
+                        terms_dist = terms_dist + [val, "*", term, operation]
+                    else:
+                        terms_dist = terms_dist + [val, "*", term]
+                    print(terms_dist)
+            if isDist == False:
+                arrVar = restructure(calculate(section), start, end - 1, arrVar)
+            else:
+                section = terms_dist
+                arrVar = restructure(calculate(section), start - 2, end - 1, arrVar)
 
         print(arrVar)
     answer = calculate(arrVar)
@@ -386,10 +406,11 @@ def evaluate(str):
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
 # problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
-# problem = "5*(4/2)"
 # problem = "8/2*8/32"
 # problem = "8-2+4-9"
+# problem = "100-50/2*3+25"
 
-problem = "100-50/2*3+25"
+
+problem = "2*(7+5-3)"
 answer = evaluate(problem)
 print(answer)
