@@ -371,12 +371,13 @@ def section(arr):
                 for i in range(0, len(section)):
                     isNum = False
                     try:
-                        int(section[i]) or float(section[i])
+                        float(section[i]) or int(section[i])
                         isNum = True
                     except:
                         continue
                     finally:
                         if isNum == True:
+                            print(section[i])
                             terms.append(i)
                 print("start")
                 terms_dist = []
@@ -389,6 +390,7 @@ def section(arr):
                     else:
                         terms_dist = terms_dist + [val, "*", term]
                     print(terms_dist)
+            
             if isDist == False:
                 arrVar = restructure(calculate(section), start, end - 1, arrVar)
             else:
@@ -411,6 +413,6 @@ def evaluate(str):
 # problem = "100-50/2*3+25"
 
 
-problem = "2*(7+5-3)"
+problem = "2*(7+5-6.5)"
 answer = evaluate(problem)
 print(answer)
