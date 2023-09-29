@@ -361,49 +361,107 @@ def section(arr):
             end = osme[len(osme) - 1 - i]["end"] + 1
             section = osme[len(osme) - 1 - i]["section"]
             print(section)
-
-            # distribution
-            isDist = False
-            if arrVar[start - 1] == "*":
-                isDist = True
-                val = arrVar[start - 2]
-                terms = []
-                for i in range(0, len(section)):
-                    isNum = False
-                    try:
-                        float(section[i]) or int(section[i])
-                        isNum = True
-                    except:
-                        continue
-                    finally:
-                        if isNum == True:
-                            print(section[i])
-                            terms.append(i)
-                print("start")
-                terms_dist = []
-                for i in range(0, len(terms)):
-                    # distribute across terms
-                    term = section[terms[i]]
-                    if i < len(terms) - 1:
-                        operation = section[terms[i] + 1]
-                        terms_dist = terms_dist + [val, "*", term, operation]
-                    else:
-                        terms_dist = terms_dist + [val, "*", term]
-                    print(terms_dist)
-            
-            if isDist == False:
-                arrVar = restructure(calculate(section), start, end - 1, arrVar)
-            else:
-                section = terms_dist
-                arrVar = restructure(calculate(section), start - 2, end - 1, arrVar)
+            arrVar = restructure(calculate(section), start, end - 1, arrVar)
 
         print(arrVar)
     answer = calculate(arrVar)
     return answer
 
+def distribute(arr):
+    arrVar = arr
+    isDist = True
+    x = 0
+    while isDist == True and x < 2:
+        x = x + 1
+        for i in range(0, len(arrVar)):
+            # test for distribution
+            isDist = False
+            if i != 0 and i != len(arrVar):
+                if arrVar[i] == "(" and arrVar[i - 1] == "*" or arrVar[i] == ")" and arrVar[i + 1] == "*":
+                    isDist = True
+                    break
+
+        if isDist == True:
+            # run distribution process
+            parens = []
+            for i in range(0, len(arrVar)):
+                # store parens
+                if arrVar[i] == "(":
+                    if arrVar[i - 1] == "*" and i > 0:
+                        parens.append({"char": "(", "index": i, "mult": True})
+                    else:
+                        parens.append({"char": "(", "index": i, "mult": False})
+                elif arrVar[i] == ")":
+                    if i < len(arrVar) - 1 and arrVar[i + 1] == "*":
+                        parens.append({"char": ")", "index": i, "mult": True})
+                    else:
+                        parens.append({"char": ")", "index": i, "mult": False})
+            # print(parens)
+
+            start = 0
+            search_start = False
+            start_count = 0
+
+            end = 0
+            search_end = False
+            end_count = 0
+
+            ref = 0
+            # get index range of expression with distribution
+            for i in range(0, len(parens)):
+
+                if parens[i]["char"] == "(" and parens[i]["mult"] == True:
+                    search_end = True
+                    if arrVar[parens[i]["index"] - 2] != ")":
+                        start = parens[i]["index"] - 2
+
+                if parens[i]["char"] == ")" and parens[i]["mult"] == True:
+                    search_start = True
+                    ref = i
+                    if arrVar[parens[i]["index"] + 2] != "(":
+                        end = parens[i]["index"] + 2
+                
+                # search for start
+                if search_start == True:
+                    for i in range(0, len(parens)):
+                        if parens[ref - i]["char"] == "(":
+                            start_count = start_count + 1
+                        elif parens[ref - i]["char"] == ")":
+                            start_count = start_count - 1
+                        if start_count == 0 and parens[ref - i]["char"] == "(":
+                            start = parens[ref - i]["index"]
+                            search_start = False
+                            break
+
+                # search for end
+                if search_end == True:
+                    print("pass")
+                    if parens[i]["char"] == "(":
+                        end_count = end_count + 1
+                    elif parens[i]["char"] == ")":
+                        end_count = end_count - 1
+                    if end_count == 0 and parens[i]["char"] == ")":
+                        end = parens[i]["index"]
+                        search_end = False
+            
+            section = arrVar[start:end + 1]
+            print(start)
+            print(end)
+            print(section)
+
+            # get terms from section
+            terms1 = []
+            terms2 = []
+
+            solution = section
+            arrVar = restructure(solution, start, end, arrVar)
+            print(arrVar)
+                
+    return arrVar
+
 def evaluate(str):
     print(str)
-    return section(structure_string(str))
+    return section(distribute(structure_string(str)))
 
 # problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
 # problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
@@ -411,8 +469,9 @@ def evaluate(str):
 # problem = "8/2*8/32"
 # problem = "8-2+4-9"
 # problem = "100-50/2*3+25"
-
-
-problem = "2*(7+5-6.5)"
-answer = evaluate(problem)
-print(answer)
+# problem = "(2+1)*(7+5-7)"
+# problem = "2*((7+5-7)/5)"
+problem = "(2+2)*(1+1)+10"
+print(distribute(structure_string(problem)))
+# answer = evaluate(problem)
+# print(answer)
