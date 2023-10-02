@@ -481,8 +481,28 @@ def distribute(arr):
                     terms2 = []
                 try:
                     if level > 1:
-                        compile.append(section[i])
+                        term = section[i]
+                        try:
+                            term = float(term)
+                            if section[i - 1] == "-":
+                                term = term * -1
+                            compile.append(term)
+                        except:
+                            compile.append(term)
                     if level == 1 and last_level > 1:
+                        length = len(compile)
+                        if section[i - length - 1] == "-":
+                            for i in range(0, length):
+                                try:
+                                    val = float(compile[i])
+                                    if  val % 1 == 0:
+                                        val = int(val)
+                                    val = val * -1
+                                    val = str(val)
+                                    compile.pop(i)
+                                    compile.insert(i, val)
+                                except:
+                                    continue
                         compile.append(")")
                         terms2.append(compile)
                         compile = []
@@ -490,7 +510,7 @@ def distribute(arr):
                     if term % 1 == 0:
                         term = int(term)
                     if section[i - 1] == "-":
-                        term = -term
+                        term = term * -1
                     if level == 1:
                         terms2.append(term)
                 except:
@@ -537,7 +557,6 @@ def distribute(arr):
 
             arrVar = restructure(solution, start, end, arrVar)
             print(arrVar)
-            print("end")
                 
     return arrVar
 
@@ -554,7 +573,7 @@ def evaluate(str):
 # problem = "(2+1)*(7+5-7)"
 # problem = "2*((7+5-7)/5)"
 
-problem = "(2+(5-7))*(1+3)+10"
+problem = "(2-(5-7))*(1+3)+10"
 # problem = "(2+3)*(4+5)+10"
 print(distribute(structure_string(problem)))
 # answer = evaluate(problem)
