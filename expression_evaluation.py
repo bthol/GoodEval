@@ -371,7 +371,7 @@ def distribute(arr):
     arrVar = arr
     isDist = True
     x = 0
-    while isDist == True and x < 2:
+    while isDist == True and x < 5:
         x = x + 1
         for i in range(0, len(arrVar)):
             # test for distribution
@@ -407,19 +407,23 @@ def distribute(arr):
             end_count = 0
 
             ref = 0
-            # get index range of expression with distribution
+            monomial_start = False
+            monomial_end = False
+            # get section of expression with distribution
             for i in range(0, len(parens)):
 
                 if parens[i]["char"] == "(" and parens[i]["mult"] == True:
                     search_end = True
                     if arrVar[parens[i]["index"] - 2] != ")":
                         start = parens[i]["index"] - 2
+                        monomial_start = True
 
                 if parens[i]["char"] == ")" and parens[i]["mult"] == True:
                     search_start = True
                     ref = i
                     if arrVar[parens[i]["index"] + 2] != "(":
                         end = parens[i]["index"] + 2
+                        monomial_end = True
                 
                 # search for start
                 if search_start == True:
@@ -435,7 +439,6 @@ def distribute(arr):
 
                 # search for end
                 if search_end == True:
-                    print("pass")
                     if parens[i]["char"] == "(":
                         end_count = end_count + 1
                     elif parens[i]["char"] == ")":
@@ -443,19 +446,98 @@ def distribute(arr):
                     if end_count == 0 and parens[i]["char"] == ")":
                         end = parens[i]["index"]
                         search_end = False
-            
+                
             section = arrVar[start:end + 1]
-            print(start)
-            print(end)
+
+            # parens for monomials to get term
+            if monomial_start == True:
+                monomial = section[0]
+                section.pop(0)
+                section.insert(0, "(")
+                section.insert(0, monomial)
+                section.insert(0, ")")
+            if monomial_end == True:
+                monomial = section[len(section) - 1]
+                section.pop()
+                section.append("(")
+                section.append(monomial)
+                section.append(")")
             print(section)
 
             # get terms from section
             terms1 = []
             terms2 = []
+            compile = []
+            level = 0
+            last_level = level
+            for i in range(0, len(section)):
+                last_level = level
+                if section[i] == "(":
+                    level = level + 1
+                elif section[i] == ")":
+                    level = level - 1
+                if i != len(section) - 1 and level == 0 and section[i] == ")":
+                    terms1 = terms2
+                    terms2 = []
+                try:
+                    if level > 1:
+                        compile.append(section[i])
+                    if level == 1 and last_level > 1:
+                        compile.append(")")
+                        terms2.append(compile)
+                        compile = []
+                    term = float(section[i])
+                    if term % 1 == 0:
+                        term = int(term)
+                    if section[i - 1] == "-":
+                        term = -term
+                    if level == 1:
+                        terms2.append(term)
+                except:
+                    continue
+            print(terms1)
+            print(terms2)
 
-            solution = section
+            # use nested iteration to distribute every term from terms1 over every term in terms1
+            solution = []
+            def itr_append(arr):
+                for i in range(0, len(arr)):
+                    solution.append(arr[i])    
+
+            for i in range(0, len(terms1)):     
+                for j in range(0, len(terms2)):
+                    if i == 0 and j == 0:
+                        # solution.append("(")
+                        if isinstance(terms1[i], list):
+                            itr_append(terms1[i])
+                            solution.append("*")
+                        else:
+                            solution.append(str(terms1[i]))
+                            solution.append("*")
+                        if isinstance(terms2[j], list):
+                            itr_append(terms2[j])
+                        else:
+                            solution.append(str(terms2[j]))
+                        # solution.append(")")
+                    else:
+                        solution.append("+")
+                        # solution.append("(")
+                        if isinstance(terms1[i], list):
+                            itr_append(terms1[i])
+                            solution.append("*")
+                        else:
+                            solution.append(str(terms1[i]))
+                            solution.append("*")
+                        if isinstance(terms2[j], list):
+                            itr_append(terms2[j])
+                        else:
+                            solution.append(str(terms2[j]))
+                        # solution.append(")")
+            print(solution)
+
             arrVar = restructure(solution, start, end, arrVar)
             print(arrVar)
+            print("end")
                 
     return arrVar
 
@@ -471,7 +553,9 @@ def evaluate(str):
 # problem = "100-50/2*3+25"
 # problem = "(2+1)*(7+5-7)"
 # problem = "2*((7+5-7)/5)"
-problem = "(2+2)*(1+1)+10"
+
+problem = "(2+(5-7))*(1+3)+10"
+# problem = "(2+3)*(4+5)+10"
 print(distribute(structure_string(problem)))
 # answer = evaluate(problem)
 # print(answer)
