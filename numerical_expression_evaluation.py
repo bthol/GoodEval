@@ -524,8 +524,8 @@ def distribute(arr):
                         terms2.append(term)
                 except:
                     continue
-            print(terms1)
-            print(terms2)
+            # print(terms1)
+            # print(terms2)
 
             # use nested iteration to distribute every term from terms1 over every term in terms2
             solution = []
