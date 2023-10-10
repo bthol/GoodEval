@@ -413,13 +413,13 @@ def distribute(arr):
             monomial_start = False
             monomial_end = False
             for i in range(0, len(parens)):
-                if parens[i]["char"] == "(" and parens[i]["mult"] == True:
+                if parens[i]["mult"] == True and parens[i]["char"] == "(":
                     search_end = True
                     if arrVar[parens[i]["index"] - 2] != ")":
                         start = parens[i]["index"] - 2
                         monomial_start = True
 
-                if parens[i]["char"] == ")" and parens[i]["mult"] == True:
+                if parens[i]["mult"] == True and parens[i]["char"] == ")":
                     search_start = True
                     ref = i
                     if arrVar[parens[i]["index"] + 2] != "(":
@@ -454,9 +454,9 @@ def distribute(arr):
             if monomial_start == True:
                 monomial = section[0]
                 section.pop(0)
-                section.insert(0, "(")
-                section.insert(0, monomial)
                 section.insert(0, ")")
+                section.insert(0, monomial)
+                section.insert(0, "(")
             if monomial_end == True:
                 monomial = section[len(section) - 1]
                 section.pop()
@@ -581,12 +581,11 @@ def evaluate(str):
 # problem = "100-50/2*3+25"
 # problem = "(2+1)*(7+5-7)"
 # problem = "2*((7+5-7)/5)"
-
-# case of the mysterious 5 term in terms1
-problem = "(2-(-5-(5+2)))*1+10"
-
+# problem = "(2-(-5-(5+2)))*1+10"
 # problem = "(3+(-5-(-2)))*1+10"
 # problem = "(3+(-5-2))*1+10"
+
+problem = "3*(1-(8-2))+10"
 print(distribute(structure_string(problem)))
 # answer = evaluate(problem)
 # print(answer)
