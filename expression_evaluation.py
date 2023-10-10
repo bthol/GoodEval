@@ -400,6 +400,7 @@ def distribute(arr):
                         parens.append({"char": ")", "index": i, "mult": False})
             # print(parens)
 
+            # get section for distribution
             start = 0
             search_start = False
             start_count = 0
@@ -411,7 +412,6 @@ def distribute(arr):
             ref = 0
             monomial_start = False
             monomial_end = False
-            # get section with distribution
             for i in range(0, len(parens)):
                 if parens[i]["char"] == "(" and parens[i]["mult"] == True:
                     search_end = True
@@ -469,6 +469,7 @@ def distribute(arr):
             terms1 = []
             terms2 = []
             compile = []
+            negate_list = False
             level = 0
             last_level = level
             for i in range(0, len(section)):
@@ -483,10 +484,14 @@ def distribute(arr):
                 try:
                     # lists
                     if level > 1:
+                        if last_level == 1 and section[i - 1] == "-":
+                            negate_list = True
                         term = section[i]
                         try:
                             term = float(term)
-                            if section[i - 1] == "-":
+                            if term % 1 == 0:
+                                term = int(term)
+                            if negate_list == True or section[i - 1] == "-":
                                 term = term * -1
                             compile.append(term)
                         except:
@@ -497,7 +502,7 @@ def distribute(arr):
                             for i in range(0, length):
                                 try:
                                     val = float(compile[i])
-                                    if  val % 1 == 0:
+                                    if val % 1 == 0:
                                         val = int(val)
                                     val = val * -1
                                     val = str(val)
@@ -508,9 +513,7 @@ def distribute(arr):
                         compile.append(")")
                         terms2.append(compile)
                         compile = []
-                    print("start")
-                    print(i)
-                    print(section[i])
+
                     # numbers
                     term = float(section[i])
                     if term % 1 == 0:
@@ -518,14 +521,13 @@ def distribute(arr):
                     if section[i - 1] == "-":
                         term = term * -1
                     if level == 1:
-                        print("this")
                         terms2.append(term)
                 except:
                     continue
             print(terms1)
             print(terms2)
 
-            # use nested iteration to distribute every term from terms1 over every term in terms1
+            # use nested iteration to distribute every term from terms1 over every term in terms2
             solution = []
             def itr_append(arr):
                 for i in range(0, len(arr)):
@@ -581,10 +583,10 @@ def evaluate(str):
 # problem = "2*((7+5-7)/5)"
 
 # case of the mysterious 5 term in terms1
-# problem = "(2-(-5-(5+2)))*1+10"
+problem = "(2-(-5-(5+2)))*1+10"
 
 # problem = "(3+(-5-(-2)))*1+10"
-problem = "(3+(-5-2))*1+10"
+# problem = "(3+(-5-2))*1+10"
 print(distribute(structure_string(problem)))
 # answer = evaluate(problem)
 # print(answer)
