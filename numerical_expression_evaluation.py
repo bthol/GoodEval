@@ -379,7 +379,7 @@ def distribute(arr):
             isDist = False
             if i != 0 and i != len(arrVar):
                 # test for two pairs of conditions that indicate distribution
-                if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and arrVar[i + 1] == "*"):
+                if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*"):
                     isDist = True
                     break
 
@@ -573,19 +573,7 @@ def evaluate(str):
     print(str)
     return section(distribute(structure_string(str)))
 
-# problem = "1+(8*4/2)+4-(10+2^(2+1)+2)"
-# problem = "cos(48)*(tan(1-1)+2-sin(0))/2"
-# problem = "sin(34.8+15.2-5-45)+2-cos(73.34*sin(0))"
-# problem = "8/2*8/32"
-# problem = "8-2+4-9"
-# problem = "100-50/2*3+25"
-# problem = "(2+1)*(7+5-7)"
-# problem = "2*((7+5-7)/5)"
-# problem = "(2-(-5-(5+2)))*1+10"
-# problem = "(3+(-5-(-2)))*1+10"
-# problem = "(3+(-5-2))*1+10"
 
-problem = "3*(1-(8-2))+10"
-print(distribute(structure_string(problem)))
-# answer = evaluate(problem)
-# print(answer)
+problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
+answer = evaluate(problem)
+print(answer)
