@@ -1,7 +1,8 @@
 import math
 
-# limit over which while loops stop to prevent infinite loop
-itr_limit = 100
+# parameters
+# the paren_limit parameter controls the maximum number of levels of parenthesis nesting
+paren_limit = 100
 
 # keywords listed from longest to shortest strings
 keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
@@ -39,7 +40,7 @@ def word_struct(word, arr):
     arrVar = arr
     ref = getWord(word, arrVar)
     thresh = 0
-    while ref is not None and thresh < itr_limit:
+    while ref is not None and thresh < paren_limit:
         thresh = thresh + 1
         arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
         ref = getWord(word, arrVar)
@@ -332,7 +333,7 @@ def section(arr):
     arrVar = arr
     more_parens = True
     thresh = 0
-    while more_parens and thresh < itr_limit:
+    while more_parens and thresh < paren_limit:
         thresh = thresh + 1
         parens = []
         count = 0
@@ -371,21 +372,22 @@ def distribute(arr):
     arrVar = arr
     isDist = True
     x = 0
-    while isDist == True and x < 5:
+    while isDist == True and x < paren_limit:
         x = x + 1
+        # test for distribution
         for i in range(0, len(arrVar)):
-            # test for distribution
             isDist = False
             if i != 0 and i != len(arrVar):
-                if arrVar[i] == "(" and arrVar[i - 1] == "*" or arrVar[i] == ")" and arrVar[i + 1] == "*":
+                # test for two pairs of conditions that indicate distribution
+                if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and arrVar[i + 1] == "*"):
                     isDist = True
                     break
 
+        # run distribution process
         if isDist == True:
-            # run distribution process
             parens = []
             for i in range(0, len(arrVar)):
-                # store parens
+                # differentiate between pairs of conditions + store in reference structure
                 if arrVar[i] == "(":
                     if arrVar[i - 1] == "*" and i > 0:
                         parens.append({"char": "(", "index": i, "mult": True})
@@ -409,9 +411,8 @@ def distribute(arr):
             ref = 0
             monomial_start = False
             monomial_end = False
-            # get section of expression with distribution
+            # get section with distribution
             for i in range(0, len(parens)):
-
                 if parens[i]["char"] == "(" and parens[i]["mult"] == True:
                     search_end = True
                     if arrVar[parens[i]["index"] - 2] != ")":
@@ -449,7 +450,7 @@ def distribute(arr):
                 
             section = arrVar[start:end + 1]
 
-            # parens for monomials to get term
+            # add parens to monomial to indentify term
             if monomial_start == True:
                 monomial = section[0]
                 section.pop(0)
@@ -480,6 +481,7 @@ def distribute(arr):
                     terms1 = terms2
                     terms2 = []
                 try:
+                    # lists
                     if level > 1:
                         term = section[i]
                         try:
@@ -489,9 +491,9 @@ def distribute(arr):
                             compile.append(term)
                         except:
                             compile.append(term)
-                    if level == 1 and last_level > 1:
+                    elif level == 1 and last_level > 1:
                         length = len(compile)
-                        if section[i - length - 1] == "-":
+                        if section[i - length] == "-":
                             for i in range(0, length):
                                 try:
                                     val = float(compile[i])
@@ -506,12 +508,17 @@ def distribute(arr):
                         compile.append(")")
                         terms2.append(compile)
                         compile = []
+                    print("start")
+                    print(i)
+                    print(section[i])
+                    # numbers
                     term = float(section[i])
                     if term % 1 == 0:
                         term = int(term)
                     if section[i - 1] == "-":
                         term = term * -1
                     if level == 1:
+                        print("this")
                         terms2.append(term)
                 except:
                     continue
@@ -573,8 +580,11 @@ def evaluate(str):
 # problem = "(2+1)*(7+5-7)"
 # problem = "2*((7+5-7)/5)"
 
-problem = "(2-(5-7))*(1+3)+10"
-# problem = "(2+3)*(4+5)+10"
+# case of the mysterious 5 term in terms1
+# problem = "(2-(-5-(5+2)))*1+10"
+
+# problem = "(3+(-5-(-2)))*1+10"
+problem = "(3+(-5-2))*1+10"
 print(distribute(structure_string(problem)))
 # answer = evaluate(problem)
 # print(answer)
