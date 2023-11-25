@@ -5,7 +5,18 @@ import math
 paren_limit = 100
 
 # keywords listed from longest to shortest strings
-keywords = ["asin", "acos", "atan", "sin", "cos", "tan"]
+keywords = ["info", "asin", "acos", "atan", "sin", "cos", "tan"]
+info = {
+    "key_functions": [
+        {"name": "info", "about": "Gets program information."},
+        {"name":"asin", "about": "Gets arc sine of value."},
+        {"name": "acos", "about": "Gets arc cosine of value."},
+        {"name": "atan", "about": "Gets arc tangent of value."},
+        {"name": "sin", "about": "Gets sine of value."},
+        {"name": "cos", "about": "Gets cosine of value."},
+        {"name":"tan", "about": "Gets tangent of value."}
+    ],
+}
 
 def restructure(solution, start, end, arr):
     structure = []
@@ -39,12 +50,9 @@ def getWord(word, arr):
 def word_struct(word, arr):
     arrVar = arr
     ref = getWord(word, arrVar)
-    thresh = 0
-    while ref is not None and thresh < paren_limit:
-        thresh = thresh + 1
+    while ref is not None:
         arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
         ref = getWord(word, arrVar)
-
     return arrVar
 
 def structure_string(str):
@@ -69,7 +77,7 @@ def structure_string(str):
             if (i == len(str) - 1 and len(digits) > 0):
                 arr.append(digits)
     print(arr)
-    
+
     # structure keywords
     for i in range(0, len(keywords)):
         arr = word_struct(keywords[i], arr)
@@ -566,13 +574,24 @@ def distribute(arr):
 
             arrVar = restructure(solution, start, end, arrVar)
             print(arrVar)
-                
     return arrVar
+
+def system_ops(arr):
+    # test for system operation keywords
+    ref = getIdx("info", arr)
+    if ref is not None:
+        # run associated system operation
+        # print('%s' % )
+        return True
+    else:
+        return False
 
 def evaluate(str):
     print(str)
-    return section(distribute(structure_string(str)))
-
+    structure = structure_string(str)
+    system_operation = system_ops(structure)
+    if system_operation == False:
+        return section(distribute(structure))
 
 problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
 answer = evaluate(problem)
