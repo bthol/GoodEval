@@ -4,17 +4,17 @@ import math
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting
 paren_limit = 100
 
-# keywords listed from longest to shortest strings
-keywords = ["info", "asin", "acos", "atan", "sin", "cos", "tan"]
 info = {
+    "system_operations": [
+        {"name": "info", "about": "Prints program information."},
+    ],
     "key_functions": [
-        {"name": "info", "about": "Gets program information."},
-        {"name":"asin", "about": "Gets arc sine of value."},
-        {"name": "acos", "about": "Gets arc cosine of value."},
-        {"name": "atan", "about": "Gets arc tangent of value."},
-        {"name": "sin", "about": "Gets sine of value."},
-        {"name": "cos", "about": "Gets cosine of value."},
-        {"name":"tan", "about": "Gets tangent of value."}
+        {"name":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x."},
+        {"name": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x."},
+        {"name": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x."},
+        {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x."},
+        {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x."},
+        {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x."},
     ],
 }
 
@@ -79,8 +79,11 @@ def structure_string(str):
     print(arr)
 
     # structure keywords
-    for i in range(0, len(keywords)):
-        arr = word_struct(keywords[i], arr)
+    for i in range(0, len(info["system_operations"])):
+        arr = word_struct(info["system_operations"][i]["name"], arr)
+
+    for i in range(0, len(info["key_functions"])):
+        arr = word_struct(info["key_functions"][i]["name"], arr)
     print(arr)
     return arr
 
@@ -577,22 +580,35 @@ def distribute(arr):
     return arrVar
 
 def system_ops(arr):
-    # test for system operation keywords
+    system_operation = False
+
     ref = getIdx("info", arr)
     if ref is not None:
-        # run associated system operation
-        # print('%s' % )
-        return True
-    else:
-        return False
+        system_operation = True
+        print("")
+        print("System Operations")
+        print("")
+        for i in range(0, len(info["system_operations"])):
+            print(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
+            print("")
+        print("")
+        print("Key Functions")
+        print("")
+        for i in range(0, len(info["key_functions"])):
+            print(info["key_functions"][i]["syntax"] + ": " + info["key_functions"][i]["about"])
+            print("")
+    return system_operation
 
 def evaluate(str):
     print(str)
     structure = structure_string(str)
     system_operation = system_ops(structure)
-    if system_operation == False:
+    if system_operation == True:
+        return ""
+    else:
         return section(distribute(structure))
 
-problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
+# problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
+problem = "info"
 answer = evaluate(problem)
 print(answer)
