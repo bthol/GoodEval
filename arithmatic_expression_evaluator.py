@@ -15,7 +15,7 @@ info = {
         {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x."},
         {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x."},
         {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x."},
-        {"name":"sd", "syntax": "sd([x,x])", "about": "Gets the standard deviation of set x, where set x has at least two comma demarcated values."},
+        {"name":"sd", "syntax": "sd[x,x]", "about": "Gets the standard deviation of set x, where set x has at least two comma demarcated values. No spaces."},
     ],
 }
 
@@ -26,8 +26,16 @@ def restructure(solution, start, end, arr):
     if solution != None:
         if isinstance(solution, list):
             if solution[0] == "[":
-                # append subsets
-                structure.append(solution)
+                # remove square brackets from set
+                del(solution[0])
+                del(solution[len(solution) - 1])
+                # remove commas from set
+                sol = []
+                for i in solution:
+                    if i != ",":
+                        sol.append(i)
+                # append set
+                structure.append(sol)
             else:
                 # concatenate lists
                 structure = structure + solution
@@ -247,6 +255,45 @@ def keyFunctions(arr):
         arrVar.append("%s" % y)
         arrVar = arrVar + after
         ref = getIdx("atan", arrVar)
+        print(arrVar)
+    
+    # perform all Standard Deviation functions on each value set
+    ref = getIdx("sd", arrVar)
+    while ref is not None:
+
+        def summate(vals):
+            summation = 0
+            for i in vals:
+                summation = summation + i
+            return summation
+        
+        # get string string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            x = float(i)
+            if x / 1 % 1 == 0:
+                x = int(x)
+            set_2.append(x)
+
+        # perform calculation using numeral set
+        mean = summate(set_2) / len(set_2)
+        set_3 = []
+        for i in set_2:
+            set_3.append(math.pow(i - mean, 2))
+        sd = math.pow(summate(set_3)/len(set_3), 1/2)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % sd)
+        arrVar = arrVar + after
+        ref = getIdx("sd", arrVar)
         print(arrVar)
 
     return arrVar
@@ -652,7 +699,6 @@ def evaluate(str):
 
 # problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
 # problem = "info"
-problem = "sd([0,1])"
-structure_string(problem)
-# answer = evaluate(problem)
-# print(answer)
+problem = "sd[0,1]"
+answer = evaluate(problem)
+print(answer)
