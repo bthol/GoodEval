@@ -15,6 +15,7 @@ info = {
         {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x."},
         {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x."},
         {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x."},
+        {"name":"sd", "syntax": "sd([x,x])", "about": "Gets the standard deviation of set x, where set x has at least two comma demarcated values."},
     ],
 }
 
@@ -24,7 +25,12 @@ def restructure(solution, start, end, arr):
         structure = structure + arr[0:start]
     if solution != None:
         if isinstance(solution, list):
-            structure = structure + solution
+            if solution[0] == "[":
+                # append subsets
+                structure.append(solution)
+            else:
+                # concatenate lists
+                structure = structure + solution
         else:
             structure.append(solution)
     if end != len(arr) - 1:
@@ -56,7 +62,7 @@ def word_struct(word, arr):
     return arrVar
 
 def structure_string(str):
-    # structure values & characters
+    # structure values & operations & characters
     arr = []
     digits = ""
     for i in range(0, len(str)):
@@ -84,6 +90,37 @@ def structure_string(str):
 
     for i in range(0, len(info["key_functions"])):
         arr = word_struct(info["key_functions"][i]["name"], arr)
+    print(arr)
+
+    # structure sets
+    sets_ref = []
+    for i in range(0, len(arr)):
+        if arr[i] == "[":
+            sets_ref.append({"char": "[", "index": i})
+        elif arr[i] == "]":
+            sets_ref.append({"char": "]", "index": i})
+    while len(sets_ref) > 0:
+        # identify next set to structure
+        for i in range(0, len(sets_ref)):
+            if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
+                # build set
+                start_index = sets_ref[i]["index"]
+                end_index = sets_ref[i + 1]["index"]
+                solution_length = abs(start_index - end_index) + 1
+                the_set_itself = []
+                for i in range(0, solution_length):
+                    the_set_itself.append(arr[start_index + i])
+
+                # restructure
+                arr = restructure(the_set_itself, start_index, end_index, arr)
+                
+        # setup next iteration
+        sets_ref = []
+        for i in range(0, len(arr)):
+            if arr[i] == "[":
+                sets_ref.append({"char": "[", "index": i})
+            elif arr[i] == "]":
+                sets_ref.append({"char": "]", "index": i})
     print(arr)
     return arr
 
@@ -588,15 +625,20 @@ def system_ops(arr):
         print("")
         print("System Operations")
         print("")
+
         for i in range(0, len(info["system_operations"])):
             print(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
             print("")
         print("")
         print("Key Functions")
         print("")
+
         for i in range(0, len(info["key_functions"])):
-            print(info["key_functions"][i]["syntax"] + ": " + info["key_functions"][i]["about"])
+            print("Name: " + info["key_functions"][i]["name"])
+            print("Syntax: " + info["key_functions"][i]["syntax"])
+            print("About: " + info["key_functions"][i]["about"])
             print("")
+
     return system_operation
 
 def evaluate(str):
@@ -609,6 +651,8 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
-problem = "info"
-answer = evaluate(problem)
-print(answer)
+# problem = "info"
+problem = "sd([0,1])"
+structure_string(problem)
+# answer = evaluate(problem)
+# print(answer)
