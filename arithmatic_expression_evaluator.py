@@ -9,13 +9,14 @@ info = {
         {"name": "info", "about": "Prints program information."},
     ],
     "key_functions": [
-        {"name":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x."},
-        {"name": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x."},
-        {"name": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x."},
-        {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x."},
-        {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x."},
-        {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x."},
-        {"name":"sd", "syntax": "sd[x,x]", "about": "Gets the standard deviation of set x, where set x has at least two comma demarcated values. No spaces."},
+        {"name":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
+        {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values. A value can be a subset, but please no subsets within subsets."},
+        {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values. A value can be a subset, but please no subsets within subsets."},
     ],
 }
 
@@ -262,13 +263,6 @@ def keyFunctions(arr):
     # perform all Standard Deviation functions on each value set
     ref = getIdx("sd", arrVar)
     while ref is not None:
-
-        def summate(vals):
-            summation = 0
-            for i in vals:
-                summation = summation + i
-            return summation
-        
         # get string string set
         set_1 = arrVar[ref + 1]
         print(set_1)
@@ -282,11 +276,11 @@ def keyFunctions(arr):
             set_2.append(x)
 
         # perform calculation using numeral set
-        mean = summate(set_2) / len(set_2)
+        mean = sum(set_2) / len(set_2)
         set_3 = []
         for i in set_2:
             set_3.append(math.pow(i - mean, 2))
-        sd = math.pow(summate(set_3)/len(set_3), 1/2)
+        sd = math.pow(sum(set_3)/len(set_3), 1/2)
 
         before = arrVar[0:ref]
         after = []
@@ -699,8 +693,34 @@ def evaluate(str):
     else:
         return section(distribute(structure))
 
-# problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
 # problem = "info"
 problem = "sd[0,1]+sd[0,1]"
+
+# problem = "sd[0,sd[0,1]+sd[0,1]]"
+# sd[0,sd[0,1]+sd[0,1]] = sd[0, 1] = 1
+# ["sd", "[", "0", ",", "sd", "[", "0", "1", "]", "+", "sd", "[", "0", "1", "]", "]"]
+# [[*][]]
+# [[*]]
+# [*]
+# ["sd", ["0", "sd", ["0", "1"], "+", "sd", ["0", "1"]]]
+
+# identify the level of nesting and index of the first occuring most nested set
+# use level and index to get information for that set and its operation
+# use that information to perform operation and restructure
+# rinse and repeat until no more sets
+
+# Are key functions the best way to perform operations on sets?
+# What are other ways within this program that I could impliment set operation?
+# single character operations or key functions
+# set multiplication can occur in a variety of ways
+# having only a single character to signify that operation would limit that operation to just one way
+# I will therefore need to define and impliment a variety of set operation key functions
+
+# before delving into set operations, add the following key functions
+# weighted mean
+# prime factorization
+# Least common multiple
+# Greatest common factor
+
 answer = evaluate(problem)
 print(answer)
