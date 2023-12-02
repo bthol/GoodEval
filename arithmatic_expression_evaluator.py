@@ -100,7 +100,7 @@ def structure_string(str):
         arr = word_struct(info["key_functions"][i]["name"], arr)
     print(arr)
 
-    # structure sets
+    # create reference
     sets_ref = []
     for i in range(0, len(arr)):
         if arr[i] == "[":
@@ -108,7 +108,7 @@ def structure_string(str):
         elif arr[i] == "]":
             sets_ref.append({"char": "]", "index": i})
     while len(sets_ref) > 0:
-        # identify next set to structure
+        # identify next set to structure using reference
         for i in range(0, len(sets_ref)):
             if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
                 # build set
@@ -122,13 +122,15 @@ def structure_string(str):
                 # restructure
                 arr = restructure(the_set_itself, start_index, end_index, arr)
                 
-        # setup next iteration
-        sets_ref = []
-        for i in range(0, len(arr)):
-            if arr[i] == "[":
-                sets_ref.append({"char": "[", "index": i})
-            elif arr[i] == "]":
-                sets_ref.append({"char": "]", "index": i})
+                # update reference
+                sets_ref = []
+                for i in range(0, len(arr)):
+                    if arr[i] == "[":
+                        sets_ref.append({"char": "[", "index": i})
+                    elif arr[i] == "]":
+                        sets_ref.append({"char": "]", "index": i})
+                break 
+    
     print(arr)
     return arr
 
@@ -699,6 +701,6 @@ def evaluate(str):
 
 # problem = "cos(sin(3*(1-(8-2))+10*(2+5)-55))"
 # problem = "info"
-problem = "sd[0,1]"
+problem = "sd[0,1]+sd[0,1]"
 answer = evaluate(problem)
 print(answer)
