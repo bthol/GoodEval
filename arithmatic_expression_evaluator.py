@@ -15,8 +15,9 @@ info = {
         {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values. A value can be a subset, but please no subsets within subsets."},
-        {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values. A value can be a subset, but please no subsets within subsets."},
+        {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values and no subsets."},
+        {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values and no subsets."},
+        {"name":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of two values within square brackets. Please, no spaces between values and no subsets."},
     ],
 }
 
@@ -101,7 +102,7 @@ def structure_string(str):
         arr = word_struct(info["key_functions"][i]["name"], arr)
     print(arr)
 
-    # create reference
+    # structure sets
     sets_ref = []
     for i in range(0, len(arr)):
         if arr[i] == "[":
@@ -260,7 +261,7 @@ def keyFunctions(arr):
         ref = getIdx("atan", arrVar)
         print(arrVar)
     
-    # perform all Standard Deviation functions on each value set
+    # perform all Standard Deviation functions
     ref = getIdx("sd", arrVar)
     while ref is not None:
         # get string string set
@@ -290,6 +291,80 @@ def keyFunctions(arr):
         arrVar.append("%s" % sd)
         arrVar = arrVar + after
         ref = getIdx("sd", arrVar)
+        print(arrVar)
+    
+    # perform all Mean functions
+    ref = getIdx("mean", arrVar)
+    while ref is not None:
+        # get string string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            x = float(i)
+            if x / 1 % 1 == 0:
+                x = int(x)
+            set_2.append(x)
+
+        # perform calculation using numeral set
+        mean = sum(set_2) / len(set_2)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % mean)
+        arrVar = arrVar + after
+        ref = getIdx("mean", arrVar)
+        print(arrVar)
+    
+    # perform all Least Common Multiple functions
+    ref = getIdx("lcm", arrVar)
+    while ref is not None:
+        # get string string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            x = float(i)
+            if x / 1 % 1 == 0:
+                x = int(x)
+            set_2.append(x)
+
+        # perform calculation using numeral set
+        lcm = 0
+        mult_1 = [set_2[0]]
+        mult_2 = [set_2[1]]
+        same = False
+        x = 0
+        while x < 100 and same != True:
+            x = x + 1
+
+            # search for common multiples
+            for i in mult_1:
+                for j in mult_2:
+                    if i == j:
+                        same = True
+                        lcm = i
+
+            # if no multiples were found, add next multiple to each list, and test again
+            if same != True:
+                mult_1.append(mult_1[0] * x)
+                mult_2.append(mult_2[0] * x)
+
+        before = arrVar[0:ref]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % lcm)
+        arrVar = arrVar + after
+        ref = getIdx("lcm", arrVar)
         print(arrVar)
 
     return arrVar
@@ -694,7 +769,9 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "sd[0,1]+sd[0,1]"
+# problem = "sd[0,1]+sd[0,1]"
+
+problem = "lcm[2,3]"
 
 # problem = "sd[0,sd[0,1]+sd[0,1]]"
 # sd[0,sd[0,1]+sd[0,1]] = sd[0, 1] = 1
@@ -704,22 +781,12 @@ problem = "sd[0,1]+sd[0,1]"
 # [*]
 # ["sd", ["0", "sd", ["0", "1"], "+", "sd", ["0", "1"]]]
 
-# identify the level of nesting and index of the first occuring most nested set
-# use level and index to get information for that set and its operation
-# use that information to perform operation and restructure
-# rinse and repeat until no more sets
+# NO SUBSETS
 
-# Are key functions the best way to perform operations on sets?
-# What are other ways within this program that I could impliment set operation?
-# single character operations or key functions
-# set multiplication can occur in a variety of ways
-# having only a single character to signify that operation would limit that operation to just one way
-# I will therefore need to define and impliment a variety of set operation key functions
-
-# before delving into set operations, add the following key functions
+# add the following key functions
+# Least common multiple
 # weighted mean
 # prime factorization
-# Least common multiple
 # Greatest common factor
 
 answer = evaluate(problem)
