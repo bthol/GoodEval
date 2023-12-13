@@ -156,13 +156,7 @@ def keyFunctions(arr):
         
         y = math.sin(x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("sin", arrVar)
         print(arrVar)
 
@@ -175,13 +169,7 @@ def keyFunctions(arr):
         
         y = math.cos(x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("cos", arrVar)
         print(arrVar)
 
@@ -194,13 +182,7 @@ def keyFunctions(arr):
         
         y = math.tan(x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("tan", arrVar)
         print(arrVar)
     
@@ -213,13 +195,7 @@ def keyFunctions(arr):
         
         y = math.asin(x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("asin", arrVar)
         print(arrVar)
 
@@ -232,13 +208,7 @@ def keyFunctions(arr):
         
         y = math.acos(x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("acos", arrVar)
         print(arrVar)
 
@@ -251,13 +221,7 @@ def keyFunctions(arr):
         
         y = math.atan(x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % y)
-        arrVar = arrVar + after
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("atan", arrVar)
         print(arrVar)
     
@@ -283,13 +247,7 @@ def keyFunctions(arr):
             set_3.append(math.pow(i - mean, 2))
         sd = math.pow(sum(set_3)/len(set_3), 1/2)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % sd)
-        arrVar = arrVar + after
+        arrVar = restructure(sd, ref, ref + 1, arrVar)
         ref = getIdx("sd", arrVar)
         print(arrVar)
     
@@ -311,13 +269,7 @@ def keyFunctions(arr):
         # perform calculation using numeral set
         mean = sum(set_2) / len(set_2)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % mean)
-        arrVar = arrVar + after
+        arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("mean", arrVar)
         print(arrVar)
     
@@ -357,13 +309,7 @@ def keyFunctions(arr):
                 mult_1.append(mult_1[0] * x)
                 mult_2.append(mult_2[0] * x)
 
-        before = arrVar[0:ref]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % lcm)
-        arrVar = arrVar + after
+        arrVar = restructure(lcm, ref, ref + 1, arrVar)
         ref = getIdx("lcm", arrVar)
         print(arrVar)
 
@@ -771,7 +717,7 @@ def evaluate(str):
 # problem = "info"
 # problem = "sd[0,1]+sd[0,1]"
 
-problem = "lcm[2,3]"
+problem = "lcm[2,1]+sd[0,1]"
 
 # problem = "sd[0,sd[0,1]+sd[0,1]]"
 # sd[0,sd[0,1]+sd[0,1]] = sd[0, 1] = 1
