@@ -15,9 +15,10 @@ info = {
         {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values and no subsets."},
-        {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces between values and no subsets."},
-        {"name":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of two values within square brackets. Please, no spaces between values and no subsets."},
+        {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
+        {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
+        {"name":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of values a and b within square brackets. Please, no spaces around values and no subsets."},
+        {"name":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets. Please, no spaces around values and no subsets."},
     ],
 }
 
@@ -271,6 +272,70 @@ def keyFunctions(arr):
 
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("mean", arrVar)
+        print(arrVar)
+    
+    # perform all Greatest Common Factor functions
+    ref = getIdx("gcf", arrVar)
+    while ref is not None:
+        # get string string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            x = float(i)
+            if x / 1 % 1 == 0:
+                x = int(x)
+            set_2.append(x)
+
+        # perform calculation using numeral set
+        gcf = 0
+        val1 = set_2[0]
+        val2 = set_2[1]
+        if val1 != val2:
+            fact_1 = []
+            fact_2 = []
+
+            def factor(x):
+                factors = []
+                for i in range(x, 0, -1):
+                    if x / i % 1 == 0:
+                        factors.append(i)
+                return factors
+            
+            # account for limiting factor
+            if val1 > val2:
+                # filter extra factors
+                facts = factor(val1)
+                for i in facts:
+                    if i < val2:
+                        fact_1.append(i)
+                fact_2 = factor(val2)
+            else:
+                # filter extra factors
+                facts = factor(val2)
+                for i in facts:
+                    if i < val1:
+                        fact_2.append(i)
+                fact_1 = factor(val1)
+
+            print(fact_1)
+            print(fact_2)
+
+            # search for common factors
+            for i in fact_1:
+                for j in fact_2:
+                    if i == j:
+                        gcf = j
+                        break
+                if gcf != 0:
+                    break
+        else:
+            gcf = set_2[0]
+        
+        arrVar = restructure(gcf, ref, ref + 1, arrVar)
+        ref = getIdx("gcf", arrVar)
         print(arrVar)
     
     # perform all Least Common Multiple functions
@@ -717,7 +782,7 @@ def evaluate(str):
 # problem = "info"
 # problem = "sd[0,1]+sd[0,1]"
 
-problem = "lcm[2,1]+sd[0,1]"
+problem = "gcf[45,30]"
 
 # problem = "sd[0,sd[0,1]+sd[0,1]]"
 # sd[0,sd[0,1]+sd[0,1]] = sd[0, 1] = 1
@@ -730,10 +795,9 @@ problem = "lcm[2,1]+sd[0,1]"
 # NO SUBSETS
 
 # add the following key functions
-# Least common multiple
+# Greatest common factor
 # weighted mean
 # prime factorization
-# Greatest common factor
 
 answer = evaluate(problem)
 print(answer)
