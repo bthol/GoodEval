@@ -15,6 +15,7 @@ info = {
         {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
         {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
         {"name":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of values a and b within square brackets. Please, no spaces around values and no subsets."},
@@ -224,6 +225,18 @@ def keyFunctions(arr):
 
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("atan", arrVar)
+        print(arrVar)
+    
+    # perform all Factorial functions
+    ref = getIdx("fact", arrVar)
+    while ref is not None:
+        x = int(arrVar[ref + 1])
+        y = 1
+        for i in range(x, 1, -1):
+            y = y * i
+
+        arrVar = restructure(y, ref, ref + 1, arrVar)
+        ref = getIdx("fact", arrVar)
         print(arrVar)
     
     # perform all Standard Deviation functions
@@ -782,7 +795,7 @@ def evaluate(str):
 # problem = "info"
 # problem = "sd[0,1]+sd[0,1]"
 
-problem = "gcf[45,30]"
+problem = "fact(4)"
 
 # problem = "sd[0,sd[0,1]+sd[0,1]]"
 # sd[0,sd[0,1]+sd[0,1]] = sd[0, 1] = 1
