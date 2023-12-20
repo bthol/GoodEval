@@ -1,8 +1,10 @@
 import math
 
 # parameters
-# the paren_limit parameter controls the maximum number of levels of parenthesis nesting
-paren_limit = 100
+# the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
+paren_limit = 50
+# the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
+key_limit = 50
 
 info = {
     "system_operations": [
@@ -15,6 +17,8 @@ info = {
         {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression that evaluates out to a value. Please, no spaces around values and no subsets."},
+        {"name":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression that evaluates out to a value."},
         {"name":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
         {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
@@ -151,7 +155,9 @@ def keyFunctions(arr):
 
     # perform all sine functions
     ref = getIdx("sin", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
@@ -164,7 +170,9 @@ def keyFunctions(arr):
 
     # perform all cosine functions
     ref = getIdx("cos", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
@@ -177,7 +185,9 @@ def keyFunctions(arr):
 
     # perform all tangent functions
     ref = getIdx("tan", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
@@ -190,7 +200,9 @@ def keyFunctions(arr):
     
     # perform all arc sine functions
     ref = getIdx("asin", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
@@ -203,7 +215,9 @@ def keyFunctions(arr):
 
     # perform all arc cosine functions
     ref = getIdx("acos", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
@@ -216,7 +230,9 @@ def keyFunctions(arr):
 
     # perform all arc tangent functions
     ref = getIdx("atan", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
@@ -227,9 +243,55 @@ def keyFunctions(arr):
         ref = getIdx("atan", arrVar)
         print(arrVar)
     
+    
+    # perform all Logarithm functions
+    ref = getIdx("log", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+        
+        x = set_2[0]
+        b = set_2[1]
+        y = math.log(x, b)
+
+        arrVar = restructure(y, ref, ref + 1, arrVar)
+        ref = getIdx("log", arrVar)
+        print(arrVar)
+    
+    # perform all Natural Logarithm functions
+    ref = getIdx("ln", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        x = float(arrVar[ref + 1])
+        if x / 1 % 1 == 0:
+            x = int(x)
+        y = math.log(x)
+
+        arrVar = restructure(y, ref, ref + 1, arrVar)
+        ref = getIdx("ln", arrVar)
+        print(arrVar)
+    
     # perform all Factorial functions
     ref = getIdx("fact", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         x = int(arrVar[ref + 1])
         y = 1
         for i in range(x, 1, -1):
@@ -241,7 +303,9 @@ def keyFunctions(arr):
     
     # perform all Standard Deviation functions
     ref = getIdx("sd", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         # get string string set
         set_1 = arrVar[ref + 1]
         print(set_1)
@@ -267,7 +331,9 @@ def keyFunctions(arr):
     
     # perform all Mean functions
     ref = getIdx("mean", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         # get string string set
         set_1 = arrVar[ref + 1]
         print(set_1)
@@ -289,7 +355,9 @@ def keyFunctions(arr):
     
     # perform all Greatest Common Factor functions
     ref = getIdx("gcf", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         # get string string set
         set_1 = arrVar[ref + 1]
         print(set_1)
@@ -353,7 +421,9 @@ def keyFunctions(arr):
     
     # perform all Least Common Multiple functions
     ref = getIdx("lcm", arrVar)
-    while ref is not None:
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
         # get string string set
         set_1 = arrVar[ref + 1]
         print(set_1)
@@ -460,6 +530,7 @@ def operations(arr):
             a_ref = getIdx("+", arrVar)
             s_ref = getIdx("-", arrVar)
             print(arrVar)
+    
     return arrVar
 
 def calculate(arr):
@@ -793,22 +864,9 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-# problem = "sd[0,1]+sd[0,1]"
-
-problem = "fact(4)"
-
-# problem = "sd[0,sd[0,1]+sd[0,1]]"
-# sd[0,sd[0,1]+sd[0,1]] = sd[0, 1] = 1
-# ["sd", "[", "0", ",", "sd", "[", "0", "1", "]", "+", "sd", "[", "0", "1", "]", "]"]
-# [[*][]]
-# [[*]]
-# [*]
-# ["sd", ["0", "sd", ["0", "1"], "+", "sd", ["0", "1"]]]
-
-# NO SUBSETS
+problem = "log[10,[5+5]]"
 
 # add the following key functions
-# Greatest common factor
 # weighted mean
 # prime factorization
 
