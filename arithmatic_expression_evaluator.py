@@ -11,19 +11,20 @@ info = {
         {"name": "info", "about": "Prints program information."},
     ],
     "key_functions": [
-        {"name":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
-        {"name": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression that evaluates out to a value. Please, no spaces around values and no subsets."},
-        {"name":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression that evaluates out to a value."},
-        {"name":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
-        {"name":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
-        {"name":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of values a and b within square brackets. Please, no spaces around values and no subsets."},
-        {"name":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets. Please, no spaces around values and no subsets."},
+        {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
+        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
+        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. sd[[a+x],[b-y]]."},
+        {"name":"Weighted Mean", "key":"meanw", "syntax": "mean[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
+        {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
+        {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of values a and b within square brackets. Please, no spaces around values and no subsets."},
+        {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets. Please, no spaces around values and no subsets."},
     ],
 }
 
@@ -105,7 +106,7 @@ def structure_string(str):
         arr = word_struct(info["system_operations"][i]["name"], arr)
 
     for i in range(0, len(info["key_functions"])):
-        arr = word_struct(info["key_functions"][i]["name"], arr)
+        arr = word_struct(info["key_functions"][i]["key"], arr)
     print(arr)
 
     # structure sets
@@ -306,17 +307,21 @@ def keyFunctions(arr):
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
-        # get string string set
+        # get string set
         set_1 = arrVar[ref + 1]
         print(set_1)
 
         # convert string set to numeral set
         set_2 = []
         for i in set_1:
-            x = float(i)
-            if x / 1 % 1 == 0:
-                x = int(x)
-            set_2.append(x)
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
 
         # perform calculation using numeral set
         mean = sum(set_2) / len(set_2)
@@ -329,12 +334,45 @@ def keyFunctions(arr):
         ref = getIdx("sd", arrVar)
         print(arrVar)
     
+    # perform all Weighted Mean functions
+    ref = getIdx("meanw", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+    
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # get weights and total of weights
+        n = 0
+        weights = []
+        for i in set_1:
+            weight = float(i[1])
+            weights.append(weight)
+            n = n + weight
+        
+        # get weighted numeral set
+        set_2 = []
+        iter = 0
+        for i in set_1:
+            val = float(i[0])
+            set_2.append(weights[iter] * val)
+            iter = iter + 1
+
+        # perform calculation using numeral set
+        mean = sum(set_2) / n
+
+        arrVar = restructure(mean, ref, ref + 1, arrVar)
+        ref = getIdx("meanw", arrVar)
+        print(arrVar)
+
     # perform all Mean functions
     ref = getIdx("mean", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
-        # get string string set
+        # get string set
         set_1 = arrVar[ref + 1]
         print(set_1)
 
@@ -342,8 +380,6 @@ def keyFunctions(arr):
         set_2 = []
         for i in set_1:
             x = float(i)
-            if x / 1 % 1 == 0:
-                x = int(x)
             set_2.append(x)
 
         # perform calculation using numeral set
@@ -358,7 +394,7 @@ def keyFunctions(arr):
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
-        # get string string set
+        # get string set
         set_1 = arrVar[ref + 1]
         print(set_1)
 
@@ -424,7 +460,7 @@ def keyFunctions(arr):
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
-        # get string string set
+        # get string set
         set_1 = arrVar[ref + 1]
         print(set_1)
 
@@ -864,7 +900,7 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "log[10,[5+5]]"
+problem = "meanw[[4,1][8,1]]"
 
 # add the following key functions
 # weighted mean
