@@ -360,8 +360,32 @@ def keyFunctions(arr):
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("meanh", arrVar)
         print(arrVar)
-
     
+    # perform all Geometeric Mean functions
+    ref = getIdx("meang", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        set_2 = 1
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                set_2 = set_2 * x
+            else:
+                x = calculate(i)
+                set_2 = set_2 * x
+
+        # perform calculation using numeral set
+        mean = math.pow(set_2, 1/len(set_1))
+
+        arrVar = restructure(mean, ref, ref + 1, arrVar)
+        ref = getIdx("meang", arrVar)
+        print(arrVar)
+
     # perform all Weighted Mean functions
     ref = getIdx("meanw", arrVar)
     itr = 0
@@ -934,7 +958,7 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "meanh[5,8,12,15,20]"
+problem = "meang[1,2]"
 
 # add the following key functions
 # weighted mean
