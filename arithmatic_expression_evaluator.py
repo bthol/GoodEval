@@ -21,8 +21,9 @@ info = {
         {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
         {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. sd[a,[b-x]]."},
-        {"name":"Harmonic Mean", "key":"meanh", "syntax": "mean[[a,w1],[b,w2]]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
-        {"name":"Weighted Mean", "key":"meanw", "syntax": "mean[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
+        {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. meang[10,[2+3]]."},
+        {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
+        {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
         {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
         {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of values a and b within square brackets. Please, no spaces around values and no subsets."},
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets. Please, no spaces around values and no subsets."},
@@ -339,19 +340,15 @@ def keyFunctions(arr):
     ref = getIdx("meanh", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
-    
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
         print(set_1)
 
-        # convert string set to numeral set
         set_2 = []
         for i in set_1:
             if isinstance(i, str):
                 x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
                 set_2.append(1/x)
             else:
                 x = calculate(i)
@@ -363,6 +360,7 @@ def keyFunctions(arr):
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("meanh", arrVar)
         print(arrVar)
+
     
     # perform all Weighted Mean functions
     ref = getIdx("meanw", arrVar)
@@ -936,8 +934,7 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-# problem = "meanh[10,[2+3]]"
-problem = "meanh[3,6,9]"
+problem = "meanh[5,8,12,15,20]"
 
 # add the following key functions
 # weighted mean
