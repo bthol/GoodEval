@@ -20,6 +20,7 @@ info = {
         {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
         {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
         {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
+        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets permutation given n number of objects with r number of objects per permutation, where n and r are single values or an expression that evaulates out to a single value wrapped within square brackets, e.g. perm[n,[r+x]]."},
         {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets combination given n number of objects with r number of objects per combination, where n and r are single values or an expression that evaulates out to a single value wrapped within square brackets, e.g. comb[n,[r+x]]."},
         {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. sd[a,[b+x]]."},
         {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. meang[10,[2+3]]."},
@@ -307,9 +308,45 @@ def keyFunctions(arr):
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("fact", arrVar)
         print(arrVar)
+
+    # perform all Permutation functions
+    ref = getIdx("perm", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+        print(set_2)
+        # perform calculation using numeral set
+        def factorial(x):
+            y = 1
+            for i in range(int(x), 1, -1):
+                y = y * i
+            return y
+        
+        n = set_2[0]
+        r = set_2[1]
+
+        numerator = factorial(n)
+        denominator = factorial(n - r)
+
+        perm = numerator / denominator
+
+        arrVar = restructure(perm, ref, ref + 1, arrVar)
+        ref = getIdx("perm", arrVar)
+        print(arrVar)
     
-
-
     # perform all Combination functions
     ref = getIdx("comb", arrVar)
     itr = 0
@@ -1037,7 +1074,7 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "comb[9,3]"
+problem = "perm[10,2]"
 
 # add the following key functions
 # weighted mean
