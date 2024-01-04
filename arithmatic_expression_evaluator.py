@@ -12,7 +12,8 @@ info = {
     ],
     "key_functions": [
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
-        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
+        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
+        {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon of with side length a and number of sides n, where s and n are values or an expression that evaluates out to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
         {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
@@ -222,7 +223,38 @@ def keyFunctions(arr):
         arrVar = restructure(area, ref, ref + 1, arrVar)
         ref = getIdx("quada", arrVar)
         print(arrVar)
+    
     # perform all Area of Regular n-Gon functions
+    ref = getIdx("ngona", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = math.pow(set_2[0], 2)
+        n = set_2[1]
+        trig = 1 / math.tan(math.pi / n)
+        area = .25 * a * n * trig
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("ngona", arrVar)
+        print(arrVar)
+    
     # perform all Area of Circle functions
 
     # TRIGONOMIC FUNCTIONS
@@ -1147,7 +1179,7 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "quada[3,10]"
+problem = "ngona[2,4]"
 
 # add the following key functions
 # weighted mean
