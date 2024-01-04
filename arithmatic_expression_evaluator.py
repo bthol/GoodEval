@@ -11,6 +11,8 @@ info = {
         {"name": "info", "about": "Prints program information."},
     ],
     "key_functions": [
+        {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
+        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
         {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
@@ -159,6 +161,72 @@ def getIdx(str, arr):
 def keyFunctions(arr):
     arrVar = arr
 
+    # GEOMTERIC FUNCTIONS
+    
+    # perform all Area of Triangle functions
+    ref = getIdx("tria", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        base = set_2[0]
+        height = set_2[1]
+        area = .5 * base * height
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("tria", arrVar)
+        print(arrVar)
+    
+    # perform all Area of Quadrilateral functions
+    ref = getIdx("quada", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        base = set_2[0]
+        height = set_2[1]
+        area = base * height
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("quada", arrVar)
+        print(arrVar)
+    # perform all Area of Regular n-Gon functions
+    # perform all Area of Circle functions
+
+    # TRIGONOMIC FUNCTIONS
+
     # perform all sine functions
     ref = getIdx("sin", arrVar)
     itr = 0
@@ -249,7 +317,8 @@ def keyFunctions(arr):
         ref = getIdx("atan", arrVar)
         print(arrVar)
     
-    
+    # LOGARITHMIC FUNCTIONS
+
     # perform all Logarithm functions
     ref = getIdx("log", arrVar)
     itr = 0
@@ -293,6 +362,8 @@ def keyFunctions(arr):
         ref = getIdx("ln", arrVar)
         print(arrVar)
     
+    # STATISTICAL FUNCTIONS
+
     # perform all Factorial functions
     ref = getIdx("fact", arrVar)
     itr = 0
@@ -419,7 +490,7 @@ def keyFunctions(arr):
         arrVar = restructure(sd, ref, ref + 1, arrVar)
         ref = getIdx("sd", arrVar)
         print(arrVar)
-    
+
     # perform all Harmonic Mean functions
     ref = getIdx("meanh", arrVar)
     itr = 0
@@ -563,6 +634,8 @@ def keyFunctions(arr):
         ref = getIdx("rms", arrVar)
         print(arrVar)
     
+    # OTHER FUNCTIONS
+
     # perform all Greatest Common Factor functions
     ref = getIdx("gcf", arrVar)
     itr = 0
@@ -1074,7 +1147,7 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "perm[10,2]"
+problem = "quada[3,10]"
 
 # add the following key functions
 # weighted mean
