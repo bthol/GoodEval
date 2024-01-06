@@ -14,7 +14,8 @@ info = {
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
         {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
         {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon of with side length a and number of sides n, where s and n are values or an expression that evaluates out to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
-        {"name":"Circle Area", "key":"circa", "syntax": "circa(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
+        {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
+        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
         {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
         {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
@@ -165,7 +166,7 @@ def keyFunctions(arr):
 
     # GEOMTERIC FUNCTIONS
     
-    # perform all Area of Triangle functions
+    # perform all Triangle Area functions
     ref = getIdx("tria", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
@@ -195,7 +196,9 @@ def keyFunctions(arr):
         ref = getIdx("tria", arrVar)
         print(arrVar)
     
-    # perform all Area of Quadrilateral functions
+    # perform all Triangle Perimeter functions
+
+    # perform all Quadrilateral Area functions
     ref = getIdx("quada", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
@@ -225,7 +228,9 @@ def keyFunctions(arr):
         ref = getIdx("quada", arrVar)
         print(arrVar)
     
-    # perform all Area of Regular n-Gon functions
+    # perform all Quadrilateral Perimeter functions
+
+    # perform all Regular n-Gon Area functions
     ref = getIdx("ngona", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
@@ -256,8 +261,10 @@ def keyFunctions(arr):
         ref = getIdx("ngona", arrVar)
         print(arrVar)
     
-    # perform all Area of Circle functions
-    ref = getIdx("circa", arrVar)
+    # perform all Regular n-Gon Perimeter functions
+
+    # perform all Circle Area functions
+    ref = getIdx("circlea", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
@@ -269,7 +276,23 @@ def keyFunctions(arr):
         area = math.pi * math.pow(r, 2)
         
         arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("circa", arrVar)
+        ref = getIdx("circlea", arrVar)
+        print(arrVar)
+
+    # perform all Circle Perimeter functions
+    ref = getIdx("circlep", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+
+        r = float(arrVar[ref + 1])
+        if r / 1 % 1 == 0:
+            r = int(r)
+
+        perimeter = 2 * math.pi * r
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("circlep", arrVar)
         print(arrVar)
 
     # TRIGONOMIC FUNCTIONS
