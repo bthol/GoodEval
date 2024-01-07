@@ -12,7 +12,9 @@ info = {
     ],
     "key_functions": [
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
+        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets area of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates out to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
         {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
+        {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets perimeter of quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates out to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
         {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon of with side length a and number of sides n, where s and n are values or an expression that evaluates out to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
         {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
         {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
@@ -197,6 +199,36 @@ def keyFunctions(arr):
         print(arrVar)
     
     # perform all Triangle Perimeter functions
+    ref = getIdx("trip", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = set_2[0]
+        b = set_2[1]
+        c = set_2[2]
+
+        perimeter = a + b + c
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("trip", arrVar)
+        print(arrVar)
 
     # perform all Quadrilateral Area functions
     ref = getIdx("quada", arrVar)
@@ -229,7 +261,38 @@ def keyFunctions(arr):
         print(arrVar)
     
     # perform all Quadrilateral Perimeter functions
+    ref = getIdx("quadp", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
 
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = set_2[0]
+        b = set_2[1]
+        c = set_2[2]
+        d = set_2[3]
+
+        perimeter = a + b + c + d
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("quadp", arrVar)
+        print(arrVar)
+    
     # perform all Regular n-Gon Area functions
     ref = getIdx("ngona", arrVar)
     itr = 0
