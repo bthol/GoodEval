@@ -11,33 +11,33 @@ info = {
         {"name": "info", "about": "Prints program information."},
     ],
     "key_functions": [
-        {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
-        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets area of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates out to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
-        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates out to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
-        {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets perimeter of quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates out to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
-        {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon of with side length a and number of sides n, where s and n are values or an expression that evaluates out to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
-        {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets perimeter of regular n-gon of with side length a and number of sides n, where s and n are values or an expression that evaluates out to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
-        {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
-        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets area of circle with radius r, where is a value or an expression that evaluates out to a value."},
-        {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
-        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates out to a value. Please, no spaces around values."},
-        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates out to a value."},
-        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets permutation given n number of objects with r number of objects per permutation, where n and r are single values or an expression that evaulates out to a single value wrapped within square brackets, e.g. perm[n,[r+x]]."},
-        {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets combination given n number of objects with r number of objects per combination, where n and r are single values or an expression that evaulates out to a single value wrapped within square brackets, e.g. comb[n,[r+x]]."},
-        {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. sd[a,[b+x]]."},
-        {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. meang[10,[2+3]]."},
-        {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
+        {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
+        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
+        {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+        {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
+        {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
+        {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
         {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
-        {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated values. Please, no spaces around values and no subsets."},
-        {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a single value or an expression that evaulates out to a single value wrapped within square brackets, e.g. rms[10,[2+3]]."},
-        {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of values a and b within square brackets. Please, no spaces around values and no expressions."},
-        {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets. Please, no spaces around values and no expressions."},
+        {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
+        {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
+        {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
+        {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
+        {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
+        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets area of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
+        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
+        {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets perimeter of quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
+        {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
+        {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets perimeter of regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
+        {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where r is a value or an expression that evaluates to a value."},
+        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets area of circle with radius r, where r is a value or an expression that evaluates to a value."},
     ],
 }
 
@@ -166,227 +166,7 @@ def getIdx(str, arr):
 
 def keyFunctions(arr):
     arrVar = arr
-
-    # GEOMTERIC FUNCTIONS
     
-    # perform all Triangle Area functions
-    ref = getIdx("tria", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        print(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = calculate(i)
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        base = set_2[0]
-        height = set_2[1]
-        area = .5 * base * height
-        
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("tria", arrVar)
-        print(arrVar)
-    
-    # perform all Triangle Perimeter functions
-    ref = getIdx("trip", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        print(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = calculate(i)
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = set_2[0]
-        b = set_2[1]
-        c = set_2[2]
-
-        perimeter = a + b + c
-        
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("trip", arrVar)
-        print(arrVar)
-
-    # perform all Quadrilateral Area functions
-    ref = getIdx("quada", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        print(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = calculate(i)
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        base = set_2[0]
-        height = set_2[1]
-        area = base * height
-        
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("quada", arrVar)
-        print(arrVar)
-    
-    # perform all Quadrilateral Perimeter functions
-    ref = getIdx("quadp", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        print(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = calculate(i)
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = set_2[0]
-        b = set_2[1]
-        c = set_2[2]
-        d = set_2[3]
-
-        perimeter = a + b + c + d
-        
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("quadp", arrVar)
-        print(arrVar)
-    
-    # perform all Regular n-Gon Area functions
-    ref = getIdx("ngona", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        print(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = calculate(i)
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = math.pow(set_2[0], 2)
-        n = set_2[1]
-        trig = 1 / math.tan(math.pi / n)
-        area = .25 * a * n * trig
-        
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("ngona", arrVar)
-        print(arrVar)
-    
-    # perform all Regular n-Gon Perimeter functions
-    ref = getIdx("ngonp", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        print(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = calculate(i)
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = set_2[0]
-        n = set_2[1]
-        perimeter = a * n
-        
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("ngonp", arrVar)
-        print(arrVar)
-    
-    # perform all Circle Area functions
-    ref = getIdx("circlea", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-
-        r = float(arrVar[ref + 1])
-        if r / 1 % 1 == 0:
-            r = int(r)
-
-        area = math.pi * math.pow(r, 2)
-        
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("circlea", arrVar)
-        print(arrVar)
-
-    # perform all Circle Perimeter functions
-    ref = getIdx("circlep", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-
-        r = float(arrVar[ref + 1])
-        if r / 1 % 1 == 0:
-            r = int(r)
-
-        perimeter = 2 * math.pi * r
-        
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("circlep", arrVar)
-        print(arrVar)
-
     # TRIGONOMIC FUNCTIONS
 
     # perform all sine functions
@@ -796,8 +576,6 @@ def keyFunctions(arr):
         ref = getIdx("rms", arrVar)
         print(arrVar)
     
-    # OTHER FUNCTIONS
-
     # perform all Greatest Common Factor functions
     ref = getIdx("gcf", arrVar)
     itr = 0
@@ -906,6 +684,238 @@ def keyFunctions(arr):
         ref = getIdx("lcm", arrVar)
         print(arrVar)
 
+    # GEOMTERIC FUNCTIONS
+    
+    # perform all Triangle Area functions
+    ref = getIdx("tria", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        base = set_2[0]
+        height = set_2[1]
+        area = .5 * base * height
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("tria", arrVar)
+        print(arrVar)
+    
+    # perform all Triangle Perimeter functions
+    ref = getIdx("trip", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = set_2[0]
+        b = set_2[1]
+        c = set_2[2]
+
+        perimeter = a + b + c
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("trip", arrVar)
+        print(arrVar)
+
+    # perform all Quadrilateral Area functions
+    ref = getIdx("quada", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        base = set_2[0]
+        height = set_2[1]
+        area = base * height
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("quada", arrVar)
+        print(arrVar)
+    
+    # perform all Quadrilateral Perimeter functions
+    ref = getIdx("quadp", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = set_2[0]
+        b = set_2[1]
+        c = set_2[2]
+        d = set_2[3]
+
+        perimeter = a + b + c + d
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("quadp", arrVar)
+        print(arrVar)
+    
+    # perform all Regular n-Gon Area functions
+    ref = getIdx("ngona", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = math.pow(set_2[0], 2)
+        n = set_2[1]
+        trig = 1 / math.tan(math.pi / n)
+        area = .25 * a * n * trig
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("ngona", arrVar)
+        print(arrVar)
+    
+    # perform all Regular n-Gon Perimeter functions
+    ref = getIdx("ngonp", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = calculate(i)
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        a = set_2[0]
+        n = set_2[1]
+        perimeter = a * n
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("ngonp", arrVar)
+        print(arrVar)
+    
+    # perform all Circle Area functions
+    ref = getIdx("circlea", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+
+        r = float(arrVar[ref + 1])
+        if r / 1 % 1 == 0:
+            r = int(r)
+
+        area = math.pi * math.pow(r, 2)
+        
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("circlea", arrVar)
+        print(arrVar)
+
+    # perform all Circle Perimeter functions
+    ref = getIdx("circlep", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+
+        r = float(arrVar[ref + 1])
+        if r / 1 % 1 == 0:
+            r = int(r)
+
+        perimeter = 2 * math.pi * r
+        
+        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
+        ref = getIdx("circlep", arrVar)
+        print(arrVar)
+
+    # perform all Tertrahedron Volume functions
+    
+    # perform all Tertrahedron Surface Area functions
+    # perform all Cube Volume functions
+    # perform all Cube Surface Area functions
+    # perform all Octahedron Volume functions
+    # perform all Octahedron Surface Area functions
+    # perform all Dodecahedron Volume functions
+    # perform all Dodecahedron Surface Area functions
+    # perform all Icosahedron Volume functions
+    # perform all Icosahedron Surface Area functions
+    
     return arrVar
 
 def operations(arr):
@@ -1309,11 +1319,13 @@ def evaluate(str):
         return section(distribute(structure))
 
 # problem = "info"
-problem = "circa(1)"
+problem = "circlea(1)"
 
 # add the following key functions
 # weighted mean
 # prime factorization
+
+# √ shortcut (using number pad): alt + 2 + 5 + 1
 
 answer = evaluate(problem)
 print(answer)
