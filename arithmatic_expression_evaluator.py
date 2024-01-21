@@ -141,7 +141,10 @@ def structure_string(str):
                         arr.append(digits)
                         digits = ""
                 except:
-                   arr.append(str[i])
+                    if len(digits) > 0:
+                        arr.append(digits)
+                    digits = ""
+                    arr.append(str[i])
             else:
                 if len(digits) > 0:
                     arr.append(digits)
@@ -1397,8 +1400,8 @@ def evaluate(str):
         return calculate(structure)
 
 # problem = "info"
-# problem = "circlea(1)+sin(0)+sin(0)"
-problem = "sd[[0+(100+4*(-25))],1]"
+# problem = "sd[[0+(100+4*(-25))],1]"
+problem = "sin(sd[0,1]-0.5)"
 
 # add the following key functions
 # prime factorization
