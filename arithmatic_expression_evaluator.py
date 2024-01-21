@@ -1,10 +1,33 @@
 import math
 
+# Programic Process
+
+# Phase I: Entity Analysis and Structure
+# Description: Analyzes String to identify and structure entities, including multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, sets and keywords.
+
+# Phase II: Bypass or Structural Manipulation
+# Description: Bypassed unless, as identified in Phase I, there are parenthesis, in which case distribute and section functions manipulate the structure accordingly.
+
+# Phase III: Bypass or Key Functions
+# Description: Bypassed unless Phase II was not bypassed and, as identified in Phase I, there are keywords, in which case search for and run key functions.
+
+# Phase IV: Calculation
+# Description: Search for and run appropriate mathematical operation on contents of structure, restructure with solution, and repeat until no operations are remaining.
+
+# reference
+# √ character shortcut (using number pad): alt + 2 + 5 + 1
+
 # parameters
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
 paren_limit = 10
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
 key_limit = 10
+
+# global variables
+# is_paren bypasses distribute and section if no parenthesis or square brackets are identified
+is_paren = False
+# is_key bypasses keyFunctions if no keywords are identified = if is_key list is empty
+is_key = []
 
 info = {
     "system_operations": [
@@ -17,8 +40,10 @@ info = {
         {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates to a value."},
+        
         {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
         {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+        
         {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
         {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
@@ -30,6 +55,7 @@ info = {
         {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
         {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
+        
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
         {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets perimeter of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
         {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
@@ -41,6 +67,7 @@ info = {
     ],
 }
 
+# STRUCTURE START
 def restructure(solution, start, end, arr):
     structure = []
     if start != 0:
@@ -84,9 +111,14 @@ def getWord(word, arr):
     return ref
 
 def word_struct(word, arr):
+    global is_key
     arrVar = arr
     ref = getWord(word, arrVar)
+    s = True
     while ref is not None:
+        if s == True:
+            is_key = [word] + is_key
+            s = False
         arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
         ref = getWord(word, arrVar)
     return arrVar
@@ -101,7 +133,15 @@ def structure_string(str):
         except:
             # handle negatives
             if str[i - 1] == "(" and str[i] == "-":
-                digits = digits + "%s" % str[i]
+                arr.pop()
+                digits = "%s" % str[i]
+            elif str[i] == ")":
+                try:
+                    if int(digits) < 0:
+                        arr.append(digits)
+                        digits = ""
+                except:
+                   arr.append(str[i])
             else:
                 if len(digits) > 0:
                     arr.append(digits)
@@ -112,15 +152,16 @@ def structure_string(str):
         finally:
             if (i == len(str) - 1 and len(digits) > 0):
                 arr.append(digits)
-    print(arr)
+    # print(arr)
 
     # structure keywords
+    s = True
     for i in range(0, len(info["system_operations"])):
         arr = word_struct(info["system_operations"][i]["name"], arr)
 
     for i in range(0, len(info["key_functions"])):
         arr = word_struct(info["key_functions"][i]["key"], arr)
-    print(arr)
+    # print(arr)
 
     # structure sets
     sets_ref = []
@@ -151,11 +192,21 @@ def structure_string(str):
                         sets_ref.append({"char": "[", "index": i})
                     elif arr[i] == "]":
                         sets_ref.append({"char": "]", "index": i})
-                break 
+                break
+    # print(arr)
+    
+    # Identify parenthesis
+    global is_paren
+    for i in range(0, len(arr)):
+        if arr[i] == "(":
+            is_paren = True
+            break
     
     print(arr)
     return arr
+# STRUCTURE END
 
+# KEY FUNCTIONS START
 def getIdx(str, arr):
     val = None
     for i in range(0, len(arr)):
@@ -164,7 +215,6 @@ def getIdx(str, arr):
             break
     return val
 
-# KEY FUNCTIONS START
 def trigonomic(arrVar):
     # perform all sine functions
     ref = getIdx("sin", arrVar)
@@ -256,6 +306,8 @@ def trigonomic(arrVar):
         ref = getIdx("atan", arrVar)
         print(arrVar)
 
+    return arrVar
+
 def logarithmic(arrVar):
     # perform all Logarithm functions
     ref = getIdx("log", arrVar)
@@ -275,7 +327,7 @@ def logarithmic(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
         
         x = set_2[0]
@@ -299,6 +351,8 @@ def logarithmic(arrVar):
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("ln", arrVar)
         print(arrVar)
+    
+    return arrVar
     
 def statistical(arrVar):
     # perform all Factorial functions
@@ -333,7 +387,7 @@ def statistical(arrVar):
                 x = float(i)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
         print(set_2)
         # perform calculation using numeral set
@@ -371,7 +425,7 @@ def statistical(arrVar):
                 x = float(i)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
         print(set_2)
         # perform calculation using numeral set
@@ -414,7 +468,7 @@ def statistical(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -443,7 +497,7 @@ def statistical(arrVar):
                 x = float(i)
                 set_2.append(1/x)
             else:
-                x = calculate(i)
+                x = calculate(section(distribute(i)))
                 set_2.append(1/x)
 
         # perform calculation using numeral set
@@ -468,7 +522,7 @@ def statistical(arrVar):
                 x = float(i)
                 set_2 = set_2 * x
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2 = set_2 * x
 
         # perform calculation using numeral set
@@ -529,7 +583,7 @@ def statistical(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -557,7 +611,7 @@ def statistical(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -583,10 +637,14 @@ def statistical(arrVar):
         # convert string set to numeral set
         set_2 = []
         for i in set_1:
-            x = float(i)
-            if x / 1 % 1 == 0:
-                x = int(x)
-            set_2.append(x)
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
 
         # perform calculation using numeral set
         gcf = 0
@@ -649,10 +707,14 @@ def statistical(arrVar):
         # convert string set to numeral set
         set_2 = []
         for i in set_1:
-            x = float(i)
-            if x / 1 % 1 == 0:
-                x = int(x)
-            set_2.append(x)
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
 
         # perform calculation using numeral set
         lcm = 0
@@ -678,6 +740,8 @@ def statistical(arrVar):
         arrVar = restructure(lcm, ref, ref + 1, arrVar)
         ref = getIdx("lcm", arrVar)
         print(arrVar)
+    
+    return arrVar
 
 def geometeric(arrVar):
     # perform all Triangle Area functions
@@ -698,7 +762,7 @@ def geometeric(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -728,7 +792,7 @@ def geometeric(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -760,7 +824,7 @@ def geometeric(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -790,7 +854,7 @@ def geometeric(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -823,7 +887,7 @@ def geometeric(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -854,7 +918,7 @@ def geometeric(arrVar):
                     x = int(x)
                 set_2.append(x)
             else:
-                x = calculate(i)
+                x = section(distribute(i))
                 set_2.append(x)
 
         # perform calculation using numeral set
@@ -909,24 +973,73 @@ def geometeric(arrVar):
     # perform all Dodecahedron Surface Area functions
     # perform all Icosahedron Volume functions
     # perform all Icosahedron Surface Area functions
+    
+    return arrVar
 
-def keyFunctions(arr):
+def key_functions(arr):
     arrVar = arr
 
     # TRIGONOMIC FUNCTIONS
-    trigonomic(arrVar)
+    arrVar = trigonomic(arrVar)
     # LOGARITHMIC FUNCTIONS
-    logarithmic(arrVar)
+    arrVar = logarithmic(arrVar)
     # STATISTICAL FUNCTIONS
-    statistical(arrVar)
+    arrVar = statistical(arrVar)
     # GEOMTERIC FUNCTIONS
-    geometeric(arrVar)
+    arrVar = geometeric(arrVar)
     
     return arrVar
 # KEY FUNCTIONS END
 
 def operations(arr):
     arrVar = arr
+
+    # perform all exponentiations
+    ref = getIdx("^", arrVar)
+    while ref is not None:
+        base = float(arrVar[ref - 1])
+        if base / 1 % 1 == 0:
+            base = int(base)
+
+        exponent = float(arrVar[ref + 1])
+        if exponent / 1 % 1 == 0:
+            exponent = int(exponent)
+
+        power = math.pow(base, exponent)
+
+        before = arrVar[0:ref - 1]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % power)
+        arrVar = arrVar + after
+        ref = getIdx("^", arrVar)
+        print(arrVar)
+
+    # Perform all roots
+    ref = getIdx("√", arrVar)
+    while ref is not None:
+        degree = float(arrVar[ref - 1])
+        if degree / 1 % 1 == 0:
+            degree = int(degree)
+
+        radicand = float(arrVar[ref + 1])
+        if radicand / 1 % 1 == 0:
+            radicand = int(radicand)
+
+        root = math.pow(radicand, 1/degree)
+
+        before = arrVar[0:ref - 1]
+        after = []
+        if ref < len(arrVar) - 2:
+            after = arrVar[ref + 2: len(arrVar)]
+        arrVar = before
+        arrVar.append("%s" % root)
+        arrVar = arrVar + after
+        ref = getIdx("√", arrVar)
+        print(arrVar)
+    
     # perform all Multiplications and Divisions as they apear from left to right
     m_ref = getIdx("*", arrVar)
     d_ref = getIdx("/", arrVar)
@@ -999,54 +1112,9 @@ def calculate(arr):
     arrVar = arr
 
     # perform all key functions
-    arrVar = keyFunctions(arrVar)
+    if len(is_key) > 0:
+        arrVar = key_functions(arrVar)
 
-    # perform all exponentiations
-    ref = getIdx("^", arrVar)
-    while ref is not None:
-        base = float(arrVar[ref - 1])
-        if base / 1 % 1 == 0:
-            base = int(base)
-
-        exponent = float(arrVar[ref + 1])
-        if exponent / 1 % 1 == 0:
-            exponent = int(exponent)
-
-        power = math.pow(base, exponent)
-
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % power)
-        arrVar = arrVar + after
-        ref = getIdx("^", arrVar)
-        print(arrVar)
-
-    # Perform all roots
-    ref = getIdx("√", arrVar)
-    while ref is not None:
-        degree = float(arrVar[ref - 1])
-        if degree / 1 % 1 == 0:
-            degree = int(degree)
-
-        radicand = float(arrVar[ref + 1])
-        if radicand / 1 % 1 == 0:
-            radicand = int(radicand)
-
-        root = math.pow(radicand, 1/degree)
-
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % root)
-        arrVar = arrVar + after
-        ref = getIdx("√", arrVar)
-        print(arrVar)
-    
     # perform arithmetic operations in operator precedence
     arrVar = operations(arrVar)
 
@@ -1096,8 +1164,8 @@ def distribute(arr):
     isDist = True
     x = 0
     while isDist == True and x < paren_limit:
-        x = x + 1
         # test for distribution
+        x = x + 1
         for i in range(0, len(arrVar)):
             isDist = False
             if i != 0 and i != len(arrVar):
@@ -1289,6 +1357,7 @@ def distribute(arr):
 
             arrVar = restructure(solution, start, end, arrVar)
             print(arrVar)
+    
     return arrVar
 
 def system_ops(arr):
@@ -1322,17 +1391,17 @@ def evaluate(str):
     system_operation = system_ops(structure)
     if system_operation == True:
         return ""
-    else:
+    elif is_paren == True:
         return section(distribute(structure))
+    else:
+        return calculate(structure)
 
 # problem = "info"
-problem = "circlea(1)"
+# problem = "circlea(1)+sin(0)+sin(0)"
+problem = "sd[[0+(100+4*(-25))],1]"
 
 # add the following key functions
-# weighted mean
 # prime factorization
-
-# √ shortcut (using number pad): alt + 2 + 5 + 1
 
 answer = evaluate(problem)
 print(answer)
