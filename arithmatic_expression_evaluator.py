@@ -2,9 +2,9 @@ import math
 
 # parameters
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
-paren_limit = 50
+paren_limit = 10
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
-key_limit = 50
+key_limit = 10
 
 info = {
     "system_operations": [
@@ -31,13 +31,13 @@ info = {
         {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
-        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets area of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
+        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets perimeter of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
         {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
         {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets perimeter of quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
         {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
         {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets perimeter of regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
         {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where r is a value or an expression that evaluates to a value."},
-        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets area of circle with radius r, where r is a value or an expression that evaluates to a value."},
+        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets perimeter of circle with radius r, where r is a value or an expression that evaluates to a value."},
     ],
 }
 
@@ -164,11 +164,8 @@ def getIdx(str, arr):
             break
     return val
 
-def keyFunctions(arr):
-    arrVar = arr
-    
-    # TRIGONOMIC FUNCTIONS
-
+# KEY FUNCTIONS START
+def trigonomic(arrVar):
     # perform all sine functions
     ref = getIdx("sin", arrVar)
     itr = 0
@@ -258,9 +255,8 @@ def keyFunctions(arr):
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("atan", arrVar)
         print(arrVar)
-    
-    # LOGARITHMIC FUNCTIONS
 
+def logarithmic(arrVar):
     # perform all Logarithm functions
     ref = getIdx("log", arrVar)
     itr = 0
@@ -304,8 +300,7 @@ def keyFunctions(arr):
         ref = getIdx("ln", arrVar)
         print(arrVar)
     
-    # STATISTICAL FUNCTIONS
-
+def statistical(arrVar):
     # perform all Factorial functions
     ref = getIdx("fact", arrVar)
     itr = 0
@@ -684,8 +679,7 @@ def keyFunctions(arr):
         ref = getIdx("lcm", arrVar)
         print(arrVar)
 
-    # GEOMTERIC FUNCTIONS
-    
+def geometeric(arrVar):
     # perform all Triangle Area functions
     ref = getIdx("tria", arrVar)
     itr = 0
@@ -903,7 +897,7 @@ def keyFunctions(arr):
         arrVar = restructure(perimeter, ref, ref + 1, arrVar)
         ref = getIdx("circlep", arrVar)
         print(arrVar)
-
+    
     # perform all Tertrahedron Volume functions
     
     # perform all Tertrahedron Surface Area functions
@@ -915,8 +909,21 @@ def keyFunctions(arr):
     # perform all Dodecahedron Surface Area functions
     # perform all Icosahedron Volume functions
     # perform all Icosahedron Surface Area functions
+
+def keyFunctions(arr):
+    arrVar = arr
+
+    # TRIGONOMIC FUNCTIONS
+    trigonomic(arrVar)
+    # LOGARITHMIC FUNCTIONS
+    logarithmic(arrVar)
+    # STATISTICAL FUNCTIONS
+    statistical(arrVar)
+    # GEOMTERIC FUNCTIONS
+    geometeric(arrVar)
     
     return arrVar
+# KEY FUNCTIONS END
 
 def operations(arr):
     arrVar = arr
