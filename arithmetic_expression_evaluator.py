@@ -15,7 +15,7 @@ import math
 # Description: Search for and run appropriate mathematical operation on contents of structure, restructure with solution, and repeat until no operations are remaining.
 
 # reference
-# √ character shortcut (using number pad): alt + 2 + 5 + 1
+# √ character shortcut (using number pad; "+" means press and hold): alt + 2 + 5 + 1
 
 # parameters
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
@@ -1400,8 +1400,8 @@ def evaluate(str):
         return calculate(structure)
 
 # problem = "info"
-# problem = "sd[[0+(100+4*(-25))],1]"
-problem = "sin(sd[0,1]-0.5)"
+
+problem = "sd[[sin(100+4*(-25))],1]+0.5"
 
 # add the following key functions
 # prime factorization
