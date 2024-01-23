@@ -9,29 +9,72 @@ import math
 # Description: Bypassed unless, as identified in Phase I, there are parenthesis, in which case distribute and section functions manipulate the structure accordingly.
 
 # Phase III: Bypass or Key Functions
-# Description: Bypassed unless Phase II was not bypassed and, as identified in Phase I, there are keywords, in which case search for and run key functions.
+# Description: Bypassed unless there are parenthesis and keywords or there are square brackets and keywords, in which case search for and run key functions.
 
 # Phase IV: Calculation
 # Description: Search for and run appropriate mathematical operation on contents of structure, restructure with solution, and repeat until no operations are remaining.
 
 # reference
+
 # √ character shortcut (using number pad; "+" means press and hold): alt + 2 + 5 + 1
 
-# parameters
+# PARAMETERS
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
 paren_limit = 10
+
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
 key_limit = 10
 
-# global variables
-# is_paren bypasses distribute and section if no parenthesis or square brackets are identified
+# ENTITY REFERENCE
+# is_paren indicates whether there are parenthesis, True, or not, False
+# If False, bypasses distribute and section functions
 is_paren = False
-# is_key bypasses keyFunctions if no keywords are identified = if is_key list is empty
+
+# is_brack indicates whether there are square brackets, True, or not, False
+# If False, bypasses keyFunctions function
+is_brack = False
+
+# is_exp indicates whether there are exponentiations, True, or not, False
+# If False, bypasses exponentiation
+is_exp = False
+
+# is_root indicates whether there are roots, True, or not, False
+# If False, bypasses roots
+is_root = False
+
+# is_mult indicates whether there are multiplications, True, or not, False
+# If False, bypasses multiplication
+is_mult = False
+
+# is_div indicates whether there are divisions, True, or not, False
+# If False, bypasses division
+is_div = False
+
+# is_add indicates whether there are additions, True, or not, False
+# If False, bypasses additions
+is_add = False
+
+# is_sub indicates whether there are subtractions, True, or not, False
+# If False, bypasses subtractions
+is_sub = False
+
+# is_key stores all the keys in problem string
+# If is_key list is empty, bypasses keyFunctions function
 is_key = []
 
+# Information
 info = {
     "system_operations": [
         {"name": "info", "about": "Prints program information."},
+    ],
+    "program_entities": [
+        {"name":"Negative Numbers", "syntax":"(-x)"},
+        {"name":"Exponentiation", "syntax":"^"},
+        {"name":"roots", "syntax":"√"},
+        {"name":"Multiplication", "syntax":"*"},
+        {"name":"Division", "syntax":"/"},
+        {"name":"Addition", "syntax":"+"},
+        {"name":"Subtraction", "syntax":"-"},
     ],
     "key_functions": [
         {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates to a value."},
@@ -69,6 +112,7 @@ info = {
 
 # STRUCTURE START
 def restructure(solution, start, end, arr):
+    # A single restructure function for all your restructuring needs!
     structure = []
     if start != 0:
         structure = structure + arr[0:start]
@@ -123,8 +167,70 @@ def word_struct(word, arr):
         ref = getWord(word, arrVar)
     return arrVar
 
+def identify_entities(arr):
+    # Identify parenthesis
+    global is_paren
+    for i in range(0, len(arr)):
+        if arr[i] == "(":
+            is_paren = True
+            break
+    
+    # Identify square brackets
+    global is_brack
+    for i in range(0, len(arr)):
+        if arr[i] == "[":
+            is_brack = True
+            break
+    
+    # Identify exponentiation
+    global is_exp
+    for i in range(0, len(arr)):
+        if arr[i] == "^":
+            is_exp = True
+            break
+    
+    # Identify roots
+    global is_root
+    for i in range(0, len(arr)):
+        if arr[i] == "√":
+            is_root = True
+            break
+    
+    # Identify multiplication
+    global is_mult
+    for i in range(0, len(arr)):
+        if arr[i] == "*":
+            is_mult = True
+            break
+    
+    # Identify division
+    global is_div
+    for i in range(0, len(arr)):
+        if arr[i] == "/":
+            is_div = True
+            break
+    
+    # Identify addition
+    global is_add
+    for i in range(0, len(arr)):
+        if arr[i] == "+":
+            is_add = True
+            break
+    
+    # Identify subtraction
+    global is_sub
+    for i in range(0, len(arr)):
+        if arr[i] == "-":
+            is_sub = True
+            break
+    
+    
+    print(arr)
+    return arr
+
+# Phase I Process
 def structure_string(str):
-    # structure values & operations & characters
+    # structure multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, and square brackets
     arr = []
     digits = ""
     for i in range(0, len(str)):
@@ -198,13 +304,9 @@ def structure_string(str):
                 break
     # print(arr)
     
-    # Identify parenthesis
-    global is_paren
-    for i in range(0, len(arr)):
-        if arr[i] == "(":
-            is_paren = True
-            break
-    
+    # Identify parenthesis and square brackets
+    arr = identify_entities(arr)
+
     print(arr)
     return arr
 # STRUCTURE END
@@ -979,6 +1081,7 @@ def geometeric(arrVar):
     
     return arrVar
 
+# Phase III process
 def key_functions(arr):
     arrVar = arr
 
@@ -994,135 +1097,223 @@ def key_functions(arr):
     return arrVar
 # KEY FUNCTIONS END
 
-def operations(arr):
-    arrVar = arr
+# OPERATIONS START
+def exponentiate(base, exponent):
+    base = float(base)
+    if base / 1 % 1 == 0:
+        base = int(base)
 
-    # perform all exponentiations
-    ref = getIdx("^", arrVar)
-    while ref is not None:
-        base = float(arrVar[ref - 1])
-        if base / 1 % 1 == 0:
-            base = int(base)
+    exponent = float(exponent)
+    if exponent / 1 % 1 == 0:
+        exponent = int(exponent)
 
-        exponent = float(arrVar[ref + 1])
-        if exponent / 1 % 1 == 0:
-            exponent = int(exponent)
+    power = math.pow(base, exponent)
 
-        power = math.pow(base, exponent)
+    return power
 
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % power)
-        arrVar = arrVar + after
-        ref = getIdx("^", arrVar)
-        print(arrVar)
+def root(radicand, degree):
+    radicand = float(radicand)
+    if radicand / 1 % 1 == 0:
+        radicand = int(radicand)
 
-    # Perform all roots
-    ref = getIdx("√", arrVar)
-    while ref is not None:
-        degree = float(arrVar[ref - 1])
-        if degree / 1 % 1 == 0:
-            degree = int(degree)
+    degree = float(degree)
+    if degree / 1 % 1 == 0:
+        degree = int(degree)
 
-        radicand = float(arrVar[ref + 1])
-        if radicand / 1 % 1 == 0:
-            radicand = int(radicand)
+    root = math.pow(radicand, 1/degree)
 
-        root = math.pow(radicand, 1/degree)
+    return root
 
-        before = arrVar[0:ref - 1]
-        after = []
-        if ref < len(arrVar) - 2:
-            after = arrVar[ref + 2: len(arrVar)]
-        arrVar = before
-        arrVar.append("%s" % root)
-        arrVar = arrVar + after
-        ref = getIdx("√", arrVar)
-        print(arrVar)
-    
-    # perform all Multiplications and Divisions as they apear from left to right
-    m_ref = getIdx("*", arrVar)
-    d_ref = getIdx("/", arrVar)
-    while m_ref is not None or d_ref is not None:
-        if d_ref is None and m_ref is not None or m_ref is not None and d_ref is not None and m_ref < d_ref:
-            multiplicand = float(arrVar[m_ref - 1])
-            if multiplicand / 1 % 1 == 0:
-                multiplicand = int(multiplicand)
+def multiply(multiplicand, multiplier):
+    multiplicand = float(multiplicand)
+    if multiplicand / 1 % 1 == 0:
+        multiplicand = int(multiplicand)
 
-            multiplier = float(arrVar[m_ref + 1])
-            if multiplier / 1 % 1 == 0:
-                multiplier = int(multiplier)
+    multiplier = float(multiplier)
+    if multiplier / 1 % 1 == 0:
+        multiplier = int(multiplier)
 
-            product = multiplicand * multiplier
-            arrVar = restructure(product, m_ref - 1, m_ref + 1, arrVar)
-            m_ref = getIdx("*", arrVar)
-            d_ref = getIdx("/", arrVar)
-            print(arrVar)
-        elif m_ref is None and d_ref is not None or d_ref is not None and m_ref is not None and d_ref < m_ref:
-            dividend = float(arrVar[d_ref - 1])
-            if dividend / 1 % 1 == 0:
-                dividend = int(dividend)
+    product = multiplicand * multiplier
 
-            divisor = float(arrVar[d_ref + 1])
-            if divisor / 1 % 1 == 0:
-                divisor = int(divisor)
+    return product
 
-            quotient = dividend / divisor
-            arrVar = restructure(quotient, d_ref - 1, d_ref + 1, arrVar)
-            m_ref = getIdx("*", arrVar)
-            d_ref = getIdx("/", arrVar)
-            print(arrVar)
-    
-    # perform all Additions and Subtractions as they apear from left to right
-    a_ref = getIdx("+", arrVar)
-    s_ref = getIdx("-", arrVar)
-    while a_ref is not None or s_ref is not None:
-        if s_ref is None and a_ref is not None or a_ref is not None and s_ref is not None and a_ref < s_ref:
-            augend = float(arrVar[a_ref - 1])
-            if augend / 1 % 1 == 0:
-                augend = int(augend)
+def divide(dividend, divisor):
+    dividend = float(dividend)
+    if dividend / 1 % 1 == 0:
+        dividend = int(dividend)
 
-            addend = float(arrVar[a_ref + 1])
-            if addend / 1 % 1 == 0:
-                addend = int(addend)
+    divisor = float(divisor)
+    if divisor / 1 % 1 == 0:
+        divisor = int(divisor)
 
-            total = augend + addend
-            arrVar = restructure(total, a_ref - 1, a_ref + 1, arrVar)
-            a_ref = getIdx("+", arrVar)
-            s_ref = getIdx("-", arrVar)
-            print(arrVar)
-        elif a_ref is None and s_ref is not None or s_ref is not None and a_ref is not None and s_ref < a_ref:
-            minuend = float(arrVar[s_ref - 1])
-            if minuend / 1 % 1 == 0:
-                minuend = int(minuend)
+    quotient = dividend / divisor
 
-            subtrahend = float(arrVar[s_ref + 1])
-            if subtrahend / 1 % 1 == 0:
-                subtrahend = int(subtrahend)
+    return quotient
 
-            difference = minuend - subtrahend
-            arrVar = restructure(difference, s_ref - 1, s_ref + 1, arrVar)
-            a_ref = getIdx("+", arrVar)
-            s_ref = getIdx("-", arrVar)
-            print(arrVar)
-    
-    return arrVar
+def add(augend, addend):
+    augend = float(augend)
+    if augend / 1 % 1 == 0:
+        augend = int(augend)
 
+    addend = float(addend)
+    if addend / 1 % 1 == 0:
+        addend = int(addend)
+
+    total = augend + addend
+
+    return total
+
+def subtract(minuend, subtrahend):
+    minuend = float(minuend)
+    if minuend / 1 % 1 == 0:
+        minuend = int(minuend)
+
+    subtrahend = float(subtrahend)
+    if subtrahend / 1 % 1 == 0:
+        subtrahend = int(subtrahend)
+
+    difference = minuend - subtrahend
+
+    return difference
+# OPERATIONS END
+
+# Phase IV Process
 def calculate(arr):
     arrVar = arr
 
     # perform all key functions
-    if len(is_key) > 0:
+    is_key_len = len(is_key)
+    if is_paren == True and is_key_len > 0  or is_brack == True and is_key_len > 0:
         arrVar = key_functions(arrVar)
 
-    # perform arithmetic operations in operator precedence
-    arrVar = operations(arrVar)
+    # perform all arithmetic operations in operator precedence
+    # perform all exponentiations
+    if is_exp == True:
+        ref = getIdx("^", arrVar)
+        while ref is not None:
+            arrVar = restructure(exponentiate(arrVar[ref - 1], arrVar[ref + 1]), ref - 1, ref + 1, arrVar)
+            ref = getIdx("^", arrVar)
+            print(arrVar)
 
+    # Perform all square roots
+    if is_root == True:
+        ref = getIdx("√", arrVar)
+        while ref is not None:
+            arrVar = restructure(root(arrVar[ref + 1], 2), ref, ref + 1, arrVar)
+            ref = getIdx("√", arrVar)
+            print(arrVar)
+    
+    # perform all Multiplications and Divisions as they appear from left to right
+    if is_mult == True and is_div == True:
+        m_ref = getIdx("*", arrVar)
+        d_ref = getIdx("/", arrVar)
+        while m_ref is not None or d_ref is not None:
+            if d_ref is None and m_ref is not None:
+                # Only Multiply
+                arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
+                m_ref = getIdx("*", arrVar)
+                print(arrVar)
+
+            elif m_ref is None and d_ref is not None:
+                # Only Divide
+                arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
+                d_ref = getIdx("/", arrVar)
+                print(arrVar)
+
+            elif m_ref is not None and d_ref is not None and m_ref < d_ref:
+                # Multiply first
+                arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
+                print(arrVar)
+
+                d_ref = getIdx("/", arrVar)
+                arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
+                print(arrVar)
+
+                m_ref = getIdx("*", arrVar)
+                d_ref = getIdx("/", arrVar)
+
+            elif d_ref is not None and m_ref is not None and d_ref < m_ref:
+                # Divide First
+                arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
+                print(arrVar)
+                m_ref = getIdx("*", arrVar)
+
+                arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
+                print(arrVar)
+
+                m_ref = getIdx("*", arrVar)
+                d_ref = getIdx("/", arrVar)
+    elif is_mult == True:
+        m_ref = getIdx("*", arrVar)
+        while m_ref is not None:
+            arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
+            m_ref = getIdx("*", arrVar)
+            print(arrVar)
+    elif is_div == True:
+        d_ref = getIdx("/", arrVar)
+        while d_ref is not None:
+            arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
+            d_ref = getIdx("/", arrVar)
+            print(arrVar)
+    
+    # perform all Additions and Subtractions as they appear from left to right
+    if is_add == True and is_sub == True:
+        a_ref = getIdx("+", arrVar)
+        s_ref = getIdx("-", arrVar)
+        while a_ref is not None or s_ref is not None:
+            if s_ref is None and a_ref is not None:
+                # only add
+                arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+                a_ref = getIdx("+", arrVar)
+                print(arrVar)
+
+            elif a_ref is None and s_ref is not None:
+                # only subtract
+                arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+                s_ref = getIdx("-", arrVar)
+                print(arrVar)
+
+            elif a_ref is not None and s_ref is not None and a_ref < s_ref:
+                # add first
+                arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+                a_ref = getIdx("+", arrVar)
+                print(arrVar)
+
+                s_ref = getIdx("-", arrVar)
+                arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+                print(arrVar)
+
+                a_ref = getIdx("+", arrVar)
+                s_ref = getIdx("-", arrVar)
+
+            elif s_ref is not None and a_ref is not None and s_ref < a_ref:
+                # subtract first
+                arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+                s_ref = getIdx("-", arrVar)
+                print(arrVar)
+
+                a_ref = getIdx("+", arrVar)
+                arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+                print(arrVar)
+
+                a_ref = getIdx("+", arrVar)
+                s_ref = getIdx("-", arrVar)
+    elif is_add == True:
+        a_ref = getIdx("+", arrVar)
+        while a_ref is not None:
+            arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+            a_ref = getIdx("+", arrVar)
+            print(arrVar)
+    elif is_sub == True:
+        s_ref = getIdx("-", arrVar)
+        while s_ref is not None:
+            arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+            s_ref = getIdx("-", arrVar)
+            print(arrVar)
+    
     return arrVar[0]
 
+# Phase II Process START
 def section(arr):
     arrVar = arr
     more_parens = True
@@ -1362,6 +1553,7 @@ def distribute(arr):
             print(arrVar)
     
     return arrVar
+# Phase II Process END
 
 def system_ops(arr):
     system_operation = False
@@ -1369,6 +1561,7 @@ def system_ops(arr):
     ref = getIdx("info", arr)
     if ref is not None:
         system_operation = True
+
         print("")
         print("System Operations")
         print("")
@@ -1376,6 +1569,15 @@ def system_ops(arr):
         for i in range(0, len(info["system_operations"])):
             print(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
             print("")
+        
+        print("")
+        print("Program Entities")
+        print("")
+
+        for i in range(0, len(info["program_entities"])):
+            print(info["program_entities"][i]["name"] + ": " + info["program_entities"][i]["syntax"])
+            print("")
+
         print("")
         print("Key Functions")
         print("")
@@ -1400,8 +1602,9 @@ def evaluate(str):
         return calculate(structure)
 
 # problem = "info"
+problem = "12^2"
 
-problem = "sd[[sin(100+4*(-25))],1]+0.5"
+# problem = "sd[[sin(100+4*(-25))],1]+0.5"
 
 # add the following key functions
 # prime factorization
