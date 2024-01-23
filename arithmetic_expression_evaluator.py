@@ -1558,46 +1558,49 @@ def distribute(arr):
     return arrVar
 # Phase II Process END
 
+# System Operations
+def get_info():
+    print("")
+    print("System Operations")
+    print("")
+
+    for i in range(0, len(info["system_operations"])):
+        print(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
+        print("")
+    
+    print("")
+    print("Program Entities")
+    print("")
+
+    for i in range(0, len(info["program_entities"])):
+        print(info["program_entities"][i]["name"] + ": " + info["program_entities"][i]["syntax"])
+        print("")
+
+    print("")
+    print("Key Functions")
+    print("")
+
+    for i in range(0, len(info["key_functions"])):
+        print("Name: " + info["key_functions"][i]["name"])
+        print("Syntax: " + info["key_functions"][i]["syntax"])
+        print("About: " + info["key_functions"][i]["about"])
+        print("")
+
 def system_ops(arr):
     global system_operation
 
     ref = getIdx("info", arr)
     if ref is not None:
         system_operation = True
-
-        print("")
-        print("System Operations")
-        print("")
-
-        for i in range(0, len(info["system_operations"])):
-            print(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
-            print("")
-        
-        print("")
-        print("Program Entities")
-        print("")
-
-        for i in range(0, len(info["program_entities"])):
-            print(info["program_entities"][i]["name"] + ": " + info["program_entities"][i]["syntax"])
-            print("")
-
-        print("")
-        print("Key Functions")
-        print("")
-
-        for i in range(0, len(info["key_functions"])):
-            print("Name: " + info["key_functions"][i]["name"])
-            print("Syntax: " + info["key_functions"][i]["syntax"])
-            print("About: " + info["key_functions"][i]["about"])
-            print("")
+        get_info()
 
     return system_operation
 
 def evaluate(str):
-    global system_operation
     print(str)
     structure = structure_string(str)
     system_ops(structure)
+    global system_operation
     if system_operation == True:
         return ""
     elif is_paren == True:
@@ -1605,8 +1608,8 @@ def evaluate(str):
     else:
         return calculate(structure)
 
-problem = "info1+2.5*24"
-# problem = "sd[[sin(100+4*(-25))],1]+0.5"
+# problem = "info"
+problem = "sd[[sin(100+4*(-25))],1]+0.5info"
 
 answer = evaluate(problem)
 print(answer)
