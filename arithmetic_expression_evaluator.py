@@ -224,8 +224,6 @@ def identify_entities(arr):
             is_sub = True
             break
     
-    
-    print(arr)
     return arr
 
 # Phase I Process
@@ -272,6 +270,9 @@ def structure_string(str):
         arr = word_struct(info["key_functions"][i]["key"], arr)
     # print(arr)
 
+    # Identify program entities
+    arr = identify_entities(arr)
+
     # structure sets
     sets_ref = []
     for i in range(0, len(arr)):
@@ -304,8 +305,6 @@ def structure_string(str):
                 break
     # print(arr)
     
-    # Identify parenthesis and square brackets
-    arr = identify_entities(arr)
 
     print(arr)
     return arr
@@ -1255,7 +1254,7 @@ def calculate(arr):
             arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
             d_ref = getIdx("/", arrVar)
             print(arrVar)
-    
+
     # perform all Additions and Subtractions as they appear from left to right
     if is_add == True and is_sub == True:
         a_ref = getIdx("+", arrVar)
@@ -1602,9 +1601,8 @@ def evaluate(str):
         return calculate(structure)
 
 # problem = "info"
-problem = "12^2"
 
-# problem = "sd[[sin(100+4*(-25))],1]+0.5"
+problem = "sd[[sin(100+4*(-25))],1]+0.5"
 
 # add the following key functions
 # prime factorization
