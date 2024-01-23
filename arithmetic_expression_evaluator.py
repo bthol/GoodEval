@@ -26,12 +26,16 @@ paren_limit = 10
 key_limit = 10
 
 # ENTITY REFERENCE
+# system_operation indicates whether there are system operations, True, or not, False
+# If True, terminates program after system operations are complete
+system_operation = False
+
 # is_paren indicates whether there are parenthesis, True, or not, False
 # If False, bypasses distribute and section functions
 is_paren = False
 
 # is_brack indicates whether there are square brackets, True, or not, False
-# If False, bypasses keyFunctions function
+# If False, bypasses key_functions function
 is_brack = False
 
 # is_exp indicates whether there are exponentiations, True, or not, False
@@ -59,7 +63,7 @@ is_add = False
 is_sub = False
 
 # is_key stores all the keys in problem string
-# If is_key list is empty, bypasses keyFunctions function
+# If is_key list is empty, bypasses key_functions function
 is_key = []
 
 # Information
@@ -138,7 +142,7 @@ def restructure(solution, start, end, arr):
         structure = structure + arr[end + 1:len(arr)]
     return structure
 
-def getWord(word, arr):
+def get_word(word, arr):
     wordLen = len(word)
     ref = None
     for i in range(0, len(arr) - 1):
@@ -157,14 +161,14 @@ def getWord(word, arr):
 def word_struct(word, arr):
     global is_key
     arrVar = arr
-    ref = getWord(word, arrVar)
+    ref = get_word(word, arrVar)
     s = True
     while ref is not None:
         if s == True:
             is_key = [word] + is_key
             s = False
         arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
-        ref = getWord(word, arrVar)
+        ref = get_word(word, arrVar)
     return arrVar
 
 def identify_entities(arr):
@@ -1555,7 +1559,7 @@ def distribute(arr):
 # Phase II Process END
 
 def system_ops(arr):
-    system_operation = False
+    global system_operation
 
     ref = getIdx("info", arr)
     if ref is not None:
@@ -1590,9 +1594,10 @@ def system_ops(arr):
     return system_operation
 
 def evaluate(str):
+    global system_operation
     print(str)
     structure = structure_string(str)
-    system_operation = system_ops(structure)
+    system_ops(structure)
     if system_operation == True:
         return ""
     elif is_paren == True:
@@ -1600,12 +1605,8 @@ def evaluate(str):
     else:
         return calculate(structure)
 
-# problem = "info"
-
-problem = "sd[[sin(100+4*(-25))],1]+0.5"
-
-# add the following key functions
-# prime factorization
+problem = "info1+2.5*24"
+# problem = "sd[[sin(100+4*(-25))],1]+0.5"
 
 answer = evaluate(problem)
 print(answer)
