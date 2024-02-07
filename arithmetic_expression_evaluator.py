@@ -1105,7 +1105,7 @@ def geometeric2D(arr):
 def geometeric3D(arr):
     arrVar = arr
     # perform all Cylinder Volume functions
-    ref = getIdx("cylinderp", arrVar)
+    ref = getIdx("cylinderv", arrVar)
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
@@ -1132,7 +1132,7 @@ def geometeric3D(arr):
         volume = base_area * height
         
         arrVar = restructure(volume, ref, ref + 1, arrVar)
-        ref = getIdx("cylinderp", arrVar)
+        ref = getIdx("cylinderv", arrVar)
         print(arrVar)
 
     # perform all Cylinder Surface Area functions
@@ -1721,7 +1721,6 @@ def evaluate(str):
 
 # problem = "info"
 # problem = "sd[[sin(100+4*((-26)+1))],1]+0.5"
-# problem = "cylinderv[[√(1/pi)],10]"
-problem = "pi*2"
+problem = "cylinderv[[√(1/pi)],10]"
 answer = evaluate(problem)
 print(answer)
