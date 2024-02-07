@@ -1721,6 +1721,6 @@ def evaluate(str):
 
 # problem = "info"
 # problem = "sd[[sin(100+4*((-26)+1))],1]+0.5"
-problem = "cylinderv[[√(1/pi)],10]"
+problem = "cylindersa[[1/(2*pi)],10]"
 answer = evaluate(problem)
 print(answer)
