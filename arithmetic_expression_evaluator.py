@@ -22,6 +22,9 @@ import math
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
 paren_limit = 10
 
+# the pi_limit parameter controls the maximum number of instances of pi allowed in any one evaluation
+pi_limit = 10
+
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
 key_limit = 10
 
@@ -81,6 +84,8 @@ info = {
         {"name":"Subtraction", "syntax":"-"},
     ],
     "key_functions": [
+        
+        # Trigonomic
         {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates to a value."},
@@ -88,9 +93,11 @@ info = {
         {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates to a value."},
         
+        # Logarithm
         {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
         {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
         
+        # Statistical
         {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates to a value."},
         {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
         {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
@@ -103,6 +110,7 @@ info = {
         {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
         
+        # 2D Geometery
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
         {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets perimeter of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
         {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
@@ -111,6 +119,10 @@ info = {
         {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets perimeter of regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
         {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where r is a value or an expression that evaluates to a value."},
         {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets perimeter of circle with radius r, where r is a value or an expression that evaluates to a value."},
+        
+        # 3D Geometery
+        {"name": "Cylinder Volume", "key": "cylinderv", "syntax": "cylinderv[r,h]", "about": "Gets volume of cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
+        {"name": "Cylinder Surafce Area", "key": "cylindersa", "syntax": "cylindersa[r,h]", "about": "Gets surface area of cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
     ],
 }
 
@@ -266,7 +278,7 @@ def identify_entities(arr):
 
 # Phase I Process
 def structure_string(str):
-    # structure multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, and square brackets
+    # structure multi-digit numbers, negative numbers, decimal numbers, pi, mathematical operations, parenthesis, and square brackets
     arr = []
     digits = ""
     for i in range(0, len(str)):
@@ -302,6 +314,14 @@ def structure_string(str):
             if (i == len(str) - 1 and len(digits) > 0):
                 arr.append(digits)
     # print(arr)
+
+    # structure pi
+    ref = get_word("pi", arr)
+    itr = 0
+    while itr < pi_limit and ref is not None:
+        itr = itr + 1
+        arr = restructure(math.pi, ref["first"], ref["last"] - 1, arr)
+        ref = get_word("pi", arr)
 
     # structure keywords
     s = True
@@ -856,8 +876,9 @@ def statistical(arr):
     
     return arrVar
 
-def geometeric(arr):
+def geometeric2D(arr):
     arrVar = arr
+    # Triangle
     # perform all Triangle Area functions
     ref = getIdx("tria", arrVar)
     itr = 0
@@ -920,6 +941,7 @@ def geometeric(arr):
         ref = getIdx("trip", arrVar)
         print(arrVar)
 
+    # Quadrilateral
     # perform all Quadrilateral Area functions
     ref = getIdx("quada", arrVar)
     itr = 0
@@ -983,6 +1005,7 @@ def geometeric(arr):
         ref = getIdx("quadp", arrVar)
         print(arrVar)
     
+    # n-Gon
     # perform all Regular n-Gon Area functions
     ref = getIdx("ngona", arrVar)
     itr = 0
@@ -1044,6 +1067,7 @@ def geometeric(arr):
         ref = getIdx("ngonp", arrVar)
         print(arrVar)
     
+    # Circle
     # perform all Circle Area functions
     ref = getIdx("circlea", arrVar)
     itr = 0
@@ -1076,8 +1100,81 @@ def geometeric(arr):
         ref = getIdx("circlep", arrVar)
         print(arrVar)
     
+    return arrVar
+
+def geometeric3D(arr):
+    arrVar = arr
+    # perform all Cylinder Volume functions
+    ref = getIdx("cylinderp", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        radius = set_2[0]
+        height = set_2[1]
+        base_area = math.pi * math.pow(radius, 2)
+        volume = base_area * height
+        
+        arrVar = restructure(volume, ref, ref + 1, arrVar)
+        ref = getIdx("cylinderp", arrVar)
+        print(arrVar)
+
+    # perform all Cylinder Surface Area functions
+    # sum of the circumference of the base times the height and the area of the base times two
+    ref = getIdx("cylindersa", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        radius = set_2[0]
+        height = set_2[1]
+        base_area = math.pi * math.pow(radius, 2)
+        base_circumference = 2 * math.pi * radius
+        surface_area = base_circumference * height + 2 * base_area
+        
+        arrVar = restructure(surface_area, ref, ref + 1, arrVar)
+        ref = getIdx("cylindersa", arrVar)
+        print(arrVar)
+
+    # perform all Cone Volume functions
+    # perform all Cone Surface Area functions
+    # perform all Rectangular Prism Volume functions
+    # perform all Rectangular Prism Surface Area functions
+        
+    # Platonic Solids
     # perform all Tertrahedron Volume functions
-    
     # perform all Tertrahedron Surface Area functions
     # perform all Cube Volume functions
     # perform all Cube Surface Area functions
@@ -1087,7 +1184,7 @@ def geometeric(arr):
     # perform all Dodecahedron Surface Area functions
     # perform all Icosahedron Volume functions
     # perform all Icosahedron Surface Area functions
-    
+
     return arrVar
 
 # Phase III process
@@ -1099,8 +1196,10 @@ def key_functions(arr):
     arrVar = logarithmic(arrVar)
     # STATISTICAL FUNCTIONS
     arrVar = statistical(arrVar)
-    # GEOMTERIC FUNCTIONS
-    arrVar = geometeric(arrVar)
+    # 2D GEOMTERIC FUNCTIONS
+    arrVar = geometeric2D(arrVar)
+    # 3D GEOMTERIC FUNCTIONS
+    arrVar = geometeric3D(arrVar)
     
     return arrVar
 # KEY FUNCTIONS END
@@ -1621,7 +1720,8 @@ def evaluate(str):
         return structure
 
 # problem = "info"
-# problem = "sd[[sin(100+4*(-25))],1]+0.5"
-problem = "sd[0,[(1+1)-1]]+0.5"
+# problem = "sd[[sin(100+4*((-26)+1))],1]+0.5"
+# problem = "cylinderv[[√(1/pi)],10]"
+problem = "pi*2"
 answer = evaluate(problem)
 print(answer)
