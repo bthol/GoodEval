@@ -9,7 +9,7 @@ import math
 # Description: Bypassed unless, as identified in Phase I, there are parenthesis, in which case distribute and section functions manipulate the structure accordingly.
 
 # Phase III: Bypass or Key Functions
-# Description: Bypassed unless there are parenthesis and keywords or there are square brackets and keywords, in which case search for and run key functions.
+# Description: Bypassed unless there are parenthesis and keywords, in which case search for and run key functions or there are square brackets and keywords, in which case create manipulate the structure to form sets and search for and run key functions.
 
 # Phase IV: Calculation
 # Description: Search for and run appropriate mathematical operation on contents of structure, restructure with solution, and repeat until no operations are remaining.
@@ -62,7 +62,7 @@ is_add = False
 # If False, bypasses subtractions
 is_sub = False
 
-# is_key stores all the keys in problem string
+# is_key stores all the kinds of keys in problem string
 # If is_key list is empty, bypasses key_functions function
 is_key = []
 
@@ -171,6 +171,40 @@ def word_struct(word, arr):
         ref = get_word(word, arrVar)
     return arrVar
 
+def structure_sets(arr):
+    # structure sets
+    sets_ref = []
+    for i in range(0, len(arr)):
+        if arr[i] == "[":
+            sets_ref.append({"char": "[", "index": i})
+        elif arr[i] == "]":
+            sets_ref.append({"char": "]", "index": i})
+    while len(sets_ref) > 0:
+        # identify next set to structure using reference
+        for i in range(0, len(sets_ref)):
+            if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
+                # build set
+                start_index = sets_ref[i]["index"]
+                end_index = sets_ref[i + 1]["index"]
+                solution_length = abs(start_index - end_index) + 1
+                the_set_itself = []
+                for i in range(0, solution_length):
+                    the_set_itself.append(arr[start_index + i])
+
+                # restructure
+                arr = restructure(the_set_itself, start_index, end_index, arr)
+                
+                # update reference
+                sets_ref = []
+                for i in range(0, len(arr)):
+                    if arr[i] == "[":
+                        sets_ref.append({"char": "[", "index": i})
+                    elif arr[i] == "]":
+                        sets_ref.append({"char": "]", "index": i})
+                break
+    print(arr)
+    return arr
+
 def identify_entities(arr):
     # Identify parenthesis
     global is_paren
@@ -248,6 +282,10 @@ def structure_string(str):
                     if int(digits) < 0:
                         arr.append(digits)
                         digits = ""
+                    else:
+                        arr.append(digits)
+                        digits = ""
+                        arr.append(str[i])
                 except:
                     if len(digits) > 0:
                         arr.append(digits)
@@ -274,42 +312,6 @@ def structure_string(str):
         arr = word_struct(info["key_functions"][i]["key"], arr)
     # print(arr)
 
-    # Identify program entities
-    arr = identify_entities(arr)
-
-    # structure sets
-    sets_ref = []
-    for i in range(0, len(arr)):
-        if arr[i] == "[":
-            sets_ref.append({"char": "[", "index": i})
-        elif arr[i] == "]":
-            sets_ref.append({"char": "]", "index": i})
-    while len(sets_ref) > 0:
-        # identify next set to structure using reference
-        for i in range(0, len(sets_ref)):
-            if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
-                # build set
-                start_index = sets_ref[i]["index"]
-                end_index = sets_ref[i + 1]["index"]
-                solution_length = abs(start_index - end_index) + 1
-                the_set_itself = []
-                for i in range(0, solution_length):
-                    the_set_itself.append(arr[start_index + i])
-
-                # restructure
-                arr = restructure(the_set_itself, start_index, end_index, arr)
-                
-                # update reference
-                sets_ref = []
-                for i in range(0, len(arr)):
-                    if arr[i] == "[":
-                        sets_ref.append({"char": "[", "index": i})
-                    elif arr[i] == "]":
-                        sets_ref.append({"char": "]", "index": i})
-                break
-    # print(arr)
-    
-
     print(arr)
     return arr
 # STRUCTURE END
@@ -323,7 +325,8 @@ def getIdx(str, arr):
             break
     return val
 
-def trigonomic(arrVar):
+def trigonomic(arr):
+    arrVar = arr
     # perform all sine functions
     ref = getIdx("sin", arrVar)
     itr = 0
@@ -416,7 +419,8 @@ def trigonomic(arrVar):
 
     return arrVar
 
-def logarithmic(arrVar):
+def logarithmic(arr):
+    arrVar = arr
     # perform all Logarithm functions
     ref = getIdx("log", arrVar)
     itr = 0
@@ -462,7 +466,8 @@ def logarithmic(arrVar):
     
     return arrVar
     
-def statistical(arrVar):
+def statistical(arr):
+    arrVar = arr
     # perform all Factorial functions
     ref = getIdx("fact", arrVar)
     itr = 0
@@ -851,7 +856,8 @@ def statistical(arrVar):
     
     return arrVar
 
-def geometeric(arrVar):
+def geometeric(arr):
+    arrVar = arr
     # perform all Triangle Area functions
     ref = getIdx("tria", arrVar)
     itr = 0
@@ -1087,7 +1093,6 @@ def geometeric(arrVar):
 # Phase III process
 def key_functions(arr):
     arrVar = arr
-
     # TRIGONOMIC FUNCTIONS
     arrVar = trigonomic(arrVar)
     # LOGARITHMIC FUNCTIONS
@@ -1603,13 +1608,20 @@ def evaluate(str):
     global system_operation
     if system_operation == True:
         return ""
-    elif is_paren == True:
-        return section(distribute(structure))
     else:
-        return calculate(structure)
+        identify_entities(structure)
+        if is_brack == True and is_paren == True:
+            structure = section(structure_sets(distribute(structure)))
+        elif is_brack == True and is_paren == False:
+            structure = calculate(structure_sets(structure))
+        elif is_brack == False and is_paren == True:
+            structure = section(distribute(structure))
+        else:
+            structure = calculate(structure)
+        return structure
 
 # problem = "info"
-problem = "sd[[sin(100+4*(-25))],1]+0.5info"
-
+# problem = "sd[[sin(100+4*(-25))],1]+0.5"
+problem = "sd[0,[(1+1)-1]]+0.5"
 answer = evaluate(problem)
 print(answer)
