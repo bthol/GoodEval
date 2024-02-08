@@ -86,21 +86,21 @@ info = {
     "key_functions": [
         
         # Trigonomic
-        {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets arc sine of x, where x is a value or an expression that evaluates to a value."},
-        {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets arc cosine of x, where x is a value or an expression that evaluates to a value."},
-        {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets arc tangent of x, where x is a value or an expression that evaluates to a value."},
-        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets sine of x, where x is a value or an expression that evaluates to a value."},
-        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets cosine of x, where x is a value or an expression that evaluates to a value."},
-        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets tangent of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets the arc sine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets the arc cosine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arc tangent of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
         
         # Logarithm
-        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
-        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
+        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
         
         # Statistical
-        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets factorial of x, where x is a value or an expression that evaluates to a value."},
-        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
-        {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
+        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets the permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
+        {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets the combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
         {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
         {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
         {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
@@ -111,18 +111,19 @@ info = {
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
         
         # 2D Geometery
-        {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets area of triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
-        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets perimeter of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
-        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
+        {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets the area of triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
+        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets the perimeter of triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
+        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets the area of quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
         {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets perimeter of quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
-        {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets area of regular n-gon with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
-        {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets perimeter of regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
-        {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets area of circle with radius r, where r is a value or an expression that evaluates to a value."},
-        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets perimeter of circle with radius r, where r is a value or an expression that evaluates to a value."},
+        {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets the area of regular n-gon with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
+        {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets the perimeter of regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
+        {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets th area of circle with radius r, where r is a value or an expression that evaluates to a value."},
+        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets the perimeter of circle with radius r, where r is a value or an expression that evaluates to a value."},
         
         # 3D Geometery
-        {"name": "Cylinder Volume", "key": "cylinderv", "syntax": "cylinderv[r,h]", "about": "Gets volume of cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
-        {"name": "Cylinder Surafce Area", "key": "cylindersa", "syntax": "cylindersa[r,h]", "about": "Gets surface area of cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
+        {"name": "Cylinder Volume", "key": "cylinderv", "syntax": "cylinderv[r,h]", "about": "Gets the volume of cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
+        {"name": "Cylinder Surafce Area", "key": "cylindersa", "syntax": "cylindersa[r,h]", "about": "Gets the surface area of cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
+        {"name": "Cone Volume", "key": "conev", "syntax": "conev[r,h]", "about": "Gets the volume of regular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conev[r,[h+x]]"},
     ],
 }
 
@@ -1169,7 +1170,39 @@ def geometeric3D(arr):
         print(arrVar)
 
     # perform all Cone Volume functions
+    ref = getIdx("conev", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        print(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        radius = set_2[0]
+        height = set_2[1]
+        base_area = math.pi * math.pow(radius, 2)
+        volume = base_area * height / 3
+        
+        arrVar = restructure(volume, ref, ref + 1, arrVar)
+        ref = getIdx("conev", arrVar)
+        print(arrVar)
+    
     # perform all Cone Surface Area functions
+    
+
     # perform all Rectangular Prism Volume functions
     # perform all Rectangular Prism Surface Area functions
         
@@ -1721,6 +1754,6 @@ def evaluate(str):
 
 # problem = "info"
 # problem = "sd[[sin(100+4*((-26)+1))],1]+0.5"
-problem = "cylindersa[[1/(2*pi)],10]"
+problem = "conev[[√(3/pi)],1]"
 answer = evaluate(problem)
 print(answer)
