@@ -1,24 +1,24 @@
 import math
 
-# Programic Process
+# PROGRAMIC PROCESS
 
-# Phase I: Entity Analysis and Structure
-# Description: Analyzes String to identify and structure entities, including multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, sets and keywords.
+# Phase I: Entity Structuring and Analysis
+# Description: Analyzes problem string to create structure from string data and analyzes structure to identify program entities from structure data, including and limited to multi-digit numbers, negative numbers, decimal numbers, mathematical operators, parenthesis, sets and keywords.
 
-# Phase II: Bypass or Structural Manipulation
-# Description: Bypassed unless, as identified in Phase I, there are parenthesis, in which case distribute and section functions manipulate the structure accordingly.
+# Phase II: Structural Manipulation
+# Description: Bypassed unless, as identified in Phase I, there are parenthesis, in which case, a test for distribution is run, where either there is distribution and the distribution and section functions manipulate the structure accordingly or there isn't distribution and only the section function manipulates the structure accordingly.
 
-# Phase III: Bypass or Key Functions
-# Description: Bypassed unless there are parenthesis and keywords, in which case search for and run key functions or there are square brackets and keywords, in which case create manipulate the structure to form sets and search for and run key functions.
+# Phase III: Key Functions
+# Description: Bypassed unless, in one case, there are parenthesis and keywords, in which case search for and run key functions or, in another case, there are square brackets and keywords, in which case manipulate the structure to form sets and search for and run key functions.
 
 # Phase IV: Calculation
 # Description: Search for and run appropriate mathematical operation on contents of structure, restructure with solution, and repeat until no operations are remaining.
 
 # reference
-
 # √ character shortcut (using number pad; "+" means press and hold): alt + 2 + 5 + 1
 
-# PARAMETERS
+# PROGRAM PARAMETERS
+
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
 paren_limit = 10
 
@@ -28,7 +28,8 @@ pi_limit = 10
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
 key_limit = 10
 
-# ENTITY REFERENCE
+# PROGRAM ENTITY REFERENCE
+
 # system_operation indicates whether there are system operations, True, or not, False
 # If True, terminates program after system operations are complete
 system_operation = False
@@ -36,6 +37,10 @@ system_operation = False
 # is_paren indicates whether there are parenthesis, True, or not, False
 # If False, bypasses distribute and section functions
 is_paren = False
+
+# is_dist indicates whether there is distribution, True, or not, False
+# If False, bypasses distribute function
+is_dist = False
 
 # is_brack indicates whether there are square brackets, True, or not, False
 # If False, bypasses key_functions function
@@ -65,14 +70,30 @@ is_add = False
 # If False, bypasses subtractions
 is_sub = False
 
-# is_key stores all the kinds of keys in problem string
-# If is_key list is empty, bypasses key_functions function
+# is_key stores strings for each kind of keyword in problem string
+# If is_key is empty, bypasses key_functions function
 is_key = []
 
-# Information
+# process_log is an object literal that stores string values for all process checkpoints during evalution
+# use_logs indicates whether to use logs, True, or not, False
+# note: log_process is run on every restructure, run for calculation reference, and run for process labels
+process_log = {"0":"no logging"}
+use_logs = False
+first_log = True
+def log_process(log = ""):
+    global use_logs
+    if use_logs == True:
+        global first_log
+        if first_log == True:
+            process_log["0"] = "Process Log Start"
+            first_log = False
+        new_key = int(list(process_log.keys())[-1]) + 1
+        process_log["%s" % new_key] = log
+
+# Program Information
 info = {
     "system_operations": [
-        {"name": "info", "about": "Prints program information."},
+        {"name": "info", "about": "Prints program information, i.e. system operations, program entities, key functions, and their related information."},
     ],
     "program_entities": [
         {"name":"Negative Numbers", "syntax":"(-x)"},
@@ -87,43 +108,69 @@ info = {
         
         # Trigonomic
         {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets the arc sine of x, where x is a value or an expression that evaluates to a value."},
+
         {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets the arc cosine of x, where x is a value or an expression that evaluates to a value."},
+
         {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arc tangent of x, where x is a value or an expression that evaluates to a value."},
+
         {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
+
         {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
+
         {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
         
         # Logarithm
         {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
+
         {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
         
         # Statistical
         {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
+
         {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
+
         {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+
         {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
+
         {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
+
         {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
+
         {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
+
         {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
+
         {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
+
         {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
+
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
         
         # 2D Geometery
         {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets the area of a triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
+
         {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets the perimeter of a triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
+
         {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets the area of a quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
+
         {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets the perimeter of a quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
+
         {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets the area of a regular n-gon with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
+
         {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets the perimeter of a regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
+
         {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets th area of a circle with radius r, where r is a value or an expression that evaluates to a value."},
+
         {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets the perimeter of a circle with radius r, where r is a value or an expression that evaluates to a value."},
         
         # 3D Geometery
         {"name": "Cylinder Volume", "key": "cylinderv", "syntax": "cylinderv[r,h]", "about": "Gets the volume of a cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
+
         {"name": "Cylinder Surafce Area", "key": "cylindersa", "syntax": "cylindersa[r,h]", "about": "Gets the surface area of a cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
+
         {"name": "Cone Volume", "key": "conev", "syntax": "conev[r,h]", "about": "Gets the volume of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conev[r,[h+x]]"},
+
         {"name": "Cone Surface Area", "key": "conesa", "syntax": "conesa[r,h]", "about": "Gets the surface area of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conev[r,[h+x]]"},
     ],
 }
@@ -154,6 +201,8 @@ def restructure(solution, start, end, arr):
             structure.append(solution)
     if end != len(arr) - 1:
         structure = structure + arr[end + 1:len(arr)]
+    # log new structure
+    log_process(structure)
     return structure
 
 def get_word(word, arr):
@@ -186,6 +235,7 @@ def word_struct(word, arr):
     return arrVar
 
 def structure_sets(arr):
+    log_process("Structure Sets")
     # structure sets
     sets_ref = []
     for i in range(0, len(arr)):
@@ -193,8 +243,8 @@ def structure_sets(arr):
             sets_ref.append({"char": "[", "index": i})
         elif arr[i] == "]":
             sets_ref.append({"char": "]", "index": i})
+    # identify next set to structure using reference
     while len(sets_ref) > 0:
-        # identify next set to structure using reference
         for i in range(0, len(sets_ref)):
             if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
                 # build set
@@ -216,7 +266,6 @@ def structure_sets(arr):
                     elif arr[i] == "]":
                         sets_ref.append({"char": "]", "index": i})
                 break
-    print(arr)
     return arr
 
 def identify_entities(arr):
@@ -227,6 +276,14 @@ def identify_entities(arr):
             is_paren = True
             break
     
+    # identify distribution
+    if (is_paren):
+        for i in range(0, len(arr)):
+            if i != 0 and i != len(arr):
+                if (arr[i] == "(" and arr[i - 1] == "*") or (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "*"):
+                    is_dist = True
+                    break
+
     # Identify square brackets
     global is_brack
     for i in range(0, len(arr)):
@@ -275,12 +332,14 @@ def identify_entities(arr):
         if arr[i] == "-":
             is_sub = True
             break
-    
+
     return arr
 
 # Phase I Process
 def structure_string(str):
-    # structure multi-digit numbers, negative numbers, decimal numbers, pi, mathematical operations, parenthesis, and square brackets
+    # Log process label for structuring
+    log_process("Structuring")
+    # structure multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, and square brackets
     arr = []
     digits = ""
     for i in range(0, len(str)):
@@ -333,8 +392,7 @@ def structure_string(str):
     for i in range(0, len(info["key_functions"])):
         arr = word_struct(info["key_functions"][i]["key"], arr)
     # print(arr)
-
-    print(arr)
+    
     return arr
 # STRUCTURE END
 
@@ -360,9 +418,10 @@ def trigonomic(arr):
         
         y = math.sin(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("sin", arrVar)
-        print(arrVar)
 
     # perform all cosine functions
     ref = getIdx("cos", arrVar)
@@ -375,9 +434,10 @@ def trigonomic(arr):
         
         y = math.cos(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("cos", arrVar)
-        print(arrVar)
 
     # perform all tangent functions
     ref = getIdx("tan", arrVar)
@@ -390,9 +450,10 @@ def trigonomic(arr):
         
         y = math.tan(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("tan", arrVar)
-        print(arrVar)
     
     # perform all arc sine functions
     ref = getIdx("asin", arrVar)
@@ -405,9 +466,10 @@ def trigonomic(arr):
         
         y = math.asin(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("asin", arrVar)
-        print(arrVar)
 
     # perform all arc cosine functions
     ref = getIdx("acos", arrVar)
@@ -420,9 +482,10 @@ def trigonomic(arr):
         
         y = math.acos(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("acos", arrVar)
-        print(arrVar)
 
     # perform all arc tangent functions
     ref = getIdx("atan", arrVar)
@@ -435,9 +498,10 @@ def trigonomic(arr):
         
         y = math.atan(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("atan", arrVar)
-        print(arrVar)
 
     return arrVar
 
@@ -450,7 +514,7 @@ def logarithmic(arr):
         itr = itr + 1
         # get string string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -468,9 +532,10 @@ def logarithmic(arr):
         b = set_2[1]
         y = math.log(x, b)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("log", arrVar)
-        print(arrVar)
     
     # perform all Natural Logarithm functions
     ref = getIdx("ln", arrVar)
@@ -482,9 +547,10 @@ def logarithmic(arr):
             x = int(x)
         y = math.log(x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("ln", arrVar)
-        print(arrVar)
     
     return arrVar
     
@@ -502,9 +568,10 @@ def statistical(arr):
         for i in range(x, 1, -1):
             y = y * i
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("fact", arrVar)
-        print(arrVar)
 
     # perform all Permutation functions
     ref = getIdx("perm", arrVar)
@@ -513,7 +580,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -524,7 +591,7 @@ def statistical(arr):
             else:
                 x = section(distribute(i))
                 set_2.append(x)
-        print(set_2)
+
         # perform calculation using numeral set
         def factorial(x):
             y = 1
@@ -540,9 +607,10 @@ def statistical(arr):
 
         perm = numerator / denominator
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(perm, ref, ref + 1, arrVar)
         ref = getIdx("perm", arrVar)
-        print(arrVar)
     
     # perform all Combination functions
     ref = getIdx("comb", arrVar)
@@ -551,7 +619,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -562,7 +630,7 @@ def statistical(arr):
             else:
                 x = section(distribute(i))
                 set_2.append(x)
-        print(set_2)
+
         # perform calculation using numeral set
         def factorial(x):
             y = 1
@@ -581,9 +649,10 @@ def statistical(arr):
 
         comb = numerator / denominator
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(comb, ref, ref + 1, arrVar)
         ref = getIdx("comb", arrVar)
-        print(arrVar)
     
     # perform all Standard Deviation functions
     ref = getIdx("sd", arrVar)
@@ -592,7 +661,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -613,9 +682,10 @@ def statistical(arr):
             set_3.append(math.pow(i - mean, 2))
         sd = math.pow(sum(set_3)/len(set_3), 1/2)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(sd, ref, ref + 1, arrVar)
         ref = getIdx("sd", arrVar)
-        print(arrVar)
 
     # perform all Harmonic Mean functions
     ref = getIdx("meanh", arrVar)
@@ -624,7 +694,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         set_2 = []
         for i in set_1:
@@ -638,9 +708,10 @@ def statistical(arr):
         # perform calculation using numeral set
         mean = len(set_2) / sum(set_2)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("meanh", arrVar)
-        print(arrVar)
     
     # perform all Geometeric Mean functions
     ref = getIdx("meang", arrVar)
@@ -649,7 +720,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         set_2 = 1
         for i in set_1:
@@ -663,9 +734,10 @@ def statistical(arr):
         # perform calculation using numeral set
         mean = math.pow(set_2, 1/len(set_1))
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("meang", arrVar)
-        print(arrVar)
 
     # perform all Weighted Mean functions
     ref = getIdx("meanw", arrVar)
@@ -675,7 +747,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # get weights and total of weights
         n = 0
@@ -696,9 +768,10 @@ def statistical(arr):
         # perform calculation using numeral set
         mean = sum(set_2) / n
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("meanw", arrVar)
-        print(arrVar)
 
     # perform all Mean functions
     ref = getIdx("mean", arrVar)
@@ -707,7 +780,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -724,9 +797,10 @@ def statistical(arr):
         # perform calculation using numeral set
         mean = sum(set_2) / len(set_2)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(mean, ref, ref + 1, arrVar)
         ref = getIdx("mean", arrVar)
-        print(arrVar)
     
     # perform all Root Mean Square functions
     ref = getIdx("rms", arrVar)
@@ -735,7 +809,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -756,9 +830,10 @@ def statistical(arr):
         mean = sum(square) / len(square)
         root = math.pow(mean, 1/2)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(root, ref, ref + 1, arrVar)
         ref = getIdx("rms", arrVar)
-        print(arrVar)
     
     # perform all Greatest Common Factor functions
     ref = getIdx("gcf", arrVar)
@@ -767,7 +842,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -786,8 +861,8 @@ def statistical(arr):
         val1 = set_2[0]
         val2 = set_2[1]
         if val1 != val2:
-            fact_1 = []
-            fact_2 = []
+            facts_1 = []
+            facts_2 = []
 
             def factor(x):
                 factors = []
@@ -802,22 +877,22 @@ def statistical(arr):
                 facts = factor(val1)
                 for i in facts:
                     if i < val2:
-                        fact_1.append(i)
-                fact_2 = factor(val2)
+                        facts_1.append(i)
+                facts_2 = factor(val2)
             else:
                 # filter extra factors
                 facts = factor(val2)
                 for i in facts:
                     if i < val1:
-                        fact_2.append(i)
-                fact_1 = factor(val1)
+                        facts_2.append(i)
+                facts_1 = factor(val1)
 
-            print(fact_1)
-            print(fact_2)
+            log_process(facts_1)
+            log_process(facts_2)
 
             # search for common factors
-            for i in fact_1:
-                for j in fact_2:
+            for i in facts_1:
+                for j in facts_2:
                     if i == j:
                         gcf = j
                         break
@@ -826,9 +901,10 @@ def statistical(arr):
         else:
             gcf = set_2[0]
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(gcf, ref, ref + 1, arrVar)
         ref = getIdx("gcf", arrVar)
-        print(arrVar)
     
     # perform all Least Common Multiple functions
     ref = getIdx("lcm", arrVar)
@@ -837,7 +913,7 @@ def statistical(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -872,9 +948,10 @@ def statistical(arr):
                 mult_1.append(mult_1[0] * x)
                 mult_2.append(mult_2[0] * x)
 
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(lcm, ref, ref + 1, arrVar)
         ref = getIdx("lcm", arrVar)
-        print(arrVar)
     
     return arrVar
 
@@ -888,7 +965,7 @@ def geometeric2D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -907,9 +984,10 @@ def geometeric2D(arr):
         height = set_2[1]
         area = .5 * base * height
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(area, ref, ref + 1, arrVar)
         ref = getIdx("tria", arrVar)
-        print(arrVar)
     
     # perform all Triangle Perimeter functions
     ref = getIdx("trip", arrVar)
@@ -918,7 +996,7 @@ def geometeric2D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -939,9 +1017,10 @@ def geometeric2D(arr):
 
         perimeter = a + b + c
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(perimeter, ref, ref + 1, arrVar)
         ref = getIdx("trip", arrVar)
-        print(arrVar)
 
     # Quadrilateral
     # perform all Quadrilateral Area functions
@@ -951,7 +1030,7 @@ def geometeric2D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -970,9 +1049,10 @@ def geometeric2D(arr):
         height = set_2[1]
         area = base * height
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(area, ref, ref + 1, arrVar)
         ref = getIdx("quada", arrVar)
-        print(arrVar)
     
     # perform all Quadrilateral Perimeter functions
     ref = getIdx("quadp", arrVar)
@@ -981,7 +1061,7 @@ def geometeric2D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1003,9 +1083,10 @@ def geometeric2D(arr):
 
         perimeter = a + b + c + d
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(perimeter, ref, ref + 1, arrVar)
         ref = getIdx("quadp", arrVar)
-        print(arrVar)
     
     # n-Gon
     # perform all Regular n-Gon Area functions
@@ -1015,7 +1096,7 @@ def geometeric2D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1035,9 +1116,10 @@ def geometeric2D(arr):
         trig = 1 / math.tan(math.pi / n)
         area = .25 * a * n * trig
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(area, ref, ref + 1, arrVar)
         ref = getIdx("ngona", arrVar)
-        print(arrVar)
     
     # perform all Regular n-Gon Perimeter functions
     ref = getIdx("ngonp", arrVar)
@@ -1046,7 +1128,7 @@ def geometeric2D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1065,9 +1147,10 @@ def geometeric2D(arr):
         n = set_2[1]
         perimeter = a * n
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(perimeter, ref, ref + 1, arrVar)
         ref = getIdx("ngonp", arrVar)
-        print(arrVar)
     
     # Circle
     # perform all Circle Area functions
@@ -1082,9 +1165,10 @@ def geometeric2D(arr):
 
         area = math.pi * math.pow(r, 2)
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(area, ref, ref + 1, arrVar)
         ref = getIdx("circlea", arrVar)
-        print(arrVar)
 
     # perform all Circle Perimeter functions
     ref = getIdx("circlep", arrVar)
@@ -1098,9 +1182,10 @@ def geometeric2D(arr):
 
         perimeter = 2 * math.pi * r
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(perimeter, ref, ref + 1, arrVar)
         ref = getIdx("circlep", arrVar)
-        print(arrVar)
     
     return arrVar
 
@@ -1113,7 +1198,7 @@ def geometeric3D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1133,9 +1218,10 @@ def geometeric3D(arr):
         base_area = math.pi * math.pow(radius, 2)
         volume = base_area * height
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(volume, ref, ref + 1, arrVar)
         ref = getIdx("cylinderv", arrVar)
-        print(arrVar)
 
     # perform all Cylinder Surface Area functions
     # sum of the circumference of the base times the height and the area of the base times two
@@ -1145,7 +1231,7 @@ def geometeric3D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1166,9 +1252,10 @@ def geometeric3D(arr):
         base_circumference = 2 * math.pi * radius
         surface_area = base_circumference * height + 2 * base_area
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(surface_area, ref, ref + 1, arrVar)
         ref = getIdx("cylindersa", arrVar)
-        print(arrVar)
 
     # perform all Cone Volume functions
     ref = getIdx("conev", arrVar)
@@ -1177,7 +1264,7 @@ def geometeric3D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1197,9 +1284,10 @@ def geometeric3D(arr):
         base_area = math.pi * math.pow(radius, 2)
         volume = base_area * height / 3
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(volume, ref, ref + 1, arrVar)
         ref = getIdx("conev", arrVar)
-        print(arrVar)
     
     # perform all Cone Surface Area functions
     ref = getIdx("conesa", arrVar)
@@ -1208,7 +1296,7 @@ def geometeric3D(arr):
         itr = itr + 1
         # get string set
         set_1 = arrVar[ref + 1]
-        print(set_1)
+        log_process(set_1)
 
         # convert string set to numeral set
         set_2 = []
@@ -1233,11 +1321,13 @@ def geometeric3D(arr):
         
         surface_area = base_area + side_area
         
+        # Log keyword
+        log_process(arrVar[ref])
         arrVar = restructure(surface_area, ref, ref + 1, arrVar)
         ref = getIdx("conesa", arrVar)
-        print(arrVar)
 
     # perform all Rectangular Prism Volume functions
+    
     # perform all Rectangular Prism Surface Area functions
         
     # Platonic Solids
@@ -1254,8 +1344,9 @@ def geometeric3D(arr):
 
     return arrVar
 
-# Phase III process
 def key_functions(arr):
+    # Log process label for key functions
+    log_process("Key Functions")
     arrVar = arr
     # TRIGONOMIC FUNCTIONS
     arrVar = trigonomic(arrVar)
@@ -1351,31 +1442,46 @@ def subtract(minuend, subtrahend):
     return difference
 # OPERATIONS END
 
-# Phase IV Process
+# Phase III and IV Process
 def calculate(arr):
     arrVar = arr
 
+    # Phase III
     # perform all key functions
     is_key_len = len(is_key)
+    # if there are required program entities for key functions: parenthesis and keywords or square brackets and keywords
     if is_paren == True and is_key_len > 0  or is_brack == True and is_key_len > 0:
-        arrVar = key_functions(arrVar)
+        # then test if there are keys in section
+        keys_in_section = False
+        for i in range(0, is_key_len):
+            for j in range(0, len(arrVar)):
+                if is_key[i] == arrVar[j]:
+                    keys_in_section = True
+                    break
+            if keys_in_section == True:
+                break
+        if keys_in_section == True:
+            # run keys functions
+            arrVar = key_functions(arrVar)
 
+    # Phase IV
     # perform all arithmetic operations in operator precedence
+    
     # perform all exponentiations
     if is_exp == True:
         ref = getIdx("^", arrVar)
         while ref is not None:
-            arrVar = restructure(exponentiate(arrVar[ref - 1], arrVar[ref + 1]), ref - 1, ref + 1, arrVar)
+            x = exponentiate(arrVar[ref - 1], arrVar[ref + 1])
+            arrVar = restructure(x, ref - 1, ref + 1, arrVar)
             ref = getIdx("^", arrVar)
-            print(arrVar)
 
     # Perform all square roots
     if is_root == True:
         ref = getIdx("√", arrVar)
         while ref is not None:
-            arrVar = restructure(root(arrVar[ref + 1], 2), ref, ref + 1, arrVar)
+            x = root(arrVar[ref + 1], 2)
+            arrVar = restructure(x, ref, ref + 1, arrVar)
             ref = getIdx("√", arrVar)
-            print(arrVar)
     
     # perform all Multiplications and Divisions as they appear from left to right
     if is_mult == True and is_div == True:
@@ -1384,51 +1490,51 @@ def calculate(arr):
         while m_ref is not None or d_ref is not None:
             if d_ref is None and m_ref is not None:
                 # Only Multiply
-                arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
+                x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
                 m_ref = getIdx("*", arrVar)
-                print(arrVar)
 
             elif m_ref is None and d_ref is not None:
                 # Only Divide
-                arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
+                x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
                 d_ref = getIdx("/", arrVar)
-                print(arrVar)
 
             elif m_ref is not None and d_ref is not None and m_ref < d_ref:
                 # Multiply first
-                arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
-                print(arrVar)
+                x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
 
                 d_ref = getIdx("/", arrVar)
-                arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
-                print(arrVar)
+                y = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                arrVar = restructure(y, d_ref - 1, d_ref + 1, arrVar)
 
                 m_ref = getIdx("*", arrVar)
                 d_ref = getIdx("/", arrVar)
 
             elif d_ref is not None and m_ref is not None and d_ref < m_ref:
                 # Divide First
-                arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
-                print(arrVar)
+                x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
                 m_ref = getIdx("*", arrVar)
 
-                arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
-                print(arrVar)
+                y = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                arrVar = restructure(y, m_ref - 1, m_ref + 1, arrVar)
 
                 m_ref = getIdx("*", arrVar)
                 d_ref = getIdx("/", arrVar)
     elif is_mult == True:
         m_ref = getIdx("*", arrVar)
         while m_ref is not None:
-            arrVar = restructure(multiply(arrVar[m_ref - 1], arrVar[m_ref + 1]), m_ref - 1, m_ref + 1, arrVar)
+            x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+            arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
             m_ref = getIdx("*", arrVar)
-            print(arrVar)
     elif is_div == True:
         d_ref = getIdx("/", arrVar)
         while d_ref is not None:
-            arrVar = restructure(divide(arrVar[d_ref - 1], arrVar[d_ref + 1]), d_ref - 1, d_ref + 1, arrVar)
+            x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+            arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
             d_ref = getIdx("/", arrVar)
-            print(arrVar)
 
     # perform all Additions and Subtractions as they appear from left to right
     if is_add == True and is_sub == True:
@@ -1437,58 +1543,59 @@ def calculate(arr):
         while a_ref is not None or s_ref is not None:
             if s_ref is None and a_ref is not None:
                 # only add
-                arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+                x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
                 a_ref = getIdx("+", arrVar)
-                print(arrVar)
 
             elif a_ref is None and s_ref is not None:
                 # only subtract
-                arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+                x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
                 s_ref = getIdx("-", arrVar)
-                print(arrVar)
 
             elif a_ref is not None and s_ref is not None and a_ref < s_ref:
                 # add first
-                arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+                x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
                 a_ref = getIdx("+", arrVar)
-                print(arrVar)
 
                 s_ref = getIdx("-", arrVar)
-                arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
-                print(arrVar)
+                y = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                arrVar = restructure(y, s_ref - 1, s_ref + 1, arrVar)
 
                 a_ref = getIdx("+", arrVar)
                 s_ref = getIdx("-", arrVar)
 
             elif s_ref is not None and a_ref is not None and s_ref < a_ref:
                 # subtract first
-                arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+                x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
                 s_ref = getIdx("-", arrVar)
-                print(arrVar)
 
                 a_ref = getIdx("+", arrVar)
-                arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
-                print(arrVar)
+                y = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                arrVar = restructure(y, a_ref - 1, a_ref + 1, arrVar)
 
                 a_ref = getIdx("+", arrVar)
                 s_ref = getIdx("-", arrVar)
     elif is_add == True:
         a_ref = getIdx("+", arrVar)
         while a_ref is not None:
-            arrVar = restructure(add(arrVar[a_ref - 1], arrVar[a_ref + 1]), a_ref - 1, a_ref + 1, arrVar)
+            x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+            arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
             a_ref = getIdx("+", arrVar)
-            print(arrVar)
     elif is_sub == True:
         s_ref = getIdx("-", arrVar)
         while s_ref is not None:
-            arrVar = restructure(subtract(arrVar[s_ref - 1], arrVar[s_ref + 1]), s_ref - 1, s_ref + 1, arrVar)
+            x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+            arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
             s_ref = getIdx("-", arrVar)
-            print(arrVar)
     
     return arrVar[0]
 
 # Phase II Process START
 def section(arr):
+    log_process("Parenthesis")
     arrVar = arr
     more_parens = True
     thresh = 0
@@ -1520,242 +1627,239 @@ def section(arr):
             start = osme[len(osme) - 1 - i]["start"] - 1
             end = osme[len(osme) - 1 - i]["end"] + 1
             section = osme[len(osme) - 1 - i]["section"]
-            print(section)
-            arrVar = restructure(calculate(section), start, end - 1, arrVar)
+            log_process(section)
+            if len(section) > 1:
+                section = calculate(section)
+            arrVar = restructure(section, start, end - 1, arrVar)
 
-        print(arrVar)
-    answer = calculate(arrVar)
-    return answer
+    arrVar = calculate(arrVar)
+    return arrVar
 
 def distribute(arr):
+    log_process("Distribution")
+    global is_dist
     arrVar = arr
-    isDist = True
     x = 0
-    while isDist == True and x < paren_limit:
-        # test for distribution
+    while is_dist == True and x < paren_limit:
         x = x + 1
+        # runs distribution process
+        parens = []
         for i in range(0, len(arrVar)):
-            isDist = False
+            # differentiate between pairs of conditions + store in reference structure
+            if arrVar[i] == "(":
+                if arrVar[i - 1] == "*" and i > 0:
+                    parens.append({"char": "(", "index": i, "mult": True})
+                else:
+                    parens.append({"char": "(", "index": i, "mult": False})
+            elif arrVar[i] == ")":
+                if i < len(arrVar) - 1 and arrVar[i + 1] == "*":
+                    parens.append({"char": ")", "index": i, "mult": True})
+                else:
+                    parens.append({"char": ")", "index": i, "mult": False})
+        # print(parens)
+
+        # get section for distribution
+        start = 0
+        search_start = False
+        start_count = 0
+
+        end = 0
+        search_end = False
+        end_count = 0
+
+        ref = 0
+        monomial_start = False
+        monomial_end = False
+
+        for i in range(0, len(parens)):
+            if parens[i]["mult"] == True and parens[i]["char"] == "(":
+                search_end = True
+                if arrVar[parens[i]["index"] - 2] != ")":
+                    start = parens[i]["index"] - 2
+                    monomial_start = True
+
+            if parens[i]["mult"] == True and parens[i]["char"] == ")":
+                search_start = True
+                ref = i
+                if arrVar[parens[i]["index"] + 2] != "(":
+                    end = parens[i]["index"] + 2
+                    monomial_end = True
+            
+            # search for start
+            if search_start == True:
+                for i in range(0, len(parens)):
+                    if parens[ref - i]["char"] == "(":
+                        start_count = start_count + 1
+                    elif parens[ref - i]["char"] == ")":
+                        start_count = start_count - 1
+                    if start_count == 0 and parens[ref - i]["char"] == "(":
+                        start = parens[ref - i]["index"]
+                        search_start = False
+                        break
+
+            # search for end
+            if search_end == True:
+                if parens[i]["char"] == "(":
+                    end_count = end_count + 1
+                elif parens[i]["char"] == ")":
+                    end_count = end_count - 1
+                if end_count == 0 and parens[i]["char"] == ")":
+                    end = parens[i]["index"]
+                    search_end = False
+            
+        section = arrVar[start:end + 1]
+
+        # add parens to monomial to indentify term
+        if monomial_start == True:
+            monomial = section[0]
+            section.pop(0)
+            section.insert(0, ")")
+            section.insert(0, monomial)
+            section.insert(0, "(")
+        if monomial_end == True:
+            monomial = section[len(section) - 1]
+            section.pop()
+            section.append("(")
+            section.append(monomial)
+            section.append(")")
+        log_process(section)
+
+        # get terms from section
+        terms1 = []
+        terms2 = []
+        compile = []
+        negate_list = False
+        level = 0
+        last_level = level
+        for i in range(0, len(section)):
+            last_level = level
+            if section[i] == "(":
+                level = level + 1
+            elif section[i] == ")":
+                level = level - 1
+            if i != len(section) - 1 and level == 0 and section[i] == ")":
+                terms1 = terms2
+                terms2 = []
+            try:
+                # lists
+                if level > 1:
+                    if last_level == 1 and section[i - 1] == "-":
+                        negate_list = True
+                    term = section[i]
+                    try:
+                        term = float(term)
+                        if term % 1 == 0:
+                            term = int(term)
+                        if negate_list == True or section[i - 1] == "-":
+                            term = term * -1
+                        compile.append(term)
+                    except:
+                        compile.append(term)
+                elif level == 1 and last_level > 1:
+                    length = len(compile)
+                    if section[i - length] == "-":
+                        for i in range(0, length):
+                            try:
+                                val = float(compile[i])
+                                if val % 1 == 0:
+                                    val = int(val)
+                                val = val * -1
+                                val = str(val)
+                                compile.pop(i)
+                                compile.insert(i, val)
+                            except:
+                                continue
+                    compile.append(")")
+                    terms2.append(compile)
+                    compile = []
+
+                # numbers
+                term = float(section[i])
+                if term % 1 == 0:
+                    term = int(term)
+                if section[i - 1] == "-":
+                    term = term * -1
+                if level == 1:
+                    terms2.append(term)
+            except:
+                continue
+        # print(terms1)
+        # print(terms2)
+
+        # use nested iteration to distribute every term from terms1 over every term in terms2
+        solution = []
+        def itr_append(arr):
+            for i in range(0, len(arr)):
+                solution.append(arr[i])    
+
+        for i in range(0, len(terms1)):     
+            for j in range(0, len(terms2)):
+                if i == 0 and j == 0:
+                    if isinstance(terms1[i], list):
+                        itr_append(terms1[i])
+                        solution.append("*")
+                    else:
+                        solution.append(str(terms1[i]))
+                        solution.append("*")
+                    if isinstance(terms2[j], list):
+                        itr_append(terms2[j])
+                    else:
+                        solution.append(str(terms2[j]))
+                else:
+                    solution.append("+")
+                    # solution.append("(")
+                    if isinstance(terms1[i], list):
+                        itr_append(terms1[i])
+                        solution.append("*")
+                    else:
+                        solution.append(str(terms1[i]))
+                        solution.append("*")
+                    if isinstance(terms2[j], list):
+                        itr_append(terms2[j])
+                    else:
+                        solution.append(str(terms2[j]))
+        log_process(solution)
+
+        arrVar = restructure(solution, start, end, arrVar)
+
+        # test for distribution
+        is_dist = False
+        for i in range(0, len(arrVar)):
             if i != 0 and i != len(arrVar):
                 # test for two pairs of conditions that indicate distribution
                 if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*"):
-                    isDist = True
+                    is_dist = True
                     break
-
-        # run distribution process
-        if isDist == True:
-            parens = []
-            for i in range(0, len(arrVar)):
-                # differentiate between pairs of conditions + store in reference structure
-                if arrVar[i] == "(":
-                    if arrVar[i - 1] == "*" and i > 0:
-                        parens.append({"char": "(", "index": i, "mult": True})
-                    else:
-                        parens.append({"char": "(", "index": i, "mult": False})
-                elif arrVar[i] == ")":
-                    if i < len(arrVar) - 1 and arrVar[i + 1] == "*":
-                        parens.append({"char": ")", "index": i, "mult": True})
-                    else:
-                        parens.append({"char": ")", "index": i, "mult": False})
-            # print(parens)
-
-            # get section for distribution
-            start = 0
-            search_start = False
-            start_count = 0
-
-            end = 0
-            search_end = False
-            end_count = 0
-
-            ref = 0
-            monomial_start = False
-            monomial_end = False
-            for i in range(0, len(parens)):
-                if parens[i]["mult"] == True and parens[i]["char"] == "(":
-                    search_end = True
-                    if arrVar[parens[i]["index"] - 2] != ")":
-                        start = parens[i]["index"] - 2
-                        monomial_start = True
-
-                if parens[i]["mult"] == True and parens[i]["char"] == ")":
-                    search_start = True
-                    ref = i
-                    if arrVar[parens[i]["index"] + 2] != "(":
-                        end = parens[i]["index"] + 2
-                        monomial_end = True
-                
-                # search for start
-                if search_start == True:
-                    for i in range(0, len(parens)):
-                        if parens[ref - i]["char"] == "(":
-                            start_count = start_count + 1
-                        elif parens[ref - i]["char"] == ")":
-                            start_count = start_count - 1
-                        if start_count == 0 and parens[ref - i]["char"] == "(":
-                            start = parens[ref - i]["index"]
-                            search_start = False
-                            break
-
-                # search for end
-                if search_end == True:
-                    if parens[i]["char"] == "(":
-                        end_count = end_count + 1
-                    elif parens[i]["char"] == ")":
-                        end_count = end_count - 1
-                    if end_count == 0 and parens[i]["char"] == ")":
-                        end = parens[i]["index"]
-                        search_end = False
-                
-            section = arrVar[start:end + 1]
-
-            # add parens to monomial to indentify term
-            if monomial_start == True:
-                monomial = section[0]
-                section.pop(0)
-                section.insert(0, ")")
-                section.insert(0, monomial)
-                section.insert(0, "(")
-            if monomial_end == True:
-                monomial = section[len(section) - 1]
-                section.pop()
-                section.append("(")
-                section.append(monomial)
-                section.append(")")
-            print(section)
-
-            # get terms from section
-            terms1 = []
-            terms2 = []
-            compile = []
-            negate_list = False
-            level = 0
-            last_level = level
-            for i in range(0, len(section)):
-                last_level = level
-                if section[i] == "(":
-                    level = level + 1
-                elif section[i] == ")":
-                    level = level - 1
-                if i != len(section) - 1 and level == 0 and section[i] == ")":
-                    terms1 = terms2
-                    terms2 = []
-                try:
-                    # lists
-                    if level > 1:
-                        if last_level == 1 and section[i - 1] == "-":
-                            negate_list = True
-                        term = section[i]
-                        try:
-                            term = float(term)
-                            if term % 1 == 0:
-                                term = int(term)
-                            if negate_list == True or section[i - 1] == "-":
-                                term = term * -1
-                            compile.append(term)
-                        except:
-                            compile.append(term)
-                    elif level == 1 and last_level > 1:
-                        length = len(compile)
-                        if section[i - length] == "-":
-                            for i in range(0, length):
-                                try:
-                                    val = float(compile[i])
-                                    if val % 1 == 0:
-                                        val = int(val)
-                                    val = val * -1
-                                    val = str(val)
-                                    compile.pop(i)
-                                    compile.insert(i, val)
-                                except:
-                                    continue
-                        compile.append(")")
-                        terms2.append(compile)
-                        compile = []
-
-                    # numbers
-                    term = float(section[i])
-                    if term % 1 == 0:
-                        term = int(term)
-                    if section[i - 1] == "-":
-                        term = term * -1
-                    if level == 1:
-                        terms2.append(term)
-                except:
-                    continue
-            # print(terms1)
-            # print(terms2)
-
-            # use nested iteration to distribute every term from terms1 over every term in terms2
-            solution = []
-            def itr_append(arr):
-                for i in range(0, len(arr)):
-                    solution.append(arr[i])    
-
-            for i in range(0, len(terms1)):     
-                for j in range(0, len(terms2)):
-                    if i == 0 and j == 0:
-                        # solution.append("(")
-                        if isinstance(terms1[i], list):
-                            itr_append(terms1[i])
-                            solution.append("*")
-                        else:
-                            solution.append(str(terms1[i]))
-                            solution.append("*")
-                        if isinstance(terms2[j], list):
-                            itr_append(terms2[j])
-                        else:
-                            solution.append(str(terms2[j]))
-                        # solution.append(")")
-                    else:
-                        solution.append("+")
-                        # solution.append("(")
-                        if isinstance(terms1[i], list):
-                            itr_append(terms1[i])
-                            solution.append("*")
-                        else:
-                            solution.append(str(terms1[i]))
-                            solution.append("*")
-                        if isinstance(terms2[j], list):
-                            itr_append(terms2[j])
-                        else:
-                            solution.append(str(terms2[j]))
-                        # solution.append(")")
-            print(solution)
-
-            arrVar = restructure(solution, start, end, arrVar)
-            print(arrVar)
-    
     return arrVar
 # Phase II Process END
 
 # System Operations
 def get_info():
-    print("")
-    print("System Operations")
-    print("")
+    log_process()
+    log_process("System Operations")
+    log_process()
 
     for i in range(0, len(info["system_operations"])):
-        print(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
-        print("")
+        log_process(info["system_operations"][i]["name"] + ": " + info["system_operations"][i]["about"])
+        log_process()
     
-    print("")
-    print("Program Entities")
-    print("")
+    log_process()
+    log_process("Program Entities")
+    log_process()
 
     for i in range(0, len(info["program_entities"])):
-        print(info["program_entities"][i]["name"] + ": " + info["program_entities"][i]["syntax"])
-        print("")
+        log_process(info["program_entities"][i]["name"] + ": " + info["program_entities"][i]["syntax"])
+        log_process()
 
-    print("")
-    print("Key Functions")
-    print("")
+    log_process()
+    log_process("Key Functions")
+    log_process()
 
     for i in range(0, len(info["key_functions"])):
-        print("Name: " + info["key_functions"][i]["name"])
-        print("Syntax: " + info["key_functions"][i]["syntax"])
-        print("About: " + info["key_functions"][i]["about"])
-        print("")
+        log_process("Name: " + info["key_functions"][i]["name"])
+        log_process("Syntax: " + info["key_functions"][i]["syntax"])
+        log_process("About: " + info["key_functions"][i]["about"])
+        log_process()
 
 def system_ops(arr):
     global system_operation
@@ -1768,26 +1872,57 @@ def system_ops(arr):
     return system_operation
 
 def evaluate(str):
-    print(str)
     structure = structure_string(str)
     system_ops(structure)
     global system_operation
     if system_operation == True:
-        return ""
+        return "System Operation"
     else:
+        # Identify program entities in problem string to determine structuring and operations
         identify_entities(structure)
-        if is_brack == True and is_paren == True:
-            structure = section(structure_sets(distribute(structure)))
-        elif is_brack == True and is_paren == False:
-            structure = calculate(structure_sets(structure))
-        elif is_brack == False and is_paren == True:
-            structure = section(distribute(structure))
+        if is_paren == True and is_brack == True:
+            if is_dist == True:
+                structure = distribute(structure)
+            structure = structure_sets(structure)
+            structure = section(structure)
+        elif is_paren == True and is_brack == False:
+            if is_dist == True:
+                structure = distribute(structure)
+            structure = section(structure)
+        elif is_paren == False and is_brack == True:
+            structure = structure_sets(structure)
+            structure = calculate(structure)
         else:
             structure = calculate(structure)
         return structure
 
-# problem = "info"
-# problem = "sd[[sin(100+4*((-26)+1))],1]+0.5"
-problem = "conesa[2,10]"
-answer = evaluate(problem)
+# Simulated Program Input
+input = {
+    # "problem": "info",
+    "problem": "sin(1-1)+tan(0)",
+    # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+    "use_logs": True,
+}
+use_logs = input["use_logs"]
+
+# Evaluation
+answer = evaluate(input["problem"])
+
+# Simulated Program Output
+output = {
+    "problem": input["problem"],
+    "answer": answer,
+    "logs": process_log,
+}
+
+# Prints feedback for program development
+logs = """"""
+process_log_keys = list(process_log.keys())
+for key in process_log_keys:
+    logs += """%s
+""" % process_log[key]
+
+print(input["problem"])
 print(answer)
+print(logs)
+print("Output Object: %s" % output)
