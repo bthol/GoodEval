@@ -176,6 +176,9 @@ info = {
         {"name": "Rectangular Prism Volume", "key": "rectprismv", "syntax": "rectprismv[l,h,w]", "about": "Gets the volume of a rectangular prism with length l, height h and width w, where l, h, and w are values or expressions that evaluate to values wrapped in square brackets, e.g. rectprism[l,h,[w+x]]"},
         
         {"name": "Rectangular Prism Surface Area", "key": "rectprismsa", "syntax": "rectprismsa[l,h,w]", "about": "Gets the surface area of a rectangular prism with length l, height h and width w, where l, h, and w are values or expressions that evaluate to values wrapped in square brackets, e.g. rectprism[l,h,[w+x]]"},
+        
+        # Platonic Solids
+        {"name": "Tetrahedron Surface Area", "key": "tetrahedronsa", "syntax": "tetrahedronsa(s)", "about": "Gets the surface area of a tetrahedron with side length s, where s is a value or an expression that evaluates to a value."},
     ],
 }
 
@@ -213,7 +216,11 @@ def get_word(word, arr):
     wordLen = len(word)
     ref = None
     for i in range(0, len(arr) - 1):
+        if (i > len(arr) - 1 - wordLen):
+            # stop search if remaining indexes of arr is less than length of word
+            break
         # test for first and last letter of word
+        print(i)
         if arr[i] == word[0] and arr[i + wordLen - 1] == word[wordLen - 1]:
             # get string between first and last letter index
             str = ""
@@ -381,6 +388,9 @@ def structure_string(str):
     # print(arr)
 
     # structure pi
+
+    print("pi") # here
+
     ref = get_word("pi", arr)
     itr = 0
     while itr < pi_limit and ref is not None:
@@ -391,9 +401,15 @@ def structure_string(str):
     # structure keywords
     s = True
     for i in range(0, len(info["system_operations"])):
+
+        print(info["system_operations"][i]["name"]) # here
+
         arr = word_struct(info["system_operations"][i]["name"], arr)
 
     for i in range(0, len(info["key_functions"])):
+
+        print(info["key_functions"][i]["key"]) # here
+
         arr = word_struct(info["key_functions"][i]["key"], arr)
     # print(arr)
     
@@ -1395,10 +1411,32 @@ def geometeric3D(arr):
         log_process(arrVar[ref])
         arrVar = restructure(area, ref, ref + 1, arrVar)
         ref = getIdx("rectprismsa", arrVar)
-    
+
+    return arrVar
+
+def platonic_solids(arr):
+    arrVar = arr
+
     # Platonic Solids
     # perform all Tertrahedron Volume functions
+
     # perform all Tertrahedron Surface Area functions
+    ref = getIdx("tetrahedronsa", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        x = float(arrVar[ref + 1])
+        print(x)
+        if x / 1 % 1 == 0:
+            x = int(x)
+        
+        y = 3 * math.tan(60) * math.pow(x, 2)
+
+        # Log keyword
+        log_process(arrVar[ref])
+        arrVar = restructure(y, ref, ref + 1, arrVar)
+        ref = getIdx("tetrahedronsa", arrVar)
+    
     # perform all Cube Volume functions
     # perform all Cube Surface Area functions
     # perform all Octahedron Volume functions
@@ -1407,7 +1445,6 @@ def geometeric3D(arr):
     # perform all Dodecahedron Surface Area functions
     # perform all Icosahedron Volume functions
     # perform all Icosahedron Surface Area functions
-
     return arrVar
 
 def key_functions(arr):
@@ -1424,6 +1461,8 @@ def key_functions(arr):
     arrVar = geometeric2D(arrVar)
     # 3D GEOMTERIC FUNCTIONS
     arrVar = geometeric3D(arrVar)
+    # PLATONIC SOLIDS FUNCTIONS
+    arrVar = platonic_solids(arrVar)
     
     return arrVar
 # KEY FUNCTIONS END
@@ -1965,7 +2004,7 @@ def evaluate(str):
 # Simulated Program Input
 input = {
     # "problem": "info",
-    "problem": "rectprismsa[2,3,5]",
+    "problem": "tetrahedronsa(10)",
     # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
     "use_logs": True,
 }
