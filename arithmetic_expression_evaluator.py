@@ -171,7 +171,11 @@ info = {
 
         {"name": "Cone Volume", "key": "conev", "syntax": "conev[r,h]", "about": "Gets the volume of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conev[r,[h+x]]"},
 
-        {"name": "Cone Surface Area", "key": "conesa", "syntax": "conesa[r,h]", "about": "Gets the surface area of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conev[r,[h+x]]"},
+        {"name": "Cone Surface Area", "key": "conesa", "syntax": "conesa[r,h]", "about": "Gets the surface area of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conesa[r,[h+x]]"},
+        
+        {"name": "Rectangular Prism Volume", "key": "rectprismv", "syntax": "rectprismv[l,h,w]", "about": "Gets the volume of a rectangular prism with length l, height h and width w, where l, h, and w are values or expressions that evaluate to values wrapped in square brackets, e.g. rectprism[l,h,[w+x]]"},
+        
+        {"name": "Rectangular Prism Surface Area", "key": "rectprismsa", "syntax": "rectprismsa[l,h,w]", "about": "Gets the surface area of a rectangular prism with length l, height h and width w, where l, h, and w are values or expressions that evaluate to values wrapped in square brackets, e.g. rectprism[l,h,[w+x]]"},
     ],
 }
 
@@ -1327,9 +1331,71 @@ def geometeric3D(arr):
         ref = getIdx("conesa", arrVar)
 
     # perform all Rectangular Prism Volume functions
-    
-    # perform all Rectangular Prism Surface Area functions
+    ref = getIdx("rectprismv", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        log_process(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        length = set_2[0]
+        height = set_2[1]
+        width = set_2[2]
+
+        volume = length * height * width
         
+        # Log keyword
+        log_process(arrVar[ref])
+        arrVar = restructure(volume, ref, ref + 1, arrVar)
+        ref = getIdx("rectprismv", arrVar)
+
+    # perform all Rectangular Prism Surface Area functions
+    ref = getIdx("rectprismsa", arrVar)
+    itr = 0
+    while itr < key_limit and ref is not None:
+        itr = itr + 1
+        # get string set
+        set_1 = arrVar[ref + 1]
+        log_process(set_1)
+
+        # convert string set to numeral set
+        set_2 = []
+        for i in set_1:
+            if isinstance(i, str):
+                x = float(i)
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                set_2.append(x)
+            else:
+                x = section(distribute(i))
+                set_2.append(x)
+
+        # perform calculation using numeral set
+        length = set_2[0]
+        height = set_2[1]
+        width = set_2[2]
+
+        area = ( height * width * 2 ) + ( height * length * 2) + ( width * length * 2)
+        
+        # Log keyword
+        log_process(arrVar[ref])
+        arrVar = restructure(area, ref, ref + 1, arrVar)
+        ref = getIdx("rectprismsa", arrVar)
+    
     # Platonic Solids
     # perform all Tertrahedron Volume functions
     # perform all Tertrahedron Surface Area functions
@@ -1899,7 +1965,7 @@ def evaluate(str):
 # Simulated Program Input
 input = {
     # "problem": "info",
-    "problem": "sin(1-1)+tan(0)",
+    "problem": "rectprismsa[2,3,5]",
     # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
     "use_logs": True,
 }
