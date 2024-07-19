@@ -83,10 +83,6 @@ first_log = True
 def log_process(log = ""):
     global use_logs
     if use_logs == True:
-        global first_log
-        if first_log == True:
-            process_log["0"] = "Process Log Start"
-            first_log = False
         new_key = int(list(process_log.keys())[-1]) + 1
         process_log["%s" % new_key] = log
 
@@ -95,6 +91,7 @@ info = {
     "system_operations": [
         {"name": "info", "about": "Prints program information, i.e. system operations, program entities, key functions, and their related information."},
     ],
+    
     "program_entities": [
         {"name":"Negative Numbers", "syntax":"(-x)"},
         {"name":"Exponentiation", "syntax":"^"},
@@ -104,6 +101,7 @@ info = {
         {"name":"Addition", "syntax":"+"},
         {"name":"Subtraction", "syntax":"-"},
     ],
+
     "key_functions": [
         
         # Trigonomic
@@ -118,13 +116,12 @@ info = {
         {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
 
         {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
-        
-        # Logarithm
+
+        # Statistical
         {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
 
         {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
         
-        # Statistical
         {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
 
         {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
@@ -146,41 +143,6 @@ info = {
         {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
 
         {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
-        
-        # 2D Geometery
-        {"name":"Triangle Area", "key":"tria", "syntax": "tria[b,h]", "about": "Gets the area of a triangle of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. tria[b,[h+x]]."},
-
-        {"name":"Triangle Perimeter", "key":"trip", "syntax": "trip[a,b,c]", "about": "Gets the perimeter of a triangle of side lengths a, b, and c, where a, b, and c are values or an expression that evaluates to a value wrapped in square brackets, e.g. trip[a,b,[c+x]]."},
-
-        {"name":"Quadrilateral Area", "key":"quada", "syntax": "quada[b,h]", "about": "Gets the area of a quadrilateral of base b and height h, where b and h are values or an expression that evaluates to a value wrapped in square brackets, e.g. quada[b,[h+x]]."},
-
-        {"name":"Quadrilateral Perimeter", "key":"quadp", "syntax": "quadp[a,b,c,d]", "about": "Gets the perimeter of a quadrilateral side lengths a, b, c, and d, where a, b, c, and d are values or an expression that evaluates to a value wrapped in square brackets, e.g. quadp[a,b,c,[d+x]]."},
-
-        {"name":"Regular n-gon Area", "key":"ngona", "syntax": "ngona[a,n]", "about": "Gets the area of a regular n-gon with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngona[s,[n+x]]."},
-
-        {"name":"Regular n-gon Perimeter", "key":"ngonp", "syntax": "ngonp[a,n]", "about": "Gets the perimeter of a regular n-gon of with side length a and number of sides n, where a and n are values or an expression that evaluates to a value wrapped in square brackets, e.g. ngonp[s,[n+x]]."},
-
-        {"name":"Circle Area", "key":"circlea", "syntax": "circlea(r)", "about": "Gets th area of a circle with radius r, where r is a value or an expression that evaluates to a value."},
-
-        {"name":"Circle Perimeter", "key":"circlep", "syntax": "circlep(r)", "about": "Gets the perimeter of a circle with radius r, where r is a value or an expression that evaluates to a value."},
-        
-        # 3D Geometery
-        {"name": "Cylinder Volume", "key": "cylinderv", "syntax": "cylinderv[r,h]", "about": "Gets the volume of a cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
-
-        {"name": "Cylinder Surafce Area", "key": "cylindersa", "syntax": "cylindersa[r,h]", "about": "Gets the surface area of a cylinder with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. cylinderv[r,[h+x]]"},
-
-        {"name": "Cone Volume", "key": "conev", "syntax": "conev[r,h]", "about": "Gets the volume of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conev[r,[h+x]]"},
-
-        {"name": "Cone Surface Area", "key": "conesa", "syntax": "conesa[r,h]", "about": "Gets the surface area of a right circular cone with base radius r and height h, where r and h are values or expressions that evaluate to values wrapped in square brackets, e.g. conesa[r,[h+x]]"},
-        
-        {"name": "Rectangular Prism Volume", "key": "rectprismv", "syntax": "rectprismv[l,h,w]", "about": "Gets the volume of a rectangular prism with length l, height h and width w, where l, h, and w are values or expressions that evaluate to values wrapped in square brackets, e.g. rectprism[l,h,[w+x]]"},
-        
-        {"name": "Rectangular Prism Surface Area", "key": "rectprismsa", "syntax": "rectprismsa[l,h,w]", "about": "Gets the surface area of a rectangular prism with length l, height h and width w, where l, h, and w are values or expressions that evaluate to values wrapped in square brackets, e.g. rectprism[l,h,[w+x]]"},
-        
-        # Platonic Solids
-        {"name": "Tetrahedron Volume", "key": "tetrahedronv", "syntax": "tetrahedronv(s)", "about": "Gets the volume of a tetrahedron with side length s, where s is a value or an expression that evaluates to a value."},
-
-        {"name": "Tetrahedron Surface Area", "key": "tetrahedronsa", "syntax": "tetrahedronsa(s)", "about": "Gets the surface area of a tetrahedron with side length s, where s is a value or an expression that evaluates to a value."},
     ],
 }
 
@@ -215,6 +177,7 @@ def restructure(solution, start, end, arr):
     return structure
 
 def get_word(word, arr):
+    # finds a given keyword within the structure
     wordLen = len(word)
     ref = None
     for i in range(0, len(arr) - 1):
@@ -234,6 +197,7 @@ def get_word(word, arr):
     return ref
 
 def word_struct(word, arr):
+    # structures a given keyword
     global is_key
     arrVar = arr
     ref = get_word(word, arrVar)
@@ -247,6 +211,7 @@ def word_struct(word, arr):
     return arrVar
 
 def structure_sets(arr):
+    # generates substructures, i.e. "sets", within structure
     log_process("Structure Sets")
     # structure sets
     sets_ref = []
@@ -349,6 +314,7 @@ def identify_entities(arr):
 
 # Phase I Process
 def structure_string(str):
+    # Analyzes string to generate structure conatining string data
     # Log process label for structuring
     log_process("Structuring")
     # structure multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, and square brackets
@@ -404,12 +370,102 @@ def structure_string(str):
     for i in range(0, len(info["key_functions"])):
         arr = word_struct(info["key_functions"][i]["key"], arr)
     # print(arr)
-    
+    log_process(arr)
     return arr
 # STRUCTURE END
 
+# OPERATIONS START
+def exponentiate(base, exponent):
+    base = float(base)
+    if base / 1 % 1 == 0:
+        base = int(base)
+
+    exponent = float(exponent)
+    if exponent / 1 % 1 == 0:
+        exponent = int(exponent)
+
+    power = math.pow(base, exponent)
+
+    return power
+
+def root(radicand, degree):
+    radicand = float(radicand)
+    if radicand / 1 % 1 == 0:
+        radicand = int(radicand)
+
+    degree = float(degree)
+    if degree / 1 % 1 == 0:
+        degree = int(degree)
+
+    root = math.pow(radicand, 1/degree)
+
+    return root
+
+def multiply(multiplicand, multiplier):
+    multiplicand = float(multiplicand)
+    if multiplicand / 1 % 1 == 0:
+        multiplicand = int(multiplicand)
+
+    multiplier = float(multiplier)
+    if multiplier / 1 % 1 == 0:
+        multiplier = int(multiplier)
+
+    product = multiplicand * multiplier
+
+    return product
+
+def divide(dividend, divisor):
+    dividend = float(dividend)
+    if dividend / 1 % 1 == 0:
+        dividend = int(dividend)
+
+    divisor = float(divisor)
+    if divisor / 1 % 1 == 0:
+        divisor = int(divisor)
+
+    quotient = dividend / divisor
+
+    return quotient
+
+def add(augend, addend):
+    augend = float(augend)
+    if augend / 1 % 1 == 0:
+        augend = int(augend)
+
+    addend = float(addend)
+    if addend / 1 % 1 == 0:
+        addend = int(addend)
+
+    total = augend + addend
+
+    return total
+
+def subtract(minuend, subtrahend):
+    minuend = float(minuend)
+    if minuend / 1 % 1 == 0:
+        minuend = int(minuend)
+
+    subtrahend = float(subtrahend)
+    if subtrahend / 1 % 1 == 0:
+        subtrahend = int(subtrahend)
+
+    difference = minuend - subtrahend
+
+    return difference
+
+def factorial(x):
+    y = 1
+    for i in range(int(x), 1, -1):
+        y = y * i
+    return y
+
+def get_mean(arr):
+    return sum(arr) / len(arr)
+# OPERATIONS END
+
 # KEY FUNCTIONS START
 def getIdx(str, arr):
+    # gets index of string in structure
     val = None
     for i in range(0, len(arr)):
         if arr[i] == str:
@@ -418,6 +474,7 @@ def getIdx(str, arr):
     return val
 
 def trigonomic(arr):
+    # key function module for trigonomic functions
     arrVar = arr
     # perform all sine functions
     ref = getIdx("sin", arrVar)
@@ -432,7 +489,7 @@ def trigonomic(arr):
 
         # Log keyword
         log_process(arrVar[ref])
-        arrVar = restructure(y, ref, ref + 1, arrVar)
+        arrVar = restructure(sine(x), ref, ref + 1, arrVar)
         ref = getIdx("sin", arrVar)
 
     # perform all cosine functions
@@ -440,14 +497,14 @@ def trigonomic(arr):
     itr = 0
     while itr < key_limit and ref is not None:
         itr = itr + 1
-        x = float(arrVar[ref + 1])
+        x = float(arr[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
         
         y = math.cos(x)
 
         # Log keyword
-        log_process(arrVar[ref])
+        log_process(arr[ref])
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("cos", arrVar)
 
@@ -516,8 +573,9 @@ def trigonomic(arr):
         ref = getIdx("atan", arrVar)
 
     return arrVar
-
-def logarithmic(arr):
+    
+def statistical(arr):
+    # key function module for statistical functions
     arrVar = arr
     # perform all Logarithm functions
     ref = getIdx("log", arrVar)
@@ -557,6 +615,7 @@ def logarithmic(arr):
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
+        
         y = math.log(x)
 
         # Log keyword
@@ -564,10 +623,6 @@ def logarithmic(arr):
         arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("ln", arrVar)
     
-    return arrVar
-    
-def statistical(arr):
-    arrVar = arr
     # perform all Factorial functions
     ref = getIdx("fact", arrVar)
     itr = 0
@@ -576,9 +631,8 @@ def statistical(arr):
         x = float(arrVar[ref + 1])
         if x / 1 % 1 == 0:
             x = int(x)
-        y = 1
-        for i in range(x, 1, -1):
-            y = y * i
+        
+        y = factorial(x)
 
         # Log keyword
         log_process(arrVar[ref])
@@ -605,19 +659,9 @@ def statistical(arr):
                 set_2.append(x)
 
         # perform calculation using numeral set
-        def factorial(x):
-            y = 1
-            for i in range(int(x), 1, -1):
-                y = y * i
-            return y
-        
         n = set_2[0]
         r = set_2[1]
-
-        numerator = factorial(n)
-        denominator = factorial(n - r)
-
-        perm = numerator / denominator
+        perm = factorial(n) / factorial(n - r)
 
         # Log keyword
         log_process(arrVar[ref])
@@ -644,22 +688,9 @@ def statistical(arr):
                 set_2.append(x)
 
         # perform calculation using numeral set
-        def factorial(x):
-            y = 1
-            for i in range(int(x), 1, -1):
-                y = y * i
-            return y
-        
         n = set_2[0]
         r = set_2[1]
-
-        numerator = factorial(n)
-
-        val1 = factorial(r)
-        val2 = factorial(n - r)
-        denominator = val1 * val2
-
-        comb = numerator / denominator
+        comb = factorial(n) / (factorial(r) * factorial(n - r))
 
         # Log keyword
         log_process(arrVar[ref])
@@ -688,7 +719,7 @@ def statistical(arr):
                 set_2.append(x)
 
         # perform calculation using numeral set
-        mean = sum(set_2) / len(set_2)
+        mean = get_mean(set_2)
         set_3 = []
         for i in set_2:
             set_3.append(math.pow(i - mean, 2))
@@ -807,7 +838,7 @@ def statistical(arr):
                 set_2.append(x)
 
         # perform calculation using numeral set
-        mean = sum(set_2) / len(set_2)
+        mean = get_mean(set_2)
 
         # Log keyword
         log_process(arrVar[ref])
@@ -839,7 +870,7 @@ def statistical(arr):
         square = []
         for i in set_2:
             square.append(math.pow(i, 2))
-        mean = sum(square) / len(square)
+        mean = get_mean(square)
         root = math.pow(mean, 1/2)
 
         # Log keyword
@@ -967,610 +998,23 @@ def statistical(arr):
     
     return arrVar
 
-def geometeric2D(arr):
-    arrVar = arr
-    # Triangle
-    # perform all Triangle Area functions
-    ref = getIdx("tria", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        base = set_2[0]
-        height = set_2[1]
-        area = .5 * base * height
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("tria", arrVar)
-    
-    # perform all Triangle Perimeter functions
-    ref = getIdx("trip", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = set_2[0]
-        b = set_2[1]
-        c = set_2[2]
-
-        perimeter = a + b + c
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("trip", arrVar)
-
-    # Quadrilateral
-    # perform all Quadrilateral Area functions
-    ref = getIdx("quada", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        base = set_2[0]
-        height = set_2[1]
-        area = base * height
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("quada", arrVar)
-    
-    # perform all Quadrilateral Perimeter functions
-    ref = getIdx("quadp", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = set_2[0]
-        b = set_2[1]
-        c = set_2[2]
-        d = set_2[3]
-
-        perimeter = a + b + c + d
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("quadp", arrVar)
-    
-    # n-Gon
-    # perform all Regular n-Gon Area functions
-    ref = getIdx("ngona", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = math.pow(set_2[0], 2)
-        n = set_2[1]
-        trig = 1 / math.tan(math.pi / n)
-        area = .25 * a * n * trig
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("ngona", arrVar)
-    
-    # perform all Regular n-Gon Perimeter functions
-    ref = getIdx("ngonp", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        a = set_2[0]
-        n = set_2[1]
-        perimeter = a * n
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("ngonp", arrVar)
-    
-    # Circle
-    # perform all Circle Area functions
-    ref = getIdx("circlea", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-
-        r = float(arrVar[ref + 1])
-        if r / 1 % 1 == 0:
-            r = int(r)
-
-        area = math.pi * math.pow(r, 2)
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("circlea", arrVar)
-
-    # perform all Circle Perimeter functions
-    ref = getIdx("circlep", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-
-        r = float(arrVar[ref + 1])
-        if r / 1 % 1 == 0:
-            r = int(r)
-
-        perimeter = 2 * math.pi * r
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(perimeter, ref, ref + 1, arrVar)
-        ref = getIdx("circlep", arrVar)
-    
-    return arrVar
-
-def geometeric3D(arr):
-    arrVar = arr
-    # perform all Cylinder Volume functions
-    ref = getIdx("cylinderv", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        radius = set_2[0]
-        height = set_2[1]
-        base_area = math.pi * math.pow(radius, 2)
-        volume = base_area * height
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(volume, ref, ref + 1, arrVar)
-        ref = getIdx("cylinderv", arrVar)
-
-    # perform all Cylinder Surface Area functions
-    # sum of the circumference of the base times the height and the area of the base times two
-    ref = getIdx("cylindersa", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        radius = set_2[0]
-        height = set_2[1]
-        base_area = math.pi * math.pow(radius, 2)
-        base_circumference = 2 * math.pi * radius
-        surface_area = base_circumference * height + 2 * base_area
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(surface_area, ref, ref + 1, arrVar)
-        ref = getIdx("cylindersa", arrVar)
-
-    # perform all Cone Volume functions
-    ref = getIdx("conev", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        radius = set_2[0]
-        height = set_2[1]
-        base_area = math.pi * math.pow(radius, 2)
-        volume = base_area * height / 3
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(volume, ref, ref + 1, arrVar)
-        ref = getIdx("conev", arrVar)
-    
-    # perform all Cone Surface Area functions
-    ref = getIdx("conesa", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        radius = set_2[0]
-        height = set_2[1]
-
-        base_area = math.pi * math.pow(radius, 2)
-
-        side_length = math.sqrt(math.pow(radius, 2) + math.pow(height, 2))
-        side_area = math.pi * radius * side_length
-        
-        surface_area = base_area + side_area
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(surface_area, ref, ref + 1, arrVar)
-        ref = getIdx("conesa", arrVar)
-
-    # perform all Rectangular Prism Volume functions
-    ref = getIdx("rectprismv", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        length = set_2[0]
-        height = set_2[1]
-        width = set_2[2]
-
-        volume = length * height * width
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(volume, ref, ref + 1, arrVar)
-        ref = getIdx("rectprismv", arrVar)
-
-    # perform all Rectangular Prism Surface Area functions
-    ref = getIdx("rectprismsa", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        # get string set
-        set_1 = arrVar[ref + 1]
-        log_process(set_1)
-
-        # convert string set to numeral set
-        set_2 = []
-        for i in set_1:
-            if isinstance(i, str):
-                x = float(i)
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                set_2.append(x)
-            else:
-                x = section(distribute(i))
-                set_2.append(x)
-
-        # perform calculation using numeral set
-        length = set_2[0]
-        height = set_2[1]
-        width = set_2[2]
-
-        area = ( height * width * 2 ) + ( height * length * 2) + ( width * length * 2)
-        
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(area, ref, ref + 1, arrVar)
-        ref = getIdx("rectprismsa", arrVar)
-
-    # perform all parallelepipedon Volume functions
-    
-
-    # perform all parallelepipedon Surface Area functions
-    
-
-    return arrVar
-
-def platonic_solids(arr):
-    arrVar = arr
-
-    # Platonic Solids
-    # perform all Tertrahedron Volume functions
-    ref = getIdx("tetrahedronv", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        a = float(arrVar[ref + 1])
-        if a / 1 % 1 == 0:
-            a = int(a)
-
-        volume =  math.pow(a, 3) / (6 * math.pow(2, .5))
-
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(volume, ref, ref + 1, arrVar)
-        ref = getIdx("tetrahedronv", arrVar)
-
-    # perform all Tertrahedron Surface Area functions
-    ref = getIdx("tetrahedronsa", arrVar)
-    itr = 0
-    while itr < key_limit and ref is not None:
-        itr = itr + 1
-        a = float(arrVar[ref + 1])
-        if a / 1 % 1 == 0:
-            a = int(a)
-        
-        surface_area = math.pow(3, .5) * math.pow(a, 2)
-
-        # Log keyword
-        log_process(arrVar[ref])
-        arrVar = restructure(surface_area, ref, ref + 1, arrVar)
-        ref = getIdx("tetrahedronsa", arrVar)
-    
-    # perform all Cube Volume functions
-
-    # perform all Cube Surface Area functions
-
-    # perform all Octahedron Volume functions
-
-    # perform all Octahedron Surface Area functions
-
-    # perform all Dodecahedron Volume functions
-
-    # perform all Dodecahedron Surface Area functions
-
-    # perform all Icosahedron Volume functions
-
-    # perform all Icosahedron Surface Area functions
-
-
-    return arrVar
-
 def key_functions(arr):
+    # runs all key function modules
     # Log process label for key functions
     log_process("Key Functions")
     arrVar = arr
     # TRIGONOMIC FUNCTIONS
     arrVar = trigonomic(arrVar)
-    # LOGARITHMIC FUNCTIONS
-    arrVar = logarithmic(arrVar)
     # STATISTICAL FUNCTIONS
     arrVar = statistical(arrVar)
-    # 2D GEOMTERIC FUNCTIONS
-    arrVar = geometeric2D(arrVar)
-    # 3D GEOMTERIC FUNCTIONS
-    arrVar = geometeric3D(arrVar)
-    # PLATONIC SOLIDS FUNCTIONS
-    arrVar = platonic_solids(arrVar)
     
     return arrVar
 # KEY FUNCTIONS END
 
-# OPERATIONS START
-def exponentiate(base, exponent):
-    base = float(base)
-    if base / 1 % 1 == 0:
-        base = int(base)
-
-    exponent = float(exponent)
-    if exponent / 1 % 1 == 0:
-        exponent = int(exponent)
-
-    power = math.pow(base, exponent)
-
-    return power
-
-def root(radicand, degree):
-    radicand = float(radicand)
-    if radicand / 1 % 1 == 0:
-        radicand = int(radicand)
-
-    degree = float(degree)
-    if degree / 1 % 1 == 0:
-        degree = int(degree)
-
-    root = math.pow(radicand, 1/degree)
-
-    return root
-
-def multiply(multiplicand, multiplier):
-    multiplicand = float(multiplicand)
-    if multiplicand / 1 % 1 == 0:
-        multiplicand = int(multiplicand)
-
-    multiplier = float(multiplier)
-    if multiplier / 1 % 1 == 0:
-        multiplier = int(multiplier)
-
-    product = multiplicand * multiplier
-
-    return product
-
-def divide(dividend, divisor):
-    dividend = float(dividend)
-    if dividend / 1 % 1 == 0:
-        dividend = int(dividend)
-
-    divisor = float(divisor)
-    if divisor / 1 % 1 == 0:
-        divisor = int(divisor)
-
-    quotient = dividend / divisor
-
-    return quotient
-
-def add(augend, addend):
-    augend = float(augend)
-    if augend / 1 % 1 == 0:
-        augend = int(augend)
-
-    addend = float(addend)
-    if addend / 1 % 1 == 0:
-        addend = int(addend)
-
-    total = augend + addend
-
-    return total
-
-def subtract(minuend, subtrahend):
-    minuend = float(minuend)
-    if minuend / 1 % 1 == 0:
-        minuend = int(minuend)
-
-    subtrahend = float(subtrahend)
-    if subtrahend / 1 % 1 == 0:
-        subtrahend = int(subtrahend)
-
-    difference = minuend - subtrahend
-
-    return difference
-# OPERATIONS END
-
 # Phase III and IV Process
 def calculate(arr):
+    # scans for operations and calculates
     arrVar = arr
-
     # Phase III
     # perform all key functions
     is_key_len = len(is_key)
@@ -1720,6 +1164,7 @@ def calculate(arr):
 
 # Phase II Process START
 def section(arr):
+    # performs calculations in order of parenthesis nesting
     log_process("Parenthesis")
     arrVar = arr
     more_parens = True
@@ -1761,6 +1206,7 @@ def section(arr):
     return arrVar
 
 def distribute(arr):
+    # restructures with distributed terms
     log_process("Distribution")
     global is_dist
     arrVar = arr
@@ -1960,6 +1406,7 @@ def distribute(arr):
 
 # System Operations
 def get_info():
+    # system function for displaying system information in logs
     log_process()
     log_process("System Operations")
     log_process()
@@ -1987,6 +1434,7 @@ def get_info():
         log_process()
 
 def system_ops(arr):
+    # tests for and runs all system functions
     global system_operation
 
     ref = getIdx("info", arr)
@@ -1997,14 +1445,19 @@ def system_ops(arr):
     return system_operation
 
 def evaluate(str):
+    # top level function runs evaluation
+    global system_operation
+    # change first log
+    if use_logs == True:
+        process_log["0"] = "Process Log Start"
     structure = structure_string(str)
     system_ops(structure)
-    global system_operation
     if system_operation == True:
         return "System Operation"
     else:
-        # Identify program entities in problem string to determine structuring and operations
+        # Identify program entities in problem string
         identify_entities(structure)
+        # determine structuring and operations
         if is_paren == True and is_brack == True:
             if is_dist == True:
                 structure = distribute(structure)
@@ -2024,7 +1477,7 @@ def evaluate(str):
 # Simulated Program Input
 input = {
     # "problem": "info",
-    "problem": "tetrahedronv(10-9)",
+    "problem": "10+8*(9-2*(10/5))",
     # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
     "use_logs": True,
 }
