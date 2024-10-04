@@ -79,7 +79,6 @@ is_key = []
 # note: log_process is run on every restructure, run for calculation reference, and run for process labels
 process_log = {"0":"no logging"}
 use_logs = False
-first_log = True
 def log_process(log = ""):
     global use_logs
     if use_logs == True:
@@ -489,7 +488,7 @@ def trigonomic(arr):
 
         # Log keyword
         log_process(arrVar[ref])
-        arrVar = restructure(sine(x), ref, ref + 1, arrVar)
+        arrVar = restructure(y, ref, ref + 1, arrVar)
         ref = getIdx("sin", arrVar)
 
     # perform all cosine functions
@@ -1477,7 +1476,7 @@ def evaluate(str):
 # Simulated Program Input
 input = {
     # "problem": "info",
-    "problem": "10+8*(9-2*(10/5))",
+    "problem": "10+8*(9-2*(10/5))+sin(0)",
     # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
     "use_logs": True,
 }
