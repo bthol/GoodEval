@@ -10,8 +10,9 @@
 The GoodEval API can be used to remotely access evaluation. The API takes a JSON format object containing a formatted problem string and a boolean value to toggle logs and returns a JSON format object with the received problem string, an answer numeral, and the logs if they were toggled on by a boolean value of true. Logs reveal the steps taken to calulate the answer from the problem. The user may pass the "info" key to get information on available keys and their associated functions, as well as a reference for what entities the evaluator recognizes in problem string syntax.
 
 ## Commands
- - start server: $python manage.py runserver 3000
- - new app : $python manage.py startapp app_name
+ - start server : $python manage.py runserver 3000
+ - new project  : $django-admin startproject project-name
+ - new app      : $python manage.py startapp app_name
 
 ## Procedures
 
@@ -21,10 +22,12 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 3) run command: $venv/Scripts/activate
 4) run command: $python -m pip install --upgrade pip
 5) run command: $python -m pip install Django
-6) run command: $pip install -r ./project-name/requirements.txt
+6) run command: $pip install -r requirements.txt
+7) run command: $python manage.py runserver 3000
 
 **Procedure to breakdown virtual environment (do this before git push)**
 1) run command (stop Django server if running): $ctrl+c
 2) run command: $python -m pip freeze > requirements.txt
 3) run command: $deactivate
 4) delete virtual environment folder (venv)
+5) run command (optional): git push

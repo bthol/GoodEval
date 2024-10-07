@@ -5,6 +5,10 @@
     font-size: 3.5vmin;
 }
 
+#body {
+    background-color: #000000;
+}
+
 .color-theme-1 {
     --color-font: #ffffff;
     --color-bckgrnd-2: #2e2e2e;
