@@ -21,8 +21,9 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 1) Navigate to Boilerplate_Django_copy directory
 2) run command: $python -m venv venv
 3) run command: $venv/Scripts/activate
-6) run command: $pip install -r requirements.txt
-7) run command: $python manage.py runserver 3000
+4) run command: $python -m pip install --upgrade pip
+5) run command: $pip install -r requirements.txt
+6) run command: $python manage.py runserver 3000
 
 **Procedure to breakdown virtual environment (do this before staging for git push)**
 1) run command (stop Django server if running): $ctrl+c
