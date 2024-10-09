@@ -1,6 +1,24 @@
 console.log("linked JavaScript");
-const body = document.querySelector('#body');
+const body = document.querySelector('.body');
+const nav = document.querySelector('nav');
 
+// logic for opening and closing the nav menu via the arrow
+let navState = false;
+const navArrow = document.querySelector('#nav-menu-arrow');
+navArrow.addEventListener('click', () => {
+    navState = !navState;
+    if (navState === true) {
+        navArrow.classList.remove('downward-arrow');
+        navArrow.classList.add('upward-arrow');
+        nav.style.top = '0px';
+    } else {
+        navArrow.classList.remove('upward-arrow');
+        navArrow.classList.add('downward-arrow');
+        nav.style.top = '-80px';
+    }
+});
+
+// theme buttons for Calculator
 const btnModern = document.querySelector(`#modern-theme`);
 function setThemeModern() {
     body.classList.remove("color-theme-2");

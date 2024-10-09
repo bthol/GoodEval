@@ -1,14 +1,15 @@
 * {
     box-sizing: border-box;
-    margin: 0 auto;
+    margin: 0px auto;
     text-align: center;
     font-size: 3.5vmin;
 }
 
-#body {
+.body {
     background-color: #000000;
 }
 
+/* THEMES */
 .color-theme-1 {
     --color-font: #ffffff;
     --color-bckgrnd-2: #2e2e2e;
@@ -68,35 +69,154 @@
     border-left: 10px ridge var(--color-border-2);
 }
 
+/* NAVIGATION */
+nav {
+    position: absolute;
+    width: 100%;
+    top: -80px;
+}
+.title-container {
+    display: flex;
+    background-color: hsl(60, 50%, 92%);
+}
+
+.nav-button-container {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-bottom: 3px solid #858585;
+}
+
+.theme-button {
+    font-size: 2vmin;
+    margin: 0px;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+}
+.theme-button:hover {
+    color: hsl(240, 84%, 52%);
+}
+
+/* ARROW */
+.arrow-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arrow {
+    position: relative;
+    z-index: 2;
+    height: 21px;
+    width: 21px;
+    margin: 0px auto;
+    border-left: 7px double black;
+    border-top: 7px double black;
+}
+
+.upward-arrow > div.arrow {
+    transform: rotate(45deg);
+}
+
+.downward-arrow > div.arrow {
+    transform: rotate(-135deg);
+}
+
+.arrow-container {
+    position: relative;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+}
+
+.arrow-container.downward-arrow:hover {
+    animation: pointing 800ms linear 250ms infinite;
+}
+
+.arrow-container.upward-arrow:hover {
+    animation: pointing 800ms linear reverse 250ms infinite;
+}
+
+@keyframes pointing {
+    0%, 62%, 100% {top: 0px}
+    25%, 50% {top: -5px}
+}
+
+
+/* SCREEN */
 .screen {
     width: 60vmin;
     height: 12vmin;
     background: var(--color-screen);
-    border: 2.5px solid var(--color-border-4);
+    border: 3px solid var(--color-border-4);
 }
+
 .screen > div {
     display: grid;
-    grid-template-columns: 5fr .1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 10fr;
+    height: 100%;
+    width: 100%;
 }
+
 #screen-content {
-    text-align: start;
+    width: 100%;
+    margin: 0px;
+    grid-column: 1 / span 2;
+    justify-self: start;
     white-space: nowrap;
-    /* overflow-x: scroll; */
+    overflow-x: scroll;
 }
+
 #equal-sign {
-    grid-column: 2;
+    margin: 0px;
+    justify-self: center;
+    align-self: center;
+    grid-row: 2;
 }
+
 #screen-answer {
-    grid-column: 3;
+    width: 100%;
+    margin: 0px;
+    justify-self: start;
+    grid-row: 2;
+    white-space: nowrap;
+    overflow-x: scroll;
 }
 
 /* BUTTONS */
+.top-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.top-button {
+    position: relative;
+    padding: .3vmin 1vmin;
+    margin: 1.7vmin;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 3vmin;
+    background-color: var(--color-fill-2);
+    color: var(--color-font);
+    border: .3vmin solid var(--color-border-3);
+    border-bottom: .4vmin solid var(--color-border-3);
+}
+.top-button:active {
+    border: .25vmin solid var(--color-border-3);
+    border-bottom: .1vmin solid var(--color-border-3);
+    top: .2vmin;
+}
+
 .buttons {
     grid-row: 3;
     width: 60vmin;
     height: 60vmin;
-    margin-top: 10vmin;
+    margin-top: 2vmin;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
@@ -105,12 +225,15 @@
     background: var(--color-bckgrnd-2);
     border: 1px solid var(--color-border-1);
 }
+
 .button {
     position: relative;
     padding: 0vmin 3vmin;
     border-radius: 5px 5px 3px 3px;
     color: var(--color-font);
+    cursor: pointer;
 }
+
 .button.normal {
     background: var(--color-fill-2);
     border: .5vmin solid var(--color-border-3);
@@ -121,10 +244,11 @@
     border-bottom: .4vmin solid var(--color-border-3);
     top: .25vmin;
 }
+
 .button.orange {
-    background: hsl(16, 100%, 50%);
-    border: .5vmin solid hsl(16, 84%, 48%);
-    border-bottom: .8vmin solid hsl(16, 84%, 48%);
+    background: #ee531b;
+    border: .5vmin solid #d94712;
+    border-bottom: .8vmin solid #d84713;
 }
 .button.orange:active {
     border-bottom: hidden;
@@ -134,9 +258,11 @@
 .button.special { /* special operations section */
     grid-column-start: 1;
 }
+
 .button.numpad { /* numbers section */
     grid-column-start: 1;
 }
+
 .button.operation { /* operations section */
     grid-column-start: 4;
 }
@@ -145,42 +271,53 @@
 #btn-clear {
 
 }
+
 #btn-squared {
     grid-column: 2;
 }
+
 #btn-cubed {
     grid-column: 3;
 }
+
 #btn-num9 {
     grid-column: 3;
 }
+
 #btn-num8 {
     grid-column: 2;
     grid-row: 2;
 }
+
 #btn-num7 {
     grid-column: 1;
     grid-row: 2;
 }
+
 #btn-num6 {
     grid-column: 3;
 }
+
 #btn-num5 {
     grid-column: 2;
     grid-row: 3;
 }
+
 #btn-num4 {
     grid-column: 1;
     grid-row: 3;
 }
+
 #btn-num3 {
     grid-column: 3;
     grid-row: 4;
 }
+
 #btn-num2 {
     grid-column: 2;
     grid-row: 4;
 }
+
 #btn-num1 {
     grid-column: 1;
 }
@@ -188,24 +325,31 @@
     grid-column: 2;
     grid-row: 5;
 }
+
 #btn-negative {
     
 }
+
 #btn-decimal {
     grid-column: 3;
 }
+
 #btn-plus {
     grid-row: 1;
 }
+
 #btn-minus {
     grid-row: 2;
 }
+
 #btn-multiply {
     grid-row: 3;
 }
+
 #btn-divide {
     grid-row: 4;
 }
+
 #btn-equals {
     grid-row: 5;
 }

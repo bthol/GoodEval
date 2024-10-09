@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoodEval</title>
+    {% load static %}
+    <script defer src="{% static 'buttons.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'main.css'%}">
 </head>
-<body>
-    <h1>Pass</h1>
+<body class="body">
+    <div>Evaluating <div id="elipses"></div></div>
 </body>
 </html>

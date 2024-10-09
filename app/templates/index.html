@@ -9,40 +9,68 @@
         <script defer src="{% static 'buttons.js'%}"></script>
         <link rel="stylesheet" href="{% static 'main.css'%}">
 </head>
-<body id="body" class="color-theme-1">
-    <br>
-    <div class="top-bar">
-        <button id="modern-theme">Modern</button>
-        <button id="retro-theme">Retro</button>
-        <button id="sleek-theme">Sleek</button>
-        <button id="umbral-theme">Umbral</button>
-    </div>
-    <br>
-    <div>
-        <div class="app-container">
-            <div class="screen"><p id="screen-content">Q</p><div><p id="equal-sign">= </p><p id="screen-answer">A</p></div></div>
-            <div class="buttons">
-                <button id="btn-clear" class="button special orange">C</button>
-                <button id="btn-squared" class="button special normal">x^2</button>
-                <button id="btn-cubed" class="button special normal">x^3</button>
-                <button id="btn-num9" class="button numpad normal">9</button>
-                <button id="btn-num8" class="button numpad normal">8</button>
-                <button id="btn-num7" class="button numpad normal">7</button>
-                <button id="btn-num6" class="button numpad normal">6</button>
-                <button id="btn-num5" class="button numpad normal">5</button>
-                <button id="btn-num4" class="button numpad normal">4</button>
-                <button id="btn-num3" class="button numpad normal">3</button>
-                <button id="btn-num2" class="button numpad normal">2</button>
-                <button id="btn-num1" class="button numpad normal">1</button>
-                <button id="btn-num0" class="button numpad normal">0</button>
-                <button id="btn-negative" class="button special normal">+/-</button>
-                <button id="btn-decimal" class="button special normal">.</button>
-                <button id="btn-plus" class="button operation normal">+</button>
-                <button id="btn-minus" class="button operation normal">-</button>
-                <button id="btn-multiply" class="button operation normal">*</button>
-                <button id="btn-divide" class="button operation normal">/</button>
-                <button id="btn-equals" class="button operation orange">=</button>
+<body class="body color-theme-1">
+    <nav>
+        <div class="title-container">
+            <h1>GoodEval</h1>
+        </div>
+        <div class="nav-button-container">
+            <button id="modern-theme" class="theme-button">Modern</button>
+            <button id="retro-theme" class="theme-button">Retro</button>
+            <button id="sleek-theme" class="theme-button">Sleek</button>
+            <button id="umbral-theme" class="theme-button">Umbral</button>
+        </div>
+        <div class="arrow-layout">
+            <div id="nav-menu-arrow" class="arrow-container downward-arrow">
+                <div class="arrow"></div>
             </div>
+        </div>
+    </nav>
+    <div class="app-container">
+
+        <div class="screen">
+            <div>
+                <div id="screen-content">Q</div>
+                <div id="equal-sign">= </div>
+                <div id="screen-answer">A</div>
+            </div>
+        </div>
+
+        <div class="top-button-container">
+            <button id="btn-sine" class="top-button">sin(x)</button>
+            <button id="btn-cosine" class="top-button">cos(x)</button>
+            <button id="btn-tangent" class="top-button">tan(x)</button>
+            <button id="btn-root" class="top-button">sqrt</button>
+            <button id="btn-pi" class="top-button">π</button>
+        </div>
+        <div class="top-button-container">
+            <button id="btn-secant" class="top-button">sec(x)</button>
+            <button id="btn-cosecant" class="top-button">csc(x)</button>
+            <button id="btn-cotangent" class="top-button">cot(x)</button>
+            <button id="btn-root" class="top-button">| x |</button>
+            <button id="btn-euler" class="top-button">e</button>
+        </div>
+        <div class="buttons">
+            <button id="btn-clear" class="button special orange">C</button>
+            <button id="btn-squared" class="button special normal">x^2</button>
+            <button id="btn-cubed" class="button special normal">x^3</button>
+            <button id="btn-num9" class="button numpad normal">9</button>
+            <button id="btn-num8" class="button numpad normal">8</button>
+            <button id="btn-num7" class="button numpad normal">7</button>
+            <button id="btn-num6" class="button numpad normal">6</button>
+            <button id="btn-num5" class="button numpad normal">5</button>
+            <button id="btn-num4" class="button numpad normal">4</button>
+            <button id="btn-num3" class="button numpad normal">3</button>
+            <button id="btn-num2" class="button numpad normal">2</button>
+            <button id="btn-num1" class="button numpad normal">1</button>
+            <button id="btn-num0" class="button numpad normal">0</button>
+            <button id="btn-negative" class="button special normal">+/-</button>
+            <button id="btn-decimal" class="button special normal">.</button>
+            <button id="btn-plus" class="button operation normal">+</button>
+            <button id="btn-minus" class="button operation normal">-</button>
+            <button id="btn-multiply" class="button operation normal">*</button>
+            <button id="btn-divide" class="button operation normal">/</button>
+            <button id="btn-equals" class="button operation orange">=</button>
         </div>
     </div>
 </body>
