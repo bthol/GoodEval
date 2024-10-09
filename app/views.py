@@ -11,4 +11,4 @@ def render_index(request):
 
 # handle requests as calculations
 def evaluate(request):
-    return render(evaluator(request), "eval.html")
+    return render(request, "eval.html")
