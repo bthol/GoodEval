@@ -9,7 +9,8 @@
         <script defer src="{% static 'buttons.js'%}"></script>
         <link rel="stylesheet" href="{% static 'main.css'%}">
 </head>
-<body class="body color-theme-1">
+<body class="body">
+
     <nav>
         <div class="title-container">
             <h1>GoodEval</h1>
@@ -26,11 +27,12 @@
             </div>
         </div>
     </nav>
-    <div class="app-container">
+
+    <div class="calculator-container color-theme-1">
 
         <div class="screen">
             <div>
-                <div id="screen-content">Q</div>
+                <div id="screen-content">sd[[sin(100+4*((-26)+1))],1]+0.5</div>
                 <div id="equal-sign">= </div>
                 <div id="screen-answer">A</div>
             </div>
@@ -43,6 +45,7 @@
             <button id="btn-root" class="top-button">sqrt</button>
             <button id="btn-pi" class="top-button">π</button>
         </div>
+
         <div class="top-button-container">
             <button id="btn-secant" class="top-button">sec(x)</button>
             <button id="btn-cosecant" class="top-button">csc(x)</button>
@@ -50,6 +53,7 @@
             <button id="btn-root" class="top-button">| x |</button>
             <button id="btn-euler" class="top-button">e</button>
         </div>
+
         <div class="buttons">
             <button id="btn-clear" class="button special orange">C</button>
             <button id="btn-squared" class="button special normal">x^2</button>
@@ -72,6 +76,7 @@
             <button id="btn-divide" class="button operation normal">/</button>
             <button id="btn-equals" class="button operation orange">=</button>
         </div>
+
     </div>
 </body>
 </html>

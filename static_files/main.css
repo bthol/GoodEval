@@ -58,35 +58,39 @@
     --color-screen: #a3c2a8;
 }
 
-.app-container {
+.calculator-container {
     width: 80vmin;
     height: 100vmin;
     padding: 5vmin;
     background: var(--color-bckgrnd-3);
-    border-top: 10px ridge var(--color-border-2);
-    border-right: 10px groove var(--color-border-2);
-    border-bottom: 10px groove var(--color-border-2);
-    border-left: 10px ridge var(--color-border-2);
+    border-top: 1.4vmin ridge var(--color-border-2);
+    border-right: 1.4vmin groove var(--color-border-2);
+    border-bottom: 1.4vmin groove var(--color-border-2);
+    border-left: 1.4vmin ridge var(--color-border-2);
 }
 
 /* NAVIGATION */
 nav {
     position: absolute;
     width: 100%;
-    top: -80px;
+    --nav-height: 10.5vmin; /* ensure .5vmin for border */
+    top: -10.5vmin; /* change in buttons.js navArrow arrow function */
+    transition: top 300ms;
 }
+
 .title-container {
     display: flex;
     background-color: hsl(60, 50%, 92%);
+    height: calc((var(--nav-height) - .5vmin) * (2/5));
 }
 
 .nav-button-container {
-    height: 50px;
+    height: calc((var(--nav-height) - .5vmin) * (3/5));
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: white;
-    border-bottom: 3px solid #858585;
+    border-bottom: calc(var(--nav-height - 10vmin)) solid #858585;
 }
 
 .theme-button {
@@ -110,8 +114,8 @@ nav {
 .arrow {
     position: relative;
     z-index: 2;
-    height: 21px;
-    width: 21px;
+    height: 2.8vmin;
+    width: 2.8vmin;
     margin: 0px auto;
     border-left: 7px double black;
     border-top: 7px double black;
@@ -128,8 +132,8 @@ nav {
 .arrow-container {
     position: relative;
     cursor: pointer;
-    height: 30px;
-    width: 30px;
+    height: 4vmin;
+    width: 4vmin;
 }
 
 .arrow-container.downward-arrow:hover {
@@ -145,13 +149,12 @@ nav {
     25%, 50% {top: -5px}
 }
 
-
 /* SCREEN */
 .screen {
     width: 60vmin;
     height: 12vmin;
     background: var(--color-screen);
-    border: 3px solid var(--color-border-4);
+    border: .6vmin solid var(--color-border-4);
 }
 
 .screen > div {
@@ -198,7 +201,7 @@ nav {
     position: relative;
     padding: .3vmin 1vmin;
     margin: 1.7vmin;
-    border-radius: 5px;
+    border-radius: 1vmin;
     cursor: pointer;
     font-size: 3vmin;
     background-color: var(--color-fill-2);
@@ -216,20 +219,19 @@ nav {
     grid-row: 3;
     width: 60vmin;
     height: 60vmin;
-    margin-top: 2vmin;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
     grid-gap: 2vmin;
     padding: 3vmin;
     background: var(--color-bckgrnd-2);
-    border: 1px solid var(--color-border-1);
+    border: .1vmin solid var(--color-border-1);
 }
 
 .button {
     position: relative;
     padding: 0vmin 3vmin;
-    border-radius: 5px 5px 3px 3px;
+    border-radius: 1vmin 1vmin .6vmin .6vmin;
     color: var(--color-font);
     cursor: pointer;
 }
