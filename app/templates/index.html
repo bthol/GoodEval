@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GoodEval</title>
+        {% load static %}
+        <script defer src="{% static 'scripts/interfaceLogic.js'%}"></script>
+        <script defer src="{% static 'scripts/stringGenerator.js'%}"></script>
+        <link rel="stylesheet" href="{% static 'main.css'%}">
+</head>
+<body class="body">
+    <nav>
+        <div class="title-container">
+            <h1>GoodEval</h1>
+        </div>
+        <div class="nav-button-container">
+            <button id="modern-theme" class="theme-button">Modern</button>
+            <button id="retro-theme" class="theme-button">Retro</button>
+            <button id="sleek-theme" class="theme-button">Sleek</button>
+            <button id="umbral-theme" class="theme-button">Umbral</button>
+        </div>
+        <div class="arrow-layout">
+            <div id="nav-menu-arrow" class="arrow-container downward-arrow">
+                <div class="arrow"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="calculator-container color-theme-1">
+
+        <div class="screen">
+            <div>
+                <div id="screen-content">Q</div>
+                <div id="equal-sign">=</div>
+                <div id="screen-answer">A</div>
+            </div>
+        </div>
+
+        <div class="btns">
+            <div class="top-button-container">
+                <button id="btn-sine" class="trigonomic top-button">sin(x)</button>
+                <button id="btn-cosine" class="trigonomic top-button">cos(x)</button>
+                <button id="btn-tangent" class="trigonomic top-button">tan(x)</button>
+                <button id="btn-root" class="operation top-button">sqrt</button>
+                <button id="btn-pi" class="numpad top-button">π</button>
+            </div>
+            
+            <div class="top-button-container">
+                <button id="btn-secant" class="trigonomic top-button">sec(x)</button>
+                <button id="btn-cosecant" class="trigonomic top-button">csc(x)</button>
+                <button id="btn-cotangent" class="trigonomic top-button">cot(x)</button>
+                <button id="btn-absolute-value" class="operation top-button">| x |</button>
+                <button id="btn-euler" class="numpad top-button">e</button>
+            </div>
+            
+            <div class="bottom-button-container">
+                <button id="btn-clear" class="special grid-start button orange">C</button>
+                <button id="btn-squared" class="operation grid-start button normal">x^2</button>
+                <button id="btn-cubed" class="operation grid-start button normal">x^3</button>
+                <button id="btn-num9" class="numpad grid-start button normal">9</button>
+                <button id="btn-num8" class="numpad grid-start button normal">8</button>
+                <button id="btn-num7" class="numpad grid-start button normal">7</button>
+                <button id="btn-num6" class="numpad grid-start button normal">6</button>
+                <button id="btn-num5" class="numpad grid-start button normal">5</button>
+                <button id="btn-num4" class="numpad grid-start button normal">4</button>
+                <button id="btn-num3" class="numpad grid-start button normal">3</button>
+                <button id="btn-num2" class="numpad grid-start button normal">2</button>
+                <button id="btn-num1" class="numpad grid-start button normal">1</button>
+                <button id="btn-num0" class="numpad grid-start button normal">0</button>
+                <button id="btn-sign" class="operation grid-start button normal">+/-</button>
+                <button id="btn-decimal" class="special grid-start button normal">.</button>
+                <button id="btn-plus" class="operation grid-end button normal">+</button>
+                <button id="btn-minus" class="operation grid-end button normal">-</button>
+                <button id="btn-multiply" class="operation grid-end button normal">*</button>
+                <button id="btn-divide" class="operation grid-end button normal">/</button>
+                <button id="btn-equals" class="special grid-end button orange">=</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
