@@ -38,5 +38,5 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 3) run command: $deactivate
 4) delete virtual environment folder (venv)
 
-add to Procfile once database is setup
-release: python manage.py migrate
+*REMINDER: add to Procfile once database is setup*
+$release: python manage.py migrate
