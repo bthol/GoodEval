@@ -17,9 +17,10 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
  - new project          : $django-admin startproject project-name
  - new app              : $python manage.py startapp app_name
  - django version       : $python -m django --version
- - update requirements  : $pipenv install -r requirements.txt
  - update Pipfile.lock  : $pipenv lock
  - update static files  : $python manage.py collectstatic --noinput
+ - heroku no static     : $heroku config:set DISABLE_COLLECTSTATIC=1
+ - heroku yes static    : $heroku config:unset DISABLE_COLLECTSTATIC
 
 *NOTE: Virtual environement must be deactivated before pushing to git.*
 
