@@ -164,9 +164,10 @@ USE_TZ = True
 #     os.path.join(BASE_DIR, 'static_files')
 # ]
 
-STATICFILES_DIRS = ('static',)
+STATICFILES_DIRS = ('/',)
 
 STATIC_ROOT = BASE_DIR / "static"
+
 STATIC_URL = 'static/'
 
 STORAGES = {
