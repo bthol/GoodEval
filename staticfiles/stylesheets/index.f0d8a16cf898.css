@@ -1,0 +1,300 @@
+.calculator-container {
+    width: 80vmin;
+    height: 100vmin;
+    padding: 5vmin;
+    background: var(--color-bckgrnd-3);
+    border-top: 1.4vmin ridge var(--color-border-2);
+    border-right: 1.4vmin groove var(--color-border-2);
+    border-bottom: 1.4vmin groove var(--color-border-2);
+    border-left: 1.4vmin ridge var(--color-border-2);
+}
+
+/* NAVIGATION */
+nav {
+    position: absolute;
+    width: 100%;
+    --nav-content-height: 15vmin;
+    --nav-border-height: .5vmin;
+    --nav-height: calc(var(--nav-content-height) + var(--nav-border-height));
+    top: calc(var(--nav-height) * -1);
+    transition: top 300ms;
+}
+
+.title-container {
+    display: flex;
+    align-items: center;
+    background-color: hsl(60, 50%, 92%);
+    height: calc(var(--nav-content-height) * (3/5));
+}
+
+.title-container > h1 {
+    font-size: 5vmin;
+}
+
+.nav-button-container {
+    height: calc(var(--nav-content-height) * (2/5));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-bottom: calc(var(--nav-border-height)) solid #858585;
+}
+
+.theme-button {
+    font-size: 2vmin;
+    margin: 0px;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+}
+.theme-button:hover {
+    color: hsl(240, 84%, 52%);
+}
+
+/* ARROW */
+.arrow-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arrow {
+    position: relative;
+    z-index: 2;
+    height: 2.8vmin;
+    width: 2.8vmin;
+    margin: 0px auto;
+    border-left: 7px double black;
+    border-top: 7px double black;
+}
+
+.upward-arrow > div.arrow {
+    transform: rotate(45deg);
+}
+
+.downward-arrow > div.arrow {
+    transform: rotate(-135deg);
+}
+
+.arrow-container {
+    position: relative;
+    cursor: pointer;
+    height: 4vmin;
+    width: 4vmin;
+}
+
+.arrow-container.downward-arrow:hover {
+    animation: pointing 800ms linear 250ms infinite;
+}
+
+.arrow-container.upward-arrow:hover {
+    animation: pointing 800ms linear reverse 250ms infinite;
+}
+
+@keyframes pointing {
+    0%, 62%, 100% {top: 0vmin}
+    25%, 50% {top: -1vmin}
+}
+
+/* SCREEN */
+.screen {
+    width: 60vmin;
+    height: 12vmin;
+    background: var(--color-screen);
+    border: .6vmin solid var(--color-border-4);
+}
+
+.screen > div {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 10fr;
+    height: 100%;
+    width: 100%;
+}
+
+#screen-content {
+    width: 100%;
+    margin: 0px;
+    grid-column: 1 / span 2;
+    justify-self: start;
+    white-space: nowrap;
+    overflow-x: scroll;
+}
+
+#equal-sign {
+    margin: 0px;
+    justify-self: center;
+    align-self: center;
+    grid-row: 2;
+}
+
+#screen-answer {
+    width: 100%;
+    margin: 0px;
+    justify-self: start;
+    grid-row: 2;
+    white-space: nowrap;
+    overflow-x: scroll;
+}
+
+/* BUTTONS */
+.top-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.top-button {
+    position: relative;
+    padding: .3vmin 1vmin;
+    margin: 1.7vmin;
+    border-radius: 1vmin;
+    cursor: pointer;
+    font-size: 3vmin;
+    background-color: var(--color-fill-2);
+    color: var(--color-font);
+    border: .3vmin solid var(--color-border-3);
+    border-bottom: .4vmin solid var(--color-border-3);
+}
+.top-button:active {
+    border: .25vmin solid var(--color-border-3);
+    border-bottom: .1vmin solid var(--color-border-3);
+    top: .2vmin;
+}
+
+.bottom-button-container {
+    grid-row: 3;
+    width: 60vmin;
+    height: 60vmin;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
+    grid-gap: 2vmin;
+    padding: 3vmin;
+    background: var(--color-bckgrnd-2);
+    border: .1vmin solid var(--color-border-1);
+}
+
+.button {
+    position: relative;
+    padding: 0vmin 3vmin;
+    border-radius: 1vmin 1vmin .6vmin .6vmin;
+    color: var(--color-font);
+    cursor: pointer;
+}
+
+.button.normal {
+    background: var(--color-fill-2);
+    border: .5vmin solid var(--color-border-3);
+    border-bottom: .8vmin solid var(--color-border-3);
+}
+.button.normal:active {
+    border: .5vmin solid var(--color-border-3);
+    border-bottom: .4vmin solid var(--color-border-3);
+    top: .25vmin;
+}
+
+.button.orange {
+    background: #ee531b;
+    border: .5vmin solid #d94712;
+    border-bottom: .8vmin solid #d84713;
+}
+.button.orange:active {
+    border-bottom: hidden;
+    top: .25vmin;
+}
+
+.button.grid-start { /* special operations section */
+    grid-column-start: 1;
+}
+
+.button.grid-end { /* operations section */
+    grid-column-start: 4;
+}
+
+/* individual buttons */
+/* #btn-clear {
+
+} */
+
+#btn-squared {
+    grid-column: 2;
+}
+
+#btn-cubed {
+    grid-column: 3;
+}
+
+#btn-num9 {
+    grid-column: 3;
+}
+
+#btn-num8 {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+#btn-num7 {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#btn-num6 {
+    grid-column: 3;
+}
+
+#btn-num5 {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+#btn-num4 {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+#btn-num3 {
+    grid-column: 3;
+    grid-row: 4;
+}
+
+#btn-num2 {
+    grid-column: 2;
+    grid-row: 4;
+}
+
+#btn-num1 {
+    grid-column: 1;
+}
+#btn-num0 {
+    grid-column: 2;
+    grid-row: 5;
+}
+
+/* #btn-negative {
+    
+} */
+
+#btn-decimal {
+    grid-column: 3;
+}
+
+#btn-plus {
+    grid-row: 1;
+}
+
+#btn-minus {
+    grid-row: 2;
+}
+
+#btn-multiply {
+    grid-row: 3;
+}
+
+#btn-divide {
+    grid-row: 4;
+}
+
+#btn-equals {
+    grid-row: 5;
+}
