@@ -21,8 +21,13 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
  - update static files  : $python manage.py collectstatic --noinput
  - heroku no static     : $heroku config:set DISABLE_COLLECTSTATIC=1
  - heroku yes static    : $heroku config:unset DISABLE_COLLECTSTATIC
+ - heroku debug static  : $heroku config:set DEBUG_COLLECTSTATIC=1
+ - heroku no debug      : $heroku config:unset DEBUG_COLLECTSTATIC
 
-*NOTE: Virtual environement must be deactivated before pushing to git.*
+*REMINDER: add to Procfile once database is setup*
+$release: python manage.py migrate$
+
+*NOTE: Pipenv will automatically handle enviroment activation. Virtual environement must be deactivated before pushing to git if running manually using venv/Scripts/activate.*
 
 *NOTE: Virtual environment will be ignored in git commit by .gitignore, so it does not need to be deleted and recreated for every push to git.*
 
@@ -41,6 +46,3 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 2) run command: $python -m pip freeze > requirements.txt
 3) run command: $deactivate
 4) delete virtual environment folder (venv)
-
-*REMINDER: add to Procfile once database is setup*
-$release: python manage.py migrate

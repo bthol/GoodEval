@@ -32,14 +32,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # https://devcenter.heroku.com/articles/config-vars
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
+    'DJANGO_SECRET_KEY',
     default=secrets.token_urlsafe(nbytes=64),
 )
 
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
 # also explicitly exclude CI:
 # https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
-IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+IS_HEROKU_APP = 'DYNO' in os.environ and not 'CI' in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if not IS_HEROKU_APP:
@@ -50,9 +50,9 @@ if not IS_HEROKU_APP:
 # list the expected hostnames explicitly in production to prevent HTTP Host header attacks. See:
 # https://docs.djangoproject.com/en/5.1/ref/settings/#std-setting-ALLOWED_HOSTS
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ['*']
 else:
-    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
+    ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]', '0.0.0.0']
 
 # Application definition
 
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',
     "app",
 ]
 
@@ -109,8 +109,8 @@ if IS_HEROKU_APP:
     # https://devcenter.heroku.com/articles/provisioning-heroku-postgres#application-config-vars
     # https://github.com/jazzband/dj-database-url
     DATABASES = {
-        "default": dj_database_url.config(
-            env="DATABASE_URL",
+        'default': dj_database_url.config(
+            env='DATABASE_URL',
             conn_max_age=600,
             conn_health_checks=True,
             ssl_require=True,
@@ -120,9 +120,9 @@ else:
     # When running locally in development or in CI, a sqlite database file will be used instead
     # to simplify initial setup. Longer term it's recommended to use Postgres locally too.
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -159,22 +159,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# import os
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static_files')
-# ]
-
-STATICFILES_DIRS = ('/',)
-
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / 'static_collect'
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = ('static_files',)
+
+# import os
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static')
+# ]
 
 STORAGES = {
     # Enable WhiteNoise's GZip and Brotli compression of static assets:
     # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 

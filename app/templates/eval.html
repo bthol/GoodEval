@@ -1,14 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoodEval</title>
-    {% load static %}
-    <script defer src="{% static 'interfaceLogic.js'%}"></script>
-    <link rel="stylesheet" href="{% static 'main.css'%}">
+    <link rel="stylesheet" href="{% static 'stylesheets/main.css'%}">
+    <link rel="stylesheet" href="{% static 'stylesheets/eval.css'%}">
+    <script defer src="{% static 'scripts/evalInterface.js'%}"></script>
 </head>
 <body class="body">
-    <div>Evaluating <div id="elipses"></div></div>
+    <div>Evaluating <div id="elipses">. . .</div></div>
 </body>
 </html>
