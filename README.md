@@ -29,7 +29,7 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 2) run command: $python -m venv venv
 3) run command: $venv/Scripts/activate
 4) run command: $python -m pip install --upgrade pip
-5) run command: $pip install -r requirements.txt
+5) run command: $pipenv install -r requirements.txt
 6) run command: $python manage.py runserver 3000
 
 **Breakdown virtual environment**
