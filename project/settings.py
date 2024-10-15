@@ -58,8 +58,7 @@ else:
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
-    # whitenoise handles static files in development
-    'whitenoise.runserver_nostatic',
+    'whitenoise.runserver_nostatic', # whitenoise handles static files in development
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
