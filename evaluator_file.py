@@ -22,8 +22,8 @@ import math
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
 paren_limit = 10
 
-# the pi_limit parameter controls the maximum number of instances of pi allowed in any one evaluation
-pi_limit = 10
+# the pi_limit parameter controls the maximum number of instances of any one constant allowed in any one evaluation
+c_limit = 10
 
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
 key_limit = 10
@@ -74,78 +74,86 @@ is_sub = False
 # If is_key is empty, bypasses key_functions function
 is_key = []
 
+# use_logs determines whether or not to use logging
+# if use_logs is "1", then logging is active, otherwise it remains defaultly inactive
 use_logs = ""
+
+# Program Information
+info = {
+    "system_operations": [
+        {"name": "info", "about": "Prints program information, i.e. system operations, program entities, key functions, and their related information."},
+    ],
+    
+    "operations": [
+        {"name":"Negative Numbers", "syntax":"(-x)"},
+        {"name":"Exponentiation", "syntax":"^"},
+        {"name":"root", "syntax":"√"}, # alt code 251
+        {"name":"Multiplication", "syntax":"*"},
+        {"name":"Division", "syntax":"/"},
+        {"name":"Addition", "syntax":"+"},
+        {"name":"Subtraction", "syntax":"-"},
+    ],
+
+    "constants": [
+        {"name":"π", "syntax":"pi"}, # alt code 227
+        {"name":"Euler's Number", "syntax":"e"},
+    ],
+
+    "key_functions": [
+        
+        # Trigonomic
+        {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets the arc sine of x, where x is a value or an expression that evaluates to a value."},
+
+        {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets the arc cosine of x, where x is a value or an expression that evaluates to a value."},
+
+        {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arc tangent of x, where x is a value or an expression that evaluates to a value."},
+
+        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
+
+        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
+
+        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
+
+        # Statistical
+        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
+
+        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+        
+        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
+
+        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
+
+        {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+
+        {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
+
+        {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
+
+        {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
+
+        {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
+
+        {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
+
+        {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
+
+        {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
+
+        {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
+    ],
+}
 
 def evaluator(input):
     # process_log is an object literal that stores string values for all process checkpoints during evalution
     # use_logs indicates whether to use logs, True, or not, False
     # note: log_process is run on every restructure, run for calculation reference, and run for process labels
+    global info
     global use_logs
     process_log = {"0":"no logging"}
     def log_process(log = ""):
         if use_logs == "1":
             new_key = int(list(process_log.keys())[-1]) + 1
             process_log["%s" % new_key] = log
-
-    # Program Information
-    info = {
-        "system_operations": [
-            {"name": "info", "about": "Prints program information, i.e. system operations, program entities, key functions, and their related information."},
-        ],
-        
-        "program_entities": [
-            {"name":"Negative Numbers", "syntax":"(-x)"},
-            {"name":"Exponentiation", "syntax":"^"},
-            {"name":"roots", "syntax":"√"},
-            {"name":"Multiplication", "syntax":"*"},
-            {"name":"Division", "syntax":"/"},
-            {"name":"Addition", "syntax":"+"},
-            {"name":"Subtraction", "syntax":"-"},
-        ],
-
-        "key_functions": [
-            
-            # Trigonomic
-            {"name":"Arc Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets the arc sine of x, where x is a value or an expression that evaluates to a value."},
-
-            {"name":"Arc Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets the arc cosine of x, where x is a value or an expression that evaluates to a value."},
-
-            {"name":"Arc Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arc tangent of x, where x is a value or an expression that evaluates to a value."},
-
-            {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
-
-            {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
-
-            {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
-
-            # Statistical
-            {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
-
-            {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
-            
-            {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
-
-            {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
-
-            {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
-
-            {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
-
-            {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
-
-            {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
-
-            {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
-
-            {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
-
-            {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
-
-            {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
-
-            {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
-        ],
-    }
 
     # STRUCTURE START
     def restructure(solution, start, end, arr):
@@ -181,8 +189,8 @@ def evaluator(input):
         # finds a given keyword within the structure
         wordLen = len(word)
         ref = None
-        for i in range(0, len(arr) - 1):
-            if (i > len(arr) - 1 - wordLen):
+        for i in range(0, len(arr)):
+            if (i > len(arr) - wordLen):
                 # stop search if remaining indexes of arr is less than length of word
                 break
             # test for first and last letter of word
@@ -315,7 +323,7 @@ def evaluator(input):
 
     # Phase I Process
     def structure_string(str):
-        # Analyzes string to generate structure conatining string data
+        # Analyzes string to generate structure containing string data
         # Log process label for structuring
         log_process("Structuring")
         # structure multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, and square brackets
@@ -353,25 +361,39 @@ def evaluator(input):
             finally:
                 if (i == len(str) - 1 and len(digits) > 0):
                     arr.append(digits)
+        log_process(arr)
         # print(arr)
 
+        log_process("Constants")
         # structure pi
         ref = get_word("pi", arr)
         itr = 0
-        while itr < pi_limit and ref is not None:
+        while itr < c_limit and ref is not None:
             itr = itr + 1
             arr = restructure(math.pi, ref["first"], ref["last"] - 1, arr)
             ref = get_word("pi", arr)
+        
+        # structure euler's number
+        ref = get_word("e", arr)
+        itr = 0
+        while itr < c_limit and ref is not None:
+            itr = itr + 1
+            arr = restructure(math.e, ref["first"], ref["last"] - 1, arr)
+            ref = get_word("e", arr)
+        
 
         # structure keywords
+        log_process("Keywords")
+
         s = True
+        for i in range(0, len(info["system_operations"])):
+            arr = word_struct(info["system_operations"][i]["name"], arr)
         for i in range(0, len(info["system_operations"])):
             arr = word_struct(info["system_operations"][i]["name"], arr)
 
         for i in range(0, len(info["key_functions"])):
             arr = word_struct(info["key_functions"][i]["key"], arr)
-        # print(arr)
-        log_process(arr)
+        
         return arr
     # STRUCTURE END
 
@@ -505,7 +527,7 @@ def evaluator(input):
             y = math.cos(x)
 
             # Log keyword
-            log_process(arr[ref])
+            log_process(arrVar[ref])
             arrVar = restructure(y, ref, ref + 1, arrVar)
             ref = getIdx("cos", arrVar)
 
@@ -1015,6 +1037,7 @@ def evaluator(input):
     # Phase III and IV Process
     def calculate(arr):
         # scans for operations and calculates
+        log_process("Calculating")
         arrVar = arr
         # Phase III
         # perform all key functions
@@ -1031,7 +1054,7 @@ def evaluator(input):
                 if keys_in_section == True:
                     break
             if keys_in_section == True:
-                # run keys functions
+                # run key functions
                 arrVar = key_functions(arrVar)
 
         # Phase IV
@@ -1420,8 +1443,14 @@ def evaluator(input):
         log_process("Program Entities")
         log_process()
 
-        for i in range(0, len(info["program_entities"])):
-            log_process(info["program_entities"][i]["name"] + ": " + info["program_entities"][i]["syntax"])
+        log_process("Operations")
+        for i in range(0, len(info["operations"])):
+            log_process(info["operations"][i]["name"] + ": " + info["operations"][i]["syntax"])
+            log_process()
+        
+        log_process("Constants")
+        for i in range(0, len(info["constants"])):
+            log_process(info["constants"][i]["name"] + ": " + info["constants"][i]["syntax"])
             log_process()
 
         log_process()
@@ -1448,14 +1477,13 @@ def evaluator(input):
     def evaluate(str):
         # top level function runs evaluation
         global system_operation
-        # change first log
-        if use_logs == "1":
-            process_log["0"] = "Process Log Start"
         structure = structure_string(str)
-        system_ops(structure)
-        if system_operation == True:
+        if system_ops(structure) == True:
             return "System Operation"
         else:
+            # change first log
+            if use_logs == "1":
+                process_log["0"] = "Process Log Start"
             # Identify program entities in problem string
             identify_entities(structure)
             # determine structuring and operations
@@ -1520,4 +1548,4 @@ def evaluator(input):
     print(logs)
     # print("Output Object: %s" % output)
 
-evaluator("") # remove or comment out after testing
+# evaluator("") # remove or comment out after testing

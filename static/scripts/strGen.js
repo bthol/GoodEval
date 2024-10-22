@@ -4,14 +4,10 @@ console.log('String Generator Script Loaded.');
 const Q = document.querySelector('#screen-content');
 const A = document.querySelector('#screen-answer');
 
-// Q.innerText = 'sd[[sin(100+4*((-26)+1))],1]+0.5';
-Q.innerText = '';
-A.innerText = '';
-
 // object
 let input = {
     'problem': '',
-    'use_logs': '0',
+    'use_logs': '1',
 }
 
 // booleans for input testing
@@ -88,11 +84,11 @@ btns.addEventListener('click', (e) => {
                 input.problem += '9';
                 Q.innerText = input.problem;
             } else if (id === 'btn-pi') {
-                console.log('pi');
+                console.log('π');
                 input.problem += 'pi';
                 Q.innerText = input.problem;
             } else if (id === 'btn-euler') {
-                console.log('euler');
+                console.log("euler's number");
                 input.problem += 'e';
                 Q.innerText = input.problem;
             }
@@ -166,7 +162,7 @@ btns.addEventListener('click', (e) => {
         } else if (type === 'special') {
             if (id === 'btn-clear') {
                 console.log('clear');
-                input.problem = ''
+                input.problem = '';
                 Q.innerText = '';
             } else if (id === 'btn-equals') {
                 debounce(evaluate, 1000);
