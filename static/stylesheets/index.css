@@ -115,6 +115,7 @@ nav {
 #screen-content {
     width: 100%;
     margin: 0px;
+    padding-left: 1vmin;
     grid-column: 1 / span 2;
     justify-self: start;
     white-space: nowrap;
@@ -280,19 +281,19 @@ nav {
 }
 
 #btn-plus {
-    grid-row: 1;
+    grid-row: 4;
 }
 
 #btn-minus {
-    grid-row: 2;
-}
-
-#btn-multiply {
     grid-row: 3;
 }
 
+#btn-multiply {
+    grid-row: 2;
+}
+
 #btn-divide {
-    grid-row: 4;
+    grid-row: 1;
 }
 
 #btn-equals {

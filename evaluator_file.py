@@ -74,17 +74,16 @@ is_sub = False
 # If is_key is empty, bypasses key_functions function
 is_key = []
 
-use_logs = False
+use_logs = ""
 
 def evaluator(input):
     # process_log is an object literal that stores string values for all process checkpoints during evalution
     # use_logs indicates whether to use logs, True, or not, False
     # note: log_process is run on every restructure, run for calculation reference, and run for process labels
+    global use_logs
     process_log = {"0":"no logging"}
-    
     def log_process(log = ""):
-        global use_logs
-        if use_logs == True:
+        if use_logs == "1":
             new_key = int(list(process_log.keys())[-1]) + 1
             process_log["%s" % new_key] = log
 
@@ -1450,7 +1449,7 @@ def evaluator(input):
         # top level function runs evaluation
         global system_operation
         # change first log
-        if use_logs == True:
+        if use_logs == "1":
             process_log["0"] = "Process Log Start"
         structure = structure_string(str)
         system_ops(structure)
@@ -1477,13 +1476,48 @@ def evaluator(input):
             return structure
 
     # Evaluation
-    use_logs = input["use_logs"]
-    answer = evaluate(input["problem"])
+    # use_logs = input["use_logs"]
 
+    # print(input["problem"])
+    # answer = evaluate(input["problem"])
+
+    # output = {
+    #     "problem": input["problem"],
+    #     "answer": answer,
+    #     "logs": process_log,
+    # }
+
+    # return output
+    
+    # TESTING
+    # Simulated Program Input
+    test = {
+        # "problem": "info",
+        "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+        "use_logs": "1",
+    }
+    use_logs = test["use_logs"]
+
+    # Evaluation
+    answer = evaluate(test["problem"])
+
+    # Simulated Program Output
     output = {
-        "problem": input["problem"],
+        "problem": test["problem"],
         "answer": answer,
         "logs": process_log,
     }
 
-    return output 
+    # Prints feedback for program development
+    logs = """"""
+    process_log_keys = list(process_log.keys())
+    for key in process_log_keys:
+        logs += """%s
+""" % process_log[key]
+
+    print(test["problem"])
+    print(answer)
+    print(logs)
+    # print("Output Object: %s" % output)
+
+evaluator("") # remove or comment out after testing
