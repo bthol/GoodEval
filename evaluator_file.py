@@ -222,6 +222,7 @@ def evaluator(input):
     def structure_sets(arr):
         # generates substructures, i.e. "sets", within structure
         log_process("Structure Sets")
+        log_process(arr)
         # structure sets
         sets_ref = []
         for i in range(0, len(arr)):
@@ -263,6 +264,7 @@ def evaluator(input):
                 break
         
         # identify distribution
+        global is_dist
         if (is_paren):
             for i in range(0, len(arr)):
                 if i != 0 and i != len(arr):
@@ -330,37 +332,40 @@ def evaluator(input):
         arr = []
         digits = ""
         for i in range(0, len(str)):
-            try:
-                str[i] == "." or int(str[i])
-            except:
-                # handle negatives
-                if str[i - 1] == "(" and str[i] == "-":
-                    arr.pop()
-                    digits = "%s" % str[i]
-                elif str[i] == ")":
-                    try:
-                        if int(digits) < 0:
-                            arr.append(digits)
-                            digits = ""
-                        else:
-                            arr.append(digits)
+            if str[i] == " ":
+                continue
+            else:
+                try:
+                    str[i] == "." or int(str[i])
+                except:
+                    # handle negatives
+                    if str[i] == "-" and str[i - 1] == "(":
+                        arr.pop()
+                        digits = "%s" % str[i]
+                    elif str[i] == ")":
+                        try:
+                            if int(digits) < 0:
+                                arr.append(digits)
+                                digits = ""
+                            else:
+                                arr.append(digits)
+                                digits = ""
+                                arr.append(str[i])
+                        except:
+                            if len(digits) > 0:
+                                arr.append(digits)
                             digits = ""
                             arr.append(str[i])
-                    except:
+                    else:
                         if len(digits) > 0:
                             arr.append(digits)
                         digits = ""
                         arr.append(str[i])
                 else:
-                    if len(digits) > 0:
+                    digits = digits + "%s" % str[i]
+                finally:
+                    if (i == len(str) - 1 and len(digits) > 0):
                         arr.append(digits)
-                    digits = ""
-                    arr.append(str[i])
-            else:
-                digits = digits + "%s" % str[i]
-            finally:
-                if (i == len(str) - 1 and len(digits) > 0):
-                    arr.append(digits)
         log_process(arr)
         # print(arr)
 
@@ -385,12 +390,11 @@ def evaluator(input):
         # structure keywords
         log_process("Keywords")
 
-        s = True
+        # system operations
         for i in range(0, len(info["system_operations"])):
             arr = word_struct(info["system_operations"][i]["name"], arr)
-        for i in range(0, len(info["system_operations"])):
-            arr = word_struct(info["system_operations"][i]["name"], arr)
-
+        
+        # key functions
         for i in range(0, len(info["key_functions"])):
             arr = word_struct(info["key_functions"][i]["key"], arr)
         
@@ -1189,7 +1193,6 @@ def evaluator(input):
     # Phase II Process START
     def section(arr):
         # performs calculations in order of parenthesis nesting
-        log_process("Parenthesis")
         arrVar = arr
         more_parens = True
         thresh = 0
@@ -1207,6 +1210,8 @@ def evaluator(input):
             if count == 0:
                 more_parens = False
                 continue
+            else:
+                log_process("Parenthesis")
             osme = []
             for i in range(0, len(parens)):
                 if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
@@ -1231,11 +1236,11 @@ def evaluator(input):
 
     def distribute(arr):
         # restructures with distributed terms
-        log_process("Distribution")
         global is_dist
         arrVar = arr
         x = 0
         while is_dist == True and x < paren_limit:
+            log_process("Distribution")
             x = x + 1
             # runs distribution process
             parens = []
@@ -1521,7 +1526,8 @@ def evaluator(input):
     # Simulated Program Input
     test = {
         # "problem": "info",
-        "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+        # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+        "problem": "sd[[sd[0,0]],1]-0.5",
         "use_logs": "1",
     }
     use_logs = test["use_logs"]
@@ -1548,4 +1554,4 @@ def evaluator(input):
     print(logs)
     # print("Output Object: %s" % output)
 
-# evaluator("") # remove or comment out after testing
+evaluator("") # remove or comment out after testing
