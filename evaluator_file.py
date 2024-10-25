@@ -14,9 +14,6 @@ import math
 # Phase IV: Calculation
 # Description: Search for and run appropriate mathematical operation on contents of structure, restructure with solution, and repeat until no operations are remaining.
 
-# reference
-# √ character shortcut (using number pad; "+" means press and hold): alt + 2 + 5 + 1
-
 # PROGRAM PARAMETERS
 
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
@@ -326,7 +323,6 @@ def evaluator(input):
     # Phase I Process
     def structure_string(str):
         # Analyzes string to generate structure containing string data
-        # Log process label for structuring
         log_process("Structuring")
         # structure multi-digit numbers, negative numbers, decimal numbers, mathematical operations, parenthesis, and square brackets
         arr = []
@@ -1509,49 +1505,48 @@ def evaluator(input):
             return structure
 
     # Evaluation
-    # use_logs = input["use_logs"]
+    use_logs = input["use_logs"]
 
-    # print(input["problem"])
-    # answer = evaluate(input["problem"])
+    print(input["problem"])
+    answer = evaluate(input["problem"])
 
-    # output = {
-    #     "problem": input["problem"],
-    #     "answer": answer,
-    #     "logs": process_log,
-    # }
-
-    # return output
-    
-    # TESTING
-    # Simulated Program Input
-    test = {
-        # "problem": "info",
-        # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
-        "problem": "sd[[sd[0,0]],1]-0.5",
-        "use_logs": "1",
-    }
-    use_logs = test["use_logs"]
-
-    # Evaluation
-    answer = evaluate(test["problem"])
-
-    # Simulated Program Output
     output = {
-        "problem": test["problem"],
+        "problem": input["problem"],
         "answer": answer,
         "logs": process_log,
     }
 
-    # Prints feedback for program development
-    logs = """"""
-    process_log_keys = list(process_log.keys())
-    for key in process_log_keys:
-        logs += """%s
-""" % process_log[key]
+    return output
+    
+#     # TESTING
+#     # Simulated Program Input
+#     test = {
+#         # "problem": "info",
+#         "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+#         "use_logs": "1",
+#     }
+#     use_logs = test["use_logs"]
 
-    print(test["problem"])
-    print(answer)
-    print(logs)
-    # print("Output Object: %s" % output)
+#     # Evaluation
+#     answer = evaluate(test["problem"])
 
-evaluator("") # remove or comment out after testing
+#     # Simulated Program Output
+#     output = {
+#         "problem": test["problem"],
+#         "answer": answer,
+#         "logs": process_log,
+#     }
+
+#     # Prints feedback for program development
+#     logs = """"""
+#     process_log_keys = list(process_log.keys())
+#     for key in process_log_keys:
+#         logs += """%s
+# """ % process_log[key]
+
+#     print(test["problem"])
+#     print(answer)
+#     print(logs)
+#     # print("Output Object: %s" % output)
+
+# evaluator("") # remove or comment out after testing

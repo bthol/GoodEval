@@ -7,12 +7,71 @@ const A = document.querySelector('#screen-answer');
 // object
 let input = {
     'problem': '',
-    'use_logs': '1',
+    'use_logs': '0', // 1 activates logs && 0 deactivates logs
 }
 
-// booleans for input testing
+// string validation
 let value = false;
 let operation = false;
+
+function validString(problem) {
+    // break string down by character
+    let validity = true;
+    try {
+        let struct = [];
+        let buffer = "";
+        for (let i = 0; i < problem.length; i++) {
+            const char = problem.slice(i, i + 1);
+            // skip spaces
+            if (char === " ") {
+                continue;
+            } else {
+                if (char === "." || !isNaN(char)) {
+                    buffer += char;
+                } else {
+                    // handle negatives start
+                    if (char === "-" && struct[struct.length - 1] === "(") {
+                        struct.pop();
+                        buffer = char;
+                    } else if (char === ")") {
+                        try {
+                            if (Number(buffer) < 0) {
+                                struct.push(buffer);
+                                buffer = "";
+                                // handle negatives end
+                            } else {
+                                struct.push(buffer);
+                                buffer = "";
+                                struct.push(char);
+                            }
+                        } catch {
+                            if (buffer.length > 0) {
+                                struct.push(buffer);
+                            }
+                            buffer = "";
+                            struct.push(char);
+                        }
+                    } else {
+                        if (buffer.length > 0) {
+                            struct.push(buffer);
+                        }
+                        buffer = "";
+                        struct.push(char);
+                    }
+
+                }
+                // push buffer at end
+                if (i === problem.length - 1 && buffer.length > 0) {
+                    struct.push(buffer);
+                }
+            }
+        }
+        console.log(struct);
+    } catch {
+        validity = false;
+    }
+    return validity;
+};
 
 // general purpose debounce
 let debounceCache = {};
@@ -25,9 +84,12 @@ function debounce(funct, deference) {
     }, deference)
 };
 
-function evaluate() {
-    console.log("requested evaluation");
+async function evaluate() {
     console.log(input);
+    if (validString(input.problem)) {
+        console.log("requested evaluation");
+        // const response = await 
+    }
 };
 
 // User Interface Control
@@ -85,7 +147,7 @@ btns.addEventListener('click', (e) => {
                 Q.innerText = input.problem;
             } else if (id === 'btn-pi') {
                 console.log('π');
-                input.problem += 'pi';
+                input.problem += 'π';
                 Q.innerText = input.problem;
             } else if (id === 'btn-euler') {
                 console.log("euler's number");
