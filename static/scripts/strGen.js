@@ -14,61 +14,87 @@ let input = {
 let value = false;
 let operation = false;
 
-function validString(problem) {
-    // break string down by character
-    let validity = true;
-    try {
-        let struct = [];
-        let buffer = "";
-        for (let i = 0; i < problem.length; i++) {
-            const char = problem.slice(i, i + 1);
-            // skip spaces
-            if (char === " ") {
-                continue;
+function invalidFormatError() {
+    Q.innerText = "Error: invalid format";
+    const c = setTimeout(() => {
+        Q.innerText = input.problem;
+    }, 1000)
+};
+
+function structureString(problem) {
+    let struct = [];
+    let buffer = "";
+    for (let i = 0; i < problem.length; i++) {
+        const char = problem.slice(i, i + 1);
+        // skip spaces
+        if (char === " ") {
+            continue;
+        } else {
+            if (char === "." || !isNaN(char)) {
+                buffer += char;
             } else {
-                if (char === "." || !isNaN(char)) {
-                    buffer += char;
-                } else {
-                    // handle negatives start
-                    if (char === "-" && struct[struct.length - 1] === "(") {
-                        struct.pop();
-                        buffer = char;
-                    } else if (char === ")") {
-                        try {
-                            if (Number(buffer) < 0) {
-                                struct.push(buffer);
-                                buffer = "";
-                                // handle negatives end
-                            } else {
-                                struct.push(buffer);
-                                buffer = "";
-                                struct.push(char);
-                            }
-                        } catch {
-                            if (buffer.length > 0) {
-                                struct.push(buffer);
-                            }
+                // handle negatives start
+                if (char === "-" && struct[struct.length - 1] === "(") {
+                    struct.pop();
+                    buffer = char;
+                } else if (char === ")") {
+                    try {
+                        if (Number(buffer) < 0) {
+                            struct.push(buffer);
+                            buffer = "";
+                            // handle negatives end
+                        } else {
+                            struct.push(buffer);
                             buffer = "";
                             struct.push(char);
                         }
-                    } else {
+                    } catch {
                         if (buffer.length > 0) {
                             struct.push(buffer);
                         }
                         buffer = "";
                         struct.push(char);
                     }
+                } else {
+                    if (buffer.length > 0) {
+                        struct.push(buffer);
+                    }
+                    buffer = "";
+                    struct.push(char);
+                }
 
-                }
-                // push buffer at end
-                if (i === problem.length - 1 && buffer.length > 0) {
-                    struct.push(buffer);
-                }
+            }
+            // push buffer at end
+            if (i === problem.length - 1 && buffer.length > 0) {
+                struct.push(buffer);
             }
         }
-        console.log(struct);
-    } catch {
+    }
+    console.log(struct);
+    return struct;
+};
+
+function validStringStructure(problem) {
+    // break string down by character
+    let validity = true;
+    const struct = structureString(problem);
+    // test struct for validity
+    // Invalid if:
+    //  - 
+    //  - 
+    //  - 
+    return validity;
+};
+
+function validOp(problem) {
+    let validity = true;
+    if (problem.length === 0) {
         validity = false;
+    } else {
+        const char = problem.slice(problem.length - 1, problem.length);
+        if (isNaN(char) && char !== ")") {
+            validity = false;
+        }
     }
     return validity;
 };
@@ -158,20 +184,36 @@ btns.addEventListener('click', (e) => {
         } else if (type === 'operation') {
             if (id === 'btn-plus') {
                 console.log('plus');
-                input.problem += '+';
-                Q.innerText = input.problem;
+                if (validOp(input.problem)) {
+                    input.problem += '+';
+                    Q.innerText = input.problem;
+                } else {
+                    invalidFormatError();
+                }
             } else if (id === 'btn-minus') {
                 console.log('minus');
-                input.problem += '-';
-                Q.innerText = input.problem;
+                if (validOp(input.problem)) {
+                    input.problem += '-';
+                    Q.innerText = input.problem;
+                } else {
+                    invalidFormatError();
+                }
             } else if (id === 'btn-multiply') {
                 console.log('multiply');
-                input.problem += '*';
-                Q.innerText = input.problem;
+                if (validOp(input.problem)) {
+                    input.problem += '*';
+                    Q.innerText = input.problem;
+                } else {
+                    invalidFormatError();
+                }
             } else if (id === 'btn-divide') {
                 console.log('divide');
-                input.problem += '/';
-                Q.innerText = input.problem;
+                if (validOp(input.problem)) {
+                    input.problem += '/';
+                    Q.innerText = input.problem;
+                } else {
+                    invalidFormatError();
+                }
             } else if (id === 'btn-sign') {
                 console.log('sign');
                 input.problem += '-(';
@@ -186,7 +228,12 @@ btns.addEventListener('click', (e) => {
                 Q.innerText = input.problem;
             } else if (id === 'btn-root') {
                 console.log('square root');
-                input.problem += '√(';
+                if (validOp(input.problem)) {
+                    input.problem += '√(';
+                    Q.innerText = input.problem;
+                } else {
+                    invalidFormatError();
+                }
                 Q.innerText = input.problem;
             } else if (id === 'btn-absolute-value') {
                 console.log('absolute value');
