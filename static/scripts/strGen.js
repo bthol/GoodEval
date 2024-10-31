@@ -21,24 +21,23 @@ let input = {
 let problem = [];
 
 function updateProblem(problem) {
+    Q.innerHTML = '';
     let string = '';
     for (let i = 0; i < problem.length; i++) {
         string += problem[i];
-        // const div = document.createElement('div');
-        // div.innerText = problem[i];
-        // Q.appendChild(div);
+        const div = document.createElement('div');
+        div.innerText = problem[i];
+        Q.appendChild(div);
     }
     input.problem = string;
-    Q.innerText = string;
 };
 
 // string validation
-let value = false;
-let operation = false;
-
+let formatError = {};
 function invalidFormatError() {
     Q.innerText = 'Error: invalid format';
-    const c = setTimeout(() => {
+    clearTimeout(formatError);
+    formatError = setTimeout(() => {
         Q.innerText = input.problem;
     }, 1000)
 };

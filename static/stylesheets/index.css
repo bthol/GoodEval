@@ -117,9 +117,14 @@ nav {
     margin: 0px;
     padding-left: 1vmin;
     grid-column: 1 / span 2;
-    justify-self: start;
+    display: flex;
+    justify-content: flex-start;
     white-space: nowrap;
     overflow-x: scroll;
+}
+
+#screen-content > div {
+    margin: 0px;
 }
 
 #equal-sign {
