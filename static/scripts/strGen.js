@@ -1,9 +1,9 @@
 console.log('String Generator Script Loaded.');
 
 // Development Plan
-//  - in updateProblem function, create a new dom element for every character + correct layout
 //  - editable problem (rather than entering it perfectly or clearing)
 //      - add backspace button that removes last charater and updates
+//      - add forward and back button, defaulting to end, for navigating through problem
 //  - Semenatic colorization for parenthesis to ensure equal number of opening and closing
 //      - reden opening parens starting from last to indicate the need for closing parens
 //  - 
@@ -13,23 +13,91 @@ const Q = document.querySelector('#screen-content');
 const A = document.querySelector('#screen-answer');
 
 // Data Strcutures
+// object for evaluation request
 let input = {
     'problem': '',
     'use_logs': '0', // 1 activates logs && 0 deactivates logs
 }
 
+// char structure for problem
 let problem = [];
 
 function updateProblem(problem) {
+    // clear problem in display
     Q.innerHTML = '';
     let string = '';
     for (let i = 0; i < problem.length; i++) {
+        // compile string
         string += problem[i];
+        // build element
         const div = document.createElement('div');
         div.innerText = problem[i];
+        // lay element
         Q.appendChild(div);
     }
     input.problem = string;
+    cursorDefault();
+};
+
+// CURSOR MODE
+let cursorMode = false;
+let cursorModeToggled = false;
+let cursorIdx = 0;
+let cursorModeCache = {};
+
+function cursorDefault() {
+    // default cursor position to end
+    if (!cursorMode) {
+        cursorIdx = problem.length - 1;
+    }
+};
+
+function cursorContinue() {
+    // run on cursor nav buttons
+    // bipass if cursor mode activated through toggle
+    if (!cursorModeToggled) {
+        cursorMode = true;
+        clearTimeout(cursorModeCache);
+        cursorModeCache = setTimeout(() => {
+            // discontinue cursor mode
+            console.log("cursor mode discontinued");
+            cursorMode = false;
+            cursorDefault();
+        }, 1000); // 1 second timeout
+    }
+};
+
+function toggleCursorMode() {
+    cursorMode = !cursorMode;
+    cursorModeToggled = cursorMode;
+    if (!cursorMode) {
+        // discontinue cursor mode
+        console.log("cursor mode off");
+        clearTimeout(cursorModeCache);
+    }
+};
+
+function cursorBack() {
+    const len = problem.length;
+    if (len > 0 && cursorIdx - 1 > 0) {
+        cursorIdx -= 1;
+    }
+};
+
+function cursorForward() {
+    const len = problem.length;
+    if (len > 0 && cursorIdx + 1 < len) {
+        cursorIdx += 1;
+    }
+};
+
+function backspace(problem) {
+    const len = problem.length;
+    if (len > 0) {
+        problem.splice(cursorIdx, 1);
+        cursorIdx -= 1;
+        updateProblem(problem);
+    }
 };
 
 // string validation
@@ -120,7 +188,7 @@ function validOp(problem) {
     return validity;
 };
 
-// general purpose debounce
+// debounce evaluate requests
 let debounceCache = {};
 function debounce(funct, deference) {
     console.log('debounced');
@@ -141,13 +209,13 @@ async function evaluate() {
 
 // User Interface Control
 const btns = document.querySelector('.btns');
+// single listener on wrap element for event delegation
 btns.addEventListener('click', (e) => {
-    // single listener on wrap element for event delegation
+    // exclude the container elements
     if (e.target.classList[0] !== 'top-button-container' && e.target.classList[0] !== 'bottom-button-container') {
-        // exclude the container elements
+        // get target info
         const type = e.target.classList[0];
         const id = e.target.id;
-        
         // reduce number of tests by testing types
         // tested from largest to smallest number of members in type
         // member ids tested from most to least estimated frequency of usage
@@ -308,10 +376,35 @@ btns.addEventListener('click', (e) => {
                 }
                 updateProblem(problem);
             } else if (id === 'btn-paren-open') {
+                console.log('(');
                 problem.push('(');
                 updateProblem(problem);
             } else if (id === 'btn-paren-close') {
+                console.log(')');
                 problem.push(')');
+                updateProblem(problem);
+            }
+
+        } else if (type === 'cursor') {
+            if (id === 'btn-cursor-backspace') {
+                console.log('<—');
+                cursorContinue();
+                // remove character at current index
+                backspace(problem);
+                updateProblem(problem);
+            } else if (id === 'btn-cursor-mode') {
+                console.log("cursor mode toggled");
+                toggleCursorMode();
+                // activate cursor mode
+            } else if (id === 'btn-cursor-forward') {
+                console.log('>');
+                cursorContinue();
+                // move cursor forward 1 index
+                updateProblem(problem);
+            } else if (id === 'btn-cursor-backward') {
+                console.log('<');
+                cursorContinue();
+                // move cursor backward 1 index
                 updateProblem(problem);
             }
         }

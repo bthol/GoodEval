@@ -147,13 +147,12 @@ nav {
 .top-button-container {
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 .top-button {
     position: relative;
     padding: .3vmin 1vmin;
-    margin: 1.7vmin;
+    margin: .75vmin 1.75vmin;
     border-radius: 1vmin;
     cursor: pointer;
     font-size: 3vmin;
