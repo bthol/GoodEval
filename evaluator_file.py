@@ -72,6 +72,13 @@ is_sub = False
 # If is_key is empty, bypasses key_functions function
 is_key = []
 
+# key_modules structure represent which key functions modules should be run or bypassed on call
+key_modules = [
+    {"module":"trigonomic", "use":False},
+    {"module":"geometric", "use":False},
+    {"module":"statistical", "use":False},
+]
+
 # use_logs determines whether or not to use logging
 # if use_logs is "1", then logging is active, otherwise it remains defaultly inactive
 use_logs = ""
@@ -98,77 +105,85 @@ info = {
     ],
 
     "key_functions": [
-        # Trigonomic
-
+        # Trigonomic Module Info
+        [
             # Fundamental
-        {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Arcus Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets the arcus sine, i.e. the inverse sine, of x, where x is a value or an expression that evaluates to a value."},
-
-        {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
-
-        {"name":"Arcus Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets the arc cosine, i.e. the inverse of cosine, of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Arcus Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arcus tangent, i.e. the inverse tangent, of x, where x is a value or an expression that evaluates to a value."},
+            {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
             
-            # Reciprocal
-        # {"name":"Cosecant", "key":"csc", "syntax": "csc(x)", "about": "Gets the cosecant, i.e. the reciprocal sine, of x, where x is a value or an expression that evaluates to a value."},
-        
-        # {"name":"Arcus Cosecant", "key":"csc", "syntax": "csc(x)", "about": "Gets the arcus cosecant, i.e. the inverse reciprocal sine, of x, where x is a value or an expression that evaluates to a value."},
-        
-        # {"name":"Secant", "key":"sec", "syntax": "sec(x)", "about": "Gets the secant, i.e. the reciprocal cosine, of x, where x is a value or an expression that evaluates to a value."},
-        
-        # {"name":"Arcus Secant", "key":"sec", "syntax": "sec(x)", "about": "Gets the arcus secant, i.e. the inverse reciprocal cosine, of x, where x is a value or an expression that evaluates to a value."},
-        
-        # {"name":"Cotangent", "key":"cot", "syntax": "cot(x)", "about": "Gets the cotangent, i.e. the reciprocal tangent, of x, where x is a value or an expression that evaluates to a value."},
-        
-        # {"name":"Arcus Cotangent", "key":"cot", "syntax": "cot(x)", "about": "Gets the arcus cotangent, i.e. the inverse reciprocal tangent, of x, where x is a value or an expression that evaluates to a value."},
+            {"name":"Arcus Sine", "key":"asin", "syntax": "asin(x)", "about": "Gets the arcus sine, i.e. the inverse sine, of x, where x is a value or an expression that evaluates to a value."},
 
-            # Hyperbolic
-        {"name":"Hyperbolic Sine", "key":"sinh", "syntax": "sinh(x)", "about": "Gets the hyperbolic sine, i.e the sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":" Arcus Hyperbolic Sine", "key":"asinh", "syntax": "asinh(x)", "about": "Gets the arcus hyperbolic sine, i.e the inverse sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Hyperbolic Cosine", "key":"cosh", "syntax": "cosh(x)", "about": "Gets the hyperbolic cosine, i.e the cosine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Arcus Hyperbolic Cosine", "key":"acosh", "syntax": "acosh(x)", "about": "Gets the arcus hyperbolic cosine, i.e the inverse cosine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Hyperbolic Tangent", "key":"tanh", "syntax": "tanh(x)", "about": "Gets the hyperbolic tangent, i.e the tangent of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
-        
-        {"name":"Arcus Hyperbolic Tangent", "key":"atanh", "syntax": "atanh(x)", "about": "Gets the arcus hyperbolic tangent, i.e the inverse tangent of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
-        
-        # Statistical
+            {"name":"Cosine", "key": "cos", "syntax": "cos(x)", "about": "Gets the cosine of x, where x is a value or an expression that evaluates to a value."},
 
+            {"name":"Arcus Cosine", "key": "acos", "syntax": "acos(x)", "about": "Gets the arc cosine, i.e. the inverse of cosine, of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":"Tangent", "key":"tan", "syntax": "tan(x)", "about": "Gets the tangent of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":"Arcus Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arcus tangent, i.e. the inverse tangent, of x, where x is a value or an expression that evaluates to a value."},
+                
+                # Reciprocal
+            # {"name":"Cosecant", "key":"csc", "syntax": "csc(x)", "about": "Gets the cosecant, i.e. the reciprocal sine, of x, where x is a value or an expression that evaluates to a value."},
+            
+            # {"name":"Arcus Cosecant", "key":"csc", "syntax": "csc(x)", "about": "Gets the arcus cosecant, i.e. the inverse reciprocal sine, of x, where x is a value or an expression that evaluates to a value."},
+            
+            # {"name":"Secant", "key":"sec", "syntax": "sec(x)", "about": "Gets the secant, i.e. the reciprocal cosine, of x, where x is a value or an expression that evaluates to a value."},
+            
+            # {"name":"Arcus Secant", "key":"sec", "syntax": "sec(x)", "about": "Gets the arcus secant, i.e. the inverse reciprocal cosine, of x, where x is a value or an expression that evaluates to a value."},
+            
+            # {"name":"Cotangent", "key":"cot", "syntax": "cot(x)", "about": "Gets the cotangent, i.e. the reciprocal tangent, of x, where x is a value or an expression that evaluates to a value."},
+            
+            # {"name":"Arcus Cotangent", "key":"cot", "syntax": "cot(x)", "about": "Gets the arcus cotangent, i.e. the inverse reciprocal tangent, of x, where x is a value or an expression that evaluates to a value."},
+
+                # Hyperbolic
+            {"name":"Hyperbolic Sine", "key":"sinh", "syntax": "sinh(x)", "about": "Gets the hyperbolic sine, i.e the sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":" Arcus Hyperbolic Sine", "key":"asinh", "syntax": "asinh(x)", "about": "Gets the arcus hyperbolic sine, i.e the inverse sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":"Hyperbolic Cosine", "key":"cosh", "syntax": "cosh(x)", "about": "Gets the hyperbolic cosine, i.e the cosine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":"Arcus Hyperbolic Cosine", "key":"acosh", "syntax": "acosh(x)", "about": "Gets the arcus hyperbolic cosine, i.e the inverse cosine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":"Hyperbolic Tangent", "key":"tanh", "syntax": "tanh(x)", "about": "Gets the hyperbolic tangent, i.e the tangent of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+            
+            {"name":"Arcus Hyperbolic Tangent", "key":"atanh", "syntax": "atanh(x)", "about": "Gets the arcus hyperbolic tangent, i.e the inverse tangent of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+        ],
+
+        # Geometeric Module Info
+        [
+            # Triangles
+            {"name":"Right Triangle Hypotenuse", "key":"hypot", "syntax": "hypot[a,b]", "about": "Gets the hypotenuse length of a right triangle given leg lengths a and b, where a and b are a value or an expression that evaluates to a value wrapped within square brackets, e.g. hypot[a,[b+x]]."},
+        ],
+
+        # Statistical Module Info
+        [
             # Combinatorics
-        {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
+            {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
 
-        {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
+            {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
 
-        {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+            {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
 
-        {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
-            
+            {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
+                
             # Means
-        {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
+            {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
 
-        {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
+            {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
 
-        {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
+            {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
 
-        {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
+            {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
 
-        {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
-            
+            {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
+                
             # Et Cetera
-        {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
+            {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
 
-        {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
-        
-        {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
+            {"name":"Least Common Multiple", "key":"lcm", "syntax": "lcm[a,b]", "about": "Gets the least common multiple of values a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. lcm[a,[b+x]]."},
+            
+            {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
 
-        {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+            {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+        ],
     ],
 }
 
@@ -177,6 +192,7 @@ def evaluator(input):
     # use_logs indicates whether to use logs, True, or not, False
     # note: log_process is run on every restructure, run for calculation reference, and run for process labels
     global info
+    global key_modules
     global use_logs
     process_log = {"0":"no logging"}
     def log_process(log = ""):
@@ -234,18 +250,40 @@ def evaluator(input):
                     break
         return ref
 
-    def word_struct(word, arr):
+    def word_struct(word, arr, module = None):
         # structures a given keyword
         global is_key
         arrVar = arr
         ref = get_word(word, arrVar)
         s = True
-        while ref is not None:
-            if s == True:
-                is_key = [word] + is_key
-                s = False
-            arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
-            ref = get_word(word, arrVar)
+        if module == None:
+            while ref is not None:
+                # for every word found in arr
+                if s == True:
+                    # for first word found
+                    # add key to is_key structure
+                    is_key = [word] + is_key
+                    s = False
+                # restructure with keyword
+                arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
+                # find next word or None
+                ref = get_word(word, arrVar)
+        else:
+            # for key function modules
+            while ref is not None:
+                # for every word found in arr
+                if s == True:
+                    # for first word found
+                    # add key to is_key structure
+                    is_key = [word] + is_key
+                    # activate key module
+                    key_modules[module]["use"] = True
+                    s = False
+                # restructure with keyword
+                arrVar = restructure(word, ref["first"], ref["last"] - 1, arrVar)
+                # find next word or None
+                ref = get_word(word, arrVar)
+
         return arrVar
 
     def structure_sets(arr):
@@ -395,7 +433,6 @@ def evaluator(input):
                     if (i == len(str) - 1 and len(digits) > 0):
                         arr.append(digits)
         log_process(arr)
-        # print(arr)
 
         log_process("Constants")
         # structure pi
@@ -423,9 +460,11 @@ def evaluator(input):
             arr = word_struct(info["system_operations"][i]["name"], arr)
         
         # key functions
-        for i in range(0, len(info["key_functions"])):
-            arr = word_struct(info["key_functions"][i]["key"], arr)
-        
+        for module in range(0, len(info["key_functions"])):
+            for i in range(0, len(info["key_functions"][module])):
+                arr = word_struct(info["key_functions"][module][i]["key"], arr, module)
+        log_process(key_modules)
+
         return arr
     # STRUCTURE END
 
@@ -531,633 +570,674 @@ def evaluator(input):
     def trigonomic(arr):
         # key function module for trigonomic functions
         arrVar = arr
-        # perform all sine functions
-        ref = getIdx("sin", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = math.sin(x)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+        if key_modules[0]["use"] == True:
+            # perform all sine functions
             ref = getIdx("sin", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.sin(x)
 
-        # perform all arcus sine functions
-        ref = getIdx("asin", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = math.asin(x)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("sin", arrVar)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+            # perform all arcus sine functions
             ref = getIdx("asin", arrVar)
-        
-        # perform all cosine functions
-        ref = getIdx("cos", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arr[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = math.cos(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.asin(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("asin", arrVar)
+            
+            # perform all cosine functions
             ref = getIdx("cos", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arr[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.cos(x)
 
-        
-        # perform all arcus cosine functions
-        ref = getIdx("acos", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("cos", arrVar)
+
             
-            y = math.acos(x)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+            # perform all arcus cosine functions
             ref = getIdx("acos", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.acos(x)
 
-        # perform all tangent functions
-        ref = getIdx("tan", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = math.tan(x)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("acos", arrVar)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+            # perform all tangent functions
             ref = getIdx("tan", arrVar)
-        
-        # perform all arcus tangent functions
-        ref = getIdx("atan", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = math.atan(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.tan(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("tan", arrVar)
+            
+            # perform all arcus tangent functions
             ref = getIdx("atan", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.atan(x)
 
-        # perform all hyperbolic sine functions
-        ref = getIdx("sinh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = np.sinh(x)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("atan", arrVar)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+            # perform all hyperbolic sine functions
             ref = getIdx("sinh", arrVar)
-        
-        # perform all arcus hyperbolic sine functions
-        ref = getIdx("asinh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = np.asinh(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = np.sinh(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("sinh", arrVar)
+            
+            # perform all arcus hyperbolic sine functions
             ref = getIdx("asinh", arrVar)
-        
-        # perform all hyperbolic cosine functions
-        ref = getIdx("cosh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = np.sinh(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = np.asinh(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("asinh", arrVar)
+            
+            # perform all hyperbolic cosine functions
             ref = getIdx("cosh", arrVar)
-        
-        # perform all arcus hyperbolic cosine functions
-        ref = getIdx("acosh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = np.asinh(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = np.sinh(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("cosh", arrVar)
+            
+            # perform all arcus hyperbolic cosine functions
             ref = getIdx("acosh", arrVar)
-        
-        # perform all hyperbolic tangent functions
-        ref = getIdx("tanh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = np.sinh(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = np.asinh(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("acosh", arrVar)
+            
+            # perform all hyperbolic tangent functions
             ref = getIdx("tanh", arrVar)
-        
-        # perform all arcus hyperbolic tangent functions
-        ref = getIdx("atanh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = np.asinh(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = np.sinh(x)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("tanh", arrVar)
+            
+            # perform all arcus hyperbolic tangent functions
             ref = getIdx("atanh", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = np.asinh(x)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("atanh", arrVar)
 
         return arrVar
-        
+
+    def geometric(arr):
+        # key function module for geometric functions
+        arrVar = arr
+        if key_modules[1]["use"] == True:
+            # perform all right triangle hypotenuse functions
+            ref = getIdx("hypot", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                leg1 = set_2[0]
+                leg2 = set_2[1]
+                
+                y = np.hypot(leg1, leg2)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("hypot", arrVar)
+
+        return arrVar
+
     def statistical(arr):
         # key function module for statistical functions
         arrVar = arr
-        
-        # perform all Factorial functions
-        ref = getIdx("fact", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = factorial(x)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+        if key_modules[2]["use"] == True:
+            # perform all Factorial functions
             ref = getIdx("fact", arrVar)
-
-        # perform all Permutation functions
-        ref = getIdx("perm", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            n = set_2[0]
-            r = set_2[1]
-            perm = factorial(n) / factorial(n - r)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(perm, ref, ref + 1, arrVar)
-            ref = getIdx("perm", arrVar)
-        
-        # perform all Combination functions
-        ref = getIdx("comb", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            n = set_2[0]
-            r = set_2[1]
-            comb = factorial(n) / (factorial(r) * factorial(n - r))
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(comb, ref, ref + 1, arrVar)
-            ref = getIdx("comb", arrVar)
-        
-        # perform all Standard Deviation functions
-        ref = getIdx("sd", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    if x / 1 % 1 == 0:
-                        x = int(x)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            mean = get_mean(set_2)
-            set_3 = []
-            for i in set_2:
-                set_3.append(math.pow(i - mean, 2))
-            sd = math.pow(sum(set_3)/len(set_3), 1/2)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(sd, ref, ref + 1, arrVar)
-            ref = getIdx("sd", arrVar)
-
-        # perform all Harmonic Mean functions
-        ref = getIdx("meanh", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    set_2.append(1/x)
-                else:
-                    x = calculate(section(distribute(i)))
-                    set_2.append(1/x)
-
-            # perform calculation using numeral set
-            mean = len(set_2) / sum(set_2)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(mean, ref, ref + 1, arrVar)
-            ref = getIdx("meanh", arrVar)
-        
-        # perform all Geometeric Mean functions
-        ref = getIdx("meang", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            set_2 = 1
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    set_2 = set_2 * x
-                else:
-                    x = section(distribute(i))
-                    set_2 = set_2 * x
-
-            # perform calculation using numeral set
-            mean = math.pow(set_2, 1/len(set_1))
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(mean, ref, ref + 1, arrVar)
-            ref = getIdx("meang", arrVar)
-
-        # perform all Weighted Mean functions
-        ref = getIdx("meanw", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-        
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # get weights and total of weights
-            n = 0
-            weights = []
-            for i in set_1:
-                weight = float(i[1])
-                weights.append(weight)
-                n = n + weight
-            
-            # get weighted numeral set
-            set_2 = []
-            iter = 0
-            for i in set_1:
-                val = float(i[0])
-                set_2.append(weights[iter] * val)
-                iter = iter + 1
-
-            # perform calculation using numeral set
-            mean = sum(set_2) / n
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(mean, ref, ref + 1, arrVar)
-            ref = getIdx("meanw", arrVar)
-
-        # perform all Mean functions
-        ref = getIdx("mean", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    if x / 1 % 1 == 0:
-                        x = int(x)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            mean = get_mean(set_2)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(mean, ref, ref + 1, arrVar)
-            ref = getIdx("mean", arrVar)
-        
-        # perform all Root Mean Square functions
-        ref = getIdx("rms", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    if x / 1 % 1 == 0:
-                        x = int(x)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            square = []
-            for i in set_2:
-                square.append(math.pow(i, 2))
-            mean = get_mean(square)
-            root = math.pow(mean, 1/2)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(root, ref, ref + 1, arrVar)
-            ref = getIdx("rms", arrVar)
-        
-        # perform all Greatest Common Factor functions
-        ref = getIdx("gcf", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
-
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    if x / 1 % 1 == 0:
-                        x = int(x)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            gcf = 0
-            val1 = set_2[0]
-            val2 = set_2[1]
-            if val1 != val2:
-                facts_1 = []
-                facts_2 = []
-
-                def factor(x):
-                    factors = []
-                    for i in range(x, 0, -1):
-                        if x / i % 1 == 0:
-                            factors.append(i)
-                    return factors
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
                 
-                # account for limiting factor
-                if val1 > val2:
-                    # filter extra factors
-                    facts = factor(val1)
-                    for i in facts:
-                        if i < val2:
-                            facts_1.append(i)
-                    facts_2 = factor(val2)
-                else:
-                    # filter extra factors
-                    facts = factor(val2)
-                    for i in facts:
-                        if i < val1:
-                            facts_2.append(i)
-                    facts_1 = factor(val1)
+                y = factorial(x)
 
-                log_process(facts_1)
-                log_process(facts_2)
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("fact", arrVar)
 
-                # search for common factors
-                for i in facts_1:
-                    for j in facts_2:
-                        if i == j:
-                            gcf = j
-                            break
-                    if gcf != 0:
-                        break
-            else:
-                gcf = set_2[0]
+            # perform all Permutation functions
+            ref = getIdx("perm", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                n = set_2[0]
+                r = set_2[1]
+                perm = factorial(n) / factorial(n - r)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(perm, ref, ref + 1, arrVar)
+                ref = getIdx("perm", arrVar)
             
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(gcf, ref, ref + 1, arrVar)
+            # perform all Combination functions
+            ref = getIdx("comb", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                n = set_2[0]
+                r = set_2[1]
+                comb = factorial(n) / (factorial(r) * factorial(n - r))
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(comb, ref, ref + 1, arrVar)
+                ref = getIdx("comb", arrVar)
+            
+            # perform all Standard Deviation functions
+            ref = getIdx("sd", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                mean = get_mean(set_2)
+                set_3 = []
+                for i in set_2:
+                    set_3.append(math.pow(i - mean, 2))
+                sd = math.pow(sum(set_3)/len(set_3), 1/2)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(sd, ref, ref + 1, arrVar)
+                ref = getIdx("sd", arrVar)
+
+            # perform all Harmonic Mean functions
+            ref = getIdx("meanh", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        set_2.append(1/x)
+                    else:
+                        x = calculate(section(distribute(i)))
+                        set_2.append(1/x)
+
+                # perform calculation using numeral set
+                mean = len(set_2) / sum(set_2)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(mean, ref, ref + 1, arrVar)
+                ref = getIdx("meanh", arrVar)
+            
+            # perform all Geometeric Mean functions
+            ref = getIdx("meang", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                set_2 = 1
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        set_2 = set_2 * x
+                    else:
+                        x = section(distribute(i))
+                        set_2 = set_2 * x
+
+                # perform calculation using numeral set
+                mean = math.pow(set_2, 1/len(set_1))
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(mean, ref, ref + 1, arrVar)
+                ref = getIdx("meang", arrVar)
+
+            # perform all Weighted Mean functions
+            ref = getIdx("meanw", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+            
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # get weights and total of weights
+                n = 0
+                weights = []
+                for i in set_1:
+                    weight = float(i[1])
+                    weights.append(weight)
+                    n = n + weight
+                
+                # get weighted numeral set
+                set_2 = []
+                iter = 0
+                for i in set_1:
+                    val = float(i[0])
+                    set_2.append(weights[iter] * val)
+                    iter = iter + 1
+
+                # perform calculation using numeral set
+                mean = sum(set_2) / n
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(mean, ref, ref + 1, arrVar)
+                ref = getIdx("meanw", arrVar)
+
+            # perform all Mean functions
+            ref = getIdx("mean", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                mean = get_mean(set_2)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(mean, ref, ref + 1, arrVar)
+                ref = getIdx("mean", arrVar)
+            
+            # perform all Root Mean Square functions
+            ref = getIdx("rms", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                square = []
+                for i in set_2:
+                    square.append(math.pow(i, 2))
+                mean = get_mean(square)
+                root = math.pow(mean, 1/2)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(root, ref, ref + 1, arrVar)
+                ref = getIdx("rms", arrVar)
+            
+            # perform all Greatest Common Factor functions
             ref = getIdx("gcf", arrVar)
-        
-        # perform all Least Common Multiple functions
-        ref = getIdx("lcm", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
 
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    if x / 1 % 1 == 0:
-                        x = int(x)
-                    set_2.append(x)
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                gcf = 0
+                val1 = set_2[0]
+                val2 = set_2[1]
+                if val1 != val2:
+                    facts_1 = []
+                    facts_2 = []
+
+                    def factor(x):
+                        factors = []
+                        for i in range(x, 0, -1):
+                            if x / i % 1 == 0:
+                                factors.append(i)
+                        return factors
+                    
+                    # account for limiting factor
+                    if val1 > val2:
+                        # filter extra factors
+                        facts = factor(val1)
+                        for i in facts:
+                            if i < val2:
+                                facts_1.append(i)
+                        facts_2 = factor(val2)
+                    else:
+                        # filter extra factors
+                        facts = factor(val2)
+                        for i in facts:
+                            if i < val1:
+                                facts_2.append(i)
+                        facts_1 = factor(val1)
+
+                    log_process(facts_1)
+                    log_process(facts_2)
+
+                    # search for common factors
+                    for i in facts_1:
+                        for j in facts_2:
+                            if i == j:
+                                gcf = j
+                                break
+                        if gcf != 0:
+                            break
                 else:
-                    x = section(distribute(i))
-                    set_2.append(x)
-
-            # perform calculation using numeral set
-            lcm = 0
-            mult_1 = [set_2[0]]
-            mult_2 = [set_2[1]]
-            same = False
-            x = 0
-            while x < 100 and same != True:
-                x = x + 1
-
-                # search for common multiples
-                for i in mult_1:
-                    for j in mult_2:
-                        if i == j:
-                            same = True
-                            lcm = i
-
-                # if no multiples were found, add next multiple to each list, and test again
-                if same != True:
-                    mult_1.append(mult_1[0] * x)
-                    mult_2.append(mult_2[0] * x)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(lcm, ref, ref + 1, arrVar)
+                    gcf = set_2[0]
+                
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(gcf, ref, ref + 1, arrVar)
+                ref = getIdx("gcf", arrVar)
+            
+            # perform all Least Common Multiple functions
             ref = getIdx("lcm", arrVar)
-        
-        # perform all Logarithm functions
-        ref = getIdx("log", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            # get string string set
-            set_1 = arrVar[ref + 1]
-            log_process(set_1)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
 
-            # convert string set to numeral set
-            set_2 = []
-            for i in set_1:
-                if isinstance(i, str):
-                    x = float(i)
-                    if x / 1 % 1 == 0:
-                        x = int(x)
-                    set_2.append(x)
-                else:
-                    x = section(distribute(i))
-                    set_2.append(x)
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                lcm = 0
+                mult_1 = [set_2[0]]
+                mult_2 = [set_2[1]]
+                same = False
+                x = 0
+                while x < 100 and same != True:
+                    x = x + 1
+
+                    # search for common multiples
+                    for i in mult_1:
+                        for j in mult_2:
+                            if i == j:
+                                same = True
+                                lcm = i
+
+                    # if no multiples were found, add next multiple to each list, and test again
+                    if same != True:
+                        mult_1.append(mult_1[0] * x)
+                        mult_2.append(mult_2[0] * x)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(lcm, ref, ref + 1, arrVar)
+                ref = getIdx("lcm", arrVar)
             
-            x = set_2[0]
-            b = set_2[1]
-            y = math.log(x, b)
-
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+            # perform all Logarithm functions
             ref = getIdx("log", arrVar)
-        
-        # perform all Natural Logarithm functions
-        ref = getIdx("ln", arrVar)
-        itr = 0
-        while itr < key_limit and ref is not None:
-            itr = itr + 1
-            x = float(arrVar[ref + 1])
-            if x / 1 % 1 == 0:
-                x = int(x)
-            
-            y = math.log(x)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
 
-            # Log keyword
-            log_process(arrVar[ref])
-            arrVar = restructure(y, ref, ref + 1, arrVar)
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = float(i)
+                        if x / 1 % 1 == 0:
+                            x = int(x)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+                
+                x = set_2[0]
+                b = set_2[1]
+                y = math.log(x, b)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("log", arrVar)
+            
+            # perform all Natural Logarithm functions
             ref = getIdx("ln", arrVar)
-        
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                x = float(arrVar[ref + 1])
+                if x / 1 % 1 == 0:
+                    x = int(x)
+                
+                y = math.log(x)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(y, ref, ref + 1, arrVar)
+                ref = getIdx("ln", arrVar)
+            
         return arrVar
 
     def key_functions(arr):
-        # runs all key function modules
+        # conditionally runs key function modules
         # Log process label for key functions
         log_process("Key Functions")
         arrVar = arr
         # TRIGONOMIC FUNCTIONS
         arrVar = trigonomic(arrVar)
+        # GEOMETRIC FUNCTIONS
+        arrVar = geometric(arrVar)
         # STATISTICAL FUNCTIONS
         arrVar = statistical(arrVar)
         
@@ -1588,12 +1668,13 @@ def evaluator(input):
         log_process("Key Functions")
         log_process()
 
-        for i in range(0, len(info["key_functions"])):
-            log_process("Name: " + info["key_functions"][i]["name"])
-            log_process("Syntax: " + info["key_functions"][i]["syntax"])
-            log_process("About: " + info["key_functions"][i]["about"])
-            log_process()
-
+        for module in range(0, len(info["key_functions"])):
+            for i in range(0, len(info["key_functions"][module])):
+                log_process("Name: " + info["key_functions"][module][i]["name"])
+                log_process("Syntax: " + info["key_functions"][module][i]["syntax"])
+                log_process("About: " + info["key_functions"][module][i]["about"])
+                log_process()
+        
     def system_ops(arr):
         # tests for and runs all system functions
         global system_operation
@@ -1615,7 +1696,7 @@ def evaluator(input):
             # change first log
             if use_logs == "1":
                 process_log["0"] = "Process Log Start"
-            # Identify program entities in problem string
+            # Identify program entities in structured string
             identify_entities(structure)
             # determine structuring and operations
             if is_paren == True and is_brack == True:
@@ -1652,7 +1733,8 @@ def evaluator(input):
 #     # Simulated Program Input
 #     test = {
 #         # "problem": "info",
-#         "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+#         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+#         "problem": "hypot[2, 3]",
 #         "use_logs": "1",
 #     }
 #     use_logs = test["use_logs"]

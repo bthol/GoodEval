@@ -12,19 +12,20 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 ## Developer Resources
 
 ### Commands
- - start server         : $python manage.py runserver 8000
- - stop server          : ctrl + c
- - new project          : $django-admin startproject project-name
- - new app              : $python manage.py startapp app_name
- - django version       : $python -m django --version
- - activate virtualenv  : $pipenv shell
- - run in virtualenv    : $pipenv run
- - update Pipfile.lock  : $pipenv lock
- - update static files  : $python manage.py collectstatic --noinput
- - heroku no static     : $heroku config:set DISABLE_COLLECTSTATIC=1
- - heroku yes static    : $heroku config:unset DISABLE_COLLECTSTATIC
- - heroku debug static  : $heroku config:set DEBUG_COLLECTSTATIC=1
- - heroku no debug      : $heroku config:unset DEBUG_COLLECTSTATIC
+ - start server             : $python manage.py runserver 8000
+ - stop server              : ctrl + c
+ - new project              : $django-admin startproject project-name
+ - new app                  : $python manage.py startapp app_name
+ - django version           : $python -m django --version
+ - activate virtualenv      : $pipenv shell
+ - deactivate virtualenv    : $exit
+ - run in virtualenv        : $pipenv run
+ - update Pipfile.lock      : $pipenv lock
+ - update static files      : $python manage.py collectstatic --noinput
+ - heroku no static         : $heroku config:set DISABLE_COLLECTSTATIC=1
+ - heroku yes static        : $heroku config:unset DISABLE_COLLECTSTATIC
+ - heroku debug static      : $heroku config:set DEBUG_COLLECTSTATIC=1
+ - heroku no debug          : $heroku config:unset DEBUG_COLLECTSTATIC
 
 *REMINDER: add to Procfile once database is setup*
 $release: python manage.py migrate$
