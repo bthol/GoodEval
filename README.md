@@ -17,6 +17,8 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
  - new project          : $django-admin startproject project-name
  - new app              : $python manage.py startapp app_name
  - django version       : $python -m django --version
+ - activate virtualenv  : $pipenv shell
+ - run in virtualenv    : $pipenv run
  - update Pipfile.lock  : $pipenv lock
  - update static files  : $python manage.py collectstatic --noinput
  - heroku no static     : $heroku config:set DISABLE_COLLECTSTATIC=1
@@ -27,14 +29,14 @@ The GoodEval API can be used to remotely access evaluation. The API takes a JSON
 *REMINDER: add to Procfile once database is setup*
 $release: python manage.py migrate$
 
-*NOTE: Pipenv will automatically handle enviroment activation. Virtual environement must be deactivated before pushing to git if running manually using venv/Scripts/activate.*
+*NOTE: Pipenv will automatically handle virtualenv enviroment activation. Virtual environement must be deactivated before pushing to git if running manually using venv/Scripts/activate.*
 
 *NOTE: Virtual environment will be ignored in git commit by .gitignore, so it does not need to be deleted and recreated for every push to git.*
 
 ### Procedures
 
-**Setup virtual environment**
-1) Navigate to Boilerplate_Django_copy directory
+**Setup virtual environment (with venv)**
+1) Navigate to root directory
 2) run command: $python -m venv venv
 3) run command: $venv/Scripts/activate
 4) run command: $python -m pip install --upgrade pip

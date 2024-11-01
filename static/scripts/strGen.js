@@ -1,9 +1,6 @@
 console.log('String Generator Script Loaded.');
 
 // Development Plan
-//  - editable problem (rather than entering it perfectly or clearing)
-//      - add backspace button that removes last charater and updates
-//      - add forward and back button, defaulting to end, for navigating through problem
 //  - Semenatic colorization for parenthesis to ensure equal number of opening and closing
 //      - reden opening parens starting from last to indicate the need for closing parens
 //  - 
@@ -22,7 +19,7 @@ let input = {
 // char structure for problem
 let problem = [];
 
-function updateProblem(problem) {
+function updateProblem(problem, type = null) {
     // clear problem in display
     Q.innerHTML = '';
     let string = '';
@@ -36,7 +33,7 @@ function updateProblem(problem) {
         Q.appendChild(div);
     }
     input.problem = string;
-    cursorDefault();
+    cursorDefault(type);
 };
 
 // CURSOR MODE
@@ -45,9 +42,9 @@ let cursorModeToggled = false;
 let cursorIdx = 0;
 let cursorModeCache = {};
 
-function cursorDefault() {
+function cursorDefault(type = null) {
     // default cursor position to end
-    if (!cursorMode) {
+    if (cursorMode === true && type !== 'cursor') {
         cursorIdx = problem.length - 1;
     }
 };
@@ -63,7 +60,7 @@ function cursorContinue() {
             console.log("cursor mode discontinued");
             cursorMode = false;
             cursorDefault();
-        }, 1000); // 1 second timeout
+        }, 10000); // 10 second timeout
     }
 };
 
@@ -79,9 +76,10 @@ function toggleCursorMode() {
 
 function cursorBack() {
     const len = problem.length;
-    if (len > 0 && cursorIdx - 1 > 0) {
+    if (len > 0 && cursorIdx - 1 > -1) {
         cursorIdx -= 1;
     }
+    console.log(cursorIdx);
 };
 
 function cursorForward() {
@@ -89,14 +87,14 @@ function cursorForward() {
     if (len > 0 && cursorIdx + 1 < len) {
         cursorIdx += 1;
     }
+    console.log(cursorIdx);
 };
 
 function backspace(problem) {
     const len = problem.length;
     if (len > 0) {
-        problem.splice(cursorIdx, 1);
+        problem = problem.splice(cursorIdx, 1);
         cursorIdx -= 1;
-        updateProblem(problem);
     }
 };
 
@@ -365,6 +363,7 @@ btns.addEventListener('click', (e) => {
                 console.log('clear');
                 problem = [];
                 updateProblem(problem);
+                cursorDefault();
             } else if (id === 'btn-equals') {
                 debounce(evaluate, 1000);
             } else if (id === 'btn-decimal') {
@@ -389,23 +388,21 @@ btns.addEventListener('click', (e) => {
             if (id === 'btn-cursor-backspace') {
                 console.log('<—');
                 cursorContinue();
-                // remove character at current index
                 backspace(problem);
-                updateProblem(problem);
+                updateProblem(problem, type);
             } else if (id === 'btn-cursor-mode') {
                 console.log("cursor mode toggled");
                 toggleCursorMode();
-                // activate cursor mode
             } else if (id === 'btn-cursor-forward') {
                 console.log('>');
                 cursorContinue();
-                // move cursor forward 1 index
-                updateProblem(problem);
+                cursorForward();
+                updateProblem(problem, type);
             } else if (id === 'btn-cursor-backward') {
                 console.log('<');
                 cursorContinue();
-                // move cursor backward 1 index
-                updateProblem(problem);
+                cursorBack();
+                updateProblem(problem, type);
             }
         }
     }
