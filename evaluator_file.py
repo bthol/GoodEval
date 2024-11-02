@@ -440,7 +440,7 @@ def evaluator(input):
         itr = 0
         while itr < c_limit and ref is not None:
             itr = itr + 1
-            arr = restructure(math.pi, ref["first"], ref["last"] - 1, arr)
+            arr = restructure(np.pi, ref["first"], ref["last"] - 1, arr)
             ref = get_word("pi", arr)
         
         # structure euler's number
@@ -448,7 +448,7 @@ def evaluator(input):
         itr = 0
         while itr < c_limit and ref is not None:
             itr = itr + 1
-            arr = restructure(math.e, ref["first"], ref["last"] - 1, arr)
+            arr = restructure(np.e, ref["first"], ref["last"] - 1, arr)
             ref = get_word("e", arr)
         
 

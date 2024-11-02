@@ -44,7 +44,7 @@ let cursorModeCache = {};
 
 function cursorDefault(type = null) {
     // default cursor position to end
-    if (cursorMode === true && type !== 'cursor') {
+    if (cursorMode === false || type !== 'cursor') {
         cursorIdx = problem.length - 1;
     }
 };
