@@ -1,7 +1,9 @@
 console.log('String Generator Script Loaded.');
 
 // Development Plan
-//  - add input validation for parenthesis buttons
+//  - conditionally declare key functions by key module in evaluator_file.py
+//  - add shift functionality for trigonomic buttons + replace reciprocal identities with other functions:
+//       - hypot
 //  - Semenatic colorization for parenthesis to ensure equal number of opening and closing
 //      - reden opening parens starting from last to indicate the need for closing parens
 
@@ -200,9 +202,24 @@ function validStringStructure(problem) {
     const struct = structureString(problem);
     // test struct for validity
     // Invalid if:
+
     //  - equal number of opening and closing parenthesis
+    let nestLvl = 0;
+    for (let i = 0; i < struct.length; i++) {
+        if (struct[i] === "(") {
+            nestLvl += 1;
+        } else if (struct[i] === ")") {
+            nestLvl -= 1;
+        }
+    }
+    if (nestLvl !== 0) {
+        validity = false;
+    }
+
     //  - 
+
     //  - 
+
     return validity;
 };
 
