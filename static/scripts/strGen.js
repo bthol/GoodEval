@@ -1,16 +1,17 @@
 console.log('String Generator Script Loaded.');
 
 // Development Plan
+//  - add input validation for parenthesis buttons
 //  - Semenatic colorization for parenthesis to ensure equal number of opening and closing
 //      - reden opening parens starting from last to indicate the need for closing parens
-//  - 
 
 // Display
+const T = document.querySelector('#screen-toggles');
 const Q = document.querySelector('#screen-content');
 const A = document.querySelector('#screen-answer');
 
-// Data Strcutures
-// object for evaluation request
+
+// Object literal for evaluation request
 let input = {
     'problem': '',
     'use_logs': '0', // 1 activates logs && 0 deactivates logs
@@ -18,6 +19,18 @@ let input = {
 
 // char structure for problem
 let problem = [];
+
+// Mode toggles
+let shiftMode= false;
+let cursorMode = false;
+let cursorModeToggled = false; // prevents defaulting on nav
+
+// Global Indexes
+let cursorIdx = 0;
+
+// Caches
+let formatErrorCache = {};
+let cursorModeCache = {};
 
 function updateProblem(problem, type = null) {
     // clear problem in display
@@ -36,12 +49,23 @@ function updateProblem(problem, type = null) {
     cursorDefault(type);
 };
 
-// CURSOR MODE
-let cursorMode = false;
-let cursorModeToggled = false;
-let cursorIdx = 0;
-let cursorModeCache = {};
+function updateToggleDisplay() {
+    if (shiftMode && cursorMode) { // shift + cursor
+        T.querySelector('.shift-mode').innerText = 'shift';
+        T.querySelector('.cursor-mode').innerText = 'cursor';
+    } else if (shiftMode && !cursorMode) {  // shift
+        T.querySelector('.shift-mode').innerText = 'shift';
+        T.querySelector('.cursor-mode').innerText = '';
+    } else if (!shiftMode && cursorMode) {  // cursor
+        T.querySelector('.shift-mode').innerText = '';
+        T.querySelector('.cursor-mode').innerText = 'cursor';
+    } else {                                // neither
+        T.querySelector('.shift-mode').innerText = '';
+        T.querySelector('.cursor-mode').innerText = '';
+    }
+};
 
+// Cursor Mode Toggles
 function cursorDefault(type = null) {
     // default cursor position to end
     if (cursorMode === false || type !== 'cursor') {
@@ -50,15 +74,18 @@ function cursorDefault(type = null) {
 };
 
 function cursorContinue() {
-    // run on cursor nav buttons
-    // bipass if cursor mode activated through toggle
+    // creates a 10 second timeout for cursor mode
+    // called by cursor nav buttons
+    // bypass if cursor mode activated through toggle
     if (!cursorModeToggled) {
         cursorMode = true;
+        updateToggleDisplay();
         clearTimeout(cursorModeCache);
         cursorModeCache = setTimeout(() => {
             // discontinue cursor mode
             console.log("cursor mode discontinued");
             cursorMode = false;
+            updateToggleDisplay();
             cursorDefault();
         }, 10000); // 10 second timeout
     }
@@ -69,11 +96,12 @@ function toggleCursorMode() {
     cursorModeToggled = cursorMode;
     if (!cursorMode) {
         // discontinue cursor mode
-        console.log("cursor mode off");
         clearTimeout(cursorModeCache);
     }
+    updateToggleDisplay();
 };
 
+// Cursor Mode Navigation
 function cursorBack() {
     const len = problem.length;
     if (len > 0 && cursorIdx - 1 > -1) {
@@ -98,12 +126,17 @@ function backspace(problem) {
     }
 };
 
+// Shift Mode Toggles
+function toggleShiftMode() {
+    shiftMode = !shiftMode;
+    updateToggleDisplay();
+};
+
 // string validation
-let formatError = {};
 function invalidFormatError() {
     Q.innerText = 'Error: invalid format';
     clearTimeout(formatError);
-    formatError = setTimeout(() => {
+    formatErrorCache = setTimeout(() => {
         Q.innerText = input.problem;
     }, 1000)
 };
@@ -366,6 +399,8 @@ btns.addEventListener('click', (e) => {
                 cursorDefault();
             } else if (id === 'btn-equals') {
                 debounce(evaluate, 1000);
+            } else if (id === 'btn-shift') {
+                toggleShiftMode();
             } else if (id === 'btn-decimal') {
                 console.log('decimal');
                 if (isNaN(problem[problem.length - 1])) {
@@ -385,7 +420,7 @@ btns.addEventListener('click', (e) => {
             }
 
         } else if (type === 'cursor') {
-            if (id === 'btn-cursor-backspace') {
+            if (id === 'btn-backspace') {
                 console.log('<—');
                 cursorContinue();
                 backspace(problem);
