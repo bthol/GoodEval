@@ -1,4 +1,4 @@
-console.log('String Generator Script Loaded.');
+console.log('Problem Script Loaded.');
 
 // Development Plan
 //  - conditionally declare key functions by key module in evaluator_file.py
@@ -220,18 +220,24 @@ function validParens(problem) {
     // validates parenthesis in string
     if (problem.length > 0) {
         let validity = true;
+        let nestLvl = 0;
         let parens = [];
         const struct = strStruct(problem);
         for (let i = 0; i < struct.length; i++) {
             if (struct[i] === '(') {
                 parens.push('(');
+                nestLvl += 1;
             } else if (struct[i] === ')') {
                 parens.push(')');
+                nestLvl -= 1;
             }
         }
         
+        // no non-zero sum of nestLvl
+        if (nestLvl !== 0) {
+            validity = false;
         // no closing paren at start
-        if (parens[0].char === ')') {
+        } else if (parens[0].char === ')') {
             validity = false;
         // no opening paren at end
         } else if (parens[parens.length - 1] === '(') {
@@ -270,7 +276,6 @@ function validParens(problem) {
 function validProblem(problem) {
     // validates problem string before request
     let validity = true;
-
     // validate parenthesis
     validity = validParens(problem);
     // run backend structuring emulation
@@ -304,10 +309,12 @@ function debounce(funct, deference) {
 };
 
 async function evaluate() {
+    // run on equal button click
     console.log('Validating...');
     if (validProblem(input.problem)) {
         console.log('Valid problem.\n\nRequesting evaluation...');
-        // const response = await 
+        // determine when to request and when to calculate in front end script
+        // const response = await ;
     } else {
         console.log('Invalid problem');
         invalidFormatError();
