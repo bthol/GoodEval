@@ -137,88 +137,144 @@ function toggleShiftMode() {
 // string validation
 function invalidFormatError() {
     Q.innerText = 'Error: invalid format';
-    clearTimeout(formatError);
+    clearTimeout(formatErrorCache);
     formatErrorCache = setTimeout(() => {
         Q.innerText = input.problem;
+        clearTimeout(formatErrorCache);
     }, 1000)
 };
 
 function structureString(problem) {
-    let struct = [];
-    let buffer = "";
-    for (let i = 0; i < problem.length; i++) {
-        const char = problem.slice(i, i + 1);
-        // skip spaces
-        if (char === " ") {
-            continue;
-        } else {
-            if (char === "." || !isNaN(char)) {
-                buffer += char;
+    // emulates backend string structuring algorithm
+    try {
+        let struct = [];
+        let buffer = "";
+        for (let i = 0; i < problem.length; i++) {
+            const char = problem.slice(i, i + 1);
+            // skip spaces
+            if (char === " ") {
+                continue;
             } else {
-                // handle negatives start
-                if (char === "-" && struct[struct.length - 1] === "(") {
-                    struct.pop();
-                    buffer = char;
-                } else if (char === ")") {
-                    try {
-                        if (Number(buffer) < 0) {
-                            struct.push(buffer);
-                            buffer = "";
-                            // handle negatives end
-                        } else {
-                            struct.push(buffer);
+                if (char === "." || !isNaN(char)) {
+                    buffer += char;
+                } else {
+                    // handle negatives start
+                    if (char === "-" && struct[struct.length - 1] === "(") {
+                        struct.pop();
+                        buffer = char;
+                    } else if (char === ")") {
+                        try {
+                            if (Number(buffer) < 0) {
+                                struct.push(buffer);
+                                buffer = "";
+                                // handle negatives end
+                            } else {
+                                struct.push(buffer);
+                                buffer = "";
+                                struct.push(char);
+                            }
+                        } catch {
+                            if (buffer.length > 0) {
+                                struct.push(buffer);
+                            }
                             buffer = "";
                             struct.push(char);
                         }
-                    } catch {
+                    } else {
                         if (buffer.length > 0) {
                             struct.push(buffer);
                         }
                         buffer = "";
                         struct.push(char);
                     }
-                } else {
-                    if (buffer.length > 0) {
-                        struct.push(buffer);
-                    }
-                    buffer = "";
-                    struct.push(char);
+    
                 }
-
-            }
-            // push buffer at end
-            if (i === problem.length - 1 && buffer.length > 0) {
-                struct.push(buffer);
+                // push buffer at end
+                if (i === problem.length - 1 && buffer.length > 0) {
+                    struct.push(buffer);
+                }
             }
         }
+        console.log(struct);
+        return struct;
+    } catch (error) {
+        console.log(error);
     }
-    console.log(struct);
+};
+
+function strStruct(str) {
+    // efficient string structuring for front end validation
+    // structures by character to match DOM element list in screen content element
+    let struct = [];
+    for (let i = 0; i < str.length; i++) {
+        struct.push(str.slice(i, i + 1));
+    }
+    if (struct.length === 0) {
+        // add empty string on no data
+        struct.push('');
+    }
     return struct;
 };
 
-function validStringStructure(problem) {
-    // break string down by character
-    let validity = true;
-    const struct = structureString(problem);
-    // test struct for validity
-    // Invalid if:
-
-    //  - equal number of opening and closing parenthesis
-    let nestLvl = 0;
-    for (let i = 0; i < struct.length; i++) {
-        if (struct[i] === "(") {
-            nestLvl += 1;
-        } else if (struct[i] === ")") {
-            nestLvl -= 1;
+function validParens(problem) {
+    // validates parenthesis in string
+    if (problem.length > 0) {
+        let validity = true;
+        let parens = [];
+        const struct = strStruct(problem);
+        for (let i = 0; i < struct.length; i++) {
+            if (struct[i] === '(') {
+                parens.push('(');
+            } else if (struct[i] === ')') {
+                parens.push(')');
+            }
         }
+        
+        // no closing paren at start
+        if (parens[0].char === ')') {
+            validity = false;
+        // no opening paren at end
+        } else if (parens[parens.length - 1] === '(') {
+            validity = false;
+        } else {
+            // match each open paren to a closing paren (accounting for nesting)
+            for (let i = 0; i < parens.length; i++) {
+                if (parens[i] === '(') {
+                    // search for match
+                    let x = 0;
+                    for (let j = i; j < parens.length; j++) {
+                        if (parens[j] === ')') {
+                            x -= 1;
+                        } else {
+                            x += 1;
+                        }
+                        if (x === 0) {
+                            break;
+                        }
+                    }
+                    if (x !== 0) {
+                        // missing match
+                        validity = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return validity;
+    } else {
+        // no data in argument
+        return false;
     }
-    if (nestLvl !== 0) {
-        validity = false;
-    }
+};
 
-    //  - 
+function validProblem(problem) {
+    // validates problem string before request
+    let validity = true;
 
-    //  - 
+    // validate parenthesis
+    validity = validParens(problem);
+    // run backend structuring emulation
+    const struct = structureString(problem);
 
     return validity;
 };
@@ -248,10 +304,13 @@ function debounce(funct, deference) {
 };
 
 async function evaluate() {
-    console.log(input);
-    if (validStringStructure(input.problem)) {
-        console.log('requested evaluation');
+    console.log('Validating...');
+    if (validProblem(input.problem)) {
+        console.log('Valid problem.\n\nRequesting evaluation...');
         // const response = await 
+    } else {
+        console.log('Invalid problem');
+        invalidFormatError();
     }
 };
 
