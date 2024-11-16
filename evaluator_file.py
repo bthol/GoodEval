@@ -20,6 +20,12 @@ import numpy as np
 # the paren_limit parameter controls the maximum number of levels of parenthesis nesting in any one evaluation
 paren_limit = 10
 
+# the poly_degree_limit parameter controls the maximum degree of a polynomial expression resulting from factoring in any one evaluation
+poly_degree_limit = 10
+
+# the polyfactor_limit parameter controls the maximum number of instances of factoring in any one evaluation
+polyfactor_limit = 10
+
 # the pi_limit parameter controls the maximum number of instances of any one constant allowed in any one evaluation
 c_limit = 10
 
@@ -39,6 +45,10 @@ is_paren = False
 # is_dist indicates whether there is distribution, True, or not, False
 # If False, bypasses distribute function
 is_dist = False
+
+# is_factoring indicates whether there is polynomial factoring, True, or not, False
+# If False, bypasses factoring function
+is_factoring = False
 
 # is_brack indicates whether there are square brackets, True, or not, False
 # If False, bypasses key_functions function
@@ -120,7 +130,7 @@ info = {
             
             {"name":"Arcus Tangent", "key": "atan", "syntax": "atan(x)", "about": "Gets the arcus tangent, i.e. the inverse tangent, of x, where x is a value or an expression that evaluates to a value."},
                 
-                # Reciprocal
+            # Reciprocal
             # {"name":"Cosecant", "key":"csc", "syntax": "csc(x)", "about": "Gets the cosecant, i.e. the reciprocal sine, of x, where x is a value or an expression that evaluates to a value."},
             
             # {"name":"Arcus Cosecant", "key":"csc", "syntax": "csc(x)", "about": "Gets the arcus cosecant, i.e. the inverse reciprocal sine, of x, where x is a value or an expression that evaluates to a value."},
@@ -133,7 +143,7 @@ info = {
             
             # {"name":"Arcus Cotangent", "key":"cot", "syntax": "cot(x)", "about": "Gets the arcus cotangent, i.e. the inverse reciprocal tangent, of x, where x is a value or an expression that evaluates to a value."},
 
-                # Hyperbolic
+            # Hyperbolic
             {"name":"Hyperbolic Sine", "key":"sinh", "syntax": "sinh(x)", "about": "Gets the hyperbolic sine, i.e the sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
             
             {"name":" Arcus Hyperbolic Sine", "key":"asinh", "syntax": "asinh(x)", "about": "Gets the arcus hyperbolic sine, i.e the inverse sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
@@ -200,6 +210,13 @@ def evaluator(input):
             new_key = int(list(process_log.keys())[-1]) + 1
             process_log["%s" % new_key] = log
 
+    def identify(x, y):
+        # identifies x in iterable y
+        for i in range(0, len(y)):
+            if y[i] == x:
+                return True
+        return False
+    
     # STRUCTURE START
     def restructure(solution, start, end, arr):
         # A single restructure function for all your restructuring needs!
@@ -336,21 +353,32 @@ def evaluator(input):
             for i in range(0, len(arr)):
                 if i != 0 and i != len(arr):
                     if (arr[i] == "(" and arr[i - 1] == "*") or (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "*"):
+                        # multiplicative distribution
                         is_dist = True
                         break
-
-        # Identify square brackets
-        global is_brack
-        for i in range(0, len(arr)):
-            if arr[i] == "[":
-                is_brack = True
-                break
         
         # Identify exponentiation
         global is_exp
         for i in range(0, len(arr)):
             if arr[i] == "^":
                 is_exp = True
+                break
+        
+        # identify polynomial factoring
+        global is_factoring
+        if (is_paren and is_exp):
+            for i in range(0, len(arr)):
+                if i != 0 and i != len(arr):
+                    if (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "^"):
+                        # exponential distribution
+                        is_factoring = True
+                        break
+        
+        # Identify square brackets
+        global is_brack
+        for i in range(0, len(arr)):
+            if arr[i] == "[":
+                is_brack = True
                 break
         
         # Identify roots
@@ -1637,6 +1665,97 @@ def evaluator(input):
                         is_dist = True
                         break
         return arrVar
+    
+    def polyfactor(arr):
+        global is_factoring
+        global is_dist
+        arrVar = arr
+        x = 0
+        while is_factoring == True and x < polyfactor_limit:
+            x = x + 1
+            # start     "(2+1)^(2+1)"
+            # end       "(2+1)*(2+1)*(2+1)"
+
+            # get idexes of "^" in arrVar to determine number of instances of factoring
+            idxs = []
+            for i in range(0, len(arrVar) - 1):
+                if arrVar[i] == "^" and arrVar[i - 1] == ")":
+                    idxs.append(i)
+            
+            # run factoring that many times
+            for i in range(0, len(idxs)):
+                # log for each instance of factoring
+                log_process("Start Factoring")
+                # get base expression
+                sect_start_idx = 0
+                sect_end_idx = 0
+                power = 0
+                base = []
+                for j in range(idxs[i], 0, -1):
+                    if arrVar[j] == "(":
+                        sect_start_idx = j
+                        break
+                
+                for j in range(sect_start_idx, idxs[i]):
+                    base.append(arrVar[j])
+                
+                # log base expression
+                log_process("Base expression = %s" % base)
+
+                # get power if expression else value
+                if arrVar[idxs[i] + 1] == "(":
+                    expression = []
+                    x = 0
+                    for j in range(idxs[i] + 1, len(arrVar)):
+                        if arrVar[j] == "(":
+                            x += 1
+                            expression.append(arrVar[j])
+                        elif arrVar[j] == ")":
+                            x -= 1
+                            expression.append(arrVar[j])
+                            if x == 0:
+                                sect_end_idx = j
+                                break
+                        else:
+                            expression.append(arrVar[j])
+                    
+                    # log power expression
+                    log_process("Power expression = %s" % expression)
+
+                    # calculate power value from power expression
+                    power = distribute(expression)
+                    power = section(power)
+                else:
+                    # already a value
+                    power = arrVar[idxs[i] + 1]
+                
+                # log power value
+                log_process("Power value = %s" % power)
+                
+                # test power for special cases
+                if power == 0:
+                    # x^0 = 1
+                    arrVar = restructure(["1"], sect_start_idx, sect_end_idx, arrVar)
+                elif power < 0:
+                    # x^-y = 1/(x^y)
+                    sect = ["1", "/", "("] + base
+                    for j in range(0, abs(power) - 1):
+                        sect = sect + ["*"]
+                        sect = sect + base
+                    sect = sect + [")"]
+                    arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
+                else:
+                    sect = base
+                    for j in range(0, power - 1):
+                        sect = sect + ["*"]
+                        sect = sect + base
+                    arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
+                log_process(arrVar)
+                is_dist = True
+                arrVar = distribute(arrVar)
+
+        log_process("End Factoring")
+        return arrVar
     # Phase II Process END
 
     # System Operations
@@ -1687,7 +1806,7 @@ def evaluator(input):
         return system_operation
 
     def evaluate(str):
-        # top level function runs evaluation
+        # top level function runs high level functions
         global system_operation
         structure = structure_string(str)
         if system_ops(structure) == True:
@@ -1700,11 +1819,15 @@ def evaluator(input):
             identify_entities(structure)
             # determine structuring and operations
             if is_paren == True and is_brack == True:
+                if is_factoring == True:
+                    structure = polyfactor(structure)
                 if is_dist == True:
                     structure = distribute(structure)
                 structure = structure_sets(structure)
                 structure = section(structure)
             elif is_paren == True and is_brack == False:
+                if is_factoring == True:
+                    structure = polyfactor(structure)
                 if is_dist == True:
                     structure = distribute(structure)
                 structure = section(structure)
@@ -1713,52 +1836,57 @@ def evaluator(input):
                 structure = calculate(structure)
             else:
                 structure = calculate(structure)
+            # control flow for high level functions
+            # 1) polyfactor
+            # 2) distribute
+            # 3) section
             return structure
 
+    # # Evaluation
+    # use_logs = input["use_logs"]
+
+    # print(input["problem"])
+    # answer = evaluate(input["problem"])
+
+    # output = {
+    #     "problem": input["problem"],
+    #     "answer": answer,
+    #     "logs": process_log,
+    # }
+
+    # return output
+    
+    # TESTING
+    # Simulated Program Input
+    test = {
+        # "problem": "info",
+        # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+        # "problem": "(2*(4-3))^(2*(3-2))", # should be 4
+        "problem": "(2+3)^(2*(3-2))",
+        "use_logs": "1",
+    }
+    use_logs = test["use_logs"]
+
     # Evaluation
-    use_logs = input["use_logs"]
+    answer = evaluate(test["problem"])
 
-    print(input["problem"])
-    answer = evaluate(input["problem"])
-
+    # Simulated Program Output
     output = {
-        "problem": input["problem"],
+        "problem": test["problem"],
         "answer": answer,
         "logs": process_log,
     }
 
-    return output
-    
-#     # TESTING
-#     # Simulated Program Input
-#     test = {
-#         # "problem": "info",
-#         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
-#         "problem": "hypot[2, 3]",
-#         "use_logs": "1",
-#     }
-#     use_logs = test["use_logs"]
+    # Prints feedback for program development
+    logs = """"""
+    process_log_keys = list(process_log.keys())
+    for key in process_log_keys:
+        logs += """%s
+""" % process_log[key]
 
-#     # Evaluation
-#     answer = evaluate(test["problem"])
+    print(test["problem"])
+    print(answer)
+    print(logs)
+    # print("Output Object: %s" % output)
 
-#     # Simulated Program Output
-#     output = {
-#         "problem": test["problem"],
-#         "answer": answer,
-#         "logs": process_log,
-#     }
-
-#     # Prints feedback for program development
-#     logs = """"""
-#     process_log_keys = list(process_log.keys())
-#     for key in process_log_keys:
-#         logs += """%s
-# """ % process_log[key]
-
-#     print(test["problem"])
-#     print(answer)
-#     print(logs)
-#     # print("Output Object: %s" % output)
-
-# evaluator("") # remove or comment out after testing
+evaluator("") # remove or comment out after testing
