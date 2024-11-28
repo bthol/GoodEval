@@ -23,8 +23,8 @@ paren_limit = 10
 # the poly_degree_limit parameter controls the maximum degree of a polynomial expression resulting from factoring in any one evaluation
 poly_degree_limit = 10
 
-# the polyfactor_limit parameter controls the maximum number of instances of factoring in any one evaluation
-polyfactor_limit = 10
+# the poly_fact_limit parameter controls the maximum number of times that polynomial expressions can be factored out in any one evaluation
+poly_fact_limit = 10
 
 # the pi_limit parameter controls the maximum number of instances of any one constant allowed in any one evaluation
 c_limit = 10
@@ -46,9 +46,9 @@ is_paren = False
 # If False, bypasses distribute function
 is_dist = False
 
-# is_factoring indicates whether there is polynomial factoring, True, or not, False
-# If False, bypasses factoring function
-is_factoring = False
+# is_poly_fact indicates whether there is a need to factor out into an expression with polynomial multiplication, True, or not, False
+# If False, bypasses poly_mult function
+is_poly_fact = False
 
 # is_brack indicates whether there are square brackets, True, or not, False
 # If False, bypasses key_functions function
@@ -209,15 +209,18 @@ def evaluator(input):
         if use_logs == "1":
             new_key = int(list(process_log.keys())[-1]) + 1
             process_log["%s" % new_key] = log
-
-    def identify(x, y):
-        # identifies x in iterable y
-        for i in range(0, len(y)):
-            if y[i] == x:
-                return True
-        return False
-    
+  
     # STRUCTURE START
+    def num_cast(str):
+        # a single data type converter for all your data type conversion needs
+        try:
+            num = float(str)
+            if (num / 1 % 1 == 0):
+                num = int(num)
+            return num
+        except:
+            return False
+    
     def restructure(solution, start, end, arr):
         # A single restructure function for all your restructuring needs!
         structure = []
@@ -305,38 +308,41 @@ def evaluator(input):
 
     def structure_sets(arr):
         # generates substructures, i.e. "sets", within structure
-        log_process("Structure Sets")
-        log_process(arr)
-        # structure sets
-        sets_ref = []
-        for i in range(0, len(arr)):
-            if arr[i] == "[":
-                sets_ref.append({"char": "[", "index": i})
-            elif arr[i] == "]":
-                sets_ref.append({"char": "]", "index": i})
-        # identify next set to structure using reference
-        while len(sets_ref) > 0:
-            for i in range(0, len(sets_ref)):
-                if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
-                    # build set
-                    start_index = sets_ref[i]["index"]
-                    end_index = sets_ref[i + 1]["index"]
-                    solution_length = abs(start_index - end_index) + 1
-                    the_set_itself = []
-                    for i in range(0, solution_length):
-                        the_set_itself.append(arr[start_index + i])
+        # sets exist so that an expression can be accessed at a single index for key functions
+        global is_brack
+        if is_brack == True:
+            log_process("Structure Sets")
+            log_process(arr)
+            # structure sets
+            sets_ref = []
+            for i in range(0, len(arr)):
+                if arr[i] == "[":
+                    sets_ref.append({"char": "[", "index": i})
+                elif arr[i] == "]":
+                    sets_ref.append({"char": "]", "index": i})
+            # identify next set to structure using reference
+            while len(sets_ref) > 0:
+                for i in range(0, len(sets_ref)):
+                    if sets_ref[i]["char"] == "[" and sets_ref[i + 1]["char"] == "]":
+                        # build set
+                        start_index = sets_ref[i]["index"]
+                        end_index = sets_ref[i + 1]["index"]
+                        solution_length = abs(start_index - end_index) + 1
+                        the_set_itself = []
+                        for i in range(0, solution_length):
+                            the_set_itself.append(arr[start_index + i])
 
-                    # restructure
-                    arr = restructure(the_set_itself, start_index, end_index, arr)
-                    
-                    # update reference
-                    sets_ref = []
-                    for i in range(0, len(arr)):
-                        if arr[i] == "[":
-                            sets_ref.append({"char": "[", "index": i})
-                        elif arr[i] == "]":
-                            sets_ref.append({"char": "]", "index": i})
-                    break
+                        # restructure
+                        arr = restructure(the_set_itself, start_index, end_index, arr)
+                        
+                        # update reference
+                        sets_ref = []
+                        for i in range(0, len(arr)):
+                            if arr[i] == "[":
+                                sets_ref.append({"char": "[", "index": i})
+                            elif arr[i] == "]":
+                                sets_ref.append({"char": "]", "index": i})
+                        break
         return arr
 
     def identify_entities(arr):
@@ -365,13 +371,13 @@ def evaluator(input):
                 break
         
         # identify polynomial factoring
-        global is_factoring
+        global is_poly_fact
         if (is_paren and is_exp):
             for i in range(0, len(arr)):
                 if i != 0 and i != len(arr):
                     if (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "^"):
                         # exponential distribution
-                        is_factoring = True
+                        is_poly_fact = True
                         break
         
         # Identify square brackets
@@ -415,8 +421,6 @@ def evaluator(input):
             if arr[i] == "-":
                 is_sub = True
                 break
-
-        return arr
 
     # Phase I Process
     def structure_string(str):
@@ -583,6 +587,7 @@ def evaluator(input):
 
     def get_mean(arr):
         return sum(arr) / len(arr)
+    
     # OPERATIONS END
 
     # KEY FUNCTIONS START
@@ -604,10 +609,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = math.sin(x)
 
                 # Log keyword
@@ -620,10 +623,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
                 
+                x = num_cast(arrVar[ref + 1])
                 y = math.asin(x)
 
                 # Log keyword
@@ -636,10 +637,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arr[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = math.cos(x)
 
                 # Log keyword
@@ -653,10 +652,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
                 
+                x = num_cast(arrVar[ref + 1])
                 y = math.acos(x)
 
                 # Log keyword
@@ -669,10 +666,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = math.tan(x)
 
                 # Log keyword
@@ -685,10 +680,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = math.atan(x)
 
                 # Log keyword
@@ -701,10 +694,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = np.sinh(x)
 
                 # Log keyword
@@ -717,10 +708,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = np.asinh(x)
 
                 # Log keyword
@@ -733,10 +722,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = np.sinh(x)
 
                 # Log keyword
@@ -749,10 +736,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = np.asinh(x)
 
                 # Log keyword
@@ -765,10 +750,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = np.sinh(x)
 
                 # Log keyword
@@ -781,10 +764,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = np.asinh(x)
 
                 # Log keyword
@@ -811,9 +792,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -841,10 +820,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = factorial(x)
 
                 # Log keyword
@@ -923,9 +900,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -1042,9 +1017,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -1071,9 +1044,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -1104,9 +1075,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -1175,9 +1144,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -1222,9 +1189,7 @@ def evaluator(input):
                 set_2 = []
                 for i in set_1:
                     if isinstance(i, str):
-                        x = float(i)
-                        if x / 1 % 1 == 0:
-                            x = int(x)
+                        x = num_cast(i)
                         set_2.append(x)
                     else:
                         x = section(distribute(i))
@@ -1244,10 +1209,8 @@ def evaluator(input):
             itr = 0
             while itr < key_limit and ref is not None:
                 itr = itr + 1
-                x = float(arrVar[ref + 1])
-                if x / 1 % 1 == 0:
-                    x = int(x)
-                
+
+                x = num_cast(arrVar[ref + 1])
                 y = math.log(x)
 
                 # Log keyword
@@ -1298,22 +1261,6 @@ def evaluator(input):
         # Phase IV
         # perform all arithmetic operations in operator precedence
         
-        # perform all exponentiations
-        if is_exp == True:
-            ref = getIdx("^", arrVar)
-            while ref is not None:
-                x = exponentiate(arrVar[ref - 1], arrVar[ref + 1])
-                arrVar = restructure(x, ref - 1, ref + 1, arrVar)
-                ref = getIdx("^", arrVar)
-
-        # Perform all square roots
-        if is_root == True:
-            ref = getIdx("√", arrVar)
-            while ref is not None:
-                x = root(arrVar[ref + 1], 2)
-                arrVar = restructure(x, ref, ref + 1, arrVar)
-                ref = getIdx("√", arrVar)
-        
         # perform all Multiplications and Divisions as they appear from left to right
         if is_mult == True and is_div == True:
             m_ref = getIdx("*", arrVar)
@@ -1354,12 +1301,14 @@ def evaluator(input):
 
                     m_ref = getIdx("*", arrVar)
                     d_ref = getIdx("/", arrVar)
+
         elif is_mult == True:
             m_ref = getIdx("*", arrVar)
             while m_ref is not None:
                 x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
                 arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
                 m_ref = getIdx("*", arrVar)
+
         elif is_div == True:
             d_ref = getIdx("/", arrVar)
             while d_ref is not None:
@@ -1409,12 +1358,14 @@ def evaluator(input):
 
                     a_ref = getIdx("+", arrVar)
                     s_ref = getIdx("-", arrVar)
+        
         elif is_add == True:
             a_ref = getIdx("+", arrVar)
             while a_ref is not None:
                 x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
                 arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
                 a_ref = getIdx("+", arrVar)
+        
         elif is_sub == True:
             s_ref = getIdx("-", arrVar)
             while s_ref is not None:
@@ -1422,15 +1373,31 @@ def evaluator(input):
                 arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
                 s_ref = getIdx("-", arrVar)
         
+        # perform all exponentiations
+        if is_exp == True:
+            ref = getIdx("^", arrVar)
+            while ref is not None:
+                x = exponentiate(arrVar[ref - 1], arrVar[ref + 1])
+                arrVar = restructure(x, ref - 1, ref + 1, arrVar)
+                ref = getIdx("^", arrVar)
+
+        # Perform all square roots
+        if is_root == True:
+            ref = getIdx("√", arrVar)
+            while ref is not None:
+                x = root(arrVar[ref + 1], 2)
+                arrVar = restructure(x, ref, ref + 1, arrVar)
+                ref = getIdx("√", arrVar)
+        
         return arrVar[0]
 
     # Phase II Process START
     def section(arr):
         # performs calculations in order of parenthesis nesting
+        global is_paren
         arrVar = arr
-        more_parens = True
         thresh = 0
-        while more_parens and thresh < paren_limit:
+        while is_paren == True and thresh < paren_limit:
             thresh = thresh + 1
             parens = []
             count = 0
@@ -1442,7 +1409,7 @@ def evaluator(input):
                     count = count + 1
                     parens.append({"index": i, "char": ")"})
             if count == 0:
-                more_parens = False
+                is_paren = False
                 continue
             else:
                 log_process("Parenthesis")
@@ -1666,19 +1633,18 @@ def evaluator(input):
                         break
         return arrVar
     
-    def polyfactor(arr):
-        global is_factoring
+    def poly_fact(arr):
+        # factors out polynomial multiplication expressions
+        global is_poly_fact
         global is_dist
+        global is_mult
         arrVar = arr
         x = 0
-        while is_factoring == True and x < polyfactor_limit:
+        while is_poly_fact == True and x < poly_fact_limit:
             x = x + 1
-            # start     "(2+1)^(2+1)"
-            # end       "(2+1)*(2+1)*(2+1)"
-
             # get idexes of "^" in arrVar to determine number of instances of factoring
             idxs = []
-            for i in range(0, len(arrVar) - 1):
+            for i in range(1, len(arrVar) - 1):
                 if arrVar[i] == "^" and arrVar[i - 1] == ")":
                     idxs.append(i)
             
@@ -1691,10 +1657,15 @@ def evaluator(input):
                 sect_end_idx = 0
                 power = 0
                 base = []
+                x = 0
                 for j in range(idxs[i], 0, -1):
                     if arrVar[j] == "(":
-                        sect_start_idx = j
-                        break
+                        x += 1
+                        if x == 0:
+                            sect_start_idx = j
+                            break
+                    elif arrVar[j] == ")":
+                        x -= 1
                 
                 for j in range(sect_start_idx, idxs[i]):
                     base.append(arrVar[j])
@@ -1704,9 +1675,10 @@ def evaluator(input):
 
                 # get power if expression else value
                 if arrVar[idxs[i] + 1] == "(":
+                    # is an expression
                     expression = []
                     x = 0
-                    for j in range(idxs[i] + 1, len(arrVar)):
+                    for j in range(idxs[i], len(arrVar)):
                         if arrVar[j] == "(":
                             x += 1
                             expression.append(arrVar[j])
@@ -1726,12 +1698,15 @@ def evaluator(input):
                     power = distribute(expression)
                     power = section(power)
                 else:
-                    # already a value
+                    # is a value
+                    sect_end_idx = idxs[i] + 1
                     power = arrVar[idxs[i] + 1]
                 
+                power = num_cast(power)
+
                 # log power value
                 log_process("Power value = %s" % power)
-                
+
                 # test power for special cases
                 if power == 0:
                     # x^0 = 1
@@ -1750,11 +1725,13 @@ def evaluator(input):
                         sect = sect + ["*"]
                         sect = sect + base
                     arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
+
                 log_process(arrVar)
                 is_dist = True
+                is_mult = True
                 arrVar = distribute(arrVar)
+                log_process("End Factoring")
 
-        log_process("End Factoring")
         return arrVar
     # Phase II Process END
 
@@ -1808,38 +1785,26 @@ def evaluator(input):
     def evaluate(str):
         # top level function runs high level functions
         global system_operation
+        # structure string data
         structure = structure_string(str)
-        if system_ops(structure) == True:
-            return "System Operation"
-        else:
+        # test for and run system operation
+        system_ops(structure)
+        # if no system operations, then continue evaluation
+        if system_operation == False:
             # change first log
             if use_logs == "1":
                 process_log["0"] = "Process Log Start"
             # Identify program entities in structured string
             identify_entities(structure)
-            # determine structuring and operations
-            if is_paren == True and is_brack == True:
-                if is_factoring == True:
-                    structure = polyfactor(structure)
-                if is_dist == True:
-                    structure = distribute(structure)
-                structure = structure_sets(structure)
-                structure = section(structure)
-            elif is_paren == True and is_brack == False:
-                if is_factoring == True:
-                    structure = polyfactor(structure)
-                if is_dist == True:
-                    structure = distribute(structure)
-                structure = section(structure)
-            elif is_paren == False and is_brack == True:
-                structure = structure_sets(structure)
-                structure = calculate(structure)
-            else:
-                structure = calculate(structure)
-            # control flow for high level functions
-            # 1) polyfactor
-            # 2) distribute
-            # 3) section
+            # restructure to factor out any polynomial multiplication
+            structure = poly_fact(structure)
+            # restructure to distribute out terms
+            structure = distribute(structure)
+            # restructure for "sets" (substructures)
+            structure = structure_sets(structure)
+            # solve section by section
+            structure = section(structure)
+
             return structure
 
     # # Evaluation
@@ -1862,7 +1827,8 @@ def evaluator(input):
         # "problem": "info",
         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
         # "problem": "(2*(4-3))^(2*(3-2))", # should be 4
-        "problem": "(2+3)^(2*(3-2))",
+        # "problem": "(2+3)^(2*(3-1)-1)", # should be 37
+        "problem": "3+(2+4)^2+3", # should be 42
         "use_logs": "1",
     }
     use_logs = test["use_logs"]
