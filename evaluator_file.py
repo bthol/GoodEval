@@ -86,6 +86,7 @@ is_key = []
 key_modules = [
     {"module":"trigonomic", "use":False},
     {"module":"geometric", "use":False},
+    {"module":"combinatoric", "use":False},
     {"module":"statistical", "use":False},
 ]
 
@@ -111,11 +112,11 @@ info = {
 
     "constants": [
         {"name":"π", "syntax":"pi"}, # alt code 227
-        {"name":"Euler's Number", "syntax":"e"},
+        {"name":"Euler's Number", "syntax":"euler"},
     ],
 
     "key_functions": [
-        # Trigonomic Module Info
+        # Trigonomic Module
         [
             # Fundamental
             {"name":"Sine", "key": "sin", "syntax": "sin(x)", "about": "Gets the sine of x, where x is a value or an expression that evaluates to a value."},
@@ -146,7 +147,7 @@ info = {
             # Hyperbolic
             {"name":"Hyperbolic Sine", "key":"sinh", "syntax": "sinh(x)", "about": "Gets the hyperbolic sine, i.e the sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
             
-            {"name":" Arcus Hyperbolic Sine", "key":"asinh", "syntax": "asinh(x)", "about": "Gets the arcus hyperbolic sine, i.e the inverse sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
+            {"name":"Arcus Hyperbolic Sine", "key":"asinh", "syntax": "asinh(x)", "about": "Gets the arcus hyperbolic sine, i.e the inverse sine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
             
             {"name":"Hyperbolic Cosine", "key":"cosh", "syntax": "cosh(x)", "about": "Gets the hyperbolic cosine, i.e the cosine of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
             
@@ -157,33 +158,39 @@ info = {
             {"name":"Arcus Hyperbolic Tangent", "key":"atanh", "syntax": "atanh(x)", "about": "Gets the arcus hyperbolic tangent, i.e the inverse tangent of hyperbola instead of circle, of x, where x is a value or an expression that evaluates to a value."},
         ],
 
-        # Geometeric Module Info
+        # Geometeric Module
         [
             # Triangles
             {"name":"Right Triangle Hypotenuse", "key":"hypot", "syntax": "hypot[a,b]", "about": "Gets the hypotenuse length of a right triangle given leg lengths a and b, where a and b are a value or an expression that evaluates to a value wrapped within square brackets, e.g. hypot[a,[b+x]]."},
+            
+            {"name":"Heron's Formula", "key":"heron", "syntax": "heron[a,b,c]", "about": "Gets the area of a scalene triangle given side lengths a, b, and c, where a, b, and c are a value or an expression that evaluates to a value wrapped within square brackets, e.g. heron[a,b,[c+x]]."},
         ],
 
-        # Statistical Module Info
+        # Combinatoric Module
         [
-            # Combinatorics
             {"name":"Factorial", "key":"fact", "syntax": "fact(x)", "about": "Gets the factorial of x, where x is a value or an expression that evaluates to a value."},
 
             {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
 
             {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+        ],
 
-            {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items and no spaces between items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
+        # Statistical Module
+        [
+            {"name":"Standard Deviation", "key":"sd", "syntax": "sd[a,b]", "about": "Gets the standard deviation of the set of items within square brackets, where that set has at least two comma-demarcated items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. var[a,[b+x]]."},
+            
+            {"name":"Variance", "key":"var", "syntax": "var[a,b]", "about": "Gets the variance of the set of items within square brackets, where that set has at least two comma-demarcated items. An item may be a value or an expression that evaulates to a value wrapped within square brackets, e.g. sd[a,[b+x]]."},
                 
             # Means
-            {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
+            {"name":"Harmonic Mean", "key":"meanh", "syntax": "meanh[a,b]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meang[10,[2+3]]."},
 
-            {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
+            {"name":"Geometeric Mean", "key":"meang", "syntax": "meang[a,b]", "about": "Gets the harmonic mean of the the set of items within square brackets, where that set has at least two comma-demarcated items, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. meanh[10,[2+3]]."},
 
-            {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
+            {"name":"Weighted Mean", "key":"meanw", "syntax": "meanw[[a,w1],[b,w2]]", "about": "Gets the weighted mean of the the set of items within square brackets, where that set has at least two comma-demarcated items, and each item is a value and a weight for that value wrapped in square brackets, e.g. meanw[[10,60],[20,40]]."},
 
-            {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items with no spaces between them, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
+            {"name":"Mean", "key":"mean", "syntax": "mean[a,b]", "about": "Gets the mean of the the set of values within square brackets, where that set has at least two comma demarcated items, and each item is a value or an expression that evaluates to a value, e.g. mean[a,[b+x]]."},
 
-            {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items with no spaces between them, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
+            {"name":"Root Mean Square", "key":"rms", "syntax": "rms[a1,a2]", "about": "Gets the geometeric mean of the the set of items within square brackets, where that set has at least two comma-demarcated items, and each item is a value or an expression that evaulates to a value wrapped within square brackets, e.g. rms[10,[2+3]]."},
                 
             # Et Cetera
             {"name":"Greatest Common Factor", "key":"gcf", "syntax": "gcf[a,b]", "about": "Gets the greatest common factor of a and b within square brackets, where a and b are values or expressions that evaluate to values wrapped in square brackets, e.g. gcf[a,[b+x]]."},
@@ -476,13 +483,12 @@ def evaluator(input):
             ref = get_word("pi", arr)
         
         # structure euler's number
-        ref = get_word("e", arr)
+        ref = get_word("euler", arr)
         itr = 0
         while itr < c_limit and ref is not None:
             itr = itr + 1
             arr = restructure(np.e, ref["first"], ref["last"] - 1, arr)
-            ref = get_word("e", arr)
-        
+            ref = get_word("euler", arr)
 
         # structure keywords
         log_process("Keywords")
@@ -809,11 +815,48 @@ def evaluator(input):
                 arrVar = restructure(y, ref, ref + 1, arrVar)
                 ref = getIdx("hypot", arrVar)
 
+            # perform all Heron's Formula functions
+            ref = getIdx("heron", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = num_cast(i)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+                
+                # perform calculation using numeral set
+                # side lengths
+                a = set_2[0]
+                b = set_2[1]
+                c = set_2[2]
+                
+                # semiperimeter
+                s = (a + b + c) / 2
+                
+                # area calculation
+                area = (s * (s - a) * (s - b) * (s - c))**0.5
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(area, ref, ref + 1, arrVar)
+                ref = getIdx("heron", arrVar)
+
         return arrVar
 
-    def statistical(arr):
-        # key function module for statistical functions
+    def combinatoric(arr):
+        # key function module for combinatoric functions
         arrVar = arr
+
         if key_modules[2]["use"] == True:
             # perform all Factorial functions
             ref = getIdx("fact", arrVar)
@@ -886,6 +929,13 @@ def evaluator(input):
                 log_process(arrVar[ref])
                 arrVar = restructure(comb, ref, ref + 1, arrVar)
                 ref = getIdx("comb", arrVar)
+
+        return arrVar
+
+    def statistical(arr):
+        # key function module for statistical functions
+        arrVar = arr
+        if key_modules[3]["use"] == True:
             
             # perform all Standard Deviation functions
             ref = getIdx("sd", arrVar)
@@ -917,6 +967,37 @@ def evaluator(input):
                 log_process(arrVar[ref])
                 arrVar = restructure(sd, ref, ref + 1, arrVar)
                 ref = getIdx("sd", arrVar)
+            
+            # perform all Variance functions
+            ref = getIdx("var", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+                # get string set
+                set_1 = arrVar[ref + 1]
+                log_process(set_1)
+
+                # convert string set to numeral set
+                set_2 = []
+                for i in set_1:
+                    if isinstance(i, str):
+                        x = num_cast(i)
+                        set_2.append(x)
+                    else:
+                        x = section(distribute(i))
+                        set_2.append(x)
+
+                # perform calculation using numeral set
+                mean = get_mean(set_2)
+                set_3 = []
+                for i in set_2:
+                    set_3.append(math.pow(i - mean, 2))
+                sd = sum(set_3)/len(set_3)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                arrVar = restructure(sd, ref, ref + 1, arrVar)
+                ref = getIdx("var", arrVar)
 
             # perform all Harmonic Mean functions
             ref = getIdx("meanh", arrVar)
@@ -1229,6 +1310,8 @@ def evaluator(input):
         arrVar = trigonomic(arrVar)
         # GEOMETRIC FUNCTIONS
         arrVar = geometric(arrVar)
+        # COMBINATORIC FUNCTIONS
+        arrVar = combinatoric(arrVar)
         # STATISTICAL FUNCTIONS
         arrVar = statistical(arrVar)
         
@@ -1435,7 +1518,7 @@ def evaluator(input):
         arrVar = calculate(arrVar)
         return arrVar
 
-    def distribute(arr):
+    def distrib(arr):
         # restructures with distributed terms
         global is_dist
         arrVar = arr
@@ -1633,8 +1716,308 @@ def evaluator(input):
                         break
         return arrVar
     
+    def distribute(arr):
+        # restructures with distributed terms
+        global is_dist
+        arrVar = arr
+
+        print(arrVar)
+
+        x = 0
+        while is_dist == True and x < paren_limit:
+            # runs distribution process
+            x = x + 1
+            log_process("Distribution")
+            
+            refer = []
+            for i in range(0, len(arrVar)):
+                if arrVar[i] == "(" or arrVar[i] == ")" or arrVar[i] == "*":
+                    refer.append({"char": arrVar[i], "index": i})
+
+            # get section for distribution
+            start = 0
+            end = 0
+            section = []
+            for i in range(0, len(refer)):
+                # search for a case of distribution
+                # by testing if the current object's index value (only a "*") and previous object's index value are 1 index away from each other in arrVar and are the ")" and "*" characters
+                # or if the current object's index value (only a "*") and next object's index values are 1 index away from each other in arrVar and are the "*" and "(" characters
+                if refer[i]["char"] == "*" and i > 0 and arrVar[refer[i]["index"] - 1] == ")" or refer[i]["char"] == "*" and refer[i]["index"] + 1 < len(arrVar) and arrVar[refer[i]["index"] + 1] == "(":
+                    # case of distribution
+                    
+                    # search for start
+                    if i > 0 and refer[i - 1]["char"] == ")" and refer[i]["index"] == refer[i - 1]["index"] + 1:
+                        a = 0
+                        for j in range(0, i):
+                            # backtrack to find start
+                            if refer[i - j - 1]["char"] == "(":
+                                a += 1
+                                if a == 0:
+                                    start = refer[i - j - 1]["index"]
+                                    break
+                            elif refer[i - j - 1]["char"] == ")":
+                                a -= 1
+                    else:
+                        # first nomial is a monomial
+                        start = i
+                    
+                    # search for end
+                    searching = True
+                    itr = 0
+                    while itr < 2 and searching == True:
+                        print(itr)
+                        itr += 1
+                        # if the current and next objects have characters that are right next to each other in arrVar
+                        if i + 1 < len(refer) and refer[i]["index"] == refer[i + 1]["index"] - 1:
+                            # and the character in the next object is a "("
+                            if refer[i + 1]["char"] == "(":
+                                nest = 0
+                                # fronttrack to find end
+                                for j in range(refer[i]["index"], len(arrVar)):
+                                    if arrVar[j] == "(":
+                                        nest += 1
+                                    elif arrVar[j] == ")":
+                                        nest -= 1
+                                        if nest == 0:
+                                            # if at last character
+                                            if j == len(arrVar) - 1:
+                                                end = j
+                                                break
+                                            # else next character is "*"
+                                            elif arrVar[j + 1] != "*":
+                                                end = j
+                                                break
+                        else:
+                            # test for last nomial
+                            if i + 1 == len(refer):
+                                # end of structure
+                                end = refer[i]["index"] + 1
+                                searching = False
+                            elif refer[i]["index"] + 2 < len(arrVar) and arrVar[refer[i]["index"] + 2] == "*":
+                                # case of the intermittent monomial
+                                # search for next case of distribution
+                                print(refer[i])
+                                for j in range(i, len(refer)):
+                                    if refer[j]["char"] == "*" and refer[j]["index"] + 1 < len(arrVar) and arrVar[refer[j]["index"] + 1] == "(":
+                                        nest = 0
+                                        # fronttrack to find end
+                                        for k in range(refer[j]["index"], len(arrVar)):
+                                            if arrVar[k] == "(":
+                                                nest += 1
+                                            elif arrVar[k] == ")":
+                                                nest -= 1
+                                                if nest == 0:
+                                                    # if at last character
+                                                    if k == len(arrVar) - 1:
+                                                        end = k
+                                                        break
+                                                    # else next character is "*"
+                                                    elif arrVar[k + 1] != "*":
+                                                        end = k
+                                                        break
+
+                            elif refer[i]["index"] + 2 < len(arrVar) and arrVar[refer[i]["index"] + 2] != "*":
+                                # no further multiplication in case of distribution
+                                end = refer[i]["index"] + 1
+                                searching = False
+                    
+                    # build section
+                    for j in range(start, end + 1):
+                        section.append(arrVar[j])
+                    log_process(section)
+
+                    # print(start)
+                    # print(end)
+                    print(section)
+
+                    # terminate loop to prevent further searching for case of distribution
+                    break
+
+            # reference structure for section with distribution
+            sect_struct = []
+
+            # test for leading monomial
+            if section[0] != "(":
+                sect_struct.append([[section[0]]]) # monomial
+
+            # Get info using the Count Zero method
+            count = 0
+            for i in range(0, len(section)):
+                # only test on update to prevent false positives
+                # positive case indicates index in section of the end of the first binomial+
+                is_zero = False
+                if section[i] == "(":
+                    # update count
+                    count += 1
+                    # test count
+                    if count == 0:
+                        is_zero = True
+                elif section[i] == ")":
+                    # update count
+                    count -= 1
+                    # test count
+                    if count == 0:
+                        is_zero = True
+                
+                if is_zero == True:
+                    # each zero counted after update count is the last index of another nomial
+                    nomial = []
+                    term = []
+                    nest = 0
+                    # backtrack to start of nomial
+                    # + identify terms as-you-go
+                    for k in range(0, i + 1):
+                        char = section[i - k]
+                        try:
+                            # test for number
+                            int(char)
+                            # insert character at start of term structure since iterating backward
+                            term.insert(0, char)
+                            print(term)
+                        except:
+                            # count zeros
+                            if char == "(":
+                                print("plus")
+                                nest += 1
+                                if nest == 0:
+                                    # zero identified
+                                    nomial.insert(0, term) # add term to polynomial
+                                    term = [] # clear term buffer
+                                    break
+
+                                elif nest > -2:
+                                    # add first character of expression term
+                                    term.insert(0, char)
+
+                            elif char == ")":
+                                print("minus")
+                                nest -= 1
+                            
+                            elif nest == -1 and char == "+":
+                                nomial.insert(0, term)
+                                term = [] # clear term buffer
+                            
+                            elif nest == -1 and char == "-":
+                                if section[i - k + 1] == "(":
+                                    # negate expression term
+                                    term.insert(0, "*")
+                                    term.insert(0, "-1")
+                                    nomial.insert(0, term)
+                                    term = [] # clear term buffer
+                                else:
+                                    # negate previous term
+                                    term.pop(0) # remove positive value
+                                    term.insert(0, "-%s" % section[i - k + 1]) # add negated value
+                                    nomial.insert(0, term)
+                                    term = [] # clear term buffer  
+
+                            if nest < -1:
+                                term.insert(0, char)
+                                print(term)
+
+                    sect_struct.append(nomial)
+            
+            # test for ending monomial
+            if section[len(section) - 1] != ")":
+                sect_struct.append([[section[len(section) - 1]]])
+
+            print(sect_struct)
+
+            # total number of nomials
+            nomials_total = len(sect_struct)
+
+            # total number of terms
+            terms_total = 0
+            for i in range(0, len(sect_struct)):
+                terms_total += len(sect_struct[i])
+            
+            # total number of terms in product of distribution
+            product_terms_total = 0
+            for i in range(0, len(sect_struct)):
+                # get terms of current nomial
+                k = len(sect_struct[i])
+                # sum previous terms
+                s = 0
+                for l in range(0, i):
+                    s += len(sect_struct[l])
+                s += k
+                product_terms_total += k * (terms_total - s)
+            
+            print(nomials_total)
+            print(terms_total)
+            print(product_terms_total)
+
+            # construct product expression
+            term1 = 0
+            nomial1 = 0
+            term2 = 0
+            nomial2 = 0
+
+            multiplier = []
+            multiplicand = []
+            product = []
+
+            for i in range(0, product_terms_total):
+                
+                # initialize
+                if nomial2 == 0:
+                    multiplier = sect_struct[nomial1][term1]
+                    nomial2 += 1
+                    multiplicand = sect_struct[nomial2][term2]
+
+                # update indexes
+                if term2 + 1 != len(sect_struct[nomial2]):
+                    # mid term
+                    term2 += 1
+                else:
+                    # last term of nomial for the multiplicand
+                    term2 = 0 # first term of next nomial
+                    if nomial2 + 1 != nomials_total:
+                        # mid nomial for multiplicand
+                        nomial2 += 1
+                        term2 = 0
+                    else:
+                        # last nomial for multiplicand
+                        
+                        # update multiplier
+                        if term1 + 1 != len(sect_struct[nomial1]):
+                            # mid term
+                            term1 += 1
+                            multiplier = sect_struct[nomial1][term1]
+                        else:
+                            # last term
+                            nomial1 += 1
+                            term1 = 0
+                            multiplier = sect_struct[nomial1][term1]
+                        
+                        # update indexes after
+                        nomial1 += 1
+                        if nomial1 + 1 != nomials_total:
+                            nomial2 = nomial1 + 1
+                            term2 = 0
+                        else:
+                            break
+
+                # update multiplicand
+                print("nomial: %s" % str(int(nomial2) + 1))
+                print("term: %s" % str(int(term2) + 1))
+                multiplicand = sect_struct[nomial2][term2]
+
+                # append concatenation of multiplier and multiplicand to product
+                product.append(multiplier + ["*"] + multiplicand + ["+"])
+
+            print(product)
+
+            # restructure with product expression
+
+            # identify further distribution
+            is_dist = False
+
+
+        return arrVar
+    
     def poly_fact(arr):
-        # factors out polynomial multiplication expressions
+        # factors out into expressions that multiply polynomials
         global is_poly_fact
         global is_dist
         global is_mult
@@ -1678,7 +2061,7 @@ def evaluator(input):
                     # is an expression
                     expression = []
                     x = 0
-                    for j in range(idxs[i], len(arrVar)):
+                    for j in range(idxs[i] + 1, len(arrVar)):
                         if arrVar[j] == "(":
                             x += 1
                             expression.append(arrVar[j])
@@ -1692,6 +2075,7 @@ def evaluator(input):
                             expression.append(arrVar[j])
                     
                     # log power expression
+                    print(expression)
                     log_process("Power expression = %s" % expression)
 
                     # calculate power value from power expression
@@ -1828,8 +2212,13 @@ def evaluator(input):
         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
         # "problem": "(2*(4-3))^(2*(3-2))", # should be 4
         # "problem": "(2+3)^(2*(3-1)-1)", # should be 37
-        "problem": "3+(2+4)^2+3", # should be 42
-        "use_logs": "1",
+        # "problem": "3+(2+4)^2+3", # should be 42
+        # "problem": "3*(4-1)", # monomial start
+        # "problem": "(2+3)*4", # monomial end
+        "problem": "1+(2+3)*4*(7-2)", # monomial intermittent
+        # "problem": "1+(2-(2+11))*(4+1-2)*(9-7)+(4*8-5)",
+        # "problem": "(1+2)*(3+4)*(5+6)",
+        "use_logs": "0",
     }
     use_logs = test["use_logs"]
 

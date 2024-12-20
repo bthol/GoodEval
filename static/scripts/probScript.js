@@ -1,11 +1,8 @@
 console.log('Problem Script Loaded.');
 
 // Development Plan
-//  - refactor distribution algorithm in evaluator_file.py to calculate for exponents (e.g. "(2+3)^2" to "(2+3)*(2+3)" )
 //  - conditionally declare key functions by key module in evaluator_file.py
-//  - use shift functionality for trigonomic buttons + replace reciprocal identities with other functions:
-//       - hypot
-//  -    - other numpy functions
+//  - add shift and alpha buttons for alternate button functionality:
 //  - design sign button to wrap current value or display error (especially multidigit values)
 
 // Display
@@ -276,7 +273,7 @@ function validParens(problem) {
 
 function validProblem(problem) {
     // validates problem string before request
-    let validity = true;
+    let validity = false;
     // validate parenthesis
     validity = validParens(problem);
     // run backend structuring emulation
