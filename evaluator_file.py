@@ -1721,8 +1721,6 @@ def evaluator(input):
         global is_dist
         arrVar = arr
 
-        print(arrVar)
-
         x = 0
         while is_dist == True and x < paren_limit:
             # runs distribution process
@@ -1765,7 +1763,6 @@ def evaluator(input):
                     searching = True
                     itr = 0
                     while itr < 2 and searching == True:
-                        print(itr)
                         itr += 1
                         # if the current and next objects have characters that are right next to each other in arrVar
                         if i + 1 < len(refer) and refer[i]["index"] == refer[i + 1]["index"] - 1:
@@ -1796,7 +1793,6 @@ def evaluator(input):
                             elif refer[i]["index"] + 2 < len(arrVar) and arrVar[refer[i]["index"] + 2] == "*":
                                 # case of the intermittent monomial
                                 # search for next case of distribution
-                                print(refer[i])
                                 for j in range(i, len(refer)):
                                     if refer[j]["char"] == "*" and refer[j]["index"] + 1 < len(arrVar) and arrVar[refer[j]["index"] + 1] == "(":
                                         nest = 0
@@ -1826,12 +1822,14 @@ def evaluator(input):
                         section.append(arrVar[j])
                     log_process(section)
 
-                    # print(start)
-                    # print(end)
-                    print(section)
-
                     # terminate loop to prevent further searching for case of distribution
                     break
+            
+            # add parens to intermittent monomials in section for distribution
+            for i in range(1, len(section) - 1):
+                if section[i + 1] == "*" and section[i - 1] == "*":
+                    # restrtucture with parens for each case of intermittent monomials
+                    section = restructure(["(", section[i], ")"], i, i, section)
 
             # reference structure for section with distribution
             sect_struct = []
@@ -1873,11 +1871,9 @@ def evaluator(input):
                             int(char)
                             # insert character at start of term structure since iterating backward
                             term.insert(0, char)
-                            print(term)
                         except:
                             # count zeros
                             if char == "(":
-                                print("plus")
                                 nest += 1
                                 if nest == 0:
                                     # zero identified
@@ -1890,7 +1886,6 @@ def evaluator(input):
                                     term.insert(0, char)
 
                             elif char == ")":
-                                print("minus")
                                 nest -= 1
                             
                             elif nest == -1 and char == "+":
@@ -1913,7 +1908,6 @@ def evaluator(input):
 
                             if nest < -1:
                                 term.insert(0, char)
-                                print(term)
 
                     sect_struct.append(nomial)
             
@@ -1932,6 +1926,13 @@ def evaluator(input):
                 terms_total += len(sect_struct[i])
             
             # total number of terms in product of distribution
+            # calculates the number of terms in the product expression of a nomial multiplication
+            # using the nested summation method
+            # where it works for:
+            #  - any number of nomials
+            #  - any number of terms in nomial
+            #  - different number of terms in different nomials
+
             product_terms_total = 0
             for i in range(0, len(sect_struct)):
                 # get terms of current nomial
@@ -1948,71 +1949,111 @@ def evaluator(input):
             print(product_terms_total)
 
             # construct product expression
+
+            # now that the number of terms in the product expression is known, the number of multiplications is also known,
+            # because one multiplication creates one term, so the number of terms and multiplcations are the same number.
+
+            # the design of product expression construction is thus:
+            #  - to access two terms in the reference structure of unique combination, 
+            #  - build a list which includes those terms separated by a multication symbol,
+            #  - compile that list into the product structure, demarcating each concatenation to the product structure with an addition symbol,
+            #  - and repeating this process for the number of multiplications,
+            #  - except for the last multiplication, which should have no addition symbol following it.
+
+            # multiplier indexes
             term1 = 0
             nomial1 = 0
+
+            # multiplicand indexes
             term2 = 0
             nomial2 = 0
 
+            # structures
             multiplier = []
             multiplicand = []
             product = []
 
-            for i in range(0, product_terms_total):
-                
+            for i in range(0, product_terms_total - 1):
                 # initialize
                 if nomial2 == 0:
+                    # first term in product expression
                     multiplier = sect_struct[nomial1][term1]
                     nomial2 += 1
                     multiplicand = sect_struct[nomial2][term2]
-
+                
                 # update indexes
-                if term2 + 1 != len(sect_struct[nomial2]):
-                    # mid term
+                # multiplicand term
+                    # multiplicand nomial
+                        # multiplier term
+                            # multiplier nomial
+
+                # multiplicand term
+                elif term2 + 1 != len(sect_struct[nomial2]):
+                    # mid term in nomial for the multiplicand
                     term2 += 1
                 else:
                     # last term of nomial for the multiplicand
                     term2 = 0 # first term of next nomial
+
+                    
+                    # multiplicand nomial
                     if nomial2 + 1 != nomials_total:
                         # mid nomial for multiplicand
                         nomial2 += 1
-                        term2 = 0
                     else:
                         # last nomial for multiplicand
-                        
-                        # update multiplier
-                        if term1 + 1 != len(sect_struct[nomial1]):
-                            # mid term
-                            term1 += 1
-                            multiplier = sect_struct[nomial1][term1]
-                        else:
-                            # last term
-                            nomial1 += 1
-                            term1 = 0
-                            multiplier = sect_struct[nomial1][term1]
-                        
-                        # update indexes after
-                        nomial1 += 1
-                        if nomial1 + 1 != nomials_total:
-                            nomial2 = nomial1 + 1
-                            term2 = 0
-                        else:
-                            break
+                        nomial2 = nomial1 + 1
 
+
+                        # multiplier term
+                        if term1 + 1 != len(sect_struct[nomial1]):
+                            # mid term of nomial for multiplier
+                            term1 += 1
+                        else:
+                            # last term of nomial for multiplier
+                            term1 = 0 # first term of next nomial
+                            
+                            
+                            # multiplier nomial
+                            if nomial1 + 1 != nomials_total - 1: # -1 : multiplier never the last nomial
+                                # mid nomial for multiplier
+                                nomial1 += 1
+                                nomial2 = nomial1 + 1
+                                term2 = 0
+                            else:
+                                # last nomial for multiplier
+                                break
+
+                # update multiplier
+                multiplier = sect_struct[nomial1][term1]
                 # update multiplicand
+                multiplicand = sect_struct[nomial2][term2]
                 print("nomial: %s" % str(int(nomial2) + 1))
                 print("term: %s" % str(int(term2) + 1))
-                multiplicand = sect_struct[nomial2][term2]
+                print(multiplier)
+                print(multiplicand)
 
-                # append concatenation of multiplier and multiplicand to product
-                product.append(multiplier + ["*"] + multiplicand + ["+"])
+                # concatenate multiplier and multiplicand with product
+                product = product + multiplier + ["*"] + multiplicand + ["+"]
+
+            # last term
+            term2 += 1
+            product = product + multiplier + ["*"] + multiplicand
+            log_process(product)
 
             print(product)
 
             # restructure with product expression
+            arrVar = restructure(product, start, end, arrVar)
 
             # identify further distribution
             is_dist = False
-
+            for i in range(0, len(arrVar)):
+                if i != 0 and i != len(arrVar):
+                    # test for two pairs of conditions that indicate distribution
+                    if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*"):
+                        is_dist = True
+                        break
 
         return arrVar
     
@@ -2215,10 +2256,11 @@ def evaluator(input):
         # "problem": "3+(2+4)^2+3", # should be 42
         # "problem": "3*(4-1)", # monomial start
         # "problem": "(2+3)*4", # monomial end
-        "problem": "1+(2+3)*4*(7-2)", # monomial intermittent
+        # "problem": "1+(2+3)*4*(7-(3-1))", # monomial intermittent
+        # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case
         # "problem": "1+(2-(2+11))*(4+1-2)*(9-7)+(4*8-5)",
-        # "problem": "(1+2)*(3+4)*(5+6)",
-        "use_logs": "0",
+        "problem": "1+(1+2)*(3+4)*(5+6)", # should be 128
+        "use_logs": "1",
     }
     use_logs = test["use_logs"]
 
