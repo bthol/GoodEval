@@ -1323,6 +1323,7 @@ def evaluator(input):
         # scans for operations and calculates
         log_process("Calculating")
         arrVar = arr
+
         # Phase III
         # perform all key functions
         is_key_len = len(is_key)
@@ -1517,205 +1518,7 @@ def evaluator(input):
 
         arrVar = calculate(arrVar)
         return arrVar
-
-    def distrib(arr):
-        # restructures with distributed terms
-        global is_dist
-        arrVar = arr
-        x = 0
-        while is_dist == True and x < paren_limit:
-            log_process("Distribution")
-            x = x + 1
-            # runs distribution process
-            parens = []
-            for i in range(0, len(arrVar)):
-                # differentiate between pairs of conditions + store in reference structure
-                if arrVar[i] == "(":
-                    if arrVar[i - 1] == "*" and i > 0:
-                        parens.append({"char": "(", "index": i, "mult": True})
-                    else:
-                        parens.append({"char": "(", "index": i, "mult": False})
-                elif arrVar[i] == ")":
-                    if i < len(arrVar) - 1 and arrVar[i + 1] == "*":
-                        parens.append({"char": ")", "index": i, "mult": True})
-                    else:
-                        parens.append({"char": ")", "index": i, "mult": False})
-            # print(parens)
-
-            # get section for distribution
-            start = 0
-            search_start = False
-            start_count = 0
-
-            end = 0
-            search_end = False
-            end_count = 0
-
-            ref = 0
-            monomial_start = False
-            monomial_end = False
-
-            for i in range(0, len(parens)):
-                if parens[i]["mult"] == True and parens[i]["char"] == "(":
-                    search_end = True
-                    if arrVar[parens[i]["index"] - 2] != ")":
-                        start = parens[i]["index"] - 2
-                        monomial_start = True
-
-                if parens[i]["mult"] == True and parens[i]["char"] == ")":
-                    search_start = True
-                    ref = i
-                    if arrVar[parens[i]["index"] + 2] != "(":
-                        end = parens[i]["index"] + 2
-                        monomial_end = True
-                
-                # search for start
-                if search_start == True:
-                    for i in range(0, len(parens)):
-                        if parens[ref - i]["char"] == "(":
-                            start_count = start_count + 1
-                        elif parens[ref - i]["char"] == ")":
-                            start_count = start_count - 1
-                        if start_count == 0 and parens[ref - i]["char"] == "(":
-                            start = parens[ref - i]["index"]
-                            search_start = False
-                            break
-
-                # search for end
-                if search_end == True:
-                    if parens[i]["char"] == "(":
-                        end_count = end_count + 1
-                    elif parens[i]["char"] == ")":
-                        end_count = end_count - 1
-                    if end_count == 0 and parens[i]["char"] == ")":
-                        end = parens[i]["index"]
-                        search_end = False
-                
-            section = arrVar[start:end + 1]
-
-            # add parens to monomial to indentify term
-            if monomial_start == True:
-                monomial = section[0]
-                section.pop(0)
-                section.insert(0, ")")
-                section.insert(0, monomial)
-                section.insert(0, "(")
-            if monomial_end == True:
-                monomial = section[len(section) - 1]
-                section.pop()
-                section.append("(")
-                section.append(monomial)
-                section.append(")")
-            log_process(section)
-
-            # get terms from section
-            terms1 = []
-            terms2 = []
-            compile = []
-            negate_list = False
-            level = 0
-            last_level = level
-            for i in range(0, len(section)):
-                last_level = level
-                if section[i] == "(":
-                    level = level + 1
-                elif section[i] == ")":
-                    level = level - 1
-                if i != len(section) - 1 and level == 0 and section[i] == ")":
-                    terms1 = terms2
-                    terms2 = []
-                try:
-                    # lists
-                    if level > 1:
-                        if last_level == 1 and section[i - 1] == "-":
-                            negate_list = True
-                        term = section[i]
-                        try:
-                            term = float(term)
-                            if term % 1 == 0:
-                                term = int(term)
-                            if negate_list == True or section[i - 1] == "-":
-                                term = term * -1
-                            compile.append(term)
-                        except:
-                            compile.append(term)
-                    elif level == 1 and last_level > 1:
-                        length = len(compile)
-                        if section[i - length] == "-":
-                            for i in range(0, length):
-                                try:
-                                    val = float(compile[i])
-                                    if val % 1 == 0:
-                                        val = int(val)
-                                    val = val * -1
-                                    val = str(val)
-                                    compile.pop(i)
-                                    compile.insert(i, val)
-                                except:
-                                    continue
-                        compile.append(")")
-                        terms2.append(compile)
-                        compile = []
-
-                    # numbers
-                    term = float(section[i])
-                    if term % 1 == 0:
-                        term = int(term)
-                    if section[i - 1] == "-":
-                        term = term * -1
-                    if level == 1:
-                        terms2.append(term)
-                except:
-                    continue
-            # print(terms1)
-            # print(terms2)
-
-            # use nested iteration to distribute every term from terms1 over every term in terms2
-            solution = []
-            def itr_append(arr):
-                for i in range(0, len(arr)):
-                    solution.append(arr[i])    
-
-            for i in range(0, len(terms1)):     
-                for j in range(0, len(terms2)):
-                    if i == 0 and j == 0:
-                        if isinstance(terms1[i], list):
-                            itr_append(terms1[i])
-                            solution.append("*")
-                        else:
-                            solution.append(str(terms1[i]))
-                            solution.append("*")
-                        if isinstance(terms2[j], list):
-                            itr_append(terms2[j])
-                        else:
-                            solution.append(str(terms2[j]))
-                    else:
-                        solution.append("+")
-                        # solution.append("(")
-                        if isinstance(terms1[i], list):
-                            itr_append(terms1[i])
-                            solution.append("*")
-                        else:
-                            solution.append(str(terms1[i]))
-                            solution.append("*")
-                        if isinstance(terms2[j], list):
-                            itr_append(terms2[j])
-                        else:
-                            solution.append(str(terms2[j]))
-            log_process(solution)
-
-            arrVar = restructure(solution, start, end, arrVar)
-
-            # test for distribution
-            is_dist = False
-            for i in range(0, len(arrVar)):
-                if i != 0 and i != len(arrVar):
-                    # test for two pairs of conditions that indicate distribution
-                    if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*"):
-                        is_dist = True
-                        break
-        return arrVar
-    
+ 
     def distribute(arr):
         # restructures with distributed terms
         global is_dist
@@ -1726,6 +1529,9 @@ def evaluator(input):
             # runs distribution process
             x = x + 1
             log_process("Distribution")
+
+            print("Distribute")
+            print(arrVar)
             
             refer = []
             for i in range(0, len(arrVar)):
@@ -1742,7 +1548,7 @@ def evaluator(input):
                 # or if the current object's index value (only a "*") and next object's index values are 1 index away from each other in arrVar and are the "*" and "(" characters
                 if refer[i]["char"] == "*" and i > 0 and arrVar[refer[i]["index"] - 1] == ")" or refer[i]["char"] == "*" and refer[i]["index"] + 1 < len(arrVar) and arrVar[refer[i]["index"] + 1] == "(":
                     # case of distribution
-                    
+                    print(refer[i])
                     # search for start
                     if i > 0 and refer[i - 1]["char"] == ")" and refer[i]["index"] == refer[i - 1]["index"] + 1:
                         a = 0
@@ -1756,8 +1562,10 @@ def evaluator(input):
                             elif refer[i - j - 1]["char"] == ")":
                                 a -= 1
                     else:
+                        print(arrVar[refer[i]["index"] - 1])
                         # first nomial is a monomial
-                        start = i
+                        # start = i
+                        start = refer[i]["index"] - 1
                     
                     # search for end
                     searching = True
@@ -1830,6 +1638,8 @@ def evaluator(input):
                 if section[i + 1] == "*" and section[i - 1] == "*":
                     # restrtucture with parens for each case of intermittent monomials
                     section = restructure(["(", section[i], ")"], i, i, section)
+
+            print(section)
 
             # reference structure for section with distribution
             sect_struct = []
@@ -1944,9 +1754,9 @@ def evaluator(input):
                 s += k
                 product_terms_total += k * (terms_total - s)
             
-            print(nomials_total)
-            print(terms_total)
-            print(product_terms_total)
+            # print(nomials_total)
+            # print(terms_total)
+            # print(product_terms_total)
 
             # construct product expression
 
@@ -2028,17 +1838,25 @@ def evaluator(input):
                 multiplier = sect_struct[nomial1][term1]
                 # update multiplicand
                 multiplicand = sect_struct[nomial2][term2]
-                print("nomial: %s" % str(int(nomial2) + 1))
-                print("term: %s" % str(int(term2) + 1))
-                print(multiplier)
-                print(multiplicand)
+                # print("nomial: %s" % str(int(nomial2) + 1))
+                # print("term: %s" % str(int(term2) + 1))
+                # print(multiplier)
+                # print(multiplicand)
 
                 # concatenate multiplier and multiplicand with product
                 product = product + multiplier + ["*"] + multiplicand + ["+"]
 
             # last term
-            term2 += 1
-            product = product + multiplier + ["*"] + multiplicand
+            if len(sect_struct[len(sect_struct) - 1]) > 1:
+                # for ending monomial
+                term2 += 1
+                multiplicand = sect_struct[nomial2][term2]
+                product = product + multiplier + ["*"] + multiplicand
+            else:
+                term1 += 1
+                multiplier = sect_struct[nomial1][term1]
+                product = product + multiplier + ["*"] + multiplicand
+            
             log_process(product)
 
             print(product)
@@ -2050,10 +1868,13 @@ def evaluator(input):
             is_dist = False
             for i in range(0, len(arrVar)):
                 if i != 0 and i != len(arrVar):
-                    # test for two pairs of conditions that indicate distribution
-                    if (arrVar[i] == "(" and arrVar[i - 1] == "*") or (arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*"):
+                    if arrVar[i] == "(" and arrVar[i - 1] == "*" or arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*":
+                        # multiplicative distribution
                         is_dist = True
                         break
+        
+        # update bypasses to reflect changes from distribution
+        identify_entities(arrVar)
 
         return arrVar
     
@@ -2253,13 +2074,14 @@ def evaluator(input):
         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
         # "problem": "(2*(4-3))^(2*(3-2))", # should be 4
         # "problem": "(2+3)^(2*(3-1)-1)", # should be 37
-        # "problem": "3+(2+4)^2+3", # should be 42
-        # "problem": "3*(4-1)", # monomial start
-        # "problem": "(2+3)*4", # monomial end
-        # "problem": "1+(2+3)*4*(7-(3-1))", # monomial intermittent
-        # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case
-        # "problem": "1+(2-(2+11))*(4+1-2)*(9-7)+(4*8-5)",
-        "problem": "1+(1+2)*(3+4)*(5+6)", # should be 128
+        # "problem": "3+(2+4)^2+3", # should be 34
+        # "problem": "3*(4-1)", # monomial start 9 
+        # "problem": "(2+3)*4", # monomial end 20
+        # "problem": "4*(7-(3-1))", # expression term 17
+        # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
+        # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
+        # "problem": "(1+2)*(3+4)*(5+6)-3", # general 128
+        "problem": "(2+3)*4*(7-(5-3))", # problem 47
         "use_logs": "1",
     }
     use_logs = test["use_logs"]
