@@ -352,82 +352,129 @@ def evaluator(input):
                         break
         return arr
 
+    def entity_no_pass():
+        # bypasses everything
+        # reset for identify_entities
+        global is_paren
+        global is_dist
+        global is_exp
+        global is_poly_fact
+        global is_brack
+        global is_root
+        global is_mult
+        global is_div
+        global is_add
+        global is_sub
+
+        is_paren = False
+        is_dist = False
+        is_exp = False
+        is_poly_fact = False
+        is_brack = False
+        is_root = False
+        is_mult = False
+        is_div = False
+        is_add = False
+        is_sub = False
+    
+    def identify_dist(arr):
+        # tests for distribution on section
+        global is_dist
+        is_dist = False
+        end = len(arr) - 1
+        for i in range(0, len(arr)):
+            if i != 0 and i != end:
+                if (arr[i] == "(" and arr[i - 1] == "*") or (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "*"):
+                    is_dist = True
+                    break
+
     def identify_entities(arr):
         # Identify parenthesis
         global is_paren
-        for i in range(0, len(arr)):
-            if arr[i] == "(":
-                is_paren = True
-                break
+        if is_paren == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "(":
+                    is_paren = True
+                    break
         
         # identify distribution
         global is_dist
-        if (is_paren):
-            for i in range(0, len(arr)):
-                if i != 0 and i != len(arr):
-                    if (arr[i] == "(" and arr[i - 1] == "*") or (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "*"):
-                        # multiplicative distribution
-                        is_dist = True
-                        break
+        if is_dist == False:
+            if (is_paren):
+                end = len(arr) - 1
+                for i in range(0, len(arr)):
+                    if i != 0 and i != end:
+                        if (arr[i] == "(" and arr[i - 1] == "*") or (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "*"):
+                            # multiplicative distribution
+                            is_dist = True
+                            break
         
         # Identify exponentiation
         global is_exp
-        for i in range(0, len(arr)):
-            if arr[i] == "^":
-                is_exp = True
-                break
+        if is_exp == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "^":
+                    is_exp = True
+                    break
         
         # identify polynomial factoring
         global is_poly_fact
-        if (is_paren and is_exp):
-            for i in range(0, len(arr)):
-                if i != 0 and i != len(arr):
-                    if (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "^"):
-                        # exponential distribution
-                        is_poly_fact = True
-                        break
+        if is_poly_fact == False:
+            if (is_paren and is_exp):
+                for i in range(0, len(arr)):
+                    if i != 0 and i != len(arr):
+                        if (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "^"):
+                            # exponential distribution
+                            is_poly_fact = True
+                            break
         
         # Identify square brackets
         global is_brack
-        for i in range(0, len(arr)):
-            if arr[i] == "[":
-                is_brack = True
-                break
+        if is_brack == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "[":
+                    is_brack = True
+                    break
         
         # Identify roots
         global is_root
-        for i in range(0, len(arr)):
-            if arr[i] == "√":
-                is_root = True
-                break
+        if is_root == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "√":
+                    is_root = True
+                    break
         
         # Identify multiplication
         global is_mult
-        for i in range(0, len(arr)):
-            if arr[i] == "*":
-                is_mult = True
-                break
+        if is_mult == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "*":
+                    is_mult = True
+                    break
         
         # Identify division
         global is_div
-        for i in range(0, len(arr)):
-            if arr[i] == "/":
-                is_div = True
-                break
+        if is_dist == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "/":
+                    is_div = True
+                    break
         
         # Identify addition
         global is_add
-        for i in range(0, len(arr)):
-            if arr[i] == "+":
-                is_add = True
-                break
+        if is_add == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "+":
+                    is_add = True
+                    break
         
         # Identify subtraction
         global is_sub
-        for i in range(0, len(arr)):
-            if arr[i] == "-":
-                is_sub = True
-                break
+        if is_sub == False:
+            for i in range(0, len(arr)):
+                if arr[i] == "-":
+                    is_sub = True
+                    break
 
     # Phase I Process
     def structure_string(str):
@@ -1529,9 +1576,6 @@ def evaluator(input):
             # runs distribution process
             x = x + 1
             log_process("Distribution")
-
-            print("Distribute")
-            print(arrVar)
             
             refer = []
             for i in range(0, len(arrVar)):
@@ -1548,7 +1592,6 @@ def evaluator(input):
                 # or if the current object's index value (only a "*") and next object's index values are 1 index away from each other in arrVar and are the "*" and "(" characters
                 if refer[i]["char"] == "*" and i > 0 and arrVar[refer[i]["index"] - 1] == ")" or refer[i]["char"] == "*" and refer[i]["index"] + 1 < len(arrVar) and arrVar[refer[i]["index"] + 1] == "(":
                     # case of distribution
-                    print(refer[i])
                     # search for start
                     if i > 0 and refer[i - 1]["char"] == ")" and refer[i]["index"] == refer[i - 1]["index"] + 1:
                         a = 0
@@ -1562,9 +1605,7 @@ def evaluator(input):
                             elif refer[i - j - 1]["char"] == ")":
                                 a -= 1
                     else:
-                        print(arrVar[refer[i]["index"] - 1])
                         # first nomial is a monomial
-                        # start = i
                         start = refer[i]["index"] - 1
                     
                     # search for end
@@ -1638,8 +1679,6 @@ def evaluator(input):
                 if section[i + 1] == "*" and section[i - 1] == "*":
                     # restrtucture with parens for each case of intermittent monomials
                     section = restructure(["(", section[i], ")"], i, i, section)
-
-            print(section)
 
             # reference structure for section with distribution
             sect_struct = []
@@ -1724,8 +1763,6 @@ def evaluator(input):
             # test for ending monomial
             if section[len(section) - 1] != ")":
                 sect_struct.append([[section[len(section) - 1]]])
-
-            print(sect_struct)
 
             # total number of nomials
             nomials_total = len(sect_struct)
@@ -1838,6 +1875,7 @@ def evaluator(input):
                 multiplier = sect_struct[nomial1][term1]
                 # update multiplicand
                 multiplicand = sect_struct[nomial2][term2]
+
                 # print("nomial: %s" % str(int(nomial2) + 1))
                 # print("term: %s" % str(int(term2) + 1))
                 # print(multiplier)
@@ -1859,19 +1897,11 @@ def evaluator(input):
             
             log_process(product)
 
-            print(product)
-
             # restructure with product expression
             arrVar = restructure(product, start, end, arrVar)
 
             # identify further distribution
-            is_dist = False
-            for i in range(0, len(arrVar)):
-                if i != 0 and i != len(arrVar):
-                    if arrVar[i] == "(" and arrVar[i - 1] == "*" or arrVar[i] == ")" and i < len(arrVar) - 1 and arrVar[i + 1] == "*":
-                        # multiplicative distribution
-                        is_dist = True
-                        break
+            identify_dist(arrVar)
         
         # update bypasses to reflect changes from distribution
         identify_entities(arrVar)
@@ -1879,7 +1909,7 @@ def evaluator(input):
         return arrVar
     
     def poly_fact(arr):
-        # factors out into expressions that multiply polynomials
+        # factors out into expressions with polynomial multiplication
         global is_poly_fact
         global is_dist
         global is_mult
@@ -1937,12 +1967,16 @@ def evaluator(input):
                             expression.append(arrVar[j])
                     
                     # log power expression
-                    print(expression)
                     log_process("Power expression = %s" % expression)
 
                     # calculate power value from power expression
+                    power = poly_fact(expression)
                     power = distribute(expression)
                     power = section(power)
+
+                    # correct distribute bypasses since distributed on section
+                    identify_dist(arrVar)
+
                 else:
                     # is a value
                     sect_end_idx = idxs[i] + 1
@@ -1966,10 +2000,15 @@ def evaluator(input):
                     sect = sect + [")"]
                     arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
                 else:
+                    # if base is paren wrapped, remove parens
+                    if base[0] == "(" and base[len(base) - 1] == ")":
+                        base = base[1:len(base) - 1]
+                    # build section
                     sect = base
                     for j in range(0, power - 1):
                         sect = sect + ["*"]
                         sect = sect + base
+                    # restructure with section
                     arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
 
                 log_process(arrVar)
@@ -2072,16 +2111,18 @@ def evaluator(input):
     test = {
         # "problem": "info",
         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
-        # "problem": "(2*(4-3))^(2*(3-2))", # should be 4
-        # "problem": "(2+3)^(2*(3-1)-1)", # should be 37
-        # "problem": "3+(2+4)^2+3", # should be 34
         # "problem": "3*(4-1)", # monomial start 9 
         # "problem": "(2+3)*4", # monomial end 20
         # "problem": "4*(7-(3-1))", # expression term 17
         # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
         # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
-        # "problem": "(1+2)*(3+4)*(5+6)-3", # general 128
-        "problem": "(2+3)*4*(7-(5-3))", # problem 47
+        # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
+        # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
+
+        # "problem": "(2+3)^(2*(3-1)-1)", # should be 37
+        "problem": "(2*(4-3))^(1*(3-1))", # should be 4
+        # "problem": "3+(2+4)^(1+1)+3", # should be 42
+        # "problem": "3+(2+4)^2+3", # should be 42
         "use_logs": "1",
     }
     use_logs = test["use_logs"]
