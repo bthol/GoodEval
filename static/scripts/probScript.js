@@ -32,6 +32,16 @@ let cursorIdx = 0;
 let formatErrorCache = {};
 let cursorModeCache = {};
 
+// key function info
+const info = [
+    {key: "sin", funct: (x) => Math.sin(x)},
+    {key: "cos", funct: (x) => Math.cos(x)},
+    {key: "tan", funct: (x) => Math.tan(x)},
+    {key: "sec", funct: (x) => Math.sec(x)},
+    {key: "csc", funct: (x) => Math.csc(x)},
+    {key: "cot", funct: (x) => Math.cot(x)},
+];
+
 function updateProblem(problem, type = null) {
     // clear problem in display
     Q.innerHTML = '';
@@ -48,6 +58,21 @@ function updateProblem(problem, type = null) {
     input.problem = string;
     cursorDefault(type);
 };
+
+function updateAnswer(problem) {
+    // clear answer in display
+    A.innerHTML = '';
+    // compile string
+    let string = '';
+    for (let i = 0; i < problem.length; i++) {
+        string += problem[i];
+    }
+    // build element
+    const div = document.createElement('div');
+    div.innerText = string;
+    // lay element
+    A.appendChild(div);
+}
 
 function updateToggleDisplay() {
     if (shiftMode && cursorMode) { // shift + cursor
@@ -132,21 +157,95 @@ function toggleShiftMode() {
     updateToggleDisplay();
 };
 
-// string validation
-function invalidFormatError() {
-    Q.innerText = 'Error: invalid format';
-    clearTimeout(formatErrorCache);
-    formatErrorCache = setTimeout(() => {
-        Q.innerText = input.problem;
-        clearTimeout(formatErrorCache);
-    }, 1000)
+function getIdx(key, problemStructure) {
+    // returns index of key in problem structure
+    for (let i = 0; i < problemStructure.length; i++) {
+        if (problemStructure[i] === key) {
+            return i;
+        }
+    }
+    return false;
+};
+
+// structuring
+function restructure(solution, start, end, problemStructure) {
+    let before = [];
+    for (let i = 0; i < start; i++) {
+        before.push(problemStructure[i])
+    }
+    let after = [];
+    for (let i = end; i < problemStructure.length; i++) {
+        after.push(problemStructure[i])
+    }
+    if (typeof solution === 'string') {
+        before.push(solution);
+        return before.concat(after);
+    } else {
+        return before.concat(solution).concat(after);
+    }
+};
+
+function structureKey(key, problem) {
+    // searches for and restructures key in problem
+    let struct = problem;
+
+    // store key length
+    const keyLen = key.length;
+
+    // structure key
+    let keyStruct = [];
+    for (let i = 0; i < keyLen; i++) {
+        keyStruct.push(key.slice(i, i + 1));
+    }
+
+    // search for match
+    let x = 0; // limit to prevent infinite loop/memory overloading
+    let searching = true; // boolean switch to manually turn off loop before limit
+    while (x < 4 && searching == true) {
+        // each key search (loops if key match is found)
+        x += 1;
+        // get current struct length (restructure in previous key search changes length)
+        const structLen = struct.length;
+        // initialize match variable to true
+        let match = true;
+        // structLen - keyLen = last starting index for key in struct before key length exceeds remaining struct
+        for (let i = 0; i < structLen - keyLen; i++) {
+            // test first character match + length of key relative to remaining structure + last character match
+            if (struct[i] === keyStruct[0] && i + keyLen - 1 < structLen && struct[i + keyLen - 1] === keyStruct[keyLen - 1]) {
+                // match letter for letter
+                for (let j = 0; j < keyStruct.length; j++) {
+                    if (keyStruct[j] !== struct[i + j]) {
+                        // letter didn't match
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    // matches letter for letter
+                    struct = restructure(key, i, i + keyLen, struct);
+                    break;
+                } else {
+                    // reinitialize match variable for next match test
+                    match = true;
+                }
+            }
+            if (i === structLen - keyLen - 1) {
+                // if no match at last test
+                match = false;
+            }
+        }
+        if (!match) {
+            searching = false;
+        }
+    }
+    return struct;
 };
 
 function structureString(problem) {
     // emulates backend string structuring algorithm
+    let struct = [];
+    let buffer = "";
     try {
-        let struct = [];
-        let buffer = "";
         for (let i = 0; i < problem.length; i++) {
             const char = problem.slice(i, i + 1);
             // skip spaces
@@ -167,8 +266,10 @@ function structureString(problem) {
                                 buffer = "";
                                 // handle negatives end
                             } else {
-                                struct.push(buffer);
-                                buffer = "";
+                                if (buffer.length > 0) {
+                                    struct.push(buffer);
+                                    buffer = "";
+                                }
                                 struct.push(char);
                             }
                         } catch {
@@ -193,63 +294,188 @@ function structureString(problem) {
                 }
             }
         }
-        console.log(struct);
-        return struct;
     } catch (error) {
         console.log(error);
     }
-};
-
-function strStruct(str) {
-    // efficient string structuring for front end validation
-    // structures by character to match DOM element list in screen content element
-    let struct = [];
-    for (let i = 0; i < str.length; i++) {
-        struct.push(str.slice(i, i + 1));
+    // structure keys
+    for (i = 0; i < info.length; i++) {
+        struct = structureKey(info[i].key, struct);
     }
-    if (struct.length === 0) {
-        // add empty string on no data
-        struct.push('');
-    }
+    console.log(struct);
     return struct;
 };
 
-function validParens(problem) {
-    // validates parenthesis in string
-    if (problem.length > 0) {
-        let validity = true;
-        let nestLvl = 0;
-        let parens = [];
-        const struct = strStruct(problem);
-        for (let i = 0; i < struct.length; i++) {
-            if (struct[i] === '(') {
-                parens.push('(');
-                nestLvl += 1;
-            } else if (struct[i] === ')') {
-                parens.push(')');
-                nestLvl -= 1;
-            }
+// key functions
+function keyFunction(key, funct, problem) {
+    // generalizes single argument key functions
+    let prob = problem;
+    let idx = getIdx(key, prob);
+    let x = 0;
+    while (x < 100 && idx !== false) {
+        x += 1;
+        const solution = funct(Number(problem[idx + 1]));
+        prob = restructure(solution, idx, idx + 1, prob);
+        idx = getIdx(key, prob);
+    }
+    return prob;
+};
+
+function runKeyFunctions(problem) {
+    // runs all key functions
+    prob = problem;
+    for (let i = 0; i < info.length; i++) {
+        prob = keyFunction(info[i].key, info[i].funct, prob);
+    }
+    return prob;
+};
+
+// calculation
+function calculate(problem) {
+    // performs arithmetic operations on problem structure
+    prob = problem;
+    // perform all Multiplications and Divisions as they appear from left to right
+    let mIdx = getIdx("*", prob);
+    let dIdx = getIdx("/", prob);
+    count = 0;
+    while (count < 1000 && mIdx !== false || count < 100 && dIdx !== false) {
+        if (dIdx === false && mIdx !== false) {
+            // only multiplication
+            const multiplier = Number(prob[mIdx - 1]);
+            const mulitplicand = Number(prob[mIdx + 1]);
+            const product = multiplier * mulitplicand;
+            restructure(product, mIdx - 1, mIdx + 1, prob);
+            mIdx = getIdx("*", prob);
+        } else if (mIdx === false && dIdx !== false) {
+            // only division
+            const dividend = Number(prob[dIdx - 1]);
+            const divisor = Number(prob[dIdx + 1]);
+            const quotient = dividend / divisor;
+            restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            dIdx = getIdx("/", prob);
+        } else if (mIdx !== false && dIdx !== false && mIdx < dIdx) {
+            // multiply
+            const multiplier = Number(prob[mIdx - 1]);
+            const mulitplicand = Number(prob[mIdx + 1]);
+            const product = multiplier * mulitplicand;
+            restructure(product, mIdx - 1, mIdx + 1, prob);
+            mIdx = getIdx("*", prob);
+            // then divide
+            const dividend = Number(prob[dIdx - 1]);
+            const divisor = Number(prob[dIdx + 1]);
+            const quotient = dividend / divisor;
+            restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            dIdx = getIdx("/", prob);
+        } else if (mIdx !== false && dIdx !== false && mIdx > dIdx) {
+            // divide
+            const dividend = Number(prob[dIdx - 1]);
+            const divisor = Number(prob[dIdx + 1]);
+            const quotient = dividend / divisor;
+            restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            dIdx = getIdx("/", prob);
+            // then multiply
+            const multiplier = Number(prob[mIdx - 1]);
+            const mulitplicand = Number(prob[mIdx + 1]);
+            const product = multiplier * mulitplicand;
+            restructure(product, mIdx - 1, mIdx + 1, prob);
+            mIdx = getIdx("*", prob);
         }
-        
-        // no non-zero sum of nestLvl
+    }
+    
+    // perform all Additions and Subtractions as they appear from left to right
+    let aIdx = getIdx("+", prob);
+    let sIdx = getIdx("-", prob);
+    count = 0;
+    while (count < 1000 && aIdx !== false || count < 100 && dIdx !== false) {
+        if (sIdx === false && aIdx !== false) {
+            // only addition
+            const augend = Number(prob[aIdx - 1]);
+            const addend = Number(prob[aIdx + 1]);
+            const total = augend + addend;
+            restructure(total, aIdx - 1, aIdx + 1, prob);
+            aIdx = getIdx("+", prob);
+        } else if (aIdx === false && sIdx !== false) {
+            // only subtraction
+            const minuend = Number(prob[sIdx - 1]);
+            const subtrahend = Number(prob[sIdx + 1]);
+            const difference = minuend - subtrahend;
+            restructure(difference, sIdx - 1, sIdx + 1, prob);
+            sIdx = getIdx("-", prob);
+        } else if (aIdx !== false && sIdx !== false && aIdx < sIdx) {
+            // add
+            const augend = Number(prob[aIdx - 1]);
+            const addend = Number(prob[aIdx + 1]);
+            const total = augend + addend;
+            restructure(total, aIdx - 1, aIdx + 1, prob);
+            aIdx = getIdx("+", prob);
+            // then subtract
+            const minuend = Number(prob[sIdx - 1]);
+            const subtrahend = Number(prob[sIdx + 1]);
+            const difference = minuend - subtrahend;
+            restructure(difference, sIdx - 1, sIdx + 1, prob);
+            sIdx = getIdx("-", prob);
+        } else if (aIdx !== false && sIdx !== false && aIdx > sIdx) {
+            // subtract
+            const minuend = Number(prob[sIdx - 1]);
+            const subtrahend = Number(prob[sIdx + 1]);
+            const difference = minuend - subtrahend;
+            restructure(difference, sIdx - 1, sIdx + 1, prob);
+            sIdx = getIdx("-", prob);
+            // then add
+            const augend = Number(prob[aIdx - 1]);
+            const addend = Number(prob[aIdx + 1]);
+            const total = augend + addend;
+            restructure(total, aIdx - 1, aIdx + 1, prob);
+            aIdx = getIdx("+", prob);
+        }
+    }
+
+    return problem[0];
+};
+
+// string validation
+function customError(error) {
+    Q.innerText = error;
+    clearTimeout(formatErrorCache);
+    formatErrorCache = setTimeout(() => {
+        Q.innerText = input.problem;
+        clearTimeout(formatErrorCache);
+    }, 1300)
+};
+
+function validParens(problem) {
+    // validates parenthesis in problem structure
+    let nestLvl = 0;
+    let parens = [];
+    for (let i = 0; i < problem.length; i++) {
+        if (problem[i] === '(') {
+            parens.push('(');
+            nestLvl += 1;
+        } else if (problem[i] === ')') {
+            parens.push(')');
+            nestLvl -= 1;
+        }
+    }
+    // if there are parenthesis
+    if (parens.length > 0) {
         if (nestLvl !== 0) {
-            validity = false;
-        // no closing paren at start
-        } else if (parens[0].char === ')') {
-            validity = false;
-        // no opening paren at end
+            // no non-zero sum of nestLvl
+            return false;
+        } else if (parens[0] === ')') {
+            // no closing paren at start
+            return false;
         } else if (parens[parens.length - 1] === '(') {
-            validity = false;
+            // no opening paren at end
+            return false;
         } else {
             // match each open paren to a closing paren (accounting for nesting)
-            for (let i = 0; i < parens.length; i++) {
-                if (parens[i] === '(') {
+            for (let i = 0; i < problem.length; i++) {
+                if (problem[i] === '(') {
                     // search for match
                     let x = 0;
-                    for (let j = i; j < parens.length; j++) {
-                        if (parens[j] === ')') {
+                    for (let j = i; j < problem.length; j++) {
+                        if (problem[j] === ')') {
                             x -= 1;
-                        } else {
+                        } else if (problem[j] === "(") {
                             x += 1;
                         }
                         if (x === 0) {
@@ -258,31 +484,40 @@ function validParens(problem) {
                     }
                     if (x !== 0) {
                         // missing match
-                        validity = false;
-                        break;
+                        return false;
                     }
                 }
             }
         }
-        return validity;
+        return true;
     } else {
-        // no data in argument
-        return false;
+        // can't test parens format with no parens
+        return true;
     }
 };
 
 function validProblem(problem) {
-    // validates problem string before request
+    // post-validates problem after structuring
     let validity = false;
-    // validate parenthesis
-    validity = validParens(problem);
-    // run backend structuring emulation
-    const struct = structureString(problem);
-
-    return validity;
+    // validate string data
+    if (problem.length < 1) {
+        customError('Error: Empty string');
+        return false;
+    } else {
+        // validate parenthesis
+        validity = validParens(problem);
+        if (validity === false) {
+            customError('Error: Invalid parenthesis');
+            return false;
+        } else if (validity === true) {
+            // add further validation here
+            return true;
+        }
+    }
 };
 
 function validOp(problem) {
+    // pre-validates that an operation can be added to the problem structure
     let validity = true;
     if (problem.length === 0) {
         validity = false;
@@ -293,6 +528,16 @@ function validOp(problem) {
         }
     }
     return validity;
+};
+
+function validQuant(problem) {
+    // pre-validates that a quantity (or open parenthesis) can be added to the problem structure
+    if (!isNaN(problem[problem.length - 1]) || problem[problem.length - 1] === 'pi' || problem[problem.length - 1] === 'euler') {
+        customError('Error: requires operation');
+        return false;
+    } else {
+        return true;
+    }
 };
 
 // debounce evaluate requests
@@ -306,16 +551,21 @@ function debounce(funct, deference) {
     }, deference)
 };
 
-async function evaluate() {
+function evaluate() {
     // run on equal button click
-    console.log('Validating...');
-    if (validProblem(input.problem)) {
-        console.log('Valid problem.\n\nRequesting evaluation...');
-        // determine when to request and when to calculate in front end script
-        // const response = await ;
+    let problem = input.problem; // local problem variable; not global array
+    // structure problem string into problem structure
+    console.log('Structuring...');
+    problem = structureString(problem);
+    console.log('Structured. \n\nValidating...');
+    if (validProblem(problem)) {
+        console.log('Valid.\n\n Evaluating...');
+        problem = runKeyFunctions(problem);
+        problem = calculate(problem);
+        console.log('Solved.');
+        updateAnswer(problem);
     } else {
-        console.log('Invalid problem');
-        invalidFormatError();
+        console.log('Invalid.');
     }
 };
 
@@ -374,12 +624,16 @@ btns.addEventListener('click', (e) => {
                 updateProblem(problem);
             } else if (id === 'btn-pi') {
                 console.log('π');
-                problem.push('π');
-                updateProblem(problem);
+                if (validQuant(problem)) {
+                    problem.push('pi');
+                    updateProblem(problem);
+                }
             } else if (id === 'btn-euler') {
                 console.log("euler's number");
-                problem.push('e');
-                updateProblem(problem);
+                if (validQuant(problem)) {
+                    problem.push('euler');
+                    updateProblem(problem);
+                }
             }
 
         } else if (type === 'operation') {
@@ -389,7 +643,7 @@ btns.addEventListener('click', (e) => {
                     problem.push('+');
                     updateProblem(problem);
                 } else {
-                    invalidFormatError();
+                    customError('Error: invalid operation');
                 }
             } else if (id === 'btn-minus') {
                 console.log('minus');
@@ -397,7 +651,7 @@ btns.addEventListener('click', (e) => {
                     problem.push('-');
                     updateProblem(problem);
                 } else {
-                    invalidFormatError();
+                    customError('Error: invalid operation');
                 }
             } else if (id === 'btn-multiply') {
                 console.log('multiply');
@@ -405,7 +659,7 @@ btns.addEventListener('click', (e) => {
                     problem.push('*');
                     updateProblem(problem);
                 } else {
-                    invalidFormatError();
+                    customError('Error: invalid operation');
                 }
             } else if (id === 'btn-divide') {
                 console.log('divide');
@@ -413,7 +667,7 @@ btns.addEventListener('click', (e) => {
                     problem.push('/');
                     updateProblem(problem);
                 } else {
-                    invalidFormatError();
+                    customError('Error: invalid operation');
                 }
             } else if (id === 'btn-sign') {
                 console.log('sign');
@@ -425,7 +679,7 @@ btns.addEventListener('click', (e) => {
                     problem.push('^2');
                     updateProblem(problem);
                 } else {
-                    invalidFormatError();
+                    customError('Error: invalid format');
                 }
             } else if (id === 'btn-power') {
                 console.log('power');
@@ -433,7 +687,7 @@ btns.addEventListener('click', (e) => {
                     problem.push('^(');
                     updateProblem(problem);
                 } else {
-                    invalidFormatError();
+                    customError('Error: invalid format');
                 }
             } else if (id === 'btn-root') {
                 console.log('square root');
@@ -477,9 +731,10 @@ btns.addEventListener('click', (e) => {
                 console.log('clear');
                 problem = [];
                 updateProblem(problem);
+                updateAnswer(problem);
                 cursorDefault();
             } else if (id === 'btn-equals') {
-                debounce(evaluate, 1000);
+                evaluate();
             } else if (id === 'btn-shift') {
                 toggleShiftMode();
             } else if (id === 'btn-decimal') {
@@ -492,12 +747,26 @@ btns.addEventListener('click', (e) => {
                 updateProblem(problem);
             } else if (id === 'btn-paren-open') {
                 console.log('(');
-                problem.push('(');
-                updateProblem(problem);
+                if (validQuant(problem)) {
+                    problem.push('(');
+                    updateProblem(problem);
+                }
             } else if (id === 'btn-paren-close') {
                 console.log(')');
-                problem.push(')');
-                updateProblem(problem);
+                if (problem[problem.length - 1] === "(") {
+                    // no parens without content between them
+                    customError('Error: invalid format');
+                } else if (problem.length - 2 > -1 && problem[problem.length - 2] === "(") {
+                    // remove parens around single value
+                    const value = problem[problem.length - 1];
+                    problem.pop();
+                    problem.pop();
+                    problem.push(value);
+                    updateProblem(problem);
+                } else {
+                    problem.push(')');
+                    updateProblem(problem);
+                }
             }
 
         } else if (type === 'cursor') {

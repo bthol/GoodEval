@@ -46,9 +46,9 @@ is_paren = False
 # If False, bypasses distribute function
 is_dist = False
 
-# is_poly_fact indicates whether there is a need to factor out into an expression with polynomial multiplication, True, or not, False
-# If False, bypasses poly_mult function
-is_poly_fact = False
+# is_poly_expan indicates whether there is a need to expand an expression with polynomial multiplication, True, or not, False
+# If False, bypasses poly_expan function
+is_poly_expan = False
 
 # is_brack indicates whether there are square brackets, True, or not, False
 # If False, bypasses key_functions function
@@ -219,7 +219,7 @@ def evaluator(input):
   
     # STRUCTURE START
     def num_cast(str):
-        # a single data type converter for all your data type conversion needs
+        # a single data type converter for all your data type conversion needs!
         try:
             num = float(str)
             if (num / 1 % 1 == 0):
@@ -418,14 +418,14 @@ def evaluator(input):
                     break
         
         # identify polynomial factoring
-        global is_poly_fact
-        if is_poly_fact == False:
+        global is_poly_expan
+        if is_poly_expan == False:
             if (is_paren and is_exp):
                 for i in range(0, len(arr)):
                     if i != 0 and i != len(arr):
                         if (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "^"):
                             # exponential distribution
-                            is_poly_fact = True
+                            is_poly_expan = True
                             break
         
         # Identify square brackets
@@ -500,8 +500,11 @@ def evaluator(input):
                                 arr.append(digits)
                                 digits = ""
                             else:
-                                arr.append(digits)
-                                digits = ""
+                                # 
+                                if len(digits) > 0:
+                                    arr.append(digits)
+                                    digits = ""
+                                # 
                                 arr.append(str[i])
                         except:
                             if len(digits) > 0:
@@ -1530,6 +1533,7 @@ def evaluator(input):
         thresh = 0
         while is_paren == True and thresh < paren_limit:
             thresh = thresh + 1
+            # test for parenthesis
             parens = []
             count = 0
             for i in range(0, len(arrVar)):
@@ -1544,16 +1548,18 @@ def evaluator(input):
                 continue
             else:
                 log_process("Parenthesis")
+            
+            # get section to be solved
             osme = []
             for i in range(0, len(parens)):
                 if parens[i]["char"] == "(" and parens[i + 1]["char"] == ")":
-                    # get section to be solved
                     arr_sect = arrVar[parens[i]["index"] + 1:parens[i + 1]["index"]]
                     # send to osme for restructing
                     osme.append({"section": arr_sect, "start": parens[i]["index"] + 1, "end": parens[i + 1]["index"]})
             
             # print(osme)
 
+            # restructuring
             for i in range(0, len(osme)):
                 start = osme[len(osme) - 1 - i]["start"] - 1
                 end = osme[len(osme) - 1 - i]["end"] + 1
@@ -1574,7 +1580,7 @@ def evaluator(input):
         x = 0
         while is_dist == True and x < paren_limit:
             # runs distribution process
-            x = x + 1
+            x += 1
             log_process("Distribution")
             
             refer = []
@@ -1582,97 +1588,113 @@ def evaluator(input):
                 if arrVar[i] == "(" or arrVar[i] == ")" or arrVar[i] == "*":
                     refer.append({"char": arrVar[i], "index": i})
 
+            # search for a case of distribution
+            
+            # get nest center index
+            center = 0
+            nest = 0
+            for i in range(0, len(refer)):
+                if refer[i]["char"] == "(":
+                    nest += 1
+                elif refer[i]["char"] == ")":
+                    nest -= 1
+                elif refer[i]["char"] == "*" and nest > 0 and refer[i]["index"] + 1 < len(arrVar) and arrVar[refer[i]["index"] + 1] == "(":
+                    # print("pass")
+                    center = i
+                    break
+            
+            # # if no nest center index
+            if center == 0:
+                # get first center index tested from left-to-right
+                for i in range(0, len(refer)):
+                    # by testing if the current object's index value (only a "*") and previous object's index value are 1 index away from each other in arrVar and are the ")" and "*" characters
+                    # or if the current object's index value (only a "*") and next object's index values are 1 index away from each other in arrVar and are the "*" and "(" characters
+                    if refer[i]["char"] == "*" and i > 0 and arrVar[refer[i]["index"] - 1] == ")" or refer[i]["char"] == "*" and refer[i]["index"] + 1 < len(arrVar) and arrVar[refer[i]["index"] + 1] == "(":
+                        # case of distribution
+                        center = i
+                        break
+            
+            # print(refer[center])
+
             # get section for distribution
             start = 0
             end = 0
             section = []
-            for i in range(0, len(refer)):
-                # search for a case of distribution
-                # by testing if the current object's index value (only a "*") and previous object's index value are 1 index away from each other in arrVar and are the ")" and "*" characters
-                # or if the current object's index value (only a "*") and next object's index values are 1 index away from each other in arrVar and are the "*" and "(" characters
-                if refer[i]["char"] == "*" and i > 0 and arrVar[refer[i]["index"] - 1] == ")" or refer[i]["char"] == "*" and refer[i]["index"] + 1 < len(arrVar) and arrVar[refer[i]["index"] + 1] == "(":
-                    # case of distribution
-                    # search for start
-                    if i > 0 and refer[i - 1]["char"] == ")" and refer[i]["index"] == refer[i - 1]["index"] + 1:
-                        a = 0
-                        for j in range(0, i):
-                            # backtrack to find start
-                            if refer[i - j - 1]["char"] == "(":
-                                a += 1
-                                if a == 0:
-                                    start = refer[i - j - 1]["index"]
+
+            # search for start
+            if center > 0 and refer[center - 1]["char"] == ")" and refer[center]["index"] == refer[center - 1]["index"] + 1:
+                a = 0
+                for j in range(0, center):
+                    # backtrack to find start
+                    if refer[center - j - 1]["char"] == "(":
+                        a += 1
+                        if a == 0:
+                            start = refer[center - j - 1]["index"]
+                            break
+                    elif refer[center - j - 1]["char"] == ")":
+                        a -= 1
+            else:
+                # first nomial is a monomial
+                start = refer[center]["index"] - 1
+            
+            # search for end
+            # if the current and next objects have characters that are right next to each other in arrVar
+            if center + 1 < len(refer) and refer[center]["index"] == refer[center + 1]["index"] - 1:
+                # and the character in the next object is a "("
+                if refer[center + 1]["char"] == "(":
+                    # fronttrack to find end
+                    nest = 0
+                    for j in range(refer[center]["index"], len(arrVar)):
+                        if arrVar[j] == "(":
+                            nest += 1
+                        elif arrVar[j] == ")":
+                            nest -= 1
+                            if nest == 0:
+                                # if at last character
+                                if j == len(arrVar) - 1:
+                                    end = j
                                     break
-                            elif refer[i - j - 1]["char"] == ")":
-                                a -= 1
-                    else:
-                        # first nomial is a monomial
-                        start = refer[i]["index"] - 1
-                    
-                    # search for end
-                    searching = True
-                    itr = 0
-                    while itr < 2 and searching == True:
-                        itr += 1
-                        # if the current and next objects have characters that are right next to each other in arrVar
-                        if i + 1 < len(refer) and refer[i]["index"] == refer[i + 1]["index"] - 1:
-                            # and the character in the next object is a "("
-                            if refer[i + 1]["char"] == "(":
-                                nest = 0
-                                # fronttrack to find end
-                                for j in range(refer[i]["index"], len(arrVar)):
-                                    if arrVar[j] == "(":
-                                        nest += 1
-                                    elif arrVar[j] == ")":
-                                        nest -= 1
-                                        if nest == 0:
-                                            # if at last character
-                                            if j == len(arrVar) - 1:
-                                                end = j
-                                                break
-                                            # else next character is "*"
-                                            elif arrVar[j + 1] != "*":
-                                                end = j
-                                                break
-                        else:
-                            # test for last nomial
-                            if i + 1 == len(refer):
-                                # end of structure
-                                end = refer[i]["index"] + 1
-                                searching = False
-                            elif refer[i]["index"] + 2 < len(arrVar) and arrVar[refer[i]["index"] + 2] == "*":
-                                # case of the intermittent monomial
-                                # search for next case of distribution
-                                for j in range(i, len(refer)):
-                                    if refer[j]["char"] == "*" and refer[j]["index"] + 1 < len(arrVar) and arrVar[refer[j]["index"] + 1] == "(":
-                                        nest = 0
-                                        # fronttrack to find end
-                                        for k in range(refer[j]["index"], len(arrVar)):
-                                            if arrVar[k] == "(":
-                                                nest += 1
-                                            elif arrVar[k] == ")":
-                                                nest -= 1
-                                                if nest == 0:
-                                                    # if at last character
-                                                    if k == len(arrVar) - 1:
-                                                        end = k
-                                                        break
-                                                    # else next character is "*"
-                                                    elif arrVar[k + 1] != "*":
-                                                        end = k
-                                                        break
+                                # else next character is "*"
+                                elif arrVar[j + 1] != "*":
+                                    end = j
+                                    break
+            else:
+                # test for last nomial
+                if center + 1 == len(refer):
+                    # end of structure
+                    end = refer[center]["index"] + 1
+                elif refer[center]["index"] + 2 < len(arrVar) and arrVar[refer[center]["index"] + 2] == "*":
+                    # case of the intermittent monomial
+                    for j in range(center, len(refer)):
+                        # search for next case of distribution
+                        if refer[j]["char"] == "*" and refer[j]["index"] + 1 < len(arrVar) and arrVar[refer[j]["index"] + 1] == "(":
+                            # fronttrack to find end
+                            nest = 0
+                            for k in range(refer[j]["index"], len(arrVar)):
+                                if arrVar[k] == "(":
+                                    nest += 1
+                                elif arrVar[k] == ")":
+                                    nest -= 1
+                                    if nest == 0:
+                                        # if at last character
+                                        if k == len(arrVar) - 1:
+                                            end = k
+                                            break
+                                        # else next character isn't "*"
+                                        elif arrVar[k + 1] != "*":
+                                            end = k
+                                            break
 
-                            elif refer[i]["index"] + 2 < len(arrVar) and arrVar[refer[i]["index"] + 2] != "*":
-                                # no further multiplication in case of distribution
-                                end = refer[i]["index"] + 1
-                                searching = False
-                    
-                    # build section
-                    for j in range(start, end + 1):
-                        section.append(arrVar[j])
-                    log_process(section)
+                elif refer[center]["index"] + 2 < len(arrVar) and arrVar[refer[center]["index"] + 2] != "*":
+                    # no further multiplication in case of distribution
+                    end = refer[center]["index"] + 1
+            
+            # build section
+            for j in range(start, end + 1):
+                section.append(arrVar[j])
+            log_process(section)
 
-                    # terminate loop to prevent further searching for case of distribution
-                    break
+            # print(section)
             
             # add parens to intermittent monomials in section for distribution
             for i in range(1, len(section) - 1):
@@ -1683,15 +1705,17 @@ def evaluator(input):
             # reference structure for section with distribution
             sect_struct = []
 
+            # Use section for distribution to create sect_struct
+            
             # test for leading monomial
             if section[0] != "(":
                 sect_struct.append([[section[0]]]) # monomial
-
-            # Get info using the Count Zero method
+            
+            # test middle of sect_struct
             count = 0
             for i in range(0, len(section)):
                 # only test on update to prevent false positives
-                # positive case indicates index in section of the end of the first binomial+
+                # positive case indicates index in section for the end of the first nomial
                 is_zero = False
                 if section[i] == "(":
                     # update count
@@ -1737,23 +1761,28 @@ def evaluator(input):
                             elif char == ")":
                                 nest -= 1
                             
-                            elif nest == -1 and char == "+":
-                                nomial.insert(0, term)
-                                term = [] # clear term buffer
-                            
-                            elif nest == -1 and char == "-":
-                                if section[i - k + 1] == "(":
-                                    # negate expression term
-                                    term.insert(0, "*")
-                                    term.insert(0, "-1")
+                            elif nest == -1:
+                                if char == "+":
+                                    # different term if added
                                     nomial.insert(0, term)
                                     term = [] # clear term buffer
-                                else:
-                                    # negate previous term
-                                    term.pop(0) # remove positive value
-                                    term.insert(0, "-%s" % section[i - k + 1]) # add negated value
-                                    nomial.insert(0, term)
-                                    term = [] # clear term buffer  
+                                elif char == "-":
+                                    # different term if subtracted
+                                    if section[i - k + 1] == "(":
+                                        # negate expression term
+                                        term.insert(0, "*")
+                                        term.insert(0, "-1")
+                                        nomial.insert(0, term)
+                                        term = [] # clear term buffer
+                                    else:
+                                        # negate previous term
+                                        term.pop(0) # remove positive value
+                                        term.insert(0, "-%s" % section[i - k + 1]) # add negated value
+                                        nomial.insert(0, term)
+                                        term = [] # clear term buffer
+                                elif char == "*" or char == "/":
+                                    # same term if multiplied or divided
+                                    term.insert(0, char)
 
                             if nest < -1:
                                 term.insert(0, char)
@@ -1763,6 +1792,8 @@ def evaluator(input):
             # test for ending monomial
             if section[len(section) - 1] != ")":
                 sect_struct.append([[section[len(section) - 1]]])
+
+            # print(sect_struct)
 
             # total number of nomials
             nomials_total = len(sect_struct)
@@ -1900,33 +1931,35 @@ def evaluator(input):
             # restructure with product expression
             arrVar = restructure(product, start, end, arrVar)
 
+            # print(arrVar)
+
             # identify further distribution
             identify_dist(arrVar)
-        
-        # update bypasses to reflect changes from distribution
-        identify_entities(arrVar)
+            if is_dist == False:
+                # update bypasses to reflect changes from distribution
+                identify_entities(arrVar)
 
         return arrVar
     
-    def poly_fact(arr):
-        # factors out into expressions with polynomial multiplication
-        global is_poly_fact
+    def poly_expan(arr):
+        # performs polynomial expansion
+        global is_poly_expan
         global is_dist
         global is_mult
         arrVar = arr
         x = 0
-        while is_poly_fact == True and x < poly_fact_limit:
+        while is_poly_expan == True and x < poly_fact_limit:
             x = x + 1
-            # get idexes of "^" in arrVar to determine number of instances of factoring
+            # get idexes of "^" in arrVar to determine number of instances of expansion
             idxs = []
             for i in range(1, len(arrVar) - 1):
                 if arrVar[i] == "^" and arrVar[i - 1] == ")":
                     idxs.append(i)
             
-            # run factoring that many times
+            # run expansion that many times
             for i in range(0, len(idxs)):
-                # log for each instance of factoring
-                log_process("Start Factoring")
+                # log for each instance of expansion
+                log_process("Start Expansion")
                 # get base expression
                 sect_start_idx = 0
                 sect_end_idx = 0
@@ -1970,12 +2003,9 @@ def evaluator(input):
                     log_process("Power expression = %s" % expression)
 
                     # calculate power value from power expression
-                    power = poly_fact(expression)
-                    power = distribute(expression)
+                    power = poly_expan(expression)
+                    power = distribute(power)
                     power = section(power)
-
-                    # correct distribute bypasses since distributed on section
-                    identify_dist(arrVar)
 
                 else:
                     # is a value
@@ -2000,9 +2030,7 @@ def evaluator(input):
                     sect = sect + [")"]
                     arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
                 else:
-                    # if base is paren wrapped, remove parens
-                    if base[0] == "(" and base[len(base) - 1] == ")":
-                        base = base[1:len(base) - 1]
+                    # general
                     # build section
                     sect = base
                     for j in range(0, power - 1):
@@ -2011,11 +2039,16 @@ def evaluator(input):
                     # restructure with section
                     arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
 
-                log_process(arrVar)
+                # expand by distribution property
                 is_dist = True
-                is_mult = True
                 arrVar = distribute(arrVar)
-                log_process("End Factoring")
+
+                # correct bypass
+                identify_entities(arrVar)
+
+                # write logs
+                log_process(arrVar)
+                log_process("End Expansion")
 
         return arrVar
     # Phase II Process END
@@ -2081,8 +2114,8 @@ def evaluator(input):
                 process_log["0"] = "Process Log Start"
             # Identify program entities in structured string
             identify_entities(structure)
-            # restructure to factor out any polynomial multiplication
-            structure = poly_fact(structure)
+            # restructure to expand polynomial multiplications
+            structure = poly_expan(structure)
             # restructure to distribute out terms
             structure = distribute(structure)
             # restructure for "sets" (substructures)
@@ -2092,61 +2125,62 @@ def evaluator(input):
 
             return structure
 
-    # # Evaluation
-    # use_logs = input["use_logs"]
-
-    # print(input["problem"])
-    # answer = evaluate(input["problem"])
-
-    # output = {
-    #     "problem": input["problem"],
-    #     "answer": answer,
-    #     "logs": process_log,
-    # }
-
-    # return output
-    
-    # TESTING
-    # Simulated Program Input
-    test = {
-        # "problem": "info",
-        # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
-        # "problem": "3*(4-1)", # monomial start 9 
-        # "problem": "(2+3)*4", # monomial end 20
-        # "problem": "4*(7-(3-1))", # expression term 17
-        # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
-        # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
-        # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
-        # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
-
-        # "problem": "(2+3)^(2*(3-1)-1)", # should be 37
-        "problem": "(2*(4-3))^(1*(3-1))", # should be 4
-        # "problem": "3+(2+4)^(1+1)+3", # should be 42
-        # "problem": "3+(2+4)^2+3", # should be 42
-        "use_logs": "1",
-    }
-    use_logs = test["use_logs"]
-
     # Evaluation
-    answer = evaluate(test["problem"])
+    use_logs = input["use_logs"]
 
-    # Simulated Program Output
+    print(input["problem"])
+    answer = evaluate(input["problem"])
+
     output = {
-        "problem": test["problem"],
+        "problem": input["problem"],
         "answer": answer,
         "logs": process_log,
     }
 
-    # Prints feedback for program development
-    logs = """"""
-    process_log_keys = list(process_log.keys())
-    for key in process_log_keys:
-        logs += """%s
-""" % process_log[key]
+    return output
+    
+#     # TESTING
+#     # Simulated Program Input
+#     test = {
+#         # "problem": "info",
+#         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+#         # "problem": "3*(4-1)", # monomial start 9
+#         # "problem": "(2+3)*4", # monomial end 20
+#         # "problem": "4*(7-(3-1))", # expression term 17
+#         # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
+#         # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
+#         # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
+#         # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
+#         # "problem": "2*(2+3)", # should be 10
 
-    print(test["problem"])
-    print(answer)
-    print(logs)
-    # print("Output Object: %s" % output)
+#         "problem": "(2+3)^(2+1)", # should be 125 but is 75
+#         # "problem": "(2*(4-3))^(1*(3-1))", # should be 4
+#         # "problem": "3+(2+4)^(1+1)+3", # should be 42
+#         # "problem": "3+(2+4)^2+3", # should be 42
+#         "use_logs": "1",
+#     }
+#     use_logs = test["use_logs"]
 
-evaluator("") # remove or comment out after testing
+#     # Evaluation
+#     answer = evaluate(test["problem"])
+
+#     # Simulated Program Output
+#     output = {
+#         "problem": test["problem"],
+#         "answer": answer,
+#         "logs": process_log,
+#     }
+
+#     # Prints feedback for program development
+#     logs = """"""
+#     process_log_keys = list(process_log.keys())
+#     for key in process_log_keys:
+#         logs += """%s
+# """ % process_log[key]
+
+#     print(test["problem"])
+#     print(answer)
+#     print(logs)
+#     # print("Output Object: %s" % output)
+
+# evaluator("") # remove or comment out after testing
