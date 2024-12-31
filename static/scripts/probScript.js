@@ -174,11 +174,14 @@ function restructure(solution, start, end, problemStructure) {
         before.push(problemStructure[i])
     }
     let after = [];
-    for (let i = end; i < problemStructure.length; i++) {
+    for (let i = end + 1; i < problemStructure.length; i++) {
         after.push(problemStructure[i])
     }
     if (typeof solution === 'string') {
         before.push(solution);
+        return before.concat(after);
+    } else if (typeof solution === 'number') {
+        before.push(`${solution}`);
         return before.concat(after);
     } else {
         return before.concat(solution).concat(after);
@@ -331,52 +334,55 @@ function runKeyFunctions(problem) {
 
 // calculation
 function calculate(problem) {
+    // parameters
+    const max = 5;
     // performs arithmetic operations on problem structure
     prob = problem;
     // perform all Multiplications and Divisions as they appear from left to right
     let mIdx = getIdx("*", prob);
     let dIdx = getIdx("/", prob);
     count = 0;
-    while (count < 1000 && mIdx !== false || count < 100 && dIdx !== false) {
+    while (count < max && mIdx !== false || count <max && dIdx !== false) {
+        count += 1;
         if (dIdx === false && mIdx !== false) {
             // only multiplication
             const multiplier = Number(prob[mIdx - 1]);
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
-            restructure(product, mIdx - 1, mIdx + 1, prob);
+            prob = restructure(product, mIdx - 1, mIdx + 1, prob);
             mIdx = getIdx("*", prob);
         } else if (mIdx === false && dIdx !== false) {
             // only division
             const dividend = Number(prob[dIdx - 1]);
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
-            restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
             dIdx = getIdx("/", prob);
         } else if (mIdx !== false && dIdx !== false && mIdx < dIdx) {
             // multiply
             const multiplier = Number(prob[mIdx - 1]);
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
-            restructure(product, mIdx - 1, mIdx + 1, prob);
+            prob = restructure(product, mIdx - 1, mIdx + 1, prob);
             mIdx = getIdx("*", prob);
             // then divide
             const dividend = Number(prob[dIdx - 1]);
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
-            restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
             dIdx = getIdx("/", prob);
         } else if (mIdx !== false && dIdx !== false && mIdx > dIdx) {
             // divide
             const dividend = Number(prob[dIdx - 1]);
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
-            restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
             dIdx = getIdx("/", prob);
             // then multiply
             const multiplier = Number(prob[mIdx - 1]);
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
-            restructure(product, mIdx - 1, mIdx + 1, prob);
+            prob = restructure(product, mIdx - 1, mIdx + 1, prob);
             mIdx = getIdx("*", prob);
         }
     }
@@ -385,51 +391,52 @@ function calculate(problem) {
     let aIdx = getIdx("+", prob);
     let sIdx = getIdx("-", prob);
     count = 0;
-    while (count < 1000 && aIdx !== false || count < 100 && dIdx !== false) {
+    while (count < max && aIdx !== false || count < max && sIdx !== false) {
+        count += 1;
         if (sIdx === false && aIdx !== false) {
             // only addition
             const augend = Number(prob[aIdx - 1]);
             const addend = Number(prob[aIdx + 1]);
             const total = augend + addend;
-            restructure(total, aIdx - 1, aIdx + 1, prob);
+            prob = restructure(total, aIdx - 1, aIdx + 1, prob);
             aIdx = getIdx("+", prob);
         } else if (aIdx === false && sIdx !== false) {
             // only subtraction
             const minuend = Number(prob[sIdx - 1]);
             const subtrahend = Number(prob[sIdx + 1]);
             const difference = minuend - subtrahend;
-            restructure(difference, sIdx - 1, sIdx + 1, prob);
+            prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             sIdx = getIdx("-", prob);
         } else if (aIdx !== false && sIdx !== false && aIdx < sIdx) {
             // add
             const augend = Number(prob[aIdx - 1]);
             const addend = Number(prob[aIdx + 1]);
             const total = augend + addend;
-            restructure(total, aIdx - 1, aIdx + 1, prob);
+            prob = restructure(total, aIdx - 1, aIdx + 1, prob);
             aIdx = getIdx("+", prob);
             // then subtract
             const minuend = Number(prob[sIdx - 1]);
             const subtrahend = Number(prob[sIdx + 1]);
             const difference = minuend - subtrahend;
-            restructure(difference, sIdx - 1, sIdx + 1, prob);
+            prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             sIdx = getIdx("-", prob);
         } else if (aIdx !== false && sIdx !== false && aIdx > sIdx) {
             // subtract
             const minuend = Number(prob[sIdx - 1]);
             const subtrahend = Number(prob[sIdx + 1]);
             const difference = minuend - subtrahend;
-            restructure(difference, sIdx - 1, sIdx + 1, prob);
+            prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             sIdx = getIdx("-", prob);
             // then add
             const augend = Number(prob[aIdx - 1]);
             const addend = Number(prob[aIdx + 1]);
             const total = augend + addend;
-            restructure(total, aIdx - 1, aIdx + 1, prob);
+            prob = restructure(total, aIdx - 1, aIdx + 1, prob);
             aIdx = getIdx("+", prob);
         }
     }
 
-    return problem[0];
+    return prob;
 };
 
 // string validation
