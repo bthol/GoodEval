@@ -1,7 +1,14 @@
 console.log('Problem Script Loaded.');
 
 // Development Plan
-//  - add shift and alpha buttons for alternate button functionality:
+//  - remove parenthesis around multidigit values
+
+//  - develop interface for optionally displaying history
+
+//  - key functions solve expressions before using solution as argument
+
+//  - solve by section with new parenthesis function (based on algorithm in evaluator_fil.py)
+
 //  - further design sign button functionality
 //     - remove negation on already negated term
 //     - wrap previous term in parens
@@ -11,9 +18,11 @@ const T = document.querySelector('#screen-toggles');
 const Q = document.querySelector('#screen-content');
 const A = document.querySelector('#screen-answer');
 
+// shiftable buttons
 const sinBtn = document.querySelector('#btn-sine');
 const cosBtn = document.querySelector('#btn-cosine');
 const tanBtn = document.querySelector('#btn-tangent');
+const logBtn = document.querySelector('#btn-log');
 
 
 // Object literal for evaluation request
@@ -22,8 +31,12 @@ let input = {
     'use_logs': '0', // 1 activates logs && 0 deactivates logs
 };
 
-// char structure for problem
+// question structures
 let problem = [];
+let answer = [];
+
+// question history
+let history = [];
 
 // Mode toggles
 let shiftMode= false;
@@ -39,44 +52,23 @@ let cursorModeCache = {};
 let debounceCache = {};
 
 // key function info
-const info = [
-    {key: "sin", funct: (x) => Math.sin(x)},
-    {key: "cos", funct: (x) => Math.cos(x)},
-    {key: "tan", funct: (x) => Math.tan(x)},
-    {key: "sec", funct: (x) => Math.sec(x)},
-    {key: "csc", funct: (x) => Math.csc(x)},
-    {key: "cot", funct: (x) => Math.cot(x)},
+const keyInfo = [
+    {key: 'sin', funct: (x) => Math.sin(x)}, // sine
+    {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
+    {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
+    {key: 'sec', funct: (x) => Math.sec(x)}, // secant
+    {key: 'csc', funct: (x) => Math.csc(x)}, // cosecant
+    {key: 'cot', funct: (x) => Math.cot(x)}, // cotangent
+    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
+    {key: 'log', funct: (x) => Math.log(x)}, // logarithm
+    {key: 'ln', funct: (x) => Math.ln(x)}, // natural logarithm
 ];
 
-function restructure(solution, start, end, problem) {
-    let before = [];
-    for (let i = 0; i < start; i++) {
-        before.push(problem[i])
-    }
-    let after = [];
-    for (let i = end + 1; i < problem.length; i++) {
-        after.push(problem[i])
-    }
-    if (typeof solution === 'string') {
-        before.push(solution);
-        return before.concat(after);
-    } else if (typeof solution === 'number') {
-        before.push(`${solution}`);
-        return before.concat(after);
-    } else {
-        return before.concat(solution).concat(after);
-    }
-};
-
-function getIdx(key, problemStructure) {
-    // returns index of key in problem structure
-    for (let i = 0; i < problemStructure.length; i++) {
-        if (problemStructure[i] === key) {
-            return i;
-        }
-    }
-    return false;
-};
+// special number info
+const specialInfo = [
+    {symbol: 'π', value: Math.PI}, // pi
+    {symbol: 'e', value: Math.E}, // Euler's number
+];
 
 // Shift Mode Toggles
 function toggleShiftMode() {
@@ -87,11 +79,13 @@ function toggleShiftMode() {
         sinBtn.innerText = 'sin';
         cosBtn.innerText = 'cos';
         tanBtn.innerText = 'tan';
+        logBtn.innerText = 'log';
     } else {
         // shifted
         sinBtn.innerText = 'sec';
         cosBtn.innerText = 'csc';
         tanBtn.innerText = 'cot';
+        logBtn.innerText = 'Ln';
     }
 };
 
@@ -120,7 +114,7 @@ function cursorContinue() {
             console.log("cursor mode discontinued");
             cursorMode = false;
             // update display
-            updateProblem(problem);
+            updateProblem();
             updateToggleDisplay();
         }, 10000); // 10 second timeout
     }
@@ -133,7 +127,9 @@ function toggleCursorMode() {
         // discontinue cursor mode
         clearTimeout(cursorModeCache);
     }
-    updateProblem(problem);
+    if (problem.length > 0) {
+        updateProblem();
+    }
     updateToggleDisplay();
 };
 
@@ -143,7 +139,7 @@ function cursorBack() {
     const len = problem.length;
     if (len > 0 && cursorIdx - 1 > -1) {
         cursorIdx -= 1;
-        updateProblem(problem, 'cursor');
+        updateProblem('cursor');
     }
     console.log(cursorIdx);
 };
@@ -153,20 +149,69 @@ function cursorForward() {
     const len = problem.length;
     if (len > 0 && cursorIdx + 1 < len) {
         cursorIdx += 1;
-        updateProblem(problem, 'cursor');
+        updateProblem('cursor');
     }
     console.log(cursorIdx);
 };
 
 function backspace() {
-    cursorContinue();
-    const len = problem.length;
-    if (len > 0) {
-        problem.splice(cursorIdx, 1);
-        cursorIdx -= 1;
-        console.log(problem);
-        console.log(cursorIdx);
-        updateProblem(problem, 'cursor');
+    if (problem.length > 0) {
+        if (!cursorMode) {
+            console.log("pass");
+            // default
+            problem.splice(problem.length - 1, 1);
+            cursorIdx = problem.length - 1;
+            updateProblem();
+        } else {
+            // cursor mode
+            if (cursorIdx > 0) {
+                problem.splice(cursorIdx - 1, 1);
+                cursorBack();
+            }
+        }
+    }
+};
+
+// Structuring
+function restructure(solution, start, end, problem) {
+    let before = [];
+    for (let i = 0; i < start; i++) {
+        before.push(problem[i])
+    }
+    let after = [];
+    for (let i = end + 1; i < problem.length; i++) {
+        after.push(problem[i])
+    }
+    if (typeof solution === 'string') {
+        before.push(solution);
+        return before.concat(after);
+    } else if (typeof solution === 'number') {
+        before.push(`${solution}`);
+        return before.concat(after);
+    } else {
+        return before.concat(solution).concat(after);
+    }
+};
+
+function getIdx(key, struct) {
+    // returns index of key in iterable structure
+    for (let i = 0; i < struct.length; i++) {
+        if (struct[i] === key) {
+            return i;
+        }
+    }
+    return false;
+};
+
+function specialNumberValues() {
+    // convert special number symbols to values for calculation in whole problem structure
+    for (let i = 0; i < specialInfo.length; i++) {
+        let idx = getIdx(specialInfo[i].symbol, answer);
+        let itr = 0;
+        while (itr < 100 && idx !== false) {
+            answer = restructure(specialInfo[i].value, idx, idx + 1, answer);
+            idx = getIdx(specialInfo[i].symbol, answer);
+        }
     }
 };
 
@@ -187,77 +232,20 @@ function insert(char) {
     }
     if (!cursorMode) {
         // default
-        updateProblem(problem);
+        updateProblem();
     } else {
         // cursor mode
-        updateProblem(problem, 'cursor');
+        updateProblem('cursor');
     }
 };
 
-// structuring
-function structureKey(key, problem) {
-    // searches for and restructures key in problem
-    let struct = problem;
-
-    // store key length
-    const keyLen = key.length;
-
-    // structure key
-    let keyStruct = [];
-    for (let i = 0; i < keyLen; i++) {
-        keyStruct.push(key.slice(i, i + 1));
-    }
-
-    // search for match
-    let x = 0; // limit to prevent infinite loop/memory overloading
-    let searching = true; // boolean switch to manually turn off loop before limit
-    while (x < 4 && searching == true) {
-        // each key search (loops if key match is found)
-        x += 1;
-        // get current struct length (restructure in previous key search changes length)
-        const structLen = struct.length;
-        // initialize match variable to true
-        let match = true;
-        // structLen - keyLen = last starting index for key in struct before key length exceeds remaining struct
-        for (let i = 0; i < structLen - keyLen; i++) {
-            // test first character match + length of key relative to remaining structure + last character match
-            if (struct[i] === keyStruct[0] && i + keyLen - 1 < structLen && struct[i + keyLen - 1] === keyStruct[keyLen - 1]) {
-                // match letter for letter
-                for (let j = 0; j < keyStruct.length; j++) {
-                    if (keyStruct[j] !== struct[i + j]) {
-                        // letter didn't match
-                        match = false;
-                        break;
-                    }
-                }
-                if (match) {
-                    // matches letter for letter
-                    struct = restructure(key, i, i + keyLen, struct);
-                    break;
-                } else {
-                    // reinitialize match variable for next match test
-                    match = true;
-                }
-            }
-            if (i === structLen - keyLen - 1) {
-                // if no match at last test
-                match = false;
-            }
-        }
-        if (!match) {
-            searching = false;
-        }
-    }
-    return struct;
-};
-
-function structureString(problem) {
+function structureString() {
     // emulates backend string structuring algorithm
     let struct = [];
     let buffer = "";
     try {
         for (let i = 0; i < problem.length; i++) {
-            const char = problem.slice(i, i + 1);
+            const char = problem.slice(i, i + 1)[0];
             // skip spaces
             if (char === " ") {
                 continue;
@@ -307,44 +295,55 @@ function structureString(problem) {
     } catch (error) {
         console.log(error);
     }
-    // structure keys
-    for (i = 0; i < info.length; i++) {
-        struct = structureKey(info[i].key, struct);
-    }
+    
     console.log(struct);
-    return struct;
+    answer = struct;
 };
 
-// key functions
-function keyFunction(key, funct, problem) {
+// Key Functions
+function keyFunction(key, funct) {
     // generalizes single argument key functions
-    let prob = problem;
-    let idx = getIdx(key, prob);
+    let idx = getIdx(key, answer);
     let x = 0;
     while (x < 100 && idx !== false) {
         x += 1;
-        const solution = funct(Number(problem[idx + 1]));
-        prob = restructure(solution, idx, idx + 1, prob);
-        idx = getIdx(key, prob);
+        let solution;
+        if (answer[idx + 1] === '(') {
+            // expression argument
+            let expression = [];
+            let nest = 0;
+            for (let i = idx + 1; i < answer.length; i++) {
+                expression.push(answer[i]);
+                if (answer[i] === '(') {
+                    nest += 1;
+                } else if (answer[i] === ')') {
+                    nest -= 1;
+                    if (nest === 0) {
+                        break;
+                    }
+                }
+            }
+            console.log(expression);
+        } else {
+            // single argument
+            solution = funct(Number(answer[idx + 1]));
+        }
+        answer = restructure(solution, idx, idx + 1, answer);
+        idx = getIdx(key, answer);
     }
-    return prob;
 };
 
-function runKeyFunctions(problem) {
+function runKeyFunctions() {
     // runs all key functions
-    prob = problem;
-    for (let i = 0; i < info.length; i++) {
-        prob = keyFunction(info[i].key, info[i].funct, prob);
+    for (let i = 0; i < keyInfo.length; i++) {
+        keyFunction(keyInfo[i].key, keyInfo[i].funct);
     }
-    return prob;
 };
 
 // calculation
-function calculate(problem) {
+function calculate(prob) {
     // parameters
     const max = 5;
-    // performs arithmetic operations on problem structure
-    prob = problem;
     // perform all Multiplications and Divisions as they appear from left to right
     let mIdx = getIdx("*", prob);
     let dIdx = getIdx("/", prob);
@@ -447,6 +446,18 @@ function calculate(problem) {
 };
 
 // string validation
+function isSpecialNumber(char) {
+    // tests if the given character is a special number
+    let is = false;
+    for (let i = 0; i < specialInfo.length; i++) {
+        if (char === specialInfo[i].symbol) {
+            is = true;
+            break;
+        }
+    }
+    return is;
+};
+
 function customError(error) {
     Q.innerText = error;
     clearTimeout(formatErrorCache);
@@ -530,61 +541,76 @@ function validProblem(problem) {
     }
 };
 
-function validOp(problem) {
+function validOp() {
     // pre-validates that an operation can be added to the problem structure
     if (problem.length === 0) {
         customError('Error: invalid operation');
         return false;
     } else {
-        const char = problem.slice(problem.length - 1, problem.length);
-        if (isNaN(char) && char !== ")") {
-            customError('Error: invalid operation');
-            return false;
+        if (!cursorMode) {
+            // default
+            const char = problem.slice(problem.length - 1, problem.length)[0];
+            if (isNaN(char) && char !== ")" && !isSpecialNumber(char)) {
+                customError('Error: invalid operation');
+                return false;
+            }
+        } else {
+            // cursor mode
+            const char = problem.slice(cursorIdx, cursorIdx + 1);
+            if (isNaN(char) && char !== ")" && !isSpecialNumber(char)) {
+                customError('Error: invalid operation');
+                return false;
+            }
         }
     }
     return true;
 };
 
-function validQuant(problem) {
+function validQuant(special = false) {
     // pre-validates that a quantity (or open parenthesis) can be added to the problem structure
-    if (!isNaN(problem[problem.length - 1]) || problem[problem.length - 1] === 'pi' || problem[problem.length - 1] === 'euler') {
-        customError('Error: requires operation');
-        return false;
+    if (!cursorMode) {
+        // defualt
+        if (!special) {
+            // regular numbers
+            if (problem[problem.length - 1] === 'pi' || problem[problem.length - 1] === 'e') {
+                customError('Error: requires operation');
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            // special numbers
+            if (!isNaN(problem[problem.length - 1]) || problem[problem.length - 1] === 'pi' || problem[problem.length - 1] === 'e') {
+                customError('Error: requires operation');
+                return false;
+            } else {
+                return true;
+            }
+        }
     } else {
-        return true;
-    }
-};
-
-// debounce evaluate requests
-function debounce(funct, deference) {
-    console.log('debounced');
-    clearTimeout(debounceCache);
-    debounceCache = setTimeout(() => {
-        clearTimeout(debounceCache);
-        funct();
-    }, deference)
-};
-
-function evaluate() {
-    // run on equal button click
-    let problem = input.problem; // local problem variable; not global array
-    // structure problem string into problem structure
-    console.log('Structuring...');
-    problem = structureString(problem);
-    console.log('Structured. \n\nValidating...');
-    if (validProblem(problem)) {
-        console.log('Valid.\n\n Evaluating...');
-        problem = runKeyFunctions(problem);
-        problem = calculate(problem);
-        console.log('Solved.');
-        updateAnswer(problem);
-    } else {
-        console.log('Invalid.');
+        // cursor mode
+        if (!special) {
+            // regular numbers
+            if (problem[cursorIdx] === 'pi' || problem[cursorIdx] === 'e') {
+                customError('Error: requires operation');
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            // special numbers
+            if (!isNaN(problem[cursorIdx]) || problem[cursorIdx] === 'pi' || problem[cursorIdx] === 'e') {
+                customError('Error: requires operation');
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 };
 
 // display functions
-function updateProblem(problem, cursor = null) {
+function updateProblem(cursor = null) {
     // clear problem in display
     Q.innerHTML = '';
     let string = '';
@@ -602,20 +628,20 @@ function updateProblem(problem, cursor = null) {
     cursorHighlight();
 };
 
-function updateAnswer(problem) {
+function updateAnswer() {
     // clear answer in display
     A.innerHTML = '';
     // compile string
     let string = '';
-    for (let i = 0; i < problem.length; i++) {
-        string += problem[i];
+    for (let i = 0; i < answer.length; i++) {
+        string += answer[i];
     }
     // build element
     const div = document.createElement('div');
     div.innerText = string;
     // lay element
     A.appendChild(div);
-}
+};
 
 function updateToggleDisplay() {
     if (shiftMode && cursorMode) { // shift + cursor
@@ -640,6 +666,62 @@ function cursorHighlight() {
     }
 };
 
+function evaluate() {
+    // run on equal button click
+    console.log(problem);
+    console.log('Validating...');
+    if (validProblem(problem)) {
+
+        // evaluate problem into answer structure
+
+        console.log('Valid.');
+        console.log('Structuring strings...');
+        structureString();
+        console.log('done.');
+        // convert special number symbols to values
+        console.log('Converting special number symbols to values...');
+        specialNumberValues();
+        console.log('Done.');
+        // run all key functions
+        console.log('Running key functions...');
+        runKeyFunctions();
+        console.log('Done.');
+        // perform arithmetic
+        console.log('Performing arithmetic...');
+        answer = calculate(answer);
+        console.log('Done.');
+        // display answer
+        console.log('Solved.');
+        updateAnswer();
+
+        // reset program for next question
+
+        // save question to history
+        if (history.length < 10) {
+            history.unshift({prob: problem, ans: answer});
+        } else {
+            history.pop();
+            history.unshift({prob: problem, ans: answer});
+        }
+        console.log(history);
+
+        // clear data
+        problem = [];
+        answer = [];
+
+        // handle modes
+        shiftMode = false;
+        cursorMode = false;
+        updateToggleDisplay();
+
+        // prevent cursor navigation until further input
+        cursorDefault();
+
+    } else {
+        console.log('Invalid.');
+    }
+};
+
 // User Interface Control
 const btns = document.querySelector('.btns');
 // single listener on wrap element for event delegation
@@ -654,79 +736,112 @@ btns.addEventListener('click', (e) => {
         // member ids tested from most to least estimated frequency of usage
         if (type === 'numpad') {
             if (id === 'btn-num0') {
-                insert('0');
+                if (validQuant()) {
+                    insert('0');
+                }
             } else if (id === 'btn-num1') {
-                insert('1');
+                if (validQuant()) {
+                    insert('1');
+                }
             } else if (id === 'btn-num2') {
-                insert('2');
+                if (validQuant()) {
+                    insert('2');
+                }
             } else if (id === 'btn-num3') {
-                insert('3');
+                if (validQuant()) {
+                    insert('3');
+                }
             } else if (id === 'btn-num4') {
-                insert('4');
+                if (validQuant()) {
+                    insert('4');
+                }
             } else if (id === 'btn-num5') {
-                insert('5');
+                if (validQuant()) {
+                    insert('5');
+                }
             } else if (id === 'btn-num6') {
-                insert('6');
+                if (validQuant()) {
+                    insert('6');
+                }
             } else if (id === 'btn-num7') {
-                insert('7');
+                if (validQuant()) {
+                    insert('7');
+                }
             } else if (id === 'btn-num8') {
-                insert('8');
+                if (validQuant()) {
+                    insert('8');
+                }
             } else if (id === 'btn-num9') {
-                insert('9');
+                if (validQuant()) {
+                    insert('9');
+                }
             } else if (id === 'btn-pi') {
-                if (validQuant(problem)) {
-                    insert('pi');
+                if (validQuant()) {
+                    insert(specialInfo[0].symbol);
                 }
             } else if (id === 'btn-euler') {
-                if (validQuant(problem)) {
-                    insert('e');
+                if (validQuant()) {
+                    insert(specialInfo[1].symbol);
                 }
             }
 
         } else if (type === 'operation') {
             if (id === 'btn-plus') {
-                if (validOp(input.problem)) {
+                if (validOp()) {
                     insert('+');
                 }
             } else if (id === 'btn-minus') {
-                if (validOp(input.problem)) {
+                if (validOp()) {
                     insert('-');
                 }
             } else if (id === 'btn-multiply') {
-                if (validOp(input.problem)) {
+                if (validOp()) {
                     insert('*');
                 }
             } else if (id === 'btn-divide') {
-                if (validOp(input.problem)) {
+                if (validOp()) {
                     insert('/');
                 }
             } else if (id === 'btn-sign') {
-                insert('(-');
+                insert('(');
+                insert('-');
             } else if (id === 'btn-power') {
-                insert(')^(');
+                insert(')');
+                insert('^');
+                insert('(');
             } else if (id === 'btn-root') {
-                insert(')√(');
+                insert(')');
+                insert('√');
+                insert('(');
             } else if (id === 'btn-absolute-value') {
-                insert('abs(');
+                insert('abs');
+                insert('(');
             }
 
         } else if (type === 'special') {
             if (id === 'btn-clear') {
                 console.log('clear');
+                // clear data in problem structure
                 problem = [];
-                updateProblem(problem);
-                updateAnswer(problem);
+                // toggle off all modes
+                shiftMode = false;
+                cursorMode = false;
+                // update display to reflect changes
+                updateProblem();
+                updateAnswer();
+                updateToggleDisplay();
             } else if (id === 'btn-equals') {
                 evaluate();
             } else if (id === 'btn-shift') {
                 toggleShiftMode();
             } else if (id === 'btn-decimal') {
                 if (isNaN(problem[problem.length - 1])) {
-                    insert('0.');
+                    insert('0');
+                    insert('.');
                 } else {
                     insert('.');
                 }
-                updateProblem(problem);
+                updateProblem();
             } else if (id === 'btn-paren-open') {
                 if (validQuant(problem)) {
                     insert('(');
@@ -737,14 +852,14 @@ btns.addEventListener('click', (e) => {
                     if (problem[problem.length - 1] === "(") {
                         // no parens without content between them
                         problem.pop();
-                        updateProblem(problem);
+                        updateProblem();
                     } else if (problem.length - 2 > -1 && problem[problem.length - 2] === "(") {
                         // remove parens around single value
                         const value = problem[problem.length - 1];
                         problem.pop();
                         problem.pop();
                         problem.push(value);
-                        updateProblem(problem);
+                        updateProblem();
                     } else {
                         insert(')');
                     }
@@ -762,7 +877,7 @@ btns.addEventListener('click', (e) => {
                     } else {
                         insert(')');
                     }
-                    updateProblem(problem, 'cursor');
+                    updateProblem('cursor');
                 }
             }
 
@@ -786,26 +901,42 @@ btns.addEventListener('click', (e) => {
             if (id === 'btn-sine') {
                 if (!shiftMode) {
                     // default
-                    insert('sin(');
+                    insert('sin');
+                    insert('(');
                 } else {
                     // shifted
-                    insert('sec(');
+                    insert('sec');
+                    insert('(');
                 }
             } else if (id === 'btn-cosine') {
                 if (!shiftMode) {
                     // default
-                    insert('cos(');
+                    insert('cos');
+                    insert('(');
                 } else {
                     // shifted
-                    insert('csc(');
+                    insert('csc');
+                    insert('(');
                 }
             } else if (id === 'btn-tangent') {
                 if (!shiftMode) {
                     // default
-                    insert('tan(');
+                    insert('tan');
+                    insert('(');
                 } else {
                     // shifted
-                    insert('cot(');
+                    insert('cot');
+                    insert('(');
+                }
+            } else if (id === 'btn-log') {
+                if (!shiftMode) {
+                    // default
+                    insert('log');
+                    insert('(');
+                } else {
+                    // shifted
+                    insert('ln');
+                    insert('(');
                 }
             }
         }
