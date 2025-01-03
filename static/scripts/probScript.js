@@ -157,16 +157,26 @@ function cursorForward() {
 function backspace() {
     if (problem.length > 0) {
         if (!cursorMode) {
-            console.log("pass");
             // default
             problem.splice(problem.length - 1, 1);
             cursorIdx = problem.length - 1;
             updateProblem();
         } else {
             // cursor mode
-            if (cursorIdx > 0) {
-                problem.splice(cursorIdx - 1, 1);
-                cursorBack();
+            if (cursorIdx === 0) {
+                // first index
+                problem.shift();
+                updateProblem('cursor');
+            } else {
+                if (cursorIdx === problem.length - 1) {
+                    // last index
+                    problem.pop();
+                    cursorBack();
+                } else {
+                    // middle index
+                    problem.splice(cursorIdx, 1);
+                    cursorBack();
+                }
             }
         }
     }
@@ -220,21 +230,21 @@ function insert(char) {
     if (!cursorMode) {
         // defaultly inserts at end of problem
         problem.push(char);
+        updateProblem();
     } else {
         // in cursor mode, inserts at cursor index
         if (problem.length > 0) {
-            // include start in non-empty problem structure
-            problem = restructure([char], cursorIdx + 1, cursorIdx, problem);
+            // non-empty problem structure
+            if (cursorIdx === 0) {
+                problem.unshift(char);
+            } else {
+                problem.splice(cursorIdx + 1, 0, char);
+            }
         } else {
-            // exclude start in empty problem structure
-            problem = restructure([char], cursorIdx, cursorIdx, problem);
+            // empty problem structure
+            problem.push(char);
+            updateProblem();
         }
-    }
-    if (!cursorMode) {
-        // default
-        updateProblem();
-    } else {
-        // cursor mode
         updateProblem('cursor');
     }
 };
