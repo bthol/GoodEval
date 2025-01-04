@@ -1,6 +1,8 @@
 console.log('Problem Script Loaded.');
 
 // Development Plan
+//  - determine if validQuant can be refactored to only test for operations
+
 //  - remove parenthesis around multidigit values
 
 //  - develop interface for optionally displaying history
@@ -51,8 +53,6 @@ let cursorIdx = 0;
 let formatErrorCache = {};
 let cursorModeCache = {};
 let debounceCache = {};
-
-console.log(Math.PI * 2);
 
 // key function info
 const keyInfo = [
@@ -462,25 +462,198 @@ function calculate(prob) {
 };
 
 // string validation
-function isSpecialNumber(char) {
-    // tests if the given character is a special number
-    let is = false;
-    for (let i = 0; i < specialInfo.length; i++) {
-        if (char === specialInfo[i].symbol) {
-            is = true;
-            break;
-        }
-    }
-    return is;
-};
-
 function customError(error) {
     Q.innerText = error;
     clearTimeout(formatErrorCache);
     formatErrorCache = setTimeout(() => {
-        Q.innerText = input.problem;
+        updateProblem('cursor');
         clearTimeout(formatErrorCache);
     }, 1300)
+};
+
+function isEmptyProblem() {
+    if (problem.length === 0) {
+        customError('Error: Empty String');
+        return true;
+    } else {
+        return false;
+    }
+};
+
+function isKey(str) {
+    // test for match of str with key property of keyInfo structure
+    for (let i = 0; i < keyInfo.length; i++) {
+        if (keyInfo[i].key === str) {
+            return true;
+        }
+    }
+    return false;
+};
+
+function isSpecial(str) {
+    // test for match of str with symbol property of specialInfo structure
+    for (let i = 0; i < specialInfo.length; i++) {
+        if (specialInfo[i].symbol === str) {
+            return true;
+        }
+    }
+    return false;
+};
+
+function validOp() {
+    // pre-validates that an operation can be added to the problem structure
+    if (isEmptyProblem()) {
+        // cannot operate on empty string
+        return false;
+    } else {
+        // run validation
+        if (!cursorMode) {
+            // default
+            const str = problem.slice(problem.length - 1, problem.length)[0];
+            if (isNaN(str) && str !== ")" && !isSpecial(str)) {
+                customError('Error: invalid operation');
+                return false;
+            }
+        } else {
+            // cursor mode
+            const str = problem.slice(cursorIdx, cursorIdx + 1);
+            if (isNaN(str) && str !== ")" && !isSpecial(str)) {
+                customError('Error: invalid operation');
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
+function validQuant(key = false, special = false) {
+    // pre-validates that a quantity (or open parenthesis character: '(' ) can be added to the problem structure
+    if (isEmptyProblem()) {
+        // nothing to validate
+        return true;
+    } else {
+        // run validation
+        if (!cursorMode) {
+            // default mode
+            if (!special) {
+                // not special numbers
+                if (!key) {
+                    // regular numbers
+                    const str = problem.slice(problem.length - 1, problem.length)[0];
+                    if (!isSpecial(str)) {
+                        // last str is not a special number
+                        return true;
+                    } else {
+                        // last str is a special number
+                        customError('Error: requires operation');
+                        return false;
+                    }
+                } else {
+                    // key function
+                    const str = problem.slice(problem.length - 1, problem.length)[0];
+                    if (isNaN(str)) {
+                        // last str is not a number
+                        if (!isSpecial(str)) {
+                            // last str is not a special number
+                            if (!isKey(str)) {
+                                // last str is not key
+                                return true;
+                            } else {
+                                // last str is key
+                                customError('Error: requires operation');
+                                return false;
+                            }
+                        } else {
+                            // last str is a special number
+                            customError('Error: requires operation');
+                            return false;
+                        }
+                    } else {
+                        // last str is a number
+                        customError('Error: requires operation');
+                        return false;
+                    }
+                }
+            } else {
+                // special numbers
+                const str = problem.slice(problem.length - 1, problem.length)[0];
+                if (isNaN(str)) {
+                    // last str is not a number
+                    if (!isSpecial(str)) {
+                        // last str is not a special number
+                        return true;
+                    } else {
+                        // last str is a special number
+                        customError('Error: requires operation');
+                        return false;
+                    }
+                } else {
+                    // last str is a number
+                    customError('Error: requires operation');
+                    return false;
+                }
+            }
+        } else {
+            // cursor mode
+            if (!special) {
+                if (!key) {
+                    // regular numbers
+                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+                    if (!isSpecial(str)) {
+                        // str on cursor is not a special number
+                        return true;
+                    } else {
+                        // str on cursor is special number
+                        customError('Error: requires operation');
+                        return false;
+                    }
+                } else {
+                    // key function
+                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+                    if (isNaN(str)) {
+                        // last str is not a number
+                        if (!isSpecial(str)) {
+                            // last str is not a special number
+                            if (!isKey(str)) {
+                                // last str is not key
+                                return true;
+                            } else {
+                                // last str is key
+                                customError('Error: requires operation');
+                                return false;
+                            }
+                        } else {
+                            // last str is a special number
+                            customError('Error: requires operation');
+                            return false;
+                        }
+                    } else {
+                        // last str is a number
+                        customError('Error: requires operation');
+                        return false;
+                    }
+                }
+            } else {
+                // special numbers
+                const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+                if (isNaN(str)) {
+                    // last str is not a number
+                    if (!isSpecial(str)) {
+                        // last str is not a special number
+                        return true;
+                    } else {
+                        // last str is a special number
+                        customError('Error: requires operation');
+                        return false;
+                    }
+                } else {
+                    // last str is a number
+                    customError('Error: requires operation');
+                    return false;
+                }
+            }
+        }
+    }
 };
 
 function validParens(problem) {
@@ -541,10 +714,7 @@ function validProblem(problem) {
     // post-validates problem after structuring
     let validity = false;
     // validate string data
-    if (problem.length < 1) {
-        customError('Error: Empty string');
-        return false;
-    } else {
+    if (!isEmptyProblem()) {
         // validate parenthesis
         validity = validParens(problem);
         if (validity === false) {
@@ -553,74 +723,6 @@ function validProblem(problem) {
         } else if (validity === true) {
             // add further validation here
             return true;
-        }
-    }
-};
-
-function validOp() {
-    // pre-validates that an operation can be added to the problem structure
-    if (problem.length === 0) {
-        customError('Error: invalid operation');
-        return false;
-    } else {
-        if (!cursorMode) {
-            // default
-            const char = problem.slice(problem.length - 1, problem.length)[0];
-            if (isNaN(char) && char !== ")" && !isSpecialNumber(char)) {
-                customError('Error: invalid operation');
-                return false;
-            }
-        } else {
-            // cursor mode
-            const char = problem.slice(cursorIdx, cursorIdx + 1);
-            if (isNaN(char) && char !== ")" && !isSpecialNumber(char)) {
-                customError('Error: invalid operation');
-                return false;
-            }
-        }
-    }
-    return true;
-};
-
-function validQuant(special = false) {
-    // pre-validates that a quantity (or open parenthesis) can be added to the problem structure
-    if (!cursorMode) {
-        // defualt
-        if (!special) {
-            // regular numbers
-            if (problem[problem.length - 1] === 'pi' || problem[problem.length - 1] === 'e') {
-                customError('Error: requires operation');
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            // special numbers
-            if (!isNaN(problem[problem.length - 1]) || problem[problem.length - 1] === 'pi' || problem[problem.length - 1] === 'e') {
-                customError('Error: requires operation');
-                return false;
-            } else {
-                return true;
-            }
-        }
-    } else {
-        // cursor mode
-        if (!special) {
-            // regular numbers
-            if (problem[cursorIdx] === 'pi' || problem[cursorIdx] === 'e') {
-                customError('Error: requires operation');
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            // special numbers
-            if (!isNaN(problem[cursorIdx]) || problem[cursorIdx] === 'pi' || problem[cursorIdx] === 'e') {
-                customError('Error: requires operation');
-                return false;
-            } else {
-                return true;
-            }
         }
     }
 };
@@ -744,6 +846,8 @@ const btns = document.querySelector('.btns');
 btns.addEventListener('click', (e) => {
     // exclude the container elements
     if (e.target.classList[0] !== 'top-button-container' && e.target.classList[0] !== 'bottom-button-container') {
+        // clear cache for input while error is displaying
+        clearTimeout(formatErrorCache);
         // get target info
         const type = e.target.classList[0];
         const id = e.target.id;
@@ -792,15 +896,15 @@ btns.addEventListener('click', (e) => {
                     insert('9');
                 }
             } else if (id === 'btn-pi') {
-                if (validQuant()) {
+                if (validQuant(false, true)) {
                     insert(specialInfo[0].symbol);
                 }
             } else if (id === 'btn-tau') {
-                if (validQuant()) {
-                    insert(specialInfo[1].symbol)
+                if (validQuant(false, true)) {
+                    insert(specialInfo[1].symbol);
                 }
             } else if (id === 'btn-euler') {
-                if (validQuant()) {
+                if (validQuant(false, true)) {
                     insert(specialInfo[2].symbol);
                 }
             }
@@ -825,9 +929,11 @@ btns.addEventListener('click', (e) => {
             } else if (id === 'btn-sign') {
                 insert('(');
                 insert('-');
-            } else if (id === 'btn-power') {
-                insert('^');
-            } else if (id === 'btn-root') {
+            } else if (id === 'btn-power' || id === 'btn-power-sup') {
+                if (validOp()) {
+                    insert('^');
+                }
+            } else if (id === 'btn-root' || id === 'btn-root-sup') {
                 insert('√');
             } else if (id === 'btn-absolute-value') {
                 insert('abs');
@@ -885,16 +991,17 @@ btns.addEventListener('click', (e) => {
                     if (cursorIdx > -1 && problem[cursorIdx - 1] === "(") {
                         // no parens without content between them
                         problem.pop();
+                        updateProblem('cursor');
                     } else if (cursorIdx - 2 > -1 && problem[cursorIdx - 2] === "(") {
                         // remove parens around single value
                         const value = problem[cursorIdx];
                         problem.pop();
                         problem.pop();
                         problem.push(value);
+                        updateProblem('cursor');
                     } else {
                         insert(')');
                     }
-                    updateProblem('cursor');
                 }
             }
 
@@ -916,7 +1023,7 @@ btns.addEventListener('click', (e) => {
         // key function buttons
         } else if (type === 'key') {
             if (id === 'btn-sine') {
-                if (validQuant()) {
+                if (validQuant(true)) {
                     if (!shiftMode) {
                         // default
                         insert('sin');
@@ -926,7 +1033,7 @@ btns.addEventListener('click', (e) => {
                     }
                 }
             } else if (id === 'btn-cosine') {
-                if (validQuant()) {
+                if (validQuant(true)) {
                     if (!shiftMode) {
                         // default
                         insert('cos');
@@ -936,7 +1043,7 @@ btns.addEventListener('click', (e) => {
                     }
                 }
             } else if (id === 'btn-tangent') {
-                if (validQuant()) {
+                if (validQuant(true)) {
                     if (!shiftMode) {
                         // default
                         insert('tan');
@@ -946,7 +1053,7 @@ btns.addEventListener('click', (e) => {
                     }
                 }
             } else if (id === 'btn-log') {
-                if (validQuant()) {
+                if (validQuant(true)) {
                     if (!shiftMode) {
                         // default
                         insert('log');
@@ -956,7 +1063,7 @@ btns.addEventListener('click', (e) => {
                     }
                 }
             } else if (id === 'btn-log-natural') {
-                if (validQuant()) {
+                if (validQuant(true)) {
                     if (!shiftMode) {
                         // default
                         insert('ln');
