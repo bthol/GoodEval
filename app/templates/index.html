@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GoodEval</title>
+        <title>GoodEval Calculator</title>
         <link rel="stylesheet" href="{% static 'stylesheets/main.css'%}">
         <link rel="stylesheet" href="{% static 'stylesheets/index.css'%}">
         <script defer src="{% static 'scripts/indexInterface.js'%}"></script>
@@ -14,13 +14,26 @@
 <body class="body">
     <nav>
         <div class="title-container">
-            <h1>GoodEval</h1>
+            <h1>GoodEval Calucator</h1>
         </div>
         <div class="nav-button-container">
-            <button id="modern-theme" class="theme-button">Modern</button>
-            <button id="retro-theme" class="theme-button">Retro</button>
-            <button id="sleek-theme" class="theme-button">Sleek</button>
-            <button id="umbral-theme" class="theme-button">Umbral</button>
+            <div>
+                Themes 
+                |
+                <button id="modern-theme" class="theme-button button-hover-blue">Modern</button>
+                |
+                <button id="retro-theme" class="theme-button button-hover-blue">Retro</button>
+                |
+                <button id="sleek-theme" class="theme-button button-hover-blue">Sleek</button>
+                |
+                <button id="umbral-theme" class="theme-button button-hover-blue">Umbral</button>
+            </div>
+            <div>
+                <div class="button-hover-blue" >History</div>
+            </div>
+            <div>
+                <a href="https://github.com/bthol/GoodEval" target="_blank" rel="noopener noreferrer">About</a>
+            </div>
         </div>
         <div class="arrow-layout">
             <div id="nav-menu-arrow" class="arrow-container downward-arrow">
@@ -43,57 +56,66 @@
             </div>
         </div>
 
-        <div class="btns"> <!-- wrapper element for listener --> 
+        <div class="btns"> <!-- wrapper element for listener -->
             <div class="top-button-container">
-                <button id="btn-sine" class="trigonomic top-button">sin</button>
-                <button id="btn-cosine" class="trigonomic top-button">cos</button>
-                <button id="btn-tangent" class="trigonomic top-button">tan</button>
-                <button id="btn-log" class="trigonomic top-button">log</button>
-                <button id="btn-shift" class="special top-button">shift</button>
-            </div>
-
-            <div class="top-button-container">
-                <button id="btn-absolute-value" class="operation top-button">|x|</button>
-                <button id="btn-euler" class="numpad top-button">e</button>
-                <button id="btn-pi" class="numpad top-button">π</button>
+                <button id="btn-sine" class="key top-button soft-edge-style highlight-back">sin</button>
+                <button id="btn-cosine" class="key top-button soft-edge-style highlight-back">cos</button>
+                <button id="btn-tangent" class="key top-button soft-edge-style highlight-back">tan</button>
+                <button class="key top-button soft-edge-style highlight-back">xx</button>
+                <button class=" key top-button soft-edge-style highlight-back">xx</button>
+                <button id="btn-log" class="key top-button soft-edge-style highlight-back">log</button>
+                <button id="btn-log-natural" class="key top-button soft-edge-style highlight-back">ln</button>
             </div>
             
             <div class="top-button-container">
                 <div>
-                    <button id="btn-cursor-backward" class="cursor top-button">&lt;</button> <!-- html entity code for: ">"-->
-                    <button id="btn-cursor-forward" class="cursor top-button">&gt;</button> <!-- html entity code for: "<"-->
-                    <button id="btn-cursor-mode" class="cursor top-button">cursor</button>
+                    <button id="btn-paren-open" class="special top-button right-left-style highlight-back">&#40;</button> <!-- html entity code for: "("-->
+                    <button id="btn-paren-close" class="special top-button left-right-style highlight-back">&#41;</button> <!-- html entity code for: ")"-->
                 </div>
                 <div>
-                    <button id="btn-paren-open" class="special top-button">&#40;</button> <!-- html entity code for: "("-->
-                    <button id="btn-paren-close" class="special top-button">&#41;</button> <!-- html entity code for: ")"-->
+                    <button class="operation top-button soft-edge-style highlight-back">xx</button>
+                    <button id="btn-absolute-value" class="operation top-button soft-edge-style highlight-back">|x|</button>
+                    <button id="btn-euler" class="numpad top-button soft-edge-style highlight-back">e</button>
+                    <button id="btn-tau" class="numpad top-button soft-edge-style highlight-back">τ</button>
+                    <button id="btn-pi" class="numpad top-button soft-edge-style highlight-back">π</button>
+                </div>
+            </div>
+            
+            <div class="top-button-container">
+                <div>
+                    <button id="btn-cursor-backward" class="cursor top-button right-left-style highlight-back">&lt;</button> <!-- html entity code for: ">"-->
+                    <button id="btn-cursor-forward" class="cursor top-button left-right-style highlight-back">&gt;</button> <!-- html entity code for: "<"-->
+                    <button id="btn-cursor-mode" class="cursor top-button soft-edge-style highlight-back">cursor</button>
                 </div>
                 <div>
-                    <button id="btn-backspace" class="cursor top-button">&lt;—</button> <!-- html entity code for: "<" ; alt code 0151: "—" -->
+                    <button id="btn-shift" class="special top-button soft-edge-style highlight-back">shift</button>
+                </div>
+                <div>
+                    <button id="btn-backspace" class="cursor top-button left-right-style highlight-back">&lt;—</button> <!-- html entity code for: "<" ; alt code 0151: "—" -->
                 </div>
             </div>
             
             <div class="bottom-button-container">
-                <button id="btn-clear" class="special grid-start button orange">C</button>
-                <button id="btn-power" class="operation button normal">a^x</button>
-                <button id="btn-root" class="operation button normal">a√x</button> <!-- alt code 251: "√"-->
-                <button id="btn-num9" class="numpad grid-start button normal">9</button>
-                <button id="btn-num8" class="numpad grid-start button normal">8</button>
-                <button id="btn-num7" class="numpad grid-start button normal">7</button>
-                <button id="btn-num6" class="numpad grid-start button normal">6</button>
-                <button id="btn-num5" class="numpad grid-start button normal">5</button>
-                <button id="btn-num4" class="numpad grid-start button normal">4</button>
-                <button id="btn-num3" class="numpad grid-start button normal">3</button>
-                <button id="btn-num2" class="numpad grid-start button normal">2</button>
-                <button id="btn-num1" class="numpad grid-start button normal">1</button>
-                <button id="btn-num0" class="numpad grid-start button normal">0</button>
-                <button id="btn-sign" class="operation grid-start button normal">+/-</button>
-                <button id="btn-decimal" class="special grid-start button normal">.</button>
-                <button id="btn-multiply" class="operation grid-end button normal">*</button>
-                <button id="btn-divide" class="operation grid-end button normal">/</button>
-                <button id="btn-plus" class="operation grid-end button normal">+</button>
-                <button id="btn-minus" class="operation grid-end button normal">-</button>
-                <button id="btn-equals" class="special grid-end button orange">=</button>
+                <button id="btn-clear" class="special grid-start button orange soft-edge-style">C</button>
+                <button id="btn-power" class="operation button normal soft-edge-style highlight-back">a<sup>^x</sup></button>
+                <button id="btn-root" class="operation button normal soft-edge-style highlight-back"><sup>a</sup>√x</button> <!-- alt code 251: "√"-->
+                <button id="btn-num9" class="numpad grid-start button normal soft-edge-style highlight-back">9</button>
+                <button id="btn-num8" class="numpad grid-start button normal soft-edge-style highlight-back">8</button>
+                <button id="btn-num7" class="numpad grid-start button normal soft-edge-style highlight-back">7</button>
+                <button id="btn-num6" class="numpad grid-start button normal soft-edge-style highlight-back">6</button>
+                <button id="btn-num5" class="numpad grid-start button normal soft-edge-style highlight-back">5</button>
+                <button id="btn-num4" class="numpad grid-start button normal soft-edge-style highlight-back">4</button>
+                <button id="btn-num3" class="numpad grid-start button normal soft-edge-style highlight-back">3</button>
+                <button id="btn-num2" class="numpad grid-start button normal soft-edge-style highlight-back">2</button>
+                <button id="btn-num1" class="numpad grid-start button normal soft-edge-style highlight-back">1</button>
+                <button id="btn-num0" class="numpad grid-start button normal soft-edge-style highlight-back">0</button>
+                <button id="btn-sign" class="operation grid-start button normal soft-edge-style highlight-back">+/-</button>
+                <button id="btn-decimal" class="special grid-start button normal soft-edge-style highlight-back">.</button>
+                <button id="btn-multiply" class="operation grid-end button normal soft-edge-style highlight-back">*</button>
+                <button id="btn-divide" class="operation grid-end button normal soft-edge-style highlight-back">/</button>
+                <button id="btn-plus" class="operation grid-end button normal soft-edge-style highlight-back">+</button>
+                <button id="btn-minus" class="operation grid-end button normal soft-edge-style highlight-back">-</button>
+                <button id="btn-equals" class="special grid-end button orange soft-edge-style">=</button>
             </div>
         </div>
 

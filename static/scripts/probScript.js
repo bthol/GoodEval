@@ -23,6 +23,7 @@ const sinBtn = document.querySelector('#btn-sine');
 const cosBtn = document.querySelector('#btn-cosine');
 const tanBtn = document.querySelector('#btn-tangent');
 const logBtn = document.querySelector('#btn-log');
+const lnBtn = document.querySelector('#btn-log-natural');
 
 
 // Object literal for evaluation request
@@ -51,6 +52,8 @@ let formatErrorCache = {};
 let cursorModeCache = {};
 let debounceCache = {};
 
+console.log(Math.PI * 2);
+
 // key function info
 const keyInfo = [
     {key: 'sin', funct: (x) => Math.sin(x)}, // sine
@@ -67,6 +70,7 @@ const keyInfo = [
 // special number info
 const specialInfo = [
     {symbol: 'π', value: Math.PI}, // pi
+    {symbol: 'τ', value: Math.PI * 2}, // tau
     {symbol: 'e', value: Math.E}, // Euler's number
 ];
 
@@ -80,12 +84,14 @@ function toggleShiftMode() {
         cosBtn.innerText = 'cos';
         tanBtn.innerText = 'tan';
         logBtn.innerText = 'log';
+        lnBtn.innerText = 'ln';
     } else {
         // shifted
         sinBtn.innerText = 'sec';
         cosBtn.innerText = 'csc';
         tanBtn.innerText = 'cot';
-        logBtn.innerText = 'Ln';
+        logBtn.innerHTML = 'log<sup>-1</sup>';
+        lnBtn.innerHTML = 'ln<sup>-1</sup>';
     }
 };
 
@@ -183,6 +189,30 @@ function backspace() {
 };
 
 // Structuring
+function insert(char) {
+    console.log(char);
+    if (!cursorMode) {
+        // defaultly inserts at end of problem
+        problem.push(char);
+        updateProblem();
+    } else {
+        // in cursor mode, inserts at cursor index
+        if (problem.length > 0) {
+            // non-empty problem structure
+            if (cursorIdx === 0) {
+                problem.unshift(char);
+            } else {
+                problem.splice(cursorIdx + 1, 0, char);
+            }
+        } else {
+            // empty problem structure
+            problem.push(char);
+            updateProblem();
+        }
+        cursorForward();
+    }
+};
+
 function restructure(solution, start, end, problem) {
     let before = [];
     for (let i = 0; i < start; i++) {
@@ -222,30 +252,6 @@ function specialNumberValues() {
             answer = restructure(specialInfo[i].value, idx, idx + 1, answer);
             idx = getIdx(specialInfo[i].symbol, answer);
         }
-    }
-};
-
-function insert(char) {
-    console.log(char);
-    if (!cursorMode) {
-        // defaultly inserts at end of problem
-        problem.push(char);
-        updateProblem();
-    } else {
-        // in cursor mode, inserts at cursor index
-        if (problem.length > 0) {
-            // non-empty problem structure
-            if (cursorIdx === 0) {
-                problem.unshift(char);
-            } else {
-                problem.splice(cursorIdx + 1, 0, char);
-            }
-        } else {
-            // empty problem structure
-            problem.push(char);
-            updateProblem();
-        }
-        updateProblem('cursor');
     }
 };
 
@@ -789,9 +795,13 @@ btns.addEventListener('click', (e) => {
                 if (validQuant()) {
                     insert(specialInfo[0].symbol);
                 }
+            } else if (id === 'btn-tau') {
+                if (validQuant()) {
+                    insert(specialInfo[1].symbol)
+                }
             } else if (id === 'btn-euler') {
                 if (validQuant()) {
-                    insert(specialInfo[1].symbol);
+                    insert(specialInfo[2].symbol);
                 }
             }
 
@@ -816,16 +826,11 @@ btns.addEventListener('click', (e) => {
                 insert('(');
                 insert('-');
             } else if (id === 'btn-power') {
-                insert(')');
                 insert('^');
-                insert('(');
             } else if (id === 'btn-root') {
-                insert(')');
                 insert('√');
-                insert('(');
             } else if (id === 'btn-absolute-value') {
                 insert('abs');
-                insert('(');
             }
 
         } else if (type === 'special') {
@@ -834,7 +839,9 @@ btns.addEventListener('click', (e) => {
                 // clear data in problem structure
                 problem = [];
                 // toggle off all modes
-                shiftMode = false;
+                if (shiftMode) {
+                    toggleShiftMode();
+                }
                 cursorMode = false;
                 // update display to reflect changes
                 updateProblem();
@@ -907,46 +914,56 @@ btns.addEventListener('click', (e) => {
             }
         
         // key function buttons
-        } else if (type === 'trigonomic') {
+        } else if (type === 'key') {
             if (id === 'btn-sine') {
-                if (!shiftMode) {
-                    // default
-                    insert('sin');
-                    insert('(');
-                } else {
-                    // shifted
-                    insert('sec');
-                    insert('(');
+                if (validQuant()) {
+                    if (!shiftMode) {
+                        // default
+                        insert('sin');
+                    } else {
+                        // shifted
+                        insert('sec');
+                    }
                 }
             } else if (id === 'btn-cosine') {
-                if (!shiftMode) {
-                    // default
-                    insert('cos');
-                    insert('(');
-                } else {
-                    // shifted
-                    insert('csc');
-                    insert('(');
+                if (validQuant()) {
+                    if (!shiftMode) {
+                        // default
+                        insert('cos');
+                    } else {
+                        // shifted
+                        insert('csc');
+                    }
                 }
             } else if (id === 'btn-tangent') {
-                if (!shiftMode) {
-                    // default
-                    insert('tan');
-                    insert('(');
-                } else {
-                    // shifted
-                    insert('cot');
-                    insert('(');
+                if (validQuant()) {
+                    if (!shiftMode) {
+                        // default
+                        insert('tan');
+                    } else {
+                        // shifted
+                        insert('cot');
+                    }
                 }
             } else if (id === 'btn-log') {
-                if (!shiftMode) {
-                    // default
-                    insert('log');
-                    insert('(');
-                } else {
-                    // shifted
-                    insert('ln');
-                    insert('(');
+                if (validQuant()) {
+                    if (!shiftMode) {
+                        // default
+                        insert('log');
+                    } else {
+                        // shifted
+                        insert('log-');
+                    }
+                }
+            } else if (id === 'btn-log-natural') {
+                if (validQuant()) {
+                    if (!shiftMode) {
+                        // default
+                        insert('ln');
+                    } else {
+                        // shifted
+                        insert('ln-');
+                    }
                 }
             }
         }

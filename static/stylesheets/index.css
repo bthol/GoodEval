@@ -23,7 +23,7 @@ nav {
 .title-container {
     display: flex;
     align-items: center;
-    background-color: hsl(60, 50%, 92%);
+    background-color: #eeeed3;
     height: calc(var(--nav-content-height) * (3/5));
 }
 
@@ -33,11 +33,25 @@ nav {
 
 .nav-button-container {
     height: calc(var(--nav-content-height) * (2/5));
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    border-bottom: calc(var(--nav-border-height)) solid #858585;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    background-color: #fafafa;
+    border-top: 1px solid #858585;
+    border-bottom: calc(var(--nav-border-height)) double #858585;
+}
+
+.nav-button-container > div {
+    align-self: center;
+}
+
+.nav-button-container:first-child {
+    justify-items: start;
+    background-color: red;
+}
+
+.nav-button-container:last-child {
+    justify-items: end;
 }
 
 .theme-button {
@@ -47,8 +61,10 @@ nav {
     border: none;
     background-color: white;
 }
-.theme-button:hover {
+
+.button-hover-blue:hover {
     color: hsl(240, 84%, 52%);
+    cursor: pointer;
 }
 
 /* ARROW */
@@ -102,6 +118,7 @@ nav {
     height: 12vmin;
     background: var(--color-screen);
     border: .6vmin solid var(--color-border-4);
+    margin-bottom: 1vmin;
 }
 
 .screen > div {
@@ -159,7 +176,7 @@ nav {
     width: 100%;
     margin: 0px;
     justify-self: start;
-    grid-row: 2;
+    grid-row: 3;
     white-space: nowrap;
     overflow-x: scroll;
 }
@@ -168,15 +185,15 @@ nav {
 .top-button-container {
     display: flex;
     justify-content: center;
+    padding: .4vmin 0vmin;
 }
 
 .top-button {
     position: relative;
-    padding: .3vmin 1vmin;
-    margin: .75vmin 1.75vmin;
-    border-radius: 1vmin;
+    padding: .5vmin 1vmin;
+    margin: 0vmin 1.5vmin;
     cursor: pointer;
-    font-size: 3vmin;
+    font-size: 2.8vmin;
     background-color: var(--color-fill-2);
     color: var(--color-font);
     border: .3vmin solid var(--color-border-3);
@@ -196,7 +213,8 @@ nav {
     grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
     grid-gap: 2vmin;
-    padding: 3vmin;
+    padding: 2vmin;
+    margin-top: 1vmin;
     background: var(--color-bckgrnd-2);
     border: .1vmin solid var(--color-border-1);
 }
@@ -204,9 +222,13 @@ nav {
 .button {
     position: relative;
     padding: 0vmin 3vmin;
-    border-radius: .5vmin .5vmin .3vmin .3vmin;
     color: var(--color-font);
     cursor: pointer;
+    font-size: 3.5vmin;
+}
+
+.button sup, .button sub {
+    font-size: 2.5vmin;
 }
 
 .button.normal {
@@ -323,4 +345,21 @@ nav {
 
 #btn-equals {
     grid-row: 5;
+}
+
+.left-right-style {
+    border-radius: 1vmin 2vmin 1vmin 2vmin;
+}
+
+.right-left-style {
+    border-radius: 2vmin 1vmin 2vmin 1vmin;
+}
+
+.soft-edge-style {
+    border-radius: 1vmin 1vmin .5vmin .5vmin;
+}
+
+.highlight-back:hover {
+    /* relative coloring */
+    background: rgb(from var(--color-bckgrnd-2) 176 g b);
 }
