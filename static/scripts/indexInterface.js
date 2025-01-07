@@ -1,5 +1,5 @@
 console.log('Interface Logic Script Loaded.');
-const calc = document.querySelector('.calculator-container');
+const calc = document.querySelector('.calculator-background');
 const nav = document.querySelector('nav');
 
 // calculate navHeight for dynamic interface

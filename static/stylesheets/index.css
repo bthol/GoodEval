@@ -1,12 +1,6 @@
-.calculator-container {
-    width: 80vmin;
-    height: 100vmin;
-    padding: 5vmin;
-    background: var(--color-bckgrnd-3);
-    border-top: 1.4vmin ridge var(--color-border-2);
-    border-right: 1.4vmin groove var(--color-border-2);
-    border-bottom: 1.4vmin groove var(--color-border-2);
-    border-left: 1.4vmin ridge var(--color-border-2);
+.body {
+    margin: 0px;
+    height: 100vh;
 }
 
 /* NAVIGATION */
@@ -14,14 +8,16 @@ nav {
     position: absolute;
     width: 100%;
     --nav-content-height: 15vmin;
-    --nav-border-height: .5vmin;
-    --nav-height: calc(var(--nav-content-height) + var(--nav-border-height));
+    --nav-border-height: .2vmin;
+    --nav-height: calc(var(--nav-border-height)*3 + var(--nav-border-height) + var(--nav-content-height));
     top: calc(var(--nav-height) * -1);
     transition: top 300ms;
+    white-space: nowrap;
 }
 
 .title-container {
     display: flex;
+    justify-content: center;
     align-items: center;
     background-color: #eeeed3;
     height: calc(var(--nav-content-height) * (3/5));
@@ -37,8 +33,8 @@ nav {
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr 1fr;
     background-color: #fafafa;
-    border-top: 1px solid #858585;
-    border-bottom: calc(var(--nav-border-height)) double #858585;
+    border-top: var(--nav-border-height) solid #7c7e8d;
+    border-bottom: calc(var(--nav-border-height)*3) double #7c7e8d;
 }
 
 .nav-button-container > div {
@@ -77,11 +73,11 @@ nav {
 .arrow {
     position: relative;
     z-index: 2;
-    height: 2.8vmin;
-    width: 2.8vmin;
+    height: 3vmin;
+    width: 3vmin;
     margin: 0px auto;
-    border-left: 7px double black;
-    border-top: 7px double black;
+    border-left: 3vmin double #f0ede6;
+    border-top: 3vmin double hsl(240, 25%, 25%);
 }
 
 .upward-arrow > div.arrow {
@@ -109,7 +105,19 @@ nav {
 
 @keyframes pointing {
     0%, 62%, 100% {top: 0vmin}
-    25%, 50% {top: -1vmin}
+    25%, 50% {top: -1.2vmin}
+}
+
+.calculator-background {
+    width: 80vmin;
+    height: 100vmin;
+    padding: 5vmin;
+    margin: calc(50vh - 50vmin) auto;
+    background: var(--color-bckgrnd-3);
+    border-top: 1.4vmin ridge var(--color-border-2);
+    border-right: 1.4vmin groove var(--color-border-2);
+    border-bottom: 1.4vmin groove var(--color-border-2);
+    border-left: 1.4vmin ridge var(--color-border-2);
 }
 
 /* SCREEN */
@@ -118,6 +126,7 @@ nav {
     height: 12vmin;
     background: var(--color-screen);
     border: .6vmin solid var(--color-border-4);
+    margin: 0px auto;
     margin-bottom: 1vmin;
 }
 
@@ -150,13 +159,11 @@ nav {
 }
 
 #screen-content {
-    width: 100%;
-    margin: 0px;
     padding-left: 1vmin;
+    margin: 0px;
     grid-row: 2;
     grid-column: 1 / span 4;
     display: flex;
-    justify-content: flex-start;
     white-space: nowrap;
     overflow-x: scroll;
 }
@@ -173,10 +180,10 @@ nav {
 }
 
 #screen-answer {
-    width: 100%;
-    margin: 0px;
-    justify-self: start;
+    margin-left: 0px;
+    margin-right: 0px;
     grid-row: 3;
+    display: flex;
     white-space: nowrap;
     overflow-x: scroll;
 }
@@ -213,7 +220,8 @@ nav {
     grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
     grid-gap: 2vmin;
-    padding: 2vmin;
+    padding: 1vmin;
+    margin: 0px auto;
     margin-top: 1vmin;
     background: var(--color-bckgrnd-2);
     border: .1vmin solid var(--color-border-1);

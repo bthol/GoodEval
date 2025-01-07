@@ -50,7 +50,6 @@
 /* GENERAL STYLE GUIDE */
 * {
     box-sizing: border-box;
-    margin: 0px auto;
     text-align: center;
     font-size: 3.5vmin;
 }
@@ -60,7 +59,7 @@
 }
 
 sup, sub {
-    font-size: small;
+    font-size: 1.5vmin;
 }
 
 a {
@@ -68,4 +67,8 @@ a {
 }
 a:hover {
     color: hsl(240, 84%, 52%);
+}
+
+.font-normalize {
+    font-size: 3vmin;
 }
