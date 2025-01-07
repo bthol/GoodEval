@@ -1,4 +1,5 @@
-console.log('Interface Logic Script Loaded.');
+console.log('Interface Script Loaded.');
+
 const calc = document.querySelector('.calculator-background');
 const nav = document.querySelector('nav');
 

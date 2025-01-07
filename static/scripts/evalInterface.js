@@ -1,4 +1,4 @@
-console.log('Interface Logic Script Loaded.');
+console.log('Interface Script Loaded.');
 
 function addDot() {
     const dot = document.createElement('div');

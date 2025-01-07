@@ -109,7 +109,7 @@ nav {
 }
 
 .calculator-background {
-    width: 80vmin;
+    width: 75vmin;
     height: 100vmin;
     padding: 5vmin;
     margin: calc(50vh - 50vmin) auto;
