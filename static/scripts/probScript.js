@@ -21,11 +21,13 @@ const Q = document.querySelector('#screen-content');
 const A = document.querySelector('#screen-answer');
 
 // shiftable buttons
-const sinBtn = document.querySelector('#btn-sine');
-const cosBtn = document.querySelector('#btn-cosine');
-const tanBtn = document.querySelector('#btn-tangent');
-const logBtn = document.querySelector('#btn-log');
-const lnBtn = document.querySelector('#btn-log-natural');
+const shiftBtn1 = document.querySelector('#btn-shift-1');
+const shiftBtn2 = document.querySelector('#btn-shift-2');
+const shiftBtn3 = document.querySelector('#btn-shift-3');
+const shiftBtn4 = document.querySelector('#btn-shift-4');
+const shiftBtn5 = document.querySelector('#btn-shift-5');
+const shiftBtn6 = document.querySelector('#btn-shift-6');
+const shiftBtn7 = document.querySelector('#btn-shift-7');
 
 
 // Object literal for evaluation request
@@ -42,7 +44,7 @@ let answer = [];
 let history = [];
 
 // Mode toggles
-let shiftMode= false;
+let shiftMode = 0; // 0 value indicates default mode
 let cursorMode = false;
 let cursorModeToggled = false; // prevents defaulting on nav
 
@@ -52,7 +54,6 @@ let cursorIdx = 0;
 // Caches
 let formatErrorCache = {};
 let cursorModeCache = {};
-let debounceCache = {};
 
 // key function info
 const keyInfo = [
@@ -62,9 +63,9 @@ const keyInfo = [
     {key: 'sec', funct: (x) => Math.sec(x)}, // secant
     {key: 'csc', funct: (x) => Math.csc(x)}, // cosecant
     {key: 'cot', funct: (x) => Math.cot(x)}, // cotangent
-    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
     {key: 'log', funct: (x) => Math.log(x)}, // logarithm
     {key: 'ln', funct: (x) => Math.ln(x)}, // natural logarithm
+    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
 ];
 
 // special number info
@@ -76,22 +77,46 @@ const specialInfo = [
 
 // Shift Mode Toggles
 function toggleShiftMode() {
-    shiftMode = !shiftMode;
-    updateToggleDisplay();
-    if (!shiftMode) {
-        // default
-        sinBtn.innerText = 'sin';
-        cosBtn.innerText = 'cos';
-        tanBtn.innerText = 'tan';
-        logBtn.innerText = 'log';
-        lnBtn.innerText = 'ln';
+    if (shiftMode !== 3) {
+        shiftMode += 1;
     } else {
-        // shifted
-        sinBtn.innerText = 'sec';
-        cosBtn.innerText = 'csc';
-        tanBtn.innerText = 'cot';
-        logBtn.innerHTML = 'log<sup>-1</sup>';
-        lnBtn.innerHTML = 'ln<sup>-1</sup>';
+        shiftMode = 0;
+    }
+    updateToggleDisplay();
+    if (shiftMode === 0) {
+        // default
+        shiftBtn1.innerText = 'sin';
+        shiftBtn2.innerText = 'cos';
+        shiftBtn3.innerText = 'tan';
+        shiftBtn4.innerText = 'log';
+        shiftBtn5.innerText = 'ln';
+        shiftBtn6.innerText = '0';
+        shiftBtn7.innerText = '0';
+    } else if (shiftMode === 1) {
+        // shift 1
+        shiftBtn1.innerText = 'sec';
+        shiftBtn2.innerText = 'csc';
+        shiftBtn3.innerText = 'cot';
+        shiftBtn4.innerHTML = 'log<sup>-1</sup>';
+        shiftBtn5.innerHTML = 'ln<sup>-1</sup>';
+        shiftBtn6.innerText = '1';
+        shiftBtn7.innerText = '1';
+    } else if (shiftMode === 2) {
+        shiftBtn1.innerText = 'sec2';
+        shiftBtn2.innerText = 'csc2';
+        shiftBtn3.innerText = 'cot2';
+        shiftBtn4.innerHTML = 'log<sup>-1</sup>2';
+        shiftBtn5.innerHTML = 'ln<sup>-1</sup>2';
+        shiftBtn6.innerText = '2';
+        shiftBtn7.innerText = '2';
+    } else if (shiftMode === 3) {
+        shiftBtn1.innerText = 'sec3';
+        shiftBtn2.innerText = 'csc3';
+        shiftBtn3.innerText = 'cot3';
+        shiftBtn4.innerHTML = 'log<sup>-1</sup>3';
+        shiftBtn5.innerHTML = 'ln<sup>-1</sup>3';
+        shiftBtn6.innerText = '3';
+        shiftBtn7.innerText = '3';
     }
 };
 
@@ -528,7 +553,7 @@ function validOp() {
 
 function validQuant(key = false, special = false) {
     // pre-validates that a quantity (or open parenthesis character: '(' ) can be added to the problem structure
-    if (isEmptyProblem()) {
+    if (problem.length === 0) {
         // nothing to validate
         return true;
     } else {
@@ -539,6 +564,7 @@ function validQuant(key = false, special = false) {
                 // not special numbers
                 if (!key) {
                     // regular numbers
+                    console.log('pass');
                     const str = problem.slice(problem.length - 1, problem.length)[0];
                     if (!isSpecial(str)) {
                         // last str is not a special number
@@ -762,18 +788,21 @@ function updateAnswer() {
 };
 
 function updateToggleDisplay() {
-    if (shiftMode && cursorMode) { // shift + cursor
-        T.querySelector('.shift-mode').innerText = 'shift';
+    // update cursor mode
+    if (cursorMode) {
         T.querySelector('.cursor-mode').innerText = 'cursor';
-    } else if (shiftMode && !cursorMode) {  // shift
-        T.querySelector('.shift-mode').innerText = 'shift';
+    } else {
         T.querySelector('.cursor-mode').innerText = '';
-    } else if (!shiftMode && cursorMode) {  // cursor
+    }
+    // update shift mode
+    if (shiftMode === 0) {
         T.querySelector('.shift-mode').innerText = '';
-        T.querySelector('.cursor-mode').innerText = 'cursor';
-    } else {                                // neither
-        T.querySelector('.shift-mode').innerText = '';
-        T.querySelector('.cursor-mode').innerText = '';
+    } else if (shiftMode === 1) {
+        T.querySelector('.shift-mode').innerText = 'shift1';
+    } else if (shiftMode === 2) {
+        T.querySelector('.shift-mode').innerText = 'shift2';
+    } else if (shiftMode === 3) {
+        T.querySelector('.shift-mode').innerText = 'shift3';
     }
 };
 
@@ -896,19 +925,18 @@ btns.addEventListener('click', (e) => {
                     insert('9');
                 }
             } else if (id === 'btn-pi') {
-                if (validQuant(false, true)) {
+                if (validQuant()) {
                     insert(specialInfo[0].symbol);
                 }
             } else if (id === 'btn-tau') {
-                if (validQuant(false, true)) {
+                if (validQuant()) {
                     insert(specialInfo[1].symbol);
                 }
             } else if (id === 'btn-euler') {
-                if (validQuant(false, true)) {
+                if (validQuant()) {
                     insert(specialInfo[2].symbol);
                 }
             }
-
         } else if (type === 'operation') {
             if (id === 'btn-plus') {
                 if (validOp()) {
@@ -944,10 +972,7 @@ btns.addEventListener('click', (e) => {
                 console.log('clear');
                 // clear data in problem structure
                 problem = [];
-                // toggle off all modes
-                if (shiftMode) {
-                    toggleShiftMode();
-                }
+                // toggle off cursor mode (leave shift mode)
                 cursorMode = false;
                 // update display to reflect changes
                 updateProblem();
@@ -1022,56 +1047,62 @@ btns.addEventListener('click', (e) => {
         
         // key function buttons
         } else if (type === 'key') {
-            if (id === 'btn-sine') {
+            if (id === 'btn-shift-1') {
                 if (validQuant(true)) {
-                    if (!shiftMode) {
+                    if (shiftMode === 0) {
                         // default
                         insert('sin');
-                    } else {
-                        // shifted
+                    } else if (shiftMode === 1) {
+                        // shift 1
                         insert('sec');
                     }
                 }
-            } else if (id === 'btn-cosine') {
+            } else if (id === 'btn-shift-2') {
                 if (validQuant(true)) {
-                    if (!shiftMode) {
+                    if (shiftMode === 0) {
                         // default
                         insert('cos');
-                    } else {
-                        // shifted
+                    } else if (shiftMode === 1) {
+                        // shift 1
                         insert('csc');
                     }
                 }
-            } else if (id === 'btn-tangent') {
+            } else if (id === 'btn-shift-3') {
                 if (validQuant(true)) {
-                    if (!shiftMode) {
+                    if (shiftMode === 0) {
                         // default
                         insert('tan');
-                    } else {
-                        // shifted
+                    } else if (shiftMode === 1) {
+                        // shift 1
                         insert('cot');
                     }
                 }
-            } else if (id === 'btn-log') {
+            } else if (id === 'btn-shift-4') {
                 if (validQuant(true)) {
-                    if (!shiftMode) {
+                    if (shiftMode === 0) {
                         // default
                         insert('log');
-                    } else {
-                        // shifted
+                    } else if (shiftMode === 1) {
+                        // shift 1
                         insert('log-');
                     }
                 }
-            } else if (id === 'btn-log-natural') {
+            } else if (id === 'btn-shift-5') {
                 if (validQuant(true)) {
-                    if (!shiftMode) {
+                    if (shiftMode === 0) {
                         // default
                         insert('ln');
-                    } else {
-                        // shifted
+                    } else if (shiftMode === 1) {
+                        // shift 1
                         insert('ln-');
                     }
                 }
+            } else if (id === 'btn-shift-6') {
+                // something
+                console.log('btn-shift-6');
+            } else if (id === 'btn-shift-7') {
+                // something
+                console.log('btn-shift-7');
             }
         }
     }

@@ -6,7 +6,7 @@ const nav = document.querySelector('nav');
 // calculate navHeight for dynamic interface
 const bh = getComputedStyle(nav).getPropertyValue('--nav-border-height');
 const ch = getComputedStyle(nav).getPropertyValue('--nav-content-height');
-const navHeight = Number(bh.slice(0, bh.length - 4)) + Number(ch.slice(0, ch.length - 4));
+const navHeight = Number(bh.slice(0, bh.length - 4)) * 4 + Number(ch.slice(0, ch.length - 4));
 
 // logic for opening and closing the nav menu via the arrow
 let navState = false;

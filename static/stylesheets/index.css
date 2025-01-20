@@ -9,7 +9,7 @@ nav {
     width: 100%;
     --nav-content-height: 15vmin;
     --nav-border-height: .2vmin;
-    --nav-height: calc(var(--nav-border-height)*3 + var(--nav-border-height) + var(--nav-content-height));
+    --nav-height: calc(var(--nav-border-height) * 4 + var(--nav-content-height));
     top: calc(var(--nav-height) * -1);
     transition: top 300ms;
     white-space: nowrap;
@@ -191,14 +191,14 @@ nav {
 /* BUTTONS */
 .top-button-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     padding: .4vmin 0vmin;
 }
 
 .top-button {
     position: relative;
     padding: .5vmin 1vmin;
-    margin: 0vmin 1.5vmin;
+    margin: 0vmin 1vmin;
     cursor: pointer;
     font-size: 2.8vmin;
     background-color: var(--color-fill-2);
