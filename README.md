@@ -2,7 +2,7 @@
 
 **Developer:** Blake Thollaug
 
-**GoodEval Overview:** GoodEval is a Django stack calulator web application and computational intelligence API that makes use of string evaluation to perform its calculations. The GoodEval Calculator evaluates arithmetic expressions to produce a single value through a skeuomorphic and themable calculator GUI.
+**Overview:** GoodEval is a Django stack calulator web application and computational intelligence API that makes use of string evaluation to perform its calculations. The GoodEval Calculator evaluates arithmetic expressions to produce a single value through a skeuomorphic and themable calculator GUI.
 
 ## Evaluator Operation
 Different from calculation of numeral data types in real-time, string evaluation calculates with string data by way of data type conversion from string data to numeral data after the problem string has been created in its entirety. Numeral data types are limited to only numeral characters, and thus cannot accomodate special functions accessed by non-numeral characters. The evaluator takes a problem string, the string is analyzed and structured, the structure is further analyzed and manipulated, and then parenthetically sectioned and solved.

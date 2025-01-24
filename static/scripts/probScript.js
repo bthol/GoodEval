@@ -1,13 +1,12 @@
 console.log('Problem Script Loaded.');
 
 // Development Plan
-//  - determine if validQuant can be refactored to only test for operations
+
+//  -  popup description of buttons on hover
 
 //  - remove parenthesis around multidigit values
 
-//  - develop interface for optionally displaying history
-
-//  - key functions solve expressions before using solution as argument
+//  - display history in screen
 
 //  - solve by section with new parenthesis function (based on algorithm in evaluator_fil.py)
 
@@ -27,7 +26,6 @@ const shiftBtn3 = document.querySelector('#btn-shift-3');
 const shiftBtn4 = document.querySelector('#btn-shift-4');
 const shiftBtn5 = document.querySelector('#btn-shift-5');
 const shiftBtn6 = document.querySelector('#btn-shift-6');
-const shiftBtn7 = document.querySelector('#btn-shift-7');
 
 
 // Object literal for evaluation request
@@ -55,17 +53,164 @@ let cursorIdx = 0;
 let formatErrorCache = {};
 let cursorModeCache = {};
 
+// custom key functions
+function rndx(x) {
+    // rand val 0 - x
+    if (x === 0) {
+        return 0;
+    } else if (x > 0) {
+        return Math.floor(Math.random() * (x + 1));
+    } else {
+        // less than zero
+        return NaN;
+    }
+};
+
+function rndy(x) {
+    // rand val -x - x
+    const range = Math.abs(x) * 2 + 1;
+    const val = Math.floor(Math.random() * range);
+    return -Math.abs(x) + val;
+};
+
+function factorial(x) {
+    if (x === 0) {
+        return 0;
+    } else if (x > 0) {
+        let y = 1;
+        for (let i = 1; i <= x; i++) {
+            y *= i;
+        }
+        return y;
+    } else {
+        // less than zero
+        return NaN;
+    }
+};
+
+// summation functions
+function summateVariable(x) {
+    if (Math.floor(x) === x) {
+        if (x === 0) {
+            return 0;
+        } else if (x > 0) {
+            let sum = 0;
+            for (let i = 1; i <= x; i++) {
+                sum += i;
+            }
+            return sum;
+        } else {
+            // less than zero
+            return NaN;
+        }
+    } else {
+        // no fractional arguments
+        customError('Error: no fractional arguments');
+        return NaN;
+    }
+};
+
+function productSum(x) {
+    if (Math.floor(x) === x) {
+        if (x === 0) {
+            return 0;
+        } else if (x > 0) {
+            let sum = 0;
+            for (let i = 1; i <= x; i++) {
+                sum += x * i;
+            }
+            return sum;
+        } else {
+            // less than zero
+            return NaN;
+        }
+    } else {
+        // no fractional arguments
+        customError('Error: no fractional arguments');
+        return NaN;
+    }
+};
+
+function quotientSum1(x) {
+    if (Math.floor(x) === x) {
+        if (x === 0) {
+            return 0;
+        } else if (x > 0) {
+            let sum = 0;
+            for (let i = 1; i <= x; i++) {
+                sum += i / x;
+            }
+            return sum;
+        } else {
+            // less than zero
+            return NaN;
+        }
+    } else {
+        // no fractional arguments
+        customError('Error: no fractional arguments');
+        return NaN;
+    }
+};
+
+function quotientSum2(x) {
+    if (Math.floor(x) === x) {
+        if (x === 0) {
+            return 0;
+        } else if (x > 0) {
+            let sum = 0;
+            for (let i = 1; i <= x; i++) {
+                sum += x / i;
+            }
+            return sum;
+        } else {
+            // less than zero
+            return NaN;
+        }
+    } else {
+        // no fractional arguments
+        customError('Error: no fractional arguments');
+        return NaN;
+    }
+};
+
 // key function info
 const keyInfo = [
+// key functions
     {key: 'sin', funct: (x) => Math.sin(x)}, // sine
+    {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
+    {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
+    {key: 'asinh', funct: (x) => Math.asinh(x)}, // arch hyperbolic sine
+
     {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
+    {key: 'acos', funct: (x) => Math.acos(x)}, // arch cosine
+    {key: 'cosh', funct: (x) => Math.cosh(x)}, // hyperbolic cosine
+    {key: 'acosh', funct: (x) => Math.acosh(x)}, // arch hyperbolic cosine
+
     {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
-    {key: 'sec', funct: (x) => Math.sec(x)}, // secant
-    {key: 'csc', funct: (x) => Math.csc(x)}, // cosecant
-    {key: 'cot', funct: (x) => Math.cot(x)}, // cotangent
-    {key: 'log', funct: (x) => Math.log(x)}, // logarithm
-    {key: 'ln', funct: (x) => Math.ln(x)}, // natural logarithm
+    {key: 'atan', funct: (x) => Math.atan(x)}, // arch tangent
+    {key: 'tanh', funct: (x) => Math.tanh(x)}, // hyperbolic tangent
+    {key: 'atanh', funct: (x) => Math.atanh(x)}, // arch hypberbolic tangent
+
+    {key: 'log10', funct: (x) => Math.log10(x)}, // logarithm (base 10)
+    {key: 'log2', funct: (x) => Math.log2(x)}, // logarithm (base 2)
+    {key: 'ln', funct: (x) => Math.log(x)}, // natural logarithm
+    
+    {key: 'round', funct: (x) => Math.round(x)}, // rounds to nearest integer
+
+    {key: 'rand', funct: () => Math.floor(Math.random() * 9) + 1}, // generates a random number between 1 - 9
+    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
+    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
+    
+    {key: '!', funct: (x) => factorial(x)}, // factorial of x
+    {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
+    {key: 'Σxin', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
+    {key: 'Σn/xi', funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
+    {key: 'Σxi/n', funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
+    
+    // static operations
     {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
+    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
+    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
 ];
 
 // special number info
@@ -88,35 +233,31 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'sin';
         shiftBtn2.innerText = 'cos';
         shiftBtn3.innerText = 'tan';
-        shiftBtn4.innerText = 'log';
-        shiftBtn5.innerText = 'ln';
-        shiftBtn6.innerText = '0';
-        shiftBtn7.innerText = '0';
+        shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">10</sub>';
+        shiftBtn5.innerText = 'round';
+        shiftBtn6.innerText = 'rand';
     } else if (shiftMode === 1) {
         // shift 1
-        shiftBtn1.innerText = 'sec';
-        shiftBtn2.innerText = 'csc';
-        shiftBtn3.innerText = 'cot';
-        shiftBtn4.innerHTML = 'log<sup>-1</sup>';
-        shiftBtn5.innerHTML = 'ln<sup>-1</sup>';
-        shiftBtn6.innerText = '1';
-        shiftBtn7.innerText = '1';
+        shiftBtn1.innerText = 'asin';
+        shiftBtn2.innerText = 'acos';
+        shiftBtn3.innerText = 'atan';
+        shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">2</sub>';
+        shiftBtn5.innerText = '!x';
+        shiftBtn6.innerText = 'rndx';
     } else if (shiftMode === 2) {
-        shiftBtn1.innerText = 'sec2';
-        shiftBtn2.innerText = 'csc2';
-        shiftBtn3.innerText = 'cot2';
-        shiftBtn4.innerHTML = 'log<sup>-1</sup>2';
-        shiftBtn5.innerHTML = 'ln<sup>-1</sup>2';
-        shiftBtn6.innerText = '2';
-        shiftBtn7.innerText = '2';
+        shiftBtn1.innerText = 'sinh';
+        shiftBtn2.innerText = 'cosh';
+        shiftBtn3.innerText = 'tanh';
+        shiftBtn4.innerHTML = 'ln';
+        shiftBtn5.innerText = 'Σn';
+        shiftBtn6.innerHTML = 'rndy';
     } else if (shiftMode === 3) {
-        shiftBtn1.innerText = 'sec3';
-        shiftBtn2.innerText = 'csc3';
-        shiftBtn3.innerText = 'cot3';
-        shiftBtn4.innerHTML = 'log<sup>-1</sup>3';
-        shiftBtn5.innerHTML = 'ln<sup>-1</sup>3';
-        shiftBtn6.innerText = '3';
-        shiftBtn7.innerText = '3';
+        shiftBtn1.innerText = 'asinh';
+        shiftBtn2.innerText = 'acosh';
+        shiftBtn3.innerText = 'atanh';
+        shiftBtn4.innerHTML = 'Σx<sub id="btn-shift-6-sub" class="key">i</sub>n';
+        shiftBtn5.innerHTML = 'Σn/x<sub id="btn-shift-6-sub" class="key">i</sub>';
+        shiftBtn6.innerHTML = 'Σx<sub id="btn-shift-6-sub" class="key">i</sub>/n';
     }
 };
 
@@ -215,7 +356,6 @@ function backspace() {
 
 // Structuring
 function insert(char) {
-    console.log(char);
     if (!cursorMode) {
         // defaultly inserts at end of problem
         problem.push(char);
@@ -224,11 +364,7 @@ function insert(char) {
         // in cursor mode, inserts at cursor index
         if (problem.length > 0) {
             // non-empty problem structure
-            if (cursorIdx === 0) {
-                problem.unshift(char);
-            } else {
-                problem.splice(cursorIdx + 1, 0, char);
-            }
+            problem.splice(cursorIdx + 1, 0, char);
         } else {
             // empty problem structure
             problem.push(char);
@@ -339,6 +475,26 @@ function structureString() {
     
     console.log(struct);
     answer = struct;
+};
+
+function removeFormatElements(i) {
+    // returns a string without format elements from string in given problem structure index
+    let string = '';
+    let addToStr = true;
+    const str = problem[i];
+    for (let i = 0; i < str.length; i++) {
+        const char = str.slice(i, i + 1);
+        if (char === '<') {
+            addToStr = false;
+        } else if (char === '>') {
+            addToStr = true;
+            continue;
+        }
+        if (addToStr) {
+            string += char;
+        }
+    }
+    return string;
 };
 
 // Key Functions
@@ -505,8 +661,10 @@ function isEmptyProblem() {
     }
 };
 
-function isKey(str) {
-    // test for match of str with key property of keyInfo structure
+function isKey(i) {
+    // test for match of str at problwem index i with key property of keyInfo structure
+    console.log(i);
+    const str = removeFormatElements(i);
     for (let i = 0; i < keyInfo.length; i++) {
         if (keyInfo[i].key === str) {
             return true;
@@ -564,7 +722,6 @@ function validQuant(key = false, special = false) {
                 // not special numbers
                 if (!key) {
                     // regular numbers
-                    console.log('pass');
                     const str = problem.slice(problem.length - 1, problem.length)[0];
                     if (!isSpecial(str)) {
                         // last str is not a special number
@@ -581,7 +738,7 @@ function validQuant(key = false, special = false) {
                         // last str is not a number
                         if (!isSpecial(str)) {
                             // last str is not a special number
-                            if (!isKey(str)) {
+                            if (!isKey(problem.length - 1)) {
                                 // last str is not key
                                 return true;
                             } else {
@@ -640,7 +797,7 @@ function validQuant(key = false, special = false) {
                         // last str is not a number
                         if (!isSpecial(str)) {
                             // last str is not a special number
-                            if (!isKey(str)) {
+                            if (!isKey(cursorIdx)) {
                                 // last str is not key
                                 return true;
                             } else {
@@ -757,17 +914,17 @@ function validProblem(problem) {
 function updateProblem(cursor = null) {
     // clear problem in display
     Q.innerHTML = '';
-    let string = '';
+    let compile = '';
     for (let i = 0; i < problem.length; i++) {
-        // compile string
-        string += problem[i];
+        // compile strings
+        compile += problem[i];
         // build element
         const div = document.createElement('div');
-        div.innerText = problem[i];
+        div.innerHTML = problem[i];
         // lay element
         Q.appendChild(div);
     }
-    input.problem = string;
+    input.problem = compile;
     cursorDefault(cursor);
     cursorHighlight();
 };
@@ -815,6 +972,10 @@ function cursorHighlight() {
 
 function evaluate() {
     // run on equal button click
+    for (let i = 0; i < problem.length; i++) {
+        // remove formatElements in problem structure
+        problem.splice(i, 1, removeFormatElements(i));
+    }
     console.log(problem);
     console.log('Validating...');
     if (validProblem(problem)) {
@@ -855,9 +1016,9 @@ function evaluate() {
         // clear data
         problem = [];
         answer = [];
+        input.problem = '';
 
-        // handle modes
-        shiftMode = false;
+        // handle cursor mode
         cursorMode = false;
         updateToggleDisplay();
 
@@ -937,6 +1098,7 @@ btns.addEventListener('click', (e) => {
                     insert(specialInfo[2].symbol);
                 }
             }
+
         } else if (type === 'operation') {
             if (id === 'btn-plus') {
                 if (validOp()) {
@@ -964,7 +1126,17 @@ btns.addEventListener('click', (e) => {
             } else if (id === 'btn-root' || id === 'btn-root-sup') {
                 insert('√');
             } else if (id === 'btn-absolute-value') {
-                insert('abs');
+                if (validQuant(true)) {
+                    insert('abs');
+                }
+            } else if (id === 'btn-floor') {
+                if (validQuant(true)) {
+                    insert('floor');
+                }
+            } else if (id === 'btn-ceil') {
+                if (validQuant(true)) {
+                    insert('ceil');
+                }
             }
 
         } else if (type === 'special') {
@@ -972,6 +1144,7 @@ btns.addEventListener('click', (e) => {
                 console.log('clear');
                 // clear data in problem structure
                 problem = [];
+                input.problem = '';
                 // toggle off cursor mode (leave shift mode)
                 cursorMode = false;
                 // update display to reflect changes
@@ -1053,8 +1226,11 @@ btns.addEventListener('click', (e) => {
                         // default
                         insert('sin');
                     } else if (shiftMode === 1) {
-                        // shift 1
-                        insert('sec');
+                        insert('asin');
+                    } else if (shiftMode === 2) {
+                        insert('sinh');
+                    } else if (shiftMode === 3) {
+                        insert('asinh');
                     }
                 }
             } else if (id === 'btn-shift-2') {
@@ -1063,8 +1239,11 @@ btns.addEventListener('click', (e) => {
                         // default
                         insert('cos');
                     } else if (shiftMode === 1) {
-                        // shift 1
-                        insert('csc');
+                        insert('acos');
+                    } else if (shiftMode === 2) {
+                        insert('cosh');
+                    } else if (shiftMode === 3) {
+                        insert('acosh');
                     }
                 }
             } else if (id === 'btn-shift-3') {
@@ -1073,36 +1252,50 @@ btns.addEventListener('click', (e) => {
                         // default
                         insert('tan');
                     } else if (shiftMode === 1) {
-                        // shift 1
-                        insert('cot');
+                        insert('atan');
+                    } else if (shiftMode === 2) {
+                        insert('tanh');
+                    } else if (shiftMode === 3) {
+                        insert('atanh');
                     }
                 }
-            } else if (id === 'btn-shift-4') {
+            } else if (id === 'btn-shift-4' || id === 'btn-shift-4-sub') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         // default
-                        insert('log');
+                        insert('log<sub>10</sub>');
                     } else if (shiftMode === 1) {
-                        // shift 1
-                        insert('log-');
+                        insert('log<sub>2</sub>');
+                    } else if (shiftMode === 2) {
+                        insert('ln');
+                    } else if (shiftMode === 3) {
+                        insert('Σx<sub>i</sub>n');
                     }
                 }
             } else if (id === 'btn-shift-5') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
-                        // default
-                        insert('ln');
-                    } else if (shiftMode === 1) {
-                        // shift 1
-                        insert('ln-');
+                        insert('round');
+                    } else if (shiftMode === 1) {;
+                        insert('!');
+                    } else if (shiftMode === 2) {
+                        insert('Σn');
+                    } else if (shiftMode === 3) {
+                        insert('Σn/x<sub>i</sub>');
                     }
                 }
-            } else if (id === 'btn-shift-6') {
-                // something
-                console.log('btn-shift-6');
-            } else if (id === 'btn-shift-7') {
-                // something
-                console.log('btn-shift-7');
+            } else if (id === 'btn-shift-6' || id === 'btn-shift-6-sub') {
+                if (validQuant(true)) {
+                    if (shiftMode === 0) {
+                        insert('rand');
+                    } else if (shiftMode === 1) {
+                        insert('rndx');
+                    } else if (shiftMode === 2) {
+                        insert('rndy');
+                    } else if (shiftMode === 3) {
+                        insert('Σx<sub>i</sub>/n');
+                    }
+                }
             }
         }
     }
