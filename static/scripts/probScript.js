@@ -233,7 +233,7 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'sin';
         shiftBtn2.innerText = 'cos';
         shiftBtn3.innerText = 'tan';
-        shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">10</sub>';
+        shiftBtn4.innerHTML = '<div style="font-size: 2.5vmin">log<sub id="btn-shift-4-sub" class="key">10</sub></div>';
         shiftBtn5.innerText = 'round';
         shiftBtn6.innerText = 'rand';
     } else if (shiftMode === 1) {
@@ -241,7 +241,7 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'asin';
         shiftBtn2.innerText = 'acos';
         shiftBtn3.innerText = 'atan';
-        shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">2</sub>';
+        shiftBtn4.innerHTML = '<div style="font-size: 2.5vmin">log<sub id="btn-shift-4-sub" class="key">2</sub></div>';
         shiftBtn5.innerText = '!x';
         shiftBtn6.innerText = 'rndx';
     } else if (shiftMode === 2) {
@@ -255,9 +255,9 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'asinh';
         shiftBtn2.innerText = 'acosh';
         shiftBtn3.innerText = 'atanh';
-        shiftBtn4.innerHTML = 'Σx<sub id="btn-shift-6-sub" class="key">i</sub>n';
-        shiftBtn5.innerHTML = 'Σn/x<sub id="btn-shift-6-sub" class="key">i</sub>';
-        shiftBtn6.innerHTML = 'Σx<sub id="btn-shift-6-sub" class="key">i</sub>/n';
+        shiftBtn4.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.7vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>n</div></div>';
+        shiftBtn5.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.7vmin">Σ<div style="font-size: 2vmin">n/x<sub id="btn-shift-6-sub" class="key">i</sub></div></div>';
+        shiftBtn6.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.7vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>/n</div></div>';
     }
 };
 
