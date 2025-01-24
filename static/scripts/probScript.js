@@ -4,7 +4,7 @@ console.log('Problem Script Loaded.');
 
 //  -  popup description of buttons on hover
 
-//  - remove parenthesis around multidigit values
+//  - remove parenthesis around multidigit single values
 
 //  - display history in screen
 
@@ -52,6 +52,53 @@ let cursorIdx = 0;
 // Caches
 let formatErrorCache = {};
 let cursorModeCache = {};
+
+// key function info
+const keyInfo = [
+// key functions
+    {key: 'sin', funct: (x) => Math.sin(x)}, // sine
+    {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
+    {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
+    {key: 'asinh', funct: (x) => Math.asinh(x)}, // arch hyperbolic sine
+
+    {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
+    {key: 'acos', funct: (x) => Math.acos(x)}, // arch cosine
+    {key: 'cosh', funct: (x) => Math.cosh(x)}, // hyperbolic cosine
+    {key: 'acosh', funct: (x) => Math.acosh(x)}, // arch hyperbolic cosine
+
+    {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
+    {key: 'atan', funct: (x) => Math.atan(x)}, // arch tangent
+    {key: 'tanh', funct: (x) => Math.tanh(x)}, // hyperbolic tangent
+    {key: 'atanh', funct: (x) => Math.atanh(x)}, // arch hypberbolic tangent
+
+    {key: 'log10', funct: (x) => Math.log10(x)}, // logarithm (base 10)
+    {key: 'log2', funct: (x) => Math.log2(x)}, // logarithm (base 2)
+    {key: 'ln', funct: (x) => Math.log(x)}, // natural logarithm
+    
+    {key: 'round', funct: (x) => Math.round(x)}, // rounds to nearest integer
+
+    {key: 'rand', funct: () => Math.floor(Math.random() * 9) + 1}, // generates a random number between 1 - 9
+    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
+    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
+    
+    {key: '!', funct: (x) => factorial(x)}, // factorial of x
+    {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
+    {key: 'Σxin', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
+    {key: 'Σn/xi', funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
+    {key: 'Σxi/n', funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
+    
+    // static operations
+    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
+    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
+    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
+];
+
+// special number info
+const specialInfo = [
+    {symbol: 'π', value: Math.PI}, // pi
+    {symbol: 'τ', value: Math.PI * 2}, // tau
+    {symbol: 'e', value: Math.E}, // Euler's number
+];
 
 // custom key functions
 function rndx(x) {
@@ -173,53 +220,6 @@ function quotientSum2(x) {
     }
 };
 
-// key function info
-const keyInfo = [
-// key functions
-    {key: 'sin', funct: (x) => Math.sin(x)}, // sine
-    {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
-    {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
-    {key: 'asinh', funct: (x) => Math.asinh(x)}, // arch hyperbolic sine
-
-    {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
-    {key: 'acos', funct: (x) => Math.acos(x)}, // arch cosine
-    {key: 'cosh', funct: (x) => Math.cosh(x)}, // hyperbolic cosine
-    {key: 'acosh', funct: (x) => Math.acosh(x)}, // arch hyperbolic cosine
-
-    {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
-    {key: 'atan', funct: (x) => Math.atan(x)}, // arch tangent
-    {key: 'tanh', funct: (x) => Math.tanh(x)}, // hyperbolic tangent
-    {key: 'atanh', funct: (x) => Math.atanh(x)}, // arch hypberbolic tangent
-
-    {key: 'log10', funct: (x) => Math.log10(x)}, // logarithm (base 10)
-    {key: 'log2', funct: (x) => Math.log2(x)}, // logarithm (base 2)
-    {key: 'ln', funct: (x) => Math.log(x)}, // natural logarithm
-    
-    {key: 'round', funct: (x) => Math.round(x)}, // rounds to nearest integer
-
-    {key: 'rand', funct: () => Math.floor(Math.random() * 9) + 1}, // generates a random number between 1 - 9
-    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
-    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
-    
-    {key: '!', funct: (x) => factorial(x)}, // factorial of x
-    {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
-    {key: 'Σxin', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
-    {key: 'Σn/xi', funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
-    {key: 'Σxi/n', funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
-    
-    // static operations
-    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
-    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
-    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
-];
-
-// special number info
-const specialInfo = [
-    {symbol: 'π', value: Math.PI}, // pi
-    {symbol: 'τ', value: Math.PI * 2}, // tau
-    {symbol: 'e', value: Math.E}, // Euler's number
-];
-
 // Shift Mode Toggles
 function toggleShiftMode() {
     if (shiftMode !== 3) {
@@ -255,9 +255,9 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'asinh';
         shiftBtn2.innerText = 'acosh';
         shiftBtn3.innerText = 'atanh';
-        shiftBtn4.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.7vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>n</div></div>';
-        shiftBtn5.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.7vmin">Σ<div style="font-size: 2vmin">n/x<sub id="btn-shift-6-sub" class="key">i</sub></div></div>';
-        shiftBtn6.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.7vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>/n</div></div>';
+        shiftBtn4.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>n</div></div>';
+        shiftBtn5.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">n/x<sub id="btn-shift-6-sub" class="key">i</sub></div></div>';
+        shiftBtn6.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>/n</div></div>';
     }
 };
 
@@ -495,6 +495,83 @@ function removeFormatElements(i) {
         }
     }
     return string;
+};
+
+function findClose(start, open, close, struct) {
+    // finds closing index for open and close char pairs
+    // accounts for nesting
+    let index = 0;
+    let nest = 0;
+    for (let i = start; i < struct.length; i++) {
+        if (struct[i] === open) {
+            nest += 1;
+        } else if (struct[i] === close) {
+            nest -= 1;
+            if (nest === 0) {
+                index = i;
+                break;
+            }
+        }
+    }
+    return index;
+};
+
+function findOpen(start, open, close, struct) {
+    // finds opening index for open and close char pairs
+    // accounts for nesting
+    let index = 0;
+    let nest = 0;
+    for (let i = start; i > -1; i--) {
+        if (struct[i] === open) {
+            nest += 1;
+            if (nest === 0) {
+                index = i;
+                break;
+            }
+        } else if (struct[i] === close) {
+            nest -= 1;
+        }
+    }
+    return index;
+};
+
+function getSection(open, close) {
+    // returns section for calculation
+    let ref = [];
+    for (let i = 0; i < answer.length; i++) {
+        if (answer[i] === open || answer[i] === close) {
+            ref.push({char: answer[i], index: i});
+        }
+    }
+    if (ref.length > 0) {
+        let start, end;
+        let section = [];
+        for (let i = 0; i < ref.length; i++) {
+            if (ref[i].char === open && i + 1 < ref.length && ref[i + 1].char === close) {
+                start = ref[i].index;
+                end = ref[i + 1].index;
+            }
+        }
+        for (let i = start + 1; i < end; i++) {
+            section.push(answer[i]);
+        }
+        return true && {start: start, end: end, sect: section};
+    } else {
+        return false;
+    }
+};
+
+function section() {
+    let section = getSection('(', ')');
+    console.log(section);
+    let count = 0;
+    while (count < 10 && section) {
+        answer = restructure(calculate(section.sect), section.start, section.end, answer);
+        // prepare for next iteraton
+        section = getSection('(', ')');
+        count += 1;
+    }
+    answer = calculate(answer);
 };
 
 // Key Functions
@@ -996,7 +1073,8 @@ function evaluate() {
         console.log('Done.');
         // perform arithmetic
         console.log('Performing arithmetic...');
-        answer = calculate(answer);
+        // answer = calculate(answer);
+        section();
         console.log('Done.');
         // display answer
         console.log('Solved.');
@@ -1164,7 +1242,7 @@ btns.addEventListener('click', (e) => {
                 }
                 updateProblem();
             } else if (id === 'btn-paren-open') {
-                if (validQuant(problem)) {
+                if (shiftMode === 0 && validQuant(problem)) {
                     insert('(');
                 }
             } else if (id === 'btn-paren-close') {

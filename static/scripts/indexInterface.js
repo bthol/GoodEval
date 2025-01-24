@@ -1,5 +1,6 @@
 console.log('Interface Script Loaded.');
 
+// DOM selections
 const calc = document.querySelector('.calculator-background');
 const nav = document.querySelector('nav');
 
