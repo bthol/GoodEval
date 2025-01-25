@@ -482,6 +482,7 @@ function removeFormatElements(i) {
     let string = '';
     let addToStr = true;
     const str = problem[i];
+    console.log(problem);
     for (let i = 0; i < str.length; i++) {
         const char = str.slice(i, i + 1);
         if (char === '<') {
@@ -739,8 +740,7 @@ function isEmptyProblem() {
 };
 
 function isKey(i) {
-    // test for match of str at problwem index i with key property of keyInfo structure
-    console.log(i);
+    // test for match of str at problem index i with key property of keyInfo structure
     const str = removeFormatElements(i);
     for (let i = 0; i < keyInfo.length; i++) {
         if (keyInfo[i].key === str) {
@@ -787,7 +787,7 @@ function validOp() {
 };
 
 function validQuant(key = false, special = false) {
-    // pre-validates that a quantity (or open parenthesis character: '(' ) can be added to the problem structure
+    // pre-validates regular numbers, special numbers and key functions
     if (problem.length === 0) {
         // nothing to validate
         return true;
@@ -798,117 +798,204 @@ function validQuant(key = false, special = false) {
             if (!special) {
                 // not special numbers
                 if (!key) {
+
                     // regular numbers
+
                     const str = problem.slice(problem.length - 1, problem.length)[0];
-                    if (!isSpecial(str)) {
-                        // last str is not a special number
-                        return true;
-                    } else {
-                        // last str is a special number
-                        customError('Error: requires operation');
-                        return false;
+                    if (str !== ')') {
+                        if (!isSpecial(str)) {
+                            // last str is not a special number
+                            return true;
+                        }
                     }
+                    // last str is a special number
+                    customError('Error: requires operation');
+                    return false;
+
                 } else {
+
                     // key function
+
                     const str = problem.slice(problem.length - 1, problem.length)[0];
+                    if (str !== ')') {
+                        if (isNaN(str)) {
+                            // last str is not a number
+                            if (!isSpecial(str)) {
+                                // last str is not a special number
+                                if (!isKey(problem.length - 1)) {
+                                    // last str is not key
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    // last str is a number or a special number or a key
+                    customError('Error: requires operation');
+                    return false;
+
+                }
+
+            } else {
+
+                // special numbers
+
+                const str = problem.slice(problem.length - 1, problem.length)[0];
+                if (str !== ')') {
                     if (isNaN(str)) {
                         // last str is not a number
                         if (!isSpecial(str)) {
                             // last str is not a special number
-                            if (!isKey(problem.length - 1)) {
-                                // last str is not key
-                                return true;
-                            } else {
-                                // last str is key
-                                customError('Error: requires operation');
-                                return false;
-                            }
-                        } else {
-                            // last str is a special number
-                            customError('Error: requires operation');
-                            return false;
+                            return true;
                         }
-                    } else {
-                        // last str is a number
-                        customError('Error: requires operation');
-                        return false;
                     }
                 }
+                // last str is a number or a special number
+                customError('Error: requires operation');
+                return false;
+
+            }
+        } else {
+            // cursor mode
+            if (!special) {
+                // not special numbers
+                if (!key) {
+
+                    // regular numbers
+
+                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+                    if (str !== ')') {
+                        if (!isSpecial(str)) {
+                            // str at cursorIdx is not a special number
+                            return true;
+                        }
+                    }
+                    // str at cursorIdx is special number
+                    customError('Error: requires operation');
+                    return false;
+
+                } else {
+
+                    // key function
+
+                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+                    if (str !== ')') {
+                        if (isNaN(str)) {
+                            // str at cursorIdx is not a number
+                            if (!isSpecial(str)) {
+                                // str at cursorIdx is not a special number
+                                if (!isKey(cursorIdx)) {
+                                    // str at cursorIdx is not key
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    // str at cursorIdx is a number or a special number or a key
+                    customError('Error: requires operation');
+                    return false;
+
+                }
+
             } else {
+
                 // special numbers
-                const str = problem.slice(problem.length - 1, problem.length)[0];
+
+                const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+                if (str !== ')') {
+                    if (isNaN(str)) {
+                        // str at cursorIdx is not a number
+                        if (!isSpecial(str)) {
+                            // str at cursorIdx is not a special number
+                            return true;
+                        }
+                    }
+                }
+                // str at cursorIdx is a number or a special number
+                customError('Error: requires operation');
+                return false;
+
+            }
+        }
+    }
+};
+
+function validParen(closing = false) {
+    console.log('ran');
+    if (problem.length === 0) {
+        // nothing to validate
+        return true;
+    } else {
+        if (!cursorMode) {
+            // default mode
+            const str = problem.slice(problem.length - 1, problem.length)[0];
+            if (!closing) {
+                // opening parens
                 if (isNaN(str)) {
                     // last str is not a number
                     if (!isSpecial(str)) {
                         // last str is not a special number
                         return true;
-                    } else {
-                        // last str is a special number
-                        customError('Error: requires operation');
-                        return false;
                     }
                 } else {
-                    // last str is a number
+                    // last str is a number or a special number
                     customError('Error: requires operation');
+                    return false;
+                }
+            } else {
+                // closing parens
+                if (str !== '(') {
+                    // last str is not a '('
+                    console.log('before');
+                    if (!isKey(problem.length - 1)) {
+                        console.log('after');
+                        // last str is not a key
+                        return true;
+                    }
+                    // last str is a number or a special number or a key
+                    customError('Error: requires quantity and operation');
+                    return false;
+                } else {
+                    // last str is a '('
+                    customError('Error: requires quantity and operation');
+                    backspace();
                     return false;
                 }
             }
         } else {
             // cursor mode
-            if (!special) {
-                if (!key) {
-                    // regular numbers
-                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-                    if (!isSpecial(str)) {
-                        // str on cursor is not a special number
-                        return true;
-                    } else {
-                        // str on cursor is special number
-                        customError('Error: requires operation');
-                        return false;
-                    }
+            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+            if (!closing) {
+                // opening parens
+                if (isNaN(str) && !isSpecial(str)) {
+                    // str at cursorIdx is not a number
+                    // str at cursorIdx is not a special number
+                    return true;
                 } else {
-                    // key function
-                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-                    if (isNaN(str)) {
-                        // last str is not a number
-                        if (!isSpecial(str)) {
-                            // last str is not a special number
-                            if (!isKey(cursorIdx)) {
-                                // last str is not key
-                                return true;
-                            } else {
-                                // last str is key
-                                customError('Error: requires operation');
-                                return false;
-                            }
-                        } else {
-                            // last str is a special number
-                            customError('Error: requires operation');
-                            return false;
-                        }
-                    } else {
-                        // last str is a number
-                        customError('Error: requires operation');
-                        return false;
-                    }
+                    // str at cursorIdx is a number or a special number
+                    customError('Error: requires operation');
+                    return false;
                 }
             } else {
-                // special numbers
-                const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-                if (isNaN(str)) {
-                    // last str is not a number
-                    if (!isSpecial(str)) {
-                        // last str is not a special number
-                        return true;
-                    } else {
-                        // last str is a special number
-                        customError('Error: requires operation');
-                        return false;
+                // closing parens
+                if (str !== '(') {
+                    // str at cursorIdx is not a '('
+                    if (isNaN(str)) {
+                        // str at cursorIdx is not a number
+                        if (!isSpecial(str)) {
+                            // str at cursorIdx is not a special number
+                            if (!isKey(cursorIdx)) {
+                                // str at cursorIdx is not a key
+                                return true;
+                            }
+                        }
                     }
+                    // str at cursorIdx is a number or a special number or a key
+                    customError('Error: requires quantity and operation');
+                    return false;
                 } else {
-                    // last str is a number
-                    customError('Error: requires operation');
+                    // str at cursorIdx is a '('
+                    customError('Error: requires quantity and operation');
+                    backspace();
                     return false;
                 }
             }
@@ -916,7 +1003,7 @@ function validQuant(key = false, special = false) {
     }
 };
 
-function validParens(problem) {
+function validParenthesis() {
     // validates parenthesis in problem structure
     let nestLvl = 0;
     let parens = [];
@@ -933,12 +1020,15 @@ function validParens(problem) {
     if (parens.length > 0) {
         if (nestLvl !== 0) {
             // no non-zero sum of nestLvl
+            customError('Error: Invalid parenthesis');
             return false;
         } else if (parens[0] === ')') {
             // no closing paren at start
+            customError('Error: Invalid parenthesis');
             return false;
         } else if (parens[parens.length - 1] === '(') {
             // no opening paren at end
+            customError('Error: Invalid parenthesis');
             return false;
         } else {
             // match each open paren to a closing paren (accounting for nesting)
@@ -958,6 +1048,7 @@ function validParens(problem) {
                     }
                     if (x !== 0) {
                         // missing match
+                        customError('Error: Invalid parenthesis');
                         return false;
                     }
                 }
@@ -970,17 +1061,16 @@ function validParens(problem) {
     }
 };
 
-function validProblem(problem) {
+function validProblem() {
     // post-validates problem after structuring
-    let validity = false;
+    let valid = false;
     // validate string data
     if (!isEmptyProblem()) {
         // validate parenthesis
-        validity = validParens(problem);
-        if (validity === false) {
-            customError('Error: Invalid parenthesis');
+        valid = validParenthesis();
+        if (!valid) {
             return false;
-        } else if (validity === true) {
+        } else {
             // add further validation here
             return true;
         }
@@ -1055,7 +1145,7 @@ function evaluate() {
     }
     console.log(problem);
     console.log('Validating...');
-    if (validProblem(problem)) {
+    if (validProblem()) {
 
         // evaluate problem into answer structure
 
@@ -1073,7 +1163,6 @@ function evaluate() {
         console.log('Done.');
         // perform arithmetic
         console.log('Performing arithmetic...');
-        // answer = calculate(answer);
         section();
         console.log('Done.');
         // display answer
@@ -1164,15 +1253,15 @@ btns.addEventListener('click', (e) => {
                     insert('9');
                 }
             } else if (id === 'btn-pi') {
-                if (validQuant()) {
+                if (validQuant(false, true)) {
                     insert(specialInfo[0].symbol);
                 }
             } else if (id === 'btn-tau') {
-                if (validQuant()) {
+                if (validQuant(false, true)) {
                     insert(specialInfo[1].symbol);
                 }
             } else if (id === 'btn-euler') {
-                if (validQuant()) {
+                if (validQuant(false, true)) {
                     insert(specialInfo[2].symbol);
                 }
             }
@@ -1242,42 +1331,12 @@ btns.addEventListener('click', (e) => {
                 }
                 updateProblem();
             } else if (id === 'btn-paren-open') {
-                if (shiftMode === 0 && validQuant(problem)) {
+                if (validParen()) {
                     insert('(');
                 }
             } else if (id === 'btn-paren-close') {
-                if (!cursorMode) {
-                    // default
-                    if (problem[problem.length - 1] === "(") {
-                        // no parens without content between them
-                        problem.pop();
-                        updateProblem();
-                    } else if (problem.length - 2 > -1 && problem[problem.length - 2] === "(") {
-                        // remove parens around single value
-                        const value = problem[problem.length - 1];
-                        problem.pop();
-                        problem.pop();
-                        problem.push(value);
-                        updateProblem();
-                    } else {
-                        insert(')');
-                    }
-                } else {
-                    // cursor mode
-                    if (cursorIdx > -1 && problem[cursorIdx - 1] === "(") {
-                        // no parens without content between them
-                        problem.pop();
-                        updateProblem('cursor');
-                    } else if (cursorIdx - 2 > -1 && problem[cursorIdx - 2] === "(") {
-                        // remove parens around single value
-                        const value = problem[cursorIdx];
-                        problem.pop();
-                        problem.pop();
-                        problem.push(value);
-                        updateProblem('cursor');
-                    } else {
-                        insert(')');
-                    }
+                if (validParen(true)) {
+                    insert(')');
                 }
             }
 
