@@ -579,22 +579,22 @@ function section() {
 };
 
 // Key Functions
-function keyFunction(key, funct) {
+function keyFunction(key, funct, prob) {
     // generalizes single argument key functions
-    let idx = getIdx(key, answer);
+    let idx = getIdx(key, prob);
     let x = 0;
     while (x < 100 && idx !== false) {
         x += 1;
         let solution;
-        if (answer[idx + 1] === '(') {
+        if (prob[idx + 1] === '(') {
             // expression argument
             let expression = [];
             let nest = 0;
-            for (let i = idx + 1; i < answer.length; i++) {
-                expression.push(answer[i]);
-                if (answer[i] === '(') {
+            for (let i = idx + 1; i < prob.length; i++) {
+                expression.push(prob[i]);
+                if (prob[i] === '(') {
                     nest += 1;
-                } else if (answer[i] === ')') {
+                } else if (prob[i] === ')') {
                     nest -= 1;
                     if (nest === 0) {
                         break;
@@ -604,22 +604,28 @@ function keyFunction(key, funct) {
             console.log(expression);
         } else {
             // single argument
-            solution = funct(Number(answer[idx + 1]));
+            solution = funct(Number(prob[idx + 1]));
         }
-        answer = restructure(solution, idx, idx + 1, answer);
-        idx = getIdx(key, answer);
+        prob = restructure(solution, idx, idx + 1, prob);
+        idx = getIdx(key, prob);
     }
+    return prob;
 };
 
-function runKeyFunctions() {
+function runKeyFunctions(prob) {
     // runs all key functions
+    let p = prob;
     for (let i = 0; i < keyInfo.length; i++) {
-        keyFunction(keyInfo[i].key, keyInfo[i].funct);
+        p = keyFunction(keyInfo[i].key, keyInfo[i].funct, p);
     }
+    return p;
 };
 
 // calculation
 function calculate(prob) {
+    // run key functions
+    console.log('Running key functions...');
+    prob = runKeyFunctions(prob);
     // parameters
     const max = 5;
     // perform all Multiplications and Divisions as they appear from left to right
@@ -1149,10 +1155,10 @@ function evaluate() {
     console.log(problem);
     console.log('Validating...');
     if (validProblem()) {
-
-        // evaluate problem into answer structure
-
         console.log('Valid.');
+
+        // evaluate problem structure into answer structure
+
         console.log('Structuring strings...');
         structureString();
         console.log('done.');
@@ -1160,14 +1166,9 @@ function evaluate() {
         console.log('Converting special number symbols to values...');
         specialNumberValues();
         console.log('Done.');
-        // run all key functions
-        console.log('Running key functions...');
-        runKeyFunctions();
-        console.log('Done.');
         // perform arithmetic
-        console.log('Performing arithmetic...');
+        console.log('Solving...');
         section();
-        console.log('Done.');
         // display answer
         console.log('Solved.');
         updateAnswer();
@@ -1176,14 +1177,15 @@ function evaluate() {
 
         // save question to history
         if (history.length < 10) {
+            // convert problem structure to string
             let prob = '';
             problem.forEach((p) => {
                 prob += p;
             });
-            history.unshift({prob: prob, ans: answer});
+            history.unshift({prob: prob, ans: answer[0]});
         } else {
             history.pop();
-            history.unshift({prob: prob, ans: answer});
+            history.unshift({prob: prob, ans: answer[0]});
         }
         console.log(history);
 
