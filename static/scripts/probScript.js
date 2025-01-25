@@ -27,6 +27,12 @@ const shiftBtn4 = document.querySelector('#btn-shift-4');
 const shiftBtn5 = document.querySelector('#btn-shift-5');
 const shiftBtn6 = document.querySelector('#btn-shift-6');
 
+// History 
+const btnHst = document.querySelector('#history-button');
+const hstPanel = document.querySelector('#history-panel');
+
+// question history
+let history = [];
 
 // Object literal for evaluation request
 let input = {
@@ -37,9 +43,6 @@ let input = {
 // question structures
 let problem = [];
 let answer = [];
-
-// question history
-let history = [];
 
 // Mode toggles
 let shiftMode = 0; // 0 value indicates default mode
@@ -1173,10 +1176,14 @@ function evaluate() {
 
         // save question to history
         if (history.length < 10) {
-            history.unshift({prob: problem, ans: answer});
+            let prob = '';
+            problem.forEach((p) => {
+                prob += p;
+            });
+            history.unshift({prob: prob, ans: answer});
         } else {
             history.pop();
-            history.unshift({prob: problem, ans: answer});
+            history.unshift({prob: prob, ans: answer});
         }
         console.log(history);
 
@@ -1435,5 +1442,28 @@ btns.addEventListener('click', (e) => {
                 }
             }
         }
+    }
+});
+
+// History controls
+btnHst.addEventListener('click', () => {
+    console.log('history');
+    if (window.getComputedStyle(hstPanel).getPropertyValue('opacity') === '0') {
+        if (history.length > 0) {
+            history.forEach((hist) => {
+                const div = document.createElement('div');
+                div.innerText = `${hist.prob} = ${hist.ans}`;
+                div.style.borderBottom = '1px solid #adafb8';
+                hstPanel.appendChild(div);
+            });
+        } else {
+            const div = document.createElement('div');
+            div.innerText = 'No History';
+            hstPanel.appendChild(div);
+        }
+        hstPanel.style.opacity = 1;
+    } else {
+        hstPanel.style.opacity = 0;
+        hstPanel.innerHTML = '';
     }
 });

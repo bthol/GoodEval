@@ -371,3 +371,15 @@ nav {
     /* relative coloring */
     background: rgb(from var(--color-bckgrnd-2) 176 g b);
 }
+
+/* history pannel */
+#history-panel {
+    position: absolute;
+    z-index: 2;
+    transform: translate(0vmin, -4.41vmin);
+    width: 100vw;
+    background: #e6e5d8;
+    color: #040410;
+    opacity: 0;
+    cursor: default;
+}
