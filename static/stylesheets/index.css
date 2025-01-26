@@ -235,10 +235,6 @@ nav {
     font-size: 3.5vmin;
 }
 
-.button sup, .button sub {
-    font-size: 2.5vmin;
-}
-
 .button.normal {
     background: var(--color-fill-2);
     border: .5vmin solid var(--color-border-3);

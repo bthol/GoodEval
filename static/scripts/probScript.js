@@ -56,6 +56,36 @@ let cursorIdx = 0;
 let formatErrorCache = {};
 let cursorModeCache = {};
 
+// error messages
+const error = {
+    empty: 'Error: Empty string',
+    format: 'Error: Invalid format',
+    input: 'Error: Invalid input',
+    operation: 'Error: invalid operation',
+    paren: 'Error: Invalid parenthesis',
+    reqOperation: 'Error: Requires operation',
+    reqQuantity: 'Error: Requires quantity',
+    reqBase: 'Error: Invalid base for exponent',
+    noFraction: 'Error: No fractional argument',
+}
+
+// special number info
+const specialInfo = [
+    {symbol: 'π', value: Math.PI}, // pi
+    {symbol: 'τ', value: Math.PI * 2}, // tau
+    {symbol: 'e', value: Math.E}, // Euler's number
+];
+
+// operation info
+const operation = {
+    add: '+',
+    sub: '-',
+    mult: '×',
+    div: '÷',
+    exp: '^',
+    rad: '√',
+};
+
 // key function info
 const keyInfo = [
 // key functions
@@ -86,45 +116,15 @@ const keyInfo = [
     
     {key: '!', funct: (x) => factorial(x)}, // factorial of x
     {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
-    {key: 'Σxin', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
-    {key: 'Σn/xi', funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
-    {key: 'Σxi/n', funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
+    {key: 'Σain', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
+    {key: `Σn${operation.div}ai`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
+    {key: `Σai${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
     
     // static operations
     {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
     {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
     {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
 ];
-
-// special number info
-const specialInfo = [
-    {symbol: 'π', value: Math.PI}, // pi
-    {symbol: 'τ', value: Math.PI * 2}, // tau
-    {symbol: 'e', value: Math.E}, // Euler's number
-];
-
-// operation info
-const operation = {
-    add: '+',
-    sub: '-',
-    mult: '×',
-    div: '÷',
-    exp: '^',
-    rad: '√',
-};
-
-// error messages
-const error = {
-    empty: 'Error: Empty string',
-    format: 'Error: Invalid format',
-    input: 'Error: Invalid input',
-    operation: 'Error: invalid operation',
-    paren: 'Error: Invalid parenthesis',
-    reqOperation: 'Error: Requires operation',
-    reqQuantity: 'Error: Requires quantity',
-    reqBase: 'Error: Invalid base for exponent',
-    noFraction: 'Error: No fractional argument',
-}
 
 // custom key functions
 function rndx(x) {
@@ -259,23 +259,23 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'sin';
         shiftBtn2.innerText = 'cos';
         shiftBtn3.innerText = 'tan';
-        shiftBtn4.innerHTML = '<div style="font-size: 2.5vmin">log<sub id="btn-shift-4-sub" class="key">10</sub></div>';
-        shiftBtn5.innerText = 'round';
-        shiftBtn6.innerText = 'rand';
+        shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">10</sub>';
+        shiftBtn5.innerHTML = 'round';
+        shiftBtn6.innerHTML = 'rand';
     } else if (shiftMode === 1) {
         // shift 1
         shiftBtn1.innerText = 'asin';
         shiftBtn2.innerText = 'acos';
         shiftBtn3.innerText = 'atan';
-        shiftBtn4.innerHTML = '<div style="font-size: 2.5vmin">log<sub id="btn-shift-4-sub" class="key">2</sub></div>';
-        shiftBtn5.innerText = '!x';
-        shiftBtn6.innerText = 'rndx';
+        shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">2</sub>';
+        shiftBtn5.innerHTML = '!x';
+        shiftBtn6.innerHTML = 'rndx';
     } else if (shiftMode === 2) {
         shiftBtn1.innerText = 'sinh';
         shiftBtn2.innerText = 'cosh';
         shiftBtn3.innerText = 'tanh';
         shiftBtn4.innerHTML = 'ln';
-        shiftBtn5.innerText = 'Σn';
+        shiftBtn5.innerHTML = 'Σn';
         shiftBtn6.innerHTML = 'rndy';
     } else if (shiftMode === 3) {
         shiftBtn1.innerText = 'asinh';
@@ -283,9 +283,9 @@ function toggleShiftMode() {
         shiftBtn3.innerText = 'atanh';
         // Σ = html entity: &sum; + html code: &#8721;
         // ∏ = html entity: &prod; + html code: &#8719;
-        shiftBtn4.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>n</div></div>';
-        shiftBtn5.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">n÷x<sub id="btn-shift-6-sub" class="key">i</sub></div></div>';
-        shiftBtn6.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>÷n</div></div>';
+        shiftBtn4.innerHTML = '<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: 2vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>n</div></div>';
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: 2vmin">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub></div></div>`;
+        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: 2vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>${operation.div}n</div></div>`;
     }
 };
 
@@ -392,13 +392,20 @@ function insert(char) {
         // in cursor mode, inserts at cursor index
         if (problem.length > 0) {
             // non-empty problem structure
-            problem.splice(cursorIdx + 1, 0, char);
+            if (cursorIdx === 0) {
+                // cursor at start
+                problem.unshift(char);
+                updateProblem('cursor');
+            } else {
+                problem.splice(cursorIdx + 1, 0, char);
+                cursorForward();
+            }
         } else {
             // empty problem structure
             problem.push(char);
-            updateProblem();
+            cursorForward();
+            updateProblem('cursor');
         }
-        cursorForward();
     }
 };
 
@@ -503,65 +510,6 @@ function structureString() {
     
     console.log(struct);
     answer = struct;
-};
-
-function removeFormatElements(i) {
-    // returns a string without format elements from string in given problem structure index
-    let string = '';
-    let addToStr = true;
-    const str = problem[i];
-    for (let i = 0; i < str.length; i++) {
-        const char = str.slice(i, i + 1);
-        if (char === '<') {
-            addToStr = false;
-        } else if (char === '>') {
-            addToStr = true;
-            continue;
-        }
-        if (addToStr) {
-            string += char;
-        }
-    }
-    console.log(string);
-    return string;
-};
-
-function findClose(start, open, close, struct) {
-    // finds closing index for open and close char pairs
-    // accounts for nesting
-    let index = 0;
-    let nest = 0;
-    for (let i = start; i < struct.length; i++) {
-        if (struct[i] === open) {
-            nest += 1;
-        } else if (struct[i] === close) {
-            nest -= 1;
-            if (nest === 0) {
-                index = i;
-                break;
-            }
-        }
-    }
-    return index;
-};
-
-function findOpen(start, open, close, struct) {
-    // finds opening index for open and close char pairs
-    // accounts for nesting
-    let index = 0;
-    let nest = 0;
-    for (let i = start; i > -1; i--) {
-        if (struct[i] === open) {
-            nest += 1;
-            if (nest === 0) {
-                index = i;
-                break;
-            }
-        } else if (struct[i] === close) {
-            nest -= 1;
-        }
-    }
-    return index;
 };
 
 function getSection(open, close) {
@@ -760,7 +708,90 @@ function calculate(prob) {
     return prob;
 };
 
-// string validation
+// formatting
+function removeFormatElements(i) {
+    // returns a string without format elements from string in given problem structure index
+    let string = '';
+    let addToStr = true;
+    const str = problem[i];
+    for (let i = 0; i < str.length; i++) {
+        const char = str.slice(i, i + 1);
+        if (char === '<') {
+            addToStr = false;
+        } else if (char === '>') {
+            addToStr = true;
+            continue;
+        }
+        if (addToStr) {
+            string += char;
+        }
+    }
+    console.log(string);
+    return string;
+};
+
+function expFormat() {
+    // tests whether to format for exponent (false = no format; true = format)
+    if (problem.length === 0) {
+        // nothing to validate
+        return false;
+    } else {
+        if (!cursorMode) {
+            // default mode
+            const str = problem[problem.length - 1];
+            if (str === '^') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // cursorMode
+            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+            if (str === '^') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+};
+
+// tests
+function isKey(i) {
+    // test for match of str at problem index i with key property of keyInfo structure
+    const str = removeFormatElements(i);
+    for (let i = 0; i < keyInfo.length; i++) {
+        if (keyInfo[i].key === str) {
+            return true;
+        }
+    }
+    return false;
+};
+
+function isSpecial(i) {
+    // test for match of str with symbol property of specialInfo structure
+    const str = removeFormatElements(i);
+    for (let i = 0; i < specialInfo.length; i++) {
+        if (specialInfo[i].symbol === str) {
+            return true;
+        }
+    }
+    return false;
+};
+
+function isOp(i) {
+    // test for match of str with value in operation object
+    const str = removeFormatElements(i);
+    const values = Object.values(operation);
+    const result = values.filter((key) => str === key);
+    if (result.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+// error functions
 function customError(error) {
     Q.innerText = error;
     clearTimeout(formatErrorCache);
@@ -779,38 +810,164 @@ function isEmptyProblem() {
     }
 };
 
-function isKey(i) {
-    // test for match of str at problem index i with key property of keyInfo structure
-    const str = removeFormatElements(i);
-    for (let i = 0; i < keyInfo.length; i++) {
-        if (keyInfo[i].key === str) {
-            return true;
+// pre validation
+function validOp() {
+    // pre-validates that an operation can be added to the problem structure
+    if (isEmptyProblem()) {
+        // cannot operate on empty string
+        return false;
+    } else {
+        // run validation
+        if (!cursorMode) {
+            // default
+            const i = problem.length - 1;
+            if (problem[i] === ')' || !isNaN(i) || isSpecial(i)) {
+                // last str is ')' or a regular number or a special number
+                return true;
+            }
+        } else {
+            // cursor mode
+            // str at cursorIdx is ')' or a regular number or a special number
+            if (problem.slice(cursorIdx, cursorIdx + 1)[0] === ')' || !isNaN(cursorIdx) || isSpecial(cursorIdx)) {
+                // last str is ')' or a regular number or a special number
+                return true;
+            }
         }
     }
+    customError(error.operation);
     return false;
 };
 
-function isSpecial(str) {
-    // test for match of str with symbol property of specialInfo structure
-    for (let i = 0; i < specialInfo.length; i++) {
-        if (specialInfo[i].symbol === str) {
-            return true;
-        }
-    }
-    return false;
-};
-
-function isOp(str) {
-    // test for match of str with value in operation object
-    const values = Object.values(operation);
-    const result = values.filter((key) => str === key);
-    if (result.length > 0) {
+function validQuant(key = false, special = false) {
+    // pre-validates regular numbers, special numbers and key functions
+    if (problem.length === 0) {
+        // nothing to validate
         return true;
     } else {
-        return false;
+        // run validation
+        if (!cursorMode) {
+            // default mode
+            if (!special) {
+                // not special numbers
+                if (!key) {
+
+                    // regular numbers
+
+                    if (problem[problem.length - 1] !== ')') {
+                        if (!isSpecial(problem.length - 1)) {
+                            // last str is not a special number
+                            return true;
+                        }
+                    }
+                    // last str is a special number
+                    customError(error.reqOperation);
+                    return false;
+
+                } else {
+
+                    // key function
+
+                    const i = problem.length - 1;
+                    if (problem[i] !== ')') {
+                        if (isNaN(i)) {
+                            // last str is not a number
+                            if (!isSpecial(i)) {
+                                // last str is not a special number
+                                if (!isKey(i)) {
+                                    // last str is not key
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    // last str is a number or a special number or a key
+                    customError(error.reqOperation);
+                    return false;
+
+                }
+
+            } else {
+
+                // special numbers
+
+                const i = problem.length - 1;
+                if (problem[i] !== ')') {
+                    if (isNaN(i)) {
+                        // last str is not a number
+                        if (!isSpecial(i)) {
+                            // last str is not a special number
+                            return true;
+                        }
+                    }
+                }
+                // last str is a number or a special number
+                customError(error.reqOperation);
+                return false;
+
+            }
+        } else {
+            // cursor mode
+            if (!special) {
+                // not special numbers
+                if (!key) {
+
+                    // regular numbers
+
+                    if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
+                        if (!isSpecial(cursorIdx)) {
+                            // str at cursorIdx is not a special number
+                            return true;
+                        }
+                    }
+                    // str at cursorIdx is special number
+                    customError(error.reqOperation);
+                    return false;
+
+                } else {
+
+                    // key function
+
+                    if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
+                        if (isNaN(cursorIdx)) {
+                            // str at cursorIdx is not a number
+                            if (!isSpecial(cursorIdx)) {
+                                // str at cursorIdx is not a special number
+                                if (!isKey(cursorIdx)) {
+                                    // str at cursorIdx is not key
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    // str at cursorIdx is a number or a special number or a key
+                    customError(error.reqOperation);
+                    return false;
+
+                }
+
+            } else {
+
+                // special numbers
+
+                if ( problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
+                    if (isNaN(cursorIdx)) {
+                        // str at cursorIdx is not a number
+                        if (!isSpecial(cursorIdx)) {
+                            // str at cursorIdx is not a special number
+                            return true;
+                        }
+                    }
+                }
+                // str at cursorIdx is a number or a special number
+                customError(error.reqOperation);
+                return false;
+
+            }
+        }
     }
 };
 
+// handlers (validate and insert)
 function handleRadical() {
     if (problem.length === 0) {
         insert(operation.rad);
@@ -818,11 +975,17 @@ function handleRadical() {
     } else {
         if (!cursorMode) {
             // default mode
-            const str = problem[problem.length - 1];
             if (!isKey(problem.length - 1)) {
+                const str = problem[problem.length - 1];
                 // not a key
                 if (!isOp(str)) {
                     // is a regular number or a special number
+                    problem.pop();
+                    insert(`<sup>${str}</sup>`);
+                    insert(operation.rad);
+                    return true;
+                } else {
+                    // is operation
                     insert(operation.rad);
                     return true;
                 }
@@ -831,11 +994,17 @@ function handleRadical() {
             return false;
         } else {
             // cursor mode
-            const str = problem.slice(cursorIdx, cursorIdx + 1);
-            if (!isKey(problem.length - 1)) {
+            if (!isKey(cursorIdx)) {
+                const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
                 // not a key
                 if (!isOp(str)) {
                     // is a regular number or a special number
+                    problem.splice(cursorIdx, 1);
+                    insert(`<sup>${str}</sup>`);
+                    insert(operation.rad);
+                    return true;
+                } else {
+                    // is operation
                     insert(operation.rad);
                     return true;
                 }
@@ -865,7 +1034,7 @@ function handlePower() {
             }
         } else {
             // cursor mode
-            const str = problem.slice(cursorIdx, cursorIdx + 1);
+            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
             if (!isNaN(str) || isSpecial(str)) {
                 // base is a number or a special number
                 insert(operation.exp);
@@ -992,166 +1161,7 @@ function handleParen(closing = false) {
     }
 };
 
-function validOp() {
-    // pre-validates that an operation can be added to the problem structure
-    if (isEmptyProblem()) {
-        // cannot operate on empty string
-        return false;
-    } else {
-        // run validation
-        if (!cursorMode) {
-            // default
-            const str = problem[problem.length - 1];
-            if (str === ')' || !isNaN(str) || isSpecial(str)) {
-                // last str is ')' or a regular number or a special number
-                return true;
-            }
-        } else {
-            // cursor mode
-            const str = problem.slice(cursorIdx, cursorIdx + 1);
-            // str at cursorIdx is ')' or a regular number or a special number
-            if (str !== ')' || !isNaN(str) || isSpecial(str)) {
-                return true;
-            }
-        }
-    }
-    customError(error.operation);
-    return false;
-};
-
-function validQuant(key = false, special = false) {
-    // pre-validates regular numbers, special numbers and key functions
-    if (problem.length === 0) {
-        // nothing to validate
-        return true;
-    } else {
-        // run validation
-        if (!cursorMode) {
-            // default mode
-            if (!special) {
-                // not special numbers
-                if (!key) {
-
-                    // regular numbers
-
-                    const str = problem[problem.length - 1];
-                    if (str !== ')') {
-                        if (!isSpecial(str)) {
-                            // last str is not a special number
-                            return true;
-                        }
-                    }
-                    // last str is a special number
-                    customError(error.reqOperation);
-                    return false;
-
-                } else {
-
-                    // key function
-
-                    const str = problem[problem.length - 1];
-                    if (str !== ')') {
-                        if (isNaN(str)) {
-                            // last str is not a number
-                            if (!isSpecial(str)) {
-                                // last str is not a special number
-                                if (!isKey(problem.length - 1)) {
-                                    // last str is not key
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    // last str is a number or a special number or a key
-                    customError(error.reqOperation);
-                    return false;
-
-                }
-
-            } else {
-
-                // special numbers
-
-                const str = problem[problem.length - 1];
-                if (str !== ')') {
-                    if (isNaN(str)) {
-                        // last str is not a number
-                        if (!isSpecial(str)) {
-                            // last str is not a special number
-                            return true;
-                        }
-                    }
-                }
-                // last str is a number or a special number
-                customError(error.reqOperation);
-                return false;
-
-            }
-        } else {
-            // cursor mode
-            if (!special) {
-                // not special numbers
-                if (!key) {
-
-                    // regular numbers
-
-                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-                    if (str !== ')') {
-                        if (!isSpecial(str)) {
-                            // str at cursorIdx is not a special number
-                            return true;
-                        }
-                    }
-                    // str at cursorIdx is special number
-                    customError(error.reqOperation);
-                    return false;
-
-                } else {
-
-                    // key function
-
-                    const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-                    if (str !== ')') {
-                        if (isNaN(str)) {
-                            // str at cursorIdx is not a number
-                            if (!isSpecial(str)) {
-                                // str at cursorIdx is not a special number
-                                if (!isKey(cursorIdx)) {
-                                    // str at cursorIdx is not key
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                    // str at cursorIdx is a number or a special number or a key
-                    customError(error.reqOperation);
-                    return false;
-
-                }
-
-            } else {
-
-                // special numbers
-
-                const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-                if (str !== ')') {
-                    if (isNaN(str)) {
-                        // str at cursorIdx is not a number
-                        if (!isSpecial(str)) {
-                            // str at cursorIdx is not a special number
-                            return true;
-                        }
-                    }
-                }
-                // str at cursorIdx is a number or a special number
-                customError(error.reqOperation);
-                return false;
-
-            }
-        }
-    }
-};
-
+// post validation
 function validParenthesis() {
     // validates parenthesis in problem structure
     let nestLvl = 0;
@@ -1363,55 +1373,107 @@ btns.addEventListener('click', (e) => {
         if (type === 'numpad') {
             if (id === 'btn-num0') {
                 if (validQuant()) {
-                    insert('0');
+                    if (!expFormat()) {
+                        insert('0');
+                    } else {
+                        insert('<sup>0</sup>');
+                    }
                 }
             } else if (id === 'btn-num1') {
                 if (validQuant()) {
-                    insert('1');
+                    if (!expFormat()) {
+                        insert('1');
+                    } else {
+                        insert('<sup>1</sup>');
+                    }
                 }
             } else if (id === 'btn-num2') {
                 if (validQuant()) {
-                    insert('2');
+                    if (!expFormat()) {
+                        insert('2');
+                    } else {
+                        insert('<sup>2</sup>');
+                    }
                 }
             } else if (id === 'btn-num3') {
                 if (validQuant()) {
-                    insert('3');
+                    if (!expFormat()) {
+                        insert('3');
+                    } else {
+                        insert('<sup>3</sup>');
+                    }
                 }
             } else if (id === 'btn-num4') {
                 if (validQuant()) {
-                    insert('4');
+                    if (!expFormat()) {
+                        insert('4');
+                    } else {
+                        insert('<sup>4</sup>');
+                    }
                 }
             } else if (id === 'btn-num5') {
                 if (validQuant()) {
-                    insert('5');
+                    if (!expFormat()) {
+                        insert('5');
+                    } else {
+                        insert('<sup>5</sup>');
+                    }
                 }
             } else if (id === 'btn-num6') {
                 if (validQuant()) {
-                    insert('6');
+                    if (!expFormat()) {
+                        insert('6');
+                    } else {
+                        insert('<sup>6</sup>');
+                    }
                 }
             } else if (id === 'btn-num7') {
                 if (validQuant()) {
-                    insert('7');
+                    if (!expFormat()) {
+                        insert('7');
+                    } else {
+                        insert('<sup>7</sup>');
+                    }
                 }
             } else if (id === 'btn-num8') {
                 if (validQuant()) {
-                    insert('8');
+                    if (!expFormat()) {
+                        insert('8');
+                    } else {
+                        insert('<sup>8</sup>');
+                    }
                 }
             } else if (id === 'btn-num9') {
                 if (validQuant()) {
-                    insert('9');
+                    if (!expFormat()) {
+                        insert('9');
+                    } else {
+                        insert('<sup>9</sup>');
+                    }
                 }
             } else if (id === 'btn-pi') {
                 if (validQuant(false, true)) {
-                    insert(specialInfo[0].symbol);
+                    if (!expFormat()) {
+                        insert(specialInfo[0].symbol);
+                    } else {
+                        insert(`<sup>${specialInfo[0].symbol}</sup>`);
+                    }
                 }
             } else if (id === 'btn-tau') {
                 if (validQuant(false, true)) {
-                    insert(specialInfo[1].symbol);
+                    if (!expFormat()) {
+                        insert(specialInfo[1].symbol);
+                    } else {
+                        insert(`<sup>${specialInfo[1].symbol}</sup>`);
+                    }
                 }
             } else if (id === 'btn-euler') {
                 if (validQuant(false, true)) {
-                    insert(specialInfo[2].symbol);
+                    if (!expFormat()) {
+                        insert(specialInfo[2].symbol);
+                    } else {
+                        insert(`<sup>${specialInfo[2].symbol}</sup>`);
+                    }
                 }
             }
 
@@ -1456,9 +1518,10 @@ btns.addEventListener('click', (e) => {
         } else if (type === 'special') {
             if (id === 'btn-clear') {
                 console.log('clear');
-                // clear data in problem structure
+                // clear data in structures
                 problem = [];
                 input.problem = '';
+                answer = [];
                 // toggle off cursor mode (leave shift mode)
                 cursorMode = false;
                 // update display to reflect changes
@@ -1539,7 +1602,7 @@ btns.addEventListener('click', (e) => {
                         insert('atanh');
                     }
                 }
-            } else if (id === 'btn-shift-4' || id === 'btn-shift-4-sub') {
+            } else if (id === 'btn-shift-4' || id === 'btn-shift-4-div' || id === 'btn-shift-4-div-child' || id === 'btn-shift-4-sub') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         // default
@@ -1549,10 +1612,10 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('ln');
                     } else if (shiftMode === 3) {
-                        insert('Σx<sub>i</sub>n');
+                        insert(`Σa<sub>i</sub>n`);
                     }
                 }
-            } else if (id === 'btn-shift-5') {
+            } else if (id === 'btn-shift-5' || id === 'btn-shift-5-div' || id === 'btn-shift-5-div-child') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         insert('round');
@@ -1561,10 +1624,10 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('Σn');
                     } else if (shiftMode === 3) {
-                        insert('Σn/x<sub>i</sub>');
+                        insert(`Σn${operation.div}a<sub>i</sub>`);
                     }
                 }
-            } else if (id === 'btn-shift-6' || id === 'btn-shift-6-sub') {
+            } else if (id === 'btn-shift-6' || id === 'btn-shift-6-div' || id === 'btn-shift-6-div-child' || id === 'btn-shift-6-sub') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         insert('rand');
@@ -1573,7 +1636,7 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('rndy');
                     } else if (shiftMode === 3) {
-                        insert('Σx<sub>i</sub>/n');
+                        insert(`Σa<sub>i</sub>${operation.div}n`);
                     }
                 }
             }
