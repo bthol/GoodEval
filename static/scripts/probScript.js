@@ -258,9 +258,11 @@ function toggleShiftMode() {
         shiftBtn1.innerText = 'asinh';
         shiftBtn2.innerText = 'acosh';
         shiftBtn3.innerText = 'atanh';
+        // Σ = html entity: &sum; + html code: &#8721;
+        // ∏ = html entity: &prod; + html code: &#8719;
         shiftBtn4.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>n</div></div>';
-        shiftBtn5.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">n/x<sub id="btn-shift-6-sub" class="key">i</sub></div></div>';
-        shiftBtn6.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>/n</div></div>';
+        shiftBtn5.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">n÷x<sub id="btn-shift-6-sub" class="key">i</sub></div></div>';
+        shiftBtn6.innerHTML = '<div style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div style="font-size: 2vmin">x<sub id="btn-shift-6-sub" class="key">i</sub>÷n</div></div>';
     }
 };
 
@@ -485,7 +487,6 @@ function removeFormatElements(i) {
     let string = '';
     let addToStr = true;
     const str = problem[i];
-    console.log(problem);
     for (let i = 0; i < str.length; i++) {
         const char = str.slice(i, i + 1);
         if (char === '<') {
@@ -498,6 +499,7 @@ function removeFormatElements(i) {
             string += char;
         }
     }
+    console.log(string);
     return string;
 };
 
@@ -627,10 +629,12 @@ function calculate(prob) {
     console.log('Running key functions...');
     prob = runKeyFunctions(prob);
     // parameters
-    const max = 5;
+    const max = 10;
+    // perform all Exponentiations and Roots as they appear from left to right
+
     // perform all Multiplications and Divisions as they appear from left to right
-    let mIdx = getIdx("*", prob);
-    let dIdx = getIdx("/", prob);
+    let mIdx = getIdx("×", prob);
+    let dIdx = getIdx("÷", prob);
     count = 0;
     while (count < max && mIdx !== false || count <max && dIdx !== false) {
         count += 1;
@@ -640,40 +644,40 @@ function calculate(prob) {
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
-            mIdx = getIdx("*", prob);
+            mIdx = getIdx("×", prob);
         } else if (mIdx === false && dIdx !== false) {
             // only division
             const dividend = Number(prob[dIdx - 1]);
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
-            dIdx = getIdx("/", prob);
+            dIdx = getIdx("÷", prob);
         } else if (mIdx !== false && dIdx !== false && mIdx < dIdx) {
             // multiply
             const multiplier = Number(prob[mIdx - 1]);
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
-            mIdx = getIdx("*", prob);
+            mIdx = getIdx("×", prob);
             // then divide
             const dividend = Number(prob[dIdx - 1]);
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
-            dIdx = getIdx("/", prob);
+            dIdx = getIdx("÷", prob);
         } else if (mIdx !== false && dIdx !== false && mIdx > dIdx) {
             // divide
             const dividend = Number(prob[dIdx - 1]);
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
-            dIdx = getIdx("/", prob);
+            dIdx = getIdx("÷", prob);
             // then multiply
             const multiplier = Number(prob[mIdx - 1]);
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
-            mIdx = getIdx("*", prob);
+            mIdx = getIdx("×", prob);
         }
     }
     
@@ -698,17 +702,20 @@ function calculate(prob) {
             prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             sIdx = getIdx("-", prob);
         } else if (aIdx !== false && sIdx !== false && aIdx < sIdx) {
+            console.log('pass');
             // add
             const augend = Number(prob[aIdx - 1]);
             const addend = Number(prob[aIdx + 1]);
             const total = augend + addend;
             prob = restructure(total, aIdx - 1, aIdx + 1, prob);
+            console.log(prob);
             aIdx = getIdx("+", prob);
             // then subtract
             const minuend = Number(prob[sIdx - 1]);
             const subtrahend = Number(prob[sIdx + 1]);
             const difference = minuend - subtrahend;
             prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
+            console.log(prob);
             sIdx = getIdx("-", prob);
         } else if (aIdx !== false && sIdx !== false && aIdx > sIdx) {
             // subtract
@@ -726,6 +733,7 @@ function calculate(prob) {
         }
     }
 
+    console.log(prob);
     return prob;
 };
 
@@ -767,6 +775,75 @@ function isSpecial(str) {
         }
     }
     return false;
+};
+
+function handleRadical() {
+    if (problem.length === 0) {
+        insert('^');
+    } else {
+        if (!cursorMode) {
+            // default mode
+            const str = problem.slice(problem.length - 1, problem.length)[0];
+            if (!isKey(problem.length - 1)) {
+                // not a key
+                if (isNaN(str)) {
+                    insert('^');
+                    return true;
+                } else {
+                    problem.pop();
+                    insert(`<sup>${str}</sup>`);
+                    insert('√');
+                    return true;
+                }
+            }
+            customError('Error: Invalid format');
+            return false;
+        } else {
+            // cursor mode
+            const str = problem.slice(cursorIdx, cursorIdx + 1);
+            if (!isKey(problem.length - 1)) {
+                // not a key
+                if (isNaN(str)) {
+                    insert('√');
+                    return true;
+                } else {
+                    problem.pop();
+                    insert(`<sup>${str}</sup>`);
+                    insert('√');
+                    return true;
+                }
+            }
+            customError('Error: Invalid format');
+            return false;
+        }
+    }
+};
+
+function handlePower() {
+    if (problem.length === 0) {
+        insert('^');
+    } else {
+        if (!cursorMode) {
+            // default mode
+            if (!isKey(problem.length - 1)) {
+                // not a key
+                insert('^');
+                return true;
+            }
+            customError('Error: Invalid format');
+            return false;
+        } else {
+            // cursor mode
+            const str = problem.slice(cursorIdx, cursorIdx + 1);
+            if (!isKey(cursorIdx)) {
+                // not a key
+                insert('^');
+                return true;
+            }
+            customError('Error: Invalid format');
+            return false;
+        }
+    }
 };
 
 function validOp() {
@@ -1286,21 +1363,19 @@ btns.addEventListener('click', (e) => {
                 }
             } else if (id === 'btn-multiply') {
                 if (validOp()) {
-                    insert('*');
+                    insert('×');
                 }
             } else if (id === 'btn-divide') {
                 if (validOp()) {
-                    insert('/');
+                    insert('÷');
                 }
-            } else if (id === 'btn-sign') {
+            } else if (id === 'btn-sign' || id === 'btn-sign-sup' || id === 'btn-sign-sub') {
                 insert('(');
                 insert('-');
             } else if (id === 'btn-power' || id === 'btn-power-sup') {
-                if (validOp()) {
-                    insert('^');
-                }
+                handlePower();
             } else if (id === 'btn-root' || id === 'btn-root-sup') {
-                insert('√');
+                handleRadical();
             } else if (id === 'btn-absolute-value') {
                 if (validQuant(true)) {
                     insert('abs');
