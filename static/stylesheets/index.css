@@ -1,6 +1,17 @@
 .body {
     margin: 0px;
     height: 100vh;
+
+    /* scaling */
+    
+    /* --screen-width: 1vmin; */
+    /* --screen-height: 1vmin; */
+
+    /* --scale-top-btns-width: 1vmin; */
+    /* --scale-top-btns-height: 1vmin; */
+
+    /* --scale-bottom-btns-width: 1vmin; */
+    /* --scale-bottom-btns-height: 1vmin; */
 }
 
 /* NAVIGATION */
@@ -164,6 +175,8 @@ nav {
     grid-row: 2;
     grid-column: 1 / span 4;
     display: flex;
+    gap: .5vmin;
+    align-content: center;
     white-space: nowrap;
     overflow-x: scroll;
 }
@@ -184,6 +197,7 @@ nav {
     margin-right: 0px;
     grid-row: 3;
     display: flex;
+    gap: .5vmin;
     white-space: nowrap;
     overflow-x: scroll;
 }
