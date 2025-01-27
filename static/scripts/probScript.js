@@ -88,7 +88,16 @@ const operation = {
 
 // key function info
 const keyInfo = [
-// key functions
+    // static values
+    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
+    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
+
+    // static operations
+    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
+    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
+    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
+    
+    // key functions
     {key: 'sin', funct: (x) => Math.sin(x)}, // sine
     {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
     {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
@@ -110,20 +119,12 @@ const keyInfo = [
     
     {key: 'round', funct: (x) => Math.round(x)}, // rounds to nearest integer
 
-    {key: 'rand', funct: () => Math.floor(Math.random() * 9) + 1}, // generates a random number between 1 - 9
-    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
-    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
     
     {key: '!', funct: (x) => factorial(x)}, // factorial of x
     {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
     {key: 'Σain', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
     {key: `Σn${operation.div}ai`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
     {key: `Σai${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
-    
-    // static operations
-    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
-    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
-    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
 ];
 
 // custom key functions
@@ -810,23 +811,28 @@ function calculate(prob) {
 // formatting
 function removeFormatElements(i) {
     // returns a string without format elements from string in given problem structure index
-    let string = '';
-    let addToStr = true;
     const str = problem[i];
-    for (let i = 0; i < str.length; i++) {
-        const char = str.slice(i, i + 1);
-        if (char === '<') {
-            addToStr = false;
-        } else if (char === '>') {
-            addToStr = true;
-            continue;
+    if (str.length > 1) { // bypass if single character
+        let string = '';
+        let addToStr = true;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.slice(i, i + 1);
+            if (char === '<') {
+                addToStr = false;
+            } else if (char === '>') {
+                addToStr = true;
+                continue;
+            }
+            if (addToStr) {
+                string += char;
+            }
         }
-        if (addToStr) {
-            string += char;
-        }
+        console.log(string);
+        return string;
+    } else {
+        console.log(str);
+        return str;
     }
-    console.log(string);
-    return string;
 };
 
 function expFormat() {
@@ -858,8 +864,9 @@ function expFormat() {
 // tests
 function isKey(i) {
     // test for match of str at problem index i with key property of keyInfo structure
+    // excludes static values (random number generator functions)
     const str = removeFormatElements(i);
-    for (let i = 0; i < keyInfo.length; i++) {
+    for (let i = 2; i < keyInfo.length; i++) {
         if (keyInfo[i].key === str) {
             return true;
         }
@@ -920,14 +927,14 @@ function validOp() {
         if (!cursorMode) {
             // default
             const i = problem.length - 1;
-            if (problem[i] === ')' || !isNaN(i) || isSpecial(i)) {
+            if (problem[i] === ')' || !isNaN(removeFormatElements(i)) || isSpecial(i)) {
                 // last str is ')' or a regular number or a special number
                 return true;
             }
         } else {
             // cursor mode
             // str at cursorIdx is ')' or a regular number or a special number
-            if (problem.slice(cursorIdx, cursorIdx + 1)[0] === ')' || !isNaN(cursorIdx) || isSpecial(cursorIdx)) {
+            if (problem.slice(cursorIdx, cursorIdx + 1)[0] === ')' || !isNaN(removeFormatElements(cursorIdx)) || isSpecial(cursorIdx)) {
                 // last str is ')' or a regular number or a special number
                 return true;
             }
@@ -968,7 +975,7 @@ function validQuant(key = false, special = false) {
 
                     const i = problem.length - 1;
                     if (problem[i] !== ')') {
-                        if (isNaN(i)) {
+                        if (isNaN(removeFormatElements(i))) {
                             // last str is not a number
                             if (!isSpecial(i)) {
                                 // last str is not a special number
@@ -991,7 +998,7 @@ function validQuant(key = false, special = false) {
 
                 const i = problem.length - 1;
                 if (problem[i] !== ')') {
-                    if (isNaN(i)) {
+                    if (isNaN(removeFormatElements(i))) {
                         // last str is not a number
                         if (!isSpecial(i)) {
                             // last str is not a special number
@@ -1027,7 +1034,7 @@ function validQuant(key = false, special = false) {
                     // key function
 
                     if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
-                        if (isNaN(cursorIdx)) {
+                        if (isNaN(removeFormatElements(cursorIdx))) {
                             // str at cursorIdx is not a number
                             if (!isSpecial(cursorIdx)) {
                                 // str at cursorIdx is not a special number
@@ -1049,7 +1056,7 @@ function validQuant(key = false, special = false) {
                 // special numbers
 
                 if ( problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
-                    if (isNaN(cursorIdx)) {
+                    if (isNaN(removeFormatElements(cursorIdx))) {
                         // str at cursorIdx is not a number
                         if (!isSpecial(cursorIdx)) {
                             // str at cursorIdx is not a special number
@@ -1119,26 +1126,25 @@ function handlePower() {
         return false;
     } else {
         if (!cursorMode) {
-            const str = problem[problem.length - 1];
+            const i = problem.length - 1;
             // default mode
-            if (!isNaN(str) || isSpecial(str)) {
+            if (!isNaN(removeFormatElements(i)) || isSpecial(i)) {
                 // base is a number or a special number
                 insert(operation.exp);
                 return true;
             } else {
-                // base is not a number or special number
+                // base is neither a number nor special number
                 customError(error.reqBase);
                 return false;
             }
         } else {
             // cursor mode
-            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-            if (!isNaN(str) || isSpecial(str)) {
+            if (!isNaN(removeFormatElements(cursorIdx)) || isSpecial(cursorIdx)) {
                 // base is a number or a special number
                 insert(operation.exp);
                 return true;
             } else {
-                // base is not a number or special number
+                // base is neither a number nor special number
                 customError(error.reqBase);
                 return false;
             }
@@ -1152,7 +1158,6 @@ function handleParen(closing = false) {
         if (closing) {
             // no closing parenthesis at start of problem
             customError(error.paren);
-            return false;
         } else {
             // nothing to validate
             if (closing) {
@@ -1160,99 +1165,98 @@ function handleParen(closing = false) {
             } else {
                 insert('(');
             }
-            return true;
         }
     } else {
         if (!cursorMode) {
             // default mode
-            const str = problem[problem.length - 1];
+            const i = problem.length - 1;
             if (!closing) {
                 // opening parens
-                if (isNaN(str)) {
-                    // last str is not a number
-                    if (!isSpecial(str)) {
-                        // last str is not a special number
-                        if (closing) {
-                            insert(')');
-                        } else {
+                if (problem[i] !== ')') {
+                    // last str is not a closing parenthesis
+                    if (isNaN(removeFormatElements(i))) {
+                        // last str is not regular a number
+                        if (!isSpecial(i)) {
+                            // last str is not a special number
                             insert('(');
+                        } else {
+                            // last str is a special number
+                            customError(error.reqOperation);
                         }
-                        return true;
+                    } else {
+                        // last str is a regular number
+                        customError(error.reqOperation);
                     }
                 } else {
-                    // last str is a number or a special number
+                    // cannot place ( right after )
                     customError(error.paren);
-                    return false;
                 }
             } else {
                 // closing parens
-                if (str !== '(') {
-                    // last str is not a '('
-                    if (!isKey(problem.length - 1)) {
-                        // last str is not a key
-                        if (closing) {
+                if (problem[i] !== '(') {
+                    // last str is not a opening parenthesis
+                    if (!isOp(i)) {
+                        // last str is not an operation
+                        if (!isKey(i)) {
+                            // last str is not a key function
                             insert(')');
                         } else {
-                            insert('(');
+                            // cannot close parenthesis after key function
+                            customError(error.paren);
                         }
-                        return true;
+                    } else {
+                        // cannot close parenthesis after operation
+                        customError(error.paren);
                     }
-                    // last str is a number or a special number or a key
-                    customError(error.paren);
-                    return false;
                 } else {
-                    // last str is a '('
+                    // cannot place ) right after (
                     customError(error.paren);
-                    backspace();
-                    return false;
                 }
             }
         } else {
             // cursor mode
-            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+            const i = cursorIdx;
             if (!closing) {
                 // opening parens
-                if (isNaN(str) && !isSpecial(str)) {
-                    // str at cursorIdx is not a number
-                    // str at cursorIdx is not a special number
-                    if (closing) {
-                        insert(')');
+                if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
+                    // last str is not a closing parenthesis
+                    if (isNaN(removeFormatElements(i))) {
+                        // last str is not a regular number
+                        if (!isSpecial(i)) {
+                            // last str is not a special number
+                            insert('(');
+                        } else {
+                            // last str is a special number
+                            customError(error.reqOperation);
+                        }
                     } else {
-                        insert('(');
+                        // last str is a regular number
+                        customError(error.reqOperation);
                     }
-                    return true;
                 } else {
-                    // str at cursorIdx is a number or a special number
+                    // cannot place ( right after )
                     customError(error.paren);
-                    return false;
                 }
             } else {
                 // closing parens
-                if (str !== '(') {
-                    // str at cursorIdx is not a '('
-                    if (isNaN(str)) {
-                        // str at cursorIdx is not a number
-                        if (!isSpecial(str)) {
-                            // str at cursorIdx is not a special number
-                            if (!isKey(cursorIdx)) {
-                                // str at cursorIdx is not a key
-                                if (closing) {
-                                    insert(')');
-                                } else {
-                                    insert('(');
-                                }
-                                return true;
-                            }
+                if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== '(') {
+                    // str at cursorIdx is not a opening parenthesis
+                    if (!isOp(i)) {
+                        // str at cursorIdx is not an operation
+                        if (!isKey(i)) {
+                            // str at cursorIdx is not a key function
+                            insert(')');
+                        } else {
+                            // cannot close parenthesis after key function
+                            customError(error.paren);
                         }
+                    } else {
+                        // cannot close parenthesis after operation
+                        customError(error.paren);
                     }
-                    // str at cursorIdx is a number or a special number or a key
-                    customError(error.paren);
-                    return false;
                 } else {
-                    // str at cursorIdx is a '('
+                    // cannot place ) right after (
                     customError(error.paren);
-                    backspace();
-                    return false;
                 }
             }
         }
@@ -1728,7 +1732,7 @@ btns.addEventListener('click', (e) => {
             } else if (id === 'btn-shift-6' || id === 'btn-shift-6-div' || id === 'btn-shift-6-div-child' || id === 'btn-shift-6-sub') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
-                        insert('rand');
+                        insert(`${Math.random()}`); // rand button generates a random number between 0 - 1 && not 1
                     } else if (shiftMode === 1) {
                         insert('rndx');
                     } else if (shiftMode === 2) {
