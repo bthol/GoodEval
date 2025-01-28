@@ -175,7 +175,7 @@ nav {
     grid-row: 2;
     grid-column: 1 / span 4;
     display: flex;
-    gap: .5vmin;
+    gap: .15vmin;
     align-content: center;
     white-space: nowrap;
     overflow-x: scroll;

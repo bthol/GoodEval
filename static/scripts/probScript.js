@@ -49,6 +49,10 @@ let shiftMode = 0; // 0 value indicates default mode
 let cursorMode = false;
 let cursorModeToggled = false; // prevents defaulting on nav
 
+// format toggles
+let formatSuperscript = false;
+let formatSubscript = false;
+
 // Global Indexes
 let cursorIdx = 0;
 
@@ -383,11 +387,42 @@ function backspace() {
     }
 };
 
+// formatting
+function removeFormatElements(i) {
+    // returns a string without format elements from string in given problem structure index
+    const str = problem[i];
+    if (str.length > 1) { // bypass if single character
+        let string = '';
+        let addToStr = true;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.slice(i, i + 1);
+            if (char === '<') {
+                addToStr = false;
+            } else if (char === '>') {
+                addToStr = true;
+                continue;
+            }
+            if (addToStr) {
+                string += char;
+            }
+        }
+        return string;
+    } else {
+        return str;
+    }
+};
+
 // Structuring
 function insert(char) {
     if (!cursorMode) {
         // defaultly inserts at end of problem
-        problem.push(char);
+        if (!formatSuperscript) {
+            // no formatting
+            problem.push(char);
+        } else {
+            // apply formatting
+            problem.push('<sup>' + char + '</sup>');
+        }
         updateProblem();
     } else {
         // in cursor mode, inserts at cursor index
@@ -398,7 +433,14 @@ function insert(char) {
                 problem.unshift(char);
                 updateProblem('cursor');
             } else {
-                problem.splice(cursorIdx + 1, 0, char);
+                // cursor at middle and end
+                if (!formatSuperscript) {
+                    // no formatting
+                    problem.splice(cursorIdx + 1, 0, char);
+                } else {
+                    // apply formatting
+                    problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
+                }
                 cursorForward();
             }
         } else {
@@ -808,59 +850,6 @@ function calculate(prob) {
     return prob;
 };
 
-// formatting
-function removeFormatElements(i) {
-    // returns a string without format elements from string in given problem structure index
-    const str = problem[i];
-    if (str.length > 1) { // bypass if single character
-        let string = '';
-        let addToStr = true;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.slice(i, i + 1);
-            if (char === '<') {
-                addToStr = false;
-            } else if (char === '>') {
-                addToStr = true;
-                continue;
-            }
-            if (addToStr) {
-                string += char;
-            }
-        }
-        console.log(string);
-        return string;
-    } else {
-        console.log(str);
-        return str;
-    }
-};
-
-function expFormat() {
-    // tests whether to format for exponent (false = no format; true = format)
-    if (problem.length === 0) {
-        // nothing to validate
-        return false;
-    } else {
-        if (!cursorMode) {
-            // default mode
-            const str = problem[problem.length - 1];
-            if (str === '^') {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // cursorMode
-            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
-            if (str === '^') {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-};
-
 // tests
 function isKey(i) {
     // test for match of str at problem index i with key property of keyInfo structure
@@ -895,6 +884,27 @@ function isOp(i) {
     } else {
         return false;
     }
+};
+
+function findOpen(start, open, close) {
+    // finds opening index for open and close char pairs
+    // accounts for nesting
+    let index = 0;
+    let nest = 0;
+    for (let i = start; i > -1; i--) {
+        const str = removeFormatElements(i);
+        console.log(str);
+        if (str === open) {
+            if (nest === 0) {
+                index = i;
+                break;
+            }
+            nest += 1;
+        } else if (str === close) {
+            nest -= 1;
+        }
+    }
+    return index;
 };
 
 // error functions
@@ -1073,49 +1083,79 @@ function validQuant(key = false, special = false) {
     }
 };
 
-// handlers (validate and insert)
+// handlers (pre validates, formats and inserts)
 function handleRadical() {
     if (problem.length === 0) {
+        // nothing to validate
         insert(operation.rad);
-        return true;
     } else {
+        // validate
         if (!cursorMode) {
+            const str = problem[problem.length - 1];
             // default mode
-            if (!isKey(problem.length - 1)) {
-                // not a key
-                if (!isOp(problem.length - 1)) {
-                    // is a regular number or a special number
-                    const str = problem[problem.length - 1];
-                    problem.pop();
-                    insert(`<sup>${str}</sup>`);
-                    insert(operation.rad);
-                    return true;
-                } else {
-                    // is operation
-                    insert(operation.rad);
-                    return true;
+            if (str === ')') {
+                // index of radication is an expression
+                // get starting parenthesis index
+                const start = findOpen(problem.length - 1, '(', ')');
+                // format section
+                let section = [];
+                for (let i = start; i < problem.length; i++) {
+                    section.push(`<sup>${problem[i]}</sup>`);
                 }
-            }
-            customError(error.input);
-            return false;
+                // update changes to problem structure
+                problem = restructure(section, start, problem.length - 1, problem);
+                // add radical symbol
+                insert(operation.rad);
+            } else {
+                if (!isKey(problem.length - 1)) {
+                    // not a key
+                    if (!isOp(problem.length - 1)) {
+                        // is a regular number or a special number
+                        problem.pop();
+                        insert(`<sup>${str}</sup>`);
+                        insert(operation.rad);
+                    } else {
+                        // is operation
+                        insert(operation.rad);
+                    }
+                } else {
+                    // no radical just after key function
+                    customError(error.input);
+                }
+            } 
         } else {
             // cursor mode
-            if (!isKey(cursorIdx)) {
-                // not a key
-                if (!isOp(cursorIdx)) {
-                    // is a regular number or a special number
-                    problem.splice(cursorIdx, 1);
-                    insert(`<sup>${problem.slice(cursorIdx, cursorIdx + 1)[0]}</sup>`);
-                    insert(operation.rad);
-                    return true;
+            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+            if (str === ')') {
+                // index of radication is an expression
+                // get starting parenthesis index
+                const start = findOpen(problem.length - 1, '(', ')');
+                // format section
+                let section = [];
+                for (let i = start; i < problem.length; i++) {
+                    section.push(`<sup>${problem[i]}</sup>`);
+                }
+                // update changes to problem structure
+                problem = restructure(section, start, problem.length - 1, problem);
+                // add radical symbol
+                insert(operation.rad);
+            } else {
+                if (!isKey(cursorIdx)) {
+                    // not a key
+                    if (!isOp(cursorIdx)) {
+                        // is a regular number or a special number
+                        problem.splice(cursorIdx, 1);
+                        insert(`<sup>${str}</sup>`);
+                        insert(operation.rad);
+                    } else {
+                        // is operation
+                        insert(operation.rad);
+                    }
                 } else {
-                    // is operation
-                    insert(operation.rad);
-                    return true;
+                    // no radical just after key function
+                    customError(error.input);
                 }
             }
-            customError(error.input);
-            return false;
         }
     }
 };
@@ -1123,7 +1163,6 @@ function handleRadical() {
 function handlePower() {
     if (problem.length === 0) {
         customError(error.reqBase);
-        return false;
     } else {
         if (!cursorMode) {
             const i = problem.length - 1;
@@ -1131,22 +1170,18 @@ function handlePower() {
             if (!isNaN(removeFormatElements(i)) || isSpecial(i)) {
                 // base is a number or a special number
                 insert(operation.exp);
-                return true;
             } else {
                 // base is neither a number nor special number
                 customError(error.reqBase);
-                return false;
             }
         } else {
             // cursor mode
             if (!isNaN(removeFormatElements(cursorIdx)) || isSpecial(cursorIdx)) {
                 // base is a number or a special number
                 insert(operation.exp);
-                return true;
             } else {
                 // base is neither a number nor special number
                 customError(error.reqBase);
-                return false;
             }
         }
     }
@@ -1178,7 +1213,14 @@ function handleParen(closing = false) {
                         // last str is not regular a number
                         if (!isSpecial(i)) {
                             // last str is not a special number
-                            insert('(');
+                            if (problem[i] === operation.exp) {
+                                // start of a power expression
+                                formatSuperscript = true;
+                                insert('(');
+                            } else {
+                                // start of normal expression
+                                insert('(');
+                            }
                         } else {
                             // last str is a special number
                             customError(error.reqOperation);
@@ -1199,7 +1241,17 @@ function handleParen(closing = false) {
                         // last str is not an operation
                         if (!isKey(i)) {
                             // last str is not a key function
-                            insert(')');
+                            console.log(problem);
+                            const start = findOpen(i, '(', ')');
+                            console.log('end');
+                            if (start - 1 > -1 && removeFormatElements(start - 1) === '^') {
+                                // end of power expression
+                                insert(')');
+                                formatSuperscript = false;
+                            } else {
+                                // end of normal expression
+                                insert(')');
+                            }
                         } else {
                             // cannot close parenthesis after key function
                             customError(error.paren);
@@ -1475,107 +1527,55 @@ btns.addEventListener('click', (e) => {
         if (type === 'numpad') {
             if (id === 'btn-num0') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('0');
-                    } else {
-                        insert('<sup>0</sup>');
-                    }
+                    insert('0');
                 }
             } else if (id === 'btn-num1') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('1');
-                    } else {
-                        insert('<sup>1</sup>');
-                    }
+                    insert('1');
                 }
             } else if (id === 'btn-num2') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('2');
-                    } else {
-                        insert('<sup>2</sup>');
-                    }
+                    insert('2');
                 }
             } else if (id === 'btn-num3') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('3');
-                    } else {
-                        insert('<sup>3</sup>');
-                    }
+                    insert('3');
                 }
             } else if (id === 'btn-num4') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('4');
-                    } else {
-                        insert('<sup>4</sup>');
-                    }
+                    insert('4');
                 }
             } else if (id === 'btn-num5') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('5');
-                    } else {
-                        insert('<sup>5</sup>');
-                    }
+                    insert('5');
                 }
             } else if (id === 'btn-num6') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('6');
-                    } else {
-                        insert('<sup>6</sup>');
-                    }
+                    insert('6');
                 }
             } else if (id === 'btn-num7') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('7');
-                    } else {
-                        insert('<sup>7</sup>');
-                    }
+                    insert('7');
                 }
             } else if (id === 'btn-num8') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('8');
-                    } else {
-                        insert('<sup>8</sup>');
-                    }
+                    insert('8');
                 }
             } else if (id === 'btn-num9') {
                 if (validQuant()) {
-                    if (!expFormat()) {
-                        insert('9');
-                    } else {
-                        insert('<sup>9</sup>');
-                    }
+                    insert('9');
                 }
             } else if (id === 'btn-pi') {
                 if (validQuant(false, true)) {
-                    if (!expFormat()) {
-                        insert(specialInfo[0].symbol);
-                    } else {
-                        insert(`<sup>${specialInfo[0].symbol}</sup>`);
-                    }
+                    insert(specialInfo[0].symbol);
                 }
             } else if (id === 'btn-tau') {
                 if (validQuant(false, true)) {
-                    if (!expFormat()) {
-                        insert(specialInfo[1].symbol);
-                    } else {
-                        insert(`<sup>${specialInfo[1].symbol}</sup>`);
-                    }
+                    insert(specialInfo[1].symbol);
                 }
             } else if (id === 'btn-euler') {
                 if (validQuant(false, true)) {
-                    if (!expFormat()) {
-                        insert(specialInfo[2].symbol);
-                    } else {
-                        insert(`<sup>${specialInfo[2].symbol}</sup>`);
-                    }
+                    insert(specialInfo[2].symbol);
                 }
             }
 
@@ -1626,6 +1626,9 @@ btns.addEventListener('click', (e) => {
                 answer = [];
                 // toggle off cursor mode (leave shift mode)
                 cursorMode = false;
+                // disable all formatting
+                formatSuperscript = false;
+                formatSubscript = false;
                 // update display to reflect changes
                 updateProblem();
                 updateAnswer();
