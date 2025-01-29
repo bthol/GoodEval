@@ -2,7 +2,7 @@
 
 **Developer:** Blake Thollaug
 
-**Overview:** GoodEval is a Django stack calulator web application and computational intelligence API that makes use of string evaluation to perform its calculations. The GoodEval Calculator evaluates arithmetic expressions to produce a single value through a skeuomorphic and themable calculator GUI.
+**Overview:** GoodEval is a Django stack calulator web application and computational intelligence API that makes use of string evaluation to perform its calculations. The GoodEval Calculator evaluates arithmetic expressions to produce a single value through a skeuomorphic and themable calculator GUI. While both the GoodEval Calculator and The GoodEval API rely on an approach of string evaluation, the GoodEval API includes expanded functionality through its more advanced computations, meaning the abilty to calculate on sets of data and calculate 2-arity and higher formulas, for two key examples.
 
 ## Evaluator Operation
 Different from calculation of numeral data types in real-time, string evaluation calculates with string data by way of data type conversion from string data to numeral data after the problem string has been created in its entirety. Numeral data types are limited to only numeral characters, and thus cannot accomodate special functions accessed by non-numeral characters. The evaluator takes a problem string, the string is analyzed and structured, the structure is further analyzed and manipulated, and then parenthetically sectioned and solved.
@@ -21,11 +21,15 @@ The API takes a JSON format object containing a formatted problem string ("probl
  - new project              : $django-admin startproject project-name
  - new app                  : $python manage.py startapp app_name
  - django version           : $python -m django --version
+ - activate venv            : $venv/Scripts/activate
+ - deactivate venv          : $deactivate
  - activate virtualenv      : $pipenv shell
  - deactivate virtualenv    : $exit
  - run in virtualenv        : $pipenv run
- - update Pipfile.lock      : $pipenv lock
+ - list pipenv installments : $pipenv graph
  - update static files      : $python manage.py collectstatic --noinput
+ - update Pipfile.lock      : $pipenv lock
+ - update requirements.txt  : $pip freeze > requirements.txt
  - heroku no static         : $heroku config:set DISABLE_COLLECTSTATIC=1
  - heroku yes static        : $heroku config:unset DISABLE_COLLECTSTATIC
  - heroku debug static      : $heroku config:set DEBUG_COLLECTSTATIC=1
