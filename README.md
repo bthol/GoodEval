@@ -30,6 +30,7 @@ The API takes a JSON format object containing a formatted problem string ("probl
  - heroku yes static        : $heroku config:unset DISABLE_COLLECTSTATIC
  - heroku debug static      : $heroku config:set DEBUG_COLLECTSTATIC=1
  - heroku no debug          : $heroku config:unset DEBUG_COLLECTSTATIC
+ - heroku push update       : $git push heroku main
 
 *REMINDER: add to Procfile once database is setup*
 $release: python manage.py migrate$

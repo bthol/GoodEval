@@ -1,0 +1,31 @@
+* {
+    margin: 0px;
+    color: #2fff2f;
+}
+
+.body {
+    height: 100vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.elipses-container {
+    margin: 1vmin 0vmin;
+    gap: 1vmin;
+    display: flex;
+}
+
+.elipses-dot {
+    width: 1vmin;
+    height: 1vmin;
+    border: .1vmin solid #2fff2f;
+    border-radius: .2vmin;
+    position: relative;
+    animation: 500ms linear 0s infinite alternate wave;
+}
+
+@keyframes wave {
+    0% {transform: translateY(0vmin)}
+    20%, 100% {transform: translateY(1.5vmin)}
+}
