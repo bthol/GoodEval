@@ -412,15 +412,46 @@ function removeFormatElements(i) {
     }
 };
 
+function expFormat() {
+    // tests whether to format for exponent (false = no format; true = format)
+    if (problem.length === 0) {
+        // nothing to validate
+        return false;
+    } else {
+        if (!cursorMode) {
+            // default mode
+            const str = problem[problem.length - 1];
+            if (str === '^') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // cursorMode
+            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+            if (str === '^') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+};
+
 // Structuring
 function insert(char) {
     if (!cursorMode) {
         // defaultly inserts at end of problem
         if (!formatSuperscript) {
-            // no formatting
-            problem.push(char);
+            if (!expFormat()) {
+                // no formatting
+                problem.push(char);
+            } else {
+                // apply superscript formatting
+                problem.push('<sup>' + char + '</sup>');
+            }
         } else {
-            // apply formatting
+            // apply superscript formatting
             problem.push('<sup>' + char + '</sup>');
         }
         updateProblem();
@@ -435,10 +466,15 @@ function insert(char) {
             } else {
                 // cursor at middle and end
                 if (!formatSuperscript) {
-                    // no formatting
-                    problem.splice(cursorIdx + 1, 0, char);
+                    if (!expFormat()) {
+                        // no formatting
+                        problem.splice(cursorIdx + 1, 0, char);
+                    } else {
+                        // apply superscript formatting
+                        problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
+                    }
                 } else {
-                    // apply formatting
+                    // apply superscript formatting
                     problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
                 }
                 cursorForward();
@@ -845,7 +881,7 @@ function calculate(prob) {
             aIdx = getIdx(operation.add, prob);
         }
     }
-    console.log('Performed.')
+    console.log('Performed.');
     console.log(prob);
     return prob;
 };
@@ -895,11 +931,11 @@ function findOpen(start, open, close) {
         const str = removeFormatElements(i);
         console.log(str);
         if (str === open) {
+            nest += 1;
             if (nest === 0) {
                 index = i;
                 break;
             }
-            nest += 1;
         } else if (str === close) {
             nest -= 1;
         }
@@ -935,16 +971,20 @@ function validOp() {
     } else {
         // run validation
         if (!cursorMode) {
+
             // default
+
             const i = problem.length - 1;
-            if (problem[i] === ')' || !isNaN(removeFormatElements(i)) || isSpecial(i)) {
+            const str = removeFormatElements(i);
+            if (str === ')' || !isNaN(str) || isSpecial(i)) {
                 // last str is ')' or a regular number or a special number
                 return true;
             }
         } else {
+
             // cursor mode
-            // str at cursorIdx is ')' or a regular number or a special number
-            if (problem.slice(cursorIdx, cursorIdx + 1)[0] === ')' || !isNaN(removeFormatElements(cursorIdx)) || isSpecial(cursorIdx)) {
+            const str = removeFormatElements(cursorIdx);
+            if (str === ')' || !isNaN(str) || isSpecial(cursorIdx)) {
                 // last str is ')' or a regular number or a special number
                 return true;
             }
@@ -969,7 +1009,8 @@ function validQuant(key = false, special = false) {
 
                     // regular numbers
 
-                    if (problem[problem.length - 1] !== ')') {
+                    const str = removeFormatElements(problem.length - 1);
+                    if (str !== ')') {
                         if (!isSpecial(problem.length - 1)) {
                             // last str is not a special number
                             return true;
@@ -984,8 +1025,9 @@ function validQuant(key = false, special = false) {
                     // key function
 
                     const i = problem.length - 1;
-                    if (problem[i] !== ')') {
-                        if (isNaN(removeFormatElements(i))) {
+                    const str = removeFormatElements(i);
+                    if (str !== ')') {
+                        if (isNaN(str)) {
                             // last str is not a number
                             if (!isSpecial(i)) {
                                 // last str is not a special number
@@ -1007,8 +1049,9 @@ function validQuant(key = false, special = false) {
                 // special numbers
 
                 const i = problem.length - 1;
-                if (problem[i] !== ')') {
-                    if (isNaN(removeFormatElements(i))) {
+                const str = removeFormatElements(i);
+                if (str !== ')') {
+                    if (isNaN(str)) {
                         // last str is not a number
                         if (!isSpecial(i)) {
                             // last str is not a special number
@@ -1029,7 +1072,8 @@ function validQuant(key = false, special = false) {
 
                     // regular numbers
 
-                    if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
+                    const str = removeFormatElements(cursorIdx);
+                    if (str !== ')') {
                         if (!isSpecial(cursorIdx)) {
                             // str at cursorIdx is not a special number
                             return true;
@@ -1043,8 +1087,9 @@ function validQuant(key = false, special = false) {
 
                     // key function
 
-                    if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
-                        if (isNaN(removeFormatElements(cursorIdx))) {
+                    const str = removeFormatElements(cursorIdx);
+                    if (str !== ')') {
+                        if (isNaN(str)) {
                             // str at cursorIdx is not a number
                             if (!isSpecial(cursorIdx)) {
                                 // str at cursorIdx is not a special number
@@ -1065,8 +1110,9 @@ function validQuant(key = false, special = false) {
 
                 // special numbers
 
-                if ( problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
-                    if (isNaN(removeFormatElements(cursorIdx))) {
+                const str = removeFormatElements(cursorIdx);
+                if (str !== ')') {
+                    if (isNaN(str)) {
                         // str at cursorIdx is not a number
                         if (!isSpecial(cursorIdx)) {
                             // str at cursorIdx is not a special number
@@ -1091,16 +1137,18 @@ function handleRadical() {
     } else {
         // validate
         if (!cursorMode) {
-            const str = problem[problem.length - 1];
+            const str = removeFormatElements(problem.length - 1);
             // default mode
             if (str === ')') {
                 // index of radication is an expression
                 // get starting parenthesis index
+                console.log('here');
                 const start = findOpen(problem.length - 1, '(', ')');
+                console.log(start);
                 // format section
                 let section = [];
                 for (let i = start; i < problem.length; i++) {
-                    section.push(`<sup>${problem[i]}</sup>`);
+                    section.push(`<sup>${removeFormatElements(i)}</sup>`);
                 }
                 // update changes to problem structure
                 problem = restructure(section, start, problem.length - 1, problem);
@@ -1125,11 +1173,11 @@ function handleRadical() {
             } 
         } else {
             // cursor mode
-            const str = problem.slice(cursorIdx, cursorIdx + 1)[0];
+            const str = removeFormatElements(cursorIdx);
             if (str === ')') {
                 // index of radication is an expression
                 // get starting parenthesis index
-                const start = findOpen(problem.length - 1, '(', ')');
+                const start = findOpen(cursorIdx, '(', ')');
                 // format section
                 let section = [];
                 for (let i = start; i < problem.length; i++) {
@@ -1205,15 +1253,16 @@ function handleParen(closing = false) {
         if (!cursorMode) {
             // default mode
             const i = problem.length - 1;
+            const str = removeFormatElements(i);
             if (!closing) {
                 // opening parens
-                if (problem[i] !== ')') {
+                if (str !== ')') {
                     // last str is not a closing parenthesis
-                    if (isNaN(removeFormatElements(i))) {
+                    if (isNaN(str)) {
                         // last str is not regular a number
                         if (!isSpecial(i)) {
                             // last str is not a special number
-                            if (problem[i] === operation.exp) {
+                            if (str === operation.exp) {
                                 // start of a power expression
                                 formatSuperscript = true;
                                 insert('(');
@@ -1235,15 +1284,13 @@ function handleParen(closing = false) {
                 }
             } else {
                 // closing parens
-                if (problem[i] !== '(') {
+                if (str !== '(') {
                     // last str is not a opening parenthesis
                     if (!isOp(i)) {
                         // last str is not an operation
                         if (!isKey(i)) {
                             // last str is not a key function
-                            console.log(problem);
                             const start = findOpen(i, '(', ')');
-                            console.log('end');
                             if (start - 1 > -1 && removeFormatElements(start - 1) === '^') {
                                 // end of power expression
                                 insert(')');
@@ -1268,11 +1315,12 @@ function handleParen(closing = false) {
         } else {
             // cursor mode
             const i = cursorIdx;
+            const str = removeFormatElements(i);
             if (!closing) {
                 // opening parens
-                if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== ')') {
+                if (str !== ')') {
                     // last str is not a closing parenthesis
-                    if (isNaN(removeFormatElements(i))) {
+                    if (isNaN(str)) {
                         // last str is not a regular number
                         if (!isSpecial(i)) {
                             // last str is not a special number
@@ -1291,7 +1339,7 @@ function handleParen(closing = false) {
                 }
             } else {
                 // closing parens
-                if (problem.slice(cursorIdx, cursorIdx + 1)[0] !== '(') {
+                if (str !== '(') {
                     // str at cursorIdx is not a opening parenthesis
                     if (!isOp(i)) {
                         // str at cursorIdx is not an operation
