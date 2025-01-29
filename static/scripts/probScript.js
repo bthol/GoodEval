@@ -316,7 +316,6 @@ function cursorContinue() {
         clearTimeout(cursorModeCache);
         cursorModeCache = setTimeout(() => {
             // discontinue cursor mode
-            console.log("cursor mode discontinued");
             cursorMode = false;
             // update display
             updateProblem();
@@ -346,7 +345,6 @@ function cursorBack() {
         cursorIdx -= 1;
         updateProblem('cursor');
     }
-    console.log(cursorIdx);
 };
 
 function cursorForward() {
@@ -356,7 +354,6 @@ function cursorForward() {
         cursorIdx += 1;
         updateProblem('cursor');
     }
-    console.log(cursorIdx);
 };
 
 function backspace() {
@@ -586,8 +583,6 @@ function structureString() {
     } catch (error) {
         console.log(error);
     }
-    
-    console.log(struct);
     answer = struct;
 };
 
@@ -619,7 +614,6 @@ function getSection(open, close) {
 
 function section() {
     let section = getSection('(', ')');
-    console.log(section);
     let count = 0;
     while (count < 10 && section) {
         answer = restructure(calculate(section.sect), section.start, section.end, answer);
@@ -653,7 +647,6 @@ function keyFunction(key, funct, prob) {
                     }
                 }
             }
-            console.log(expression);
         } else {
             // single argument
             solution = funct(Number(prob[idx + 1]));
@@ -882,7 +875,6 @@ function calculate(prob) {
         }
     }
     console.log('Performed.');
-    console.log(prob);
     return prob;
 };
 
@@ -929,7 +921,6 @@ function findOpen(start, open, close) {
     let nest = 0;
     for (let i = start; i > -1; i--) {
         const str = removeFormatElements(i);
-        console.log(str);
         if (str === open) {
             nest += 1;
             if (nest === 0) {
@@ -1142,9 +1133,7 @@ function handleRadical() {
             if (str === ')') {
                 // index of radication is an expression
                 // get starting parenthesis index
-                console.log('here');
                 const start = findOpen(problem.length - 1, '(', ')');
-                console.log(start);
                 // format section
                 let section = [];
                 for (let i = start; i < problem.length; i++) {
@@ -1539,7 +1528,6 @@ function evaluate() {
             history.pop();
             history.unshift({prob: prob, ans: answer[0]});
         }
-        console.log(history);
 
         // clear data
         problem = [];
