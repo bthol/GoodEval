@@ -1,17 +1,6 @@
 .body {
     margin: 0px;
     height: 100vh;
-
-    /* scaling */
-    
-    /* --screen-width: 1vmin; */
-    /* --screen-height: 1vmin; */
-
-    /* --scale-top-btns-width: 1vmin; */
-    /* --scale-top-btns-height: 1vmin; */
-
-    /* --scale-bottom-btns-width: 1vmin; */
-    /* --scale-bottom-btns-height: 1vmin; */
 }
 
 /* NAVIGATION */
@@ -119,26 +108,32 @@ nav {
     25%, 50% {top: -1.2vmin}
 }
 
+/* container for calculator */
+
 .calculator-background {
-    width: 75vmin;
-    height: 100vmin;
-    padding: 5vmin;
-    margin: calc(50vh - 50vmin) auto;
+
+    /* scaling */
+    --scale-calc-size: 1;
+
+    width: calc(67.5vmin * var(--scale-calc-size));
+    height: calc(100vmin * var(--scale-calc-size));
+    padding: calc(4.5vmin * var(--scale-calc-size));
+    margin: auto;
     background: var(--color-bckgrnd-3);
-    border-top: 1.4vmin ridge var(--color-border-2);
-    border-right: 1.4vmin groove var(--color-border-2);
-    border-bottom: 1.4vmin groove var(--color-border-2);
-    border-left: 1.4vmin ridge var(--color-border-2);
+    border-top: calc(1.26vmin * var(--scale-calc-size)) ridge var(--color-border-2);
+    border-right: calc(1.26vmin * var(--scale-calc-size)) groove var(--color-border-2);
+    border-bottom: calc(1.26vmin * var(--scale-calc-size)) groove var(--color-border-2);
+    border-left: calc(1.26vmin * var(--scale-calc-size)) ridge var(--color-border-2);
 }
 
 /* SCREEN */
 .screen {
-    width: 60vmin;
-    height: 12vmin;
-    background: var(--color-screen);
-    border: .6vmin solid var(--color-border-4);
+    width: calc(54vmin * var(--scale-calc-size));
+    height: calc(13.5vmin * var(--scale-calc-size));
     margin: 0px auto;
-    margin-bottom: 1vmin;
+    margin-bottom: calc(.9vmin * var(--scale-calc-size));
+    background: var(--color-screen);
+    border: calc(.54vmin * var(--scale-calc-size)) solid var(--color-border-4);
 }
 
 .screen > div {
@@ -159,23 +154,23 @@ nav {
 }
 
 .shift-mode {
-    font-size: 1.7vmin;
     grid-column: 3;
+    font-size: calc(1.8vmin * var(--scale-calc-size));
 }
 
 .cursor-mode {
-    font-size: 1.7vmin;
     grid-column: 2;
     grid-row: 1;
+    font-size: calc(1.8vmin * var(--scale-calc-size));
 }
 
 #screen-content {
-    padding-left: 1vmin;
+    padding-left: calc(.9vmin * var(--scale-calc-size));
     margin: 0px;
     grid-row: 2;
     grid-column: 1 / span 4;
     display: flex;
-    gap: .15vmin;
+    gap: calc(.14vmin * var(--scale-calc-size));
     align-content: center;
     white-space: nowrap;
     overflow-x: scroll;
@@ -188,8 +183,8 @@ nav {
 #equal-sign {
     margin: 0px;
     justify-self: center;
-    align-self: center;
     grid-row: 3;
+    font-size: calc(4vmin * var(--scale-calc-size));
 }
 
 #screen-answer {
@@ -197,77 +192,137 @@ nav {
     margin-right: 0px;
     grid-row: 3;
     display: flex;
-    gap: .5vmin;
+    gap: calc(.6vmin var(--scale-calc-size));
     white-space: nowrap;
     overflow-x: scroll;
 }
 
+/* font sizes */
+
+#screen-content > div {
+    font-size: calc(4vmin * var(--scale-calc-size));
+}
+
+#screen-answer > div {
+    font-size: calc(4vmin * var(--scale-calc-size));
+}
+
+#btn-sign {
+    font-size: calc(2.8vmin * var(--scale-calc-size));
+}
+
+#btn-sign-sub {
+    font-size: calc(4vmin * var(--scale-calc-size));
+}
+
+#btn-equals {
+    font-size: calc(4vmin * var(--scale-calc-size));
+}
+
+#btn-shift-4-sub {
+    font-size: calc(1.7vmin * var(--scale-calc-size));
+}
+
+#btn-power-sup {
+    font-size: calc(1.9vmin * var(--scale-calc-size));
+}
+
+#btn-root-sup {
+    font-size: calc(1.9vmin * var(--scale-calc-size));
+}
+
 /* BUTTONS */
-.top-button-container {
+.flex-between {
     display: flex;
     justify-content: space-between;
-    padding: .4vmin 0vmin;
+    gap: calc(2vmin * var(--scale-calc-size));
+}
+
+.flex-between-wide {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: start;
+    gap: calc(2vmin * var(--scale-calc-size));
+}
+
+.flex-end {
+    display: flex;
+    justify-content: end;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+}
+
+.top-button-container {
+    white-space: nowrap;
+    margin: calc(1.5vmin * var(--scale-calc-size)) calc(1vmin * var(--scale-calc-size));
+    height: calc(5vmin * var(--scale-calc-size));
 }
 
 .top-button {
     position: relative;
-    padding: 0.5vmin 1vmin;
-    margin: 0vmin 1vmin;
+    padding: calc(0.3vmin * var(--scale-calc-size)) calc(1.15vmin * var(--scale-calc-size));
     cursor: pointer;
-    font-size: 2.8vmin;
     background-color: var(--color-fill-2);
     color: var(--color-font);
-    border: .3vmin solid var(--color-border-3);
-    border-bottom: .4vmin solid var(--color-border-3);
+    border: calc(.3vmin * var(--scale-calc-size)) solid var(--color-border-3);
+    border-bottom: calc(.4vmin * var(--scale-calc-size)) solid var(--color-border-3);
+    font-size: calc(2.75vmin * var(--scale-calc-size));
 }
 .top-button:active {
-    border: .25vmin solid var(--color-border-3);
-    border-bottom: .1vmin solid var(--color-border-3);
-    top: .2vmin;
+    border: calc(.25vmin * var(--scale-calc-size)) solid var(--color-border-3);
+    border-bottom: calc(.1vmin * var(--scale-calc-size)) solid var(--color-border-3);
+    top: calc(.2vmin * var(--scale-calc-size));
 }
 
 .bottom-button-container {
     grid-row: 3;
-    width: 60vmin;
-    height: 60vmin;
+    width: calc(54vmin * var(--scale-calc-size));
+    height: calc(54vmin * var(--scale-calc-size));
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
-    grid-gap: 2vmin;
-    padding: 1vmin;
+    grid-gap: calc(1.8vmin * var(--scale-calc-size));
+    padding: calc(.9vmin * var(--scale-calc-size));
     margin: 0px auto;
-    margin-top: 1vmin;
+    margin-top: calc(.9vmin * var(--scale-calc-size));
     background: var(--color-bckgrnd-2);
-    border: .1vmin solid var(--color-border-1);
+    border: calc(.1vmin * var(--scale-calc-size)) solid var(--color-border-1);
 }
 
 .button {
     position: relative;
-    padding: 0vmin 3vmin;
+    padding: 0vmin calc(2.7vmin * var(--scale-calc-size));
     color: var(--color-font);
     cursor: pointer;
-    font-size: 3.5vmin;
+    font-size: calc(3.25vmin * var(--scale-calc-size));
 }
 
 .button.normal {
     background: var(--color-fill-2);
-    border: .5vmin solid var(--color-border-3);
-    border-bottom: .8vmin solid var(--color-border-3);
+    border: calc(.5vmin * var(--scale-calc-size)) solid var(--color-border-3);
+    border-bottom: calc(.7vmin * var(--scale-calc-size)) solid var(--color-border-3);
 }
 .button.normal:active {
-    border: .5vmin solid var(--color-border-3);
-    border-bottom: .4vmin solid var(--color-border-3);
-    top: .25vmin;
+    border-bottom: calc(.4vmin * var(--scale-calc-size)) solid var(--color-border-3);
+    top: calc(.25vmin * var(--scale-calc-size));
 }
 
 .button.orange {
     background: #ee531b;
-    border: .5vmin solid #d94712;
-    border-bottom: .8vmin solid #d84713;
+    border: calc(.5vmin * var(--scale-calc-size)) solid #d94712;
+    border-bottom: calc(.7vmin * var(--scale-calc-size)) solid #d84713;
 }
 .button.orange:active {
     border-bottom: hidden;
-    top: .25vmin;
+    top: calc(.25vmin * var(--scale-calc-size));
 }
 
 .button.grid-start { /* special operations section */
@@ -366,15 +421,15 @@ nav {
 }
 
 .left-right-style {
-    border-radius: 1vmin 2vmin 1vmin 2vmin;
+    border-radius: calc(1vmin * var(--scale-calc-size)) calc(2vmin * var(--scale-calc-size)) calc(1vmin * var(--scale-calc-size)) calc(2vmin * var(--scale-calc-size));
 }
 
 .right-left-style {
-    border-radius: 2vmin 1vmin 2vmin 1vmin;
+    border-radius: calc(2vmin * var(--scale-calc-size)) calc(1vmin * var(--scale-calc-size)) calc(2vmin * var(--scale-calc-size)) calc(1vmin * var(--scale-calc-size));
 }
 
 .soft-edge-style {
-    border-radius: 1vmin 1vmin .5vmin .5vmin;
+    border-radius: calc(1vmin * var(--scale-calc-size)) calc(1vmin * var(--scale-calc-size)) calc(.5vmin * var(--scale-calc-size)) calc(.5vmin * var(--scale-calc-size));
 }
 
 .highlight-back:hover {

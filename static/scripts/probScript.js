@@ -288,9 +288,9 @@ function toggleShiftMode() {
         shiftBtn3.innerText = 'atanh';
         // Σ = html entity: &sum; + html code: &#8721;
         // ∏ = html entity: &prod; + html code: &#8719;
-        shiftBtn4.innerHTML = '<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: 2vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>n</div></div>';
-        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: 2vmin">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub></div></div>`;
-        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: 2.8vmin">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: 2vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>${operation.div}n</div></div>`;
+        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${2.8 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>n</div></div>`;
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${2.8 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub></div></div>`;
+        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${2.8 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>${operation.div}n</div></div>`;
     }
 };
 

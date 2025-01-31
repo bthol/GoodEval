@@ -61,3 +61,13 @@ function setThemeUmbral() {
     calc.classList.add("color-theme-4");
 };
 btnUmbral.addEventListener("click", setThemeUmbral);
+
+// responsive scaling of calculator
+// // get scalar
+// console.log(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'));
+// // set scalar
+// setTimeout(() => {
+//     calc.setAttribute('style', '--scale-calc-size: .5');
+//     // check change
+//     console.log(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'));
+// }, 1000);
