@@ -998,6 +998,11 @@ function validQuant(key = false, special = false) {
 
                     // regular numbers
 
+                    // let format = false;
+                    // for (let x = problem.length - 1; x > -1; x--) {
+
+                    // }
+
                     const str = removeFormatElements(problem.length - 1);
                     if (str !== ')') {
                         if (!isSpecial(problem.length - 1)) {
@@ -1274,18 +1279,17 @@ function handleParen(closing = false) {
 
                 // remove parenthesis around single multidigit values
                 let removed = false;
-                for (let x = 0; x < problem.length - i; x++) {
+                for (let x = problem.length - 1; x > -1; x--) {
                     const a = removeFormatElements(x);
                     if (a === '(') {
                         removed = true;
-                        problem.splice(x, 0);
+                        problem.splice(x, 1);
                         updateProblem();
                         break;
                     } else if (isNaN(a)) {
                         break;
                     }
                 }
-                console.log(removed);
                 
                 if (!removed) {
                     // if not removed
