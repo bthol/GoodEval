@@ -1277,20 +1277,27 @@ function handleParen(closing = false) {
             } else {
                 // closing parens
 
-                // remove parenthesis around single multidigit values
                 let removed = false;
-                for (let x = problem.length - 1; x > -1; x--) {
-                    const a = removeFormatElements(x);
-                    if (a === '(') {
-                        removed = true;
-                        problem.splice(x, 1);
-                        updateProblem();
-                        break;
-                    } else if (isNaN(a)) {
-                        if (a === '.') {
-                            continue;
-                        } else {
+                // remove parenthesis around single special numbers
+                if (isSpecial(i) && i - 1 > -1 && removeFormatElements(i - 1) === '(') {
+                    removed = true;
+                    problem.splice(i - 1, 1);
+                    updateProblem();
+                } else {
+                    // remove parenthesis around single multidigit values
+                    for (let x = i; x > -1; x--) {
+                        const a = removeFormatElements(x);
+                        if (a === '(') {
+                            removed = true;
+                            problem.splice(x, 1);
+                            updateProblem();
                             break;
+                        } else if (isNaN(a)) {
+                            if (a === '.') {
+                                continue;
+                            } else {
+                                break;
+                            }
                         }
                     }
                 }
