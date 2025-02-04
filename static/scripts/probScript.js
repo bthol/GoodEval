@@ -1287,7 +1287,11 @@ function handleParen(closing = false) {
                         updateProblem();
                         break;
                     } else if (isNaN(a)) {
-                        break;
+                        if (a === '.') {
+                            continue;
+                        } else {
+                            break;
+                        }
                     }
                 }
                 
