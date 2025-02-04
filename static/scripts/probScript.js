@@ -4,10 +4,6 @@ console.log('Problem Script Loaded.');
 
 //  - popup description of buttons on hover
 
-//  - display history in screen
-
-//  - solve by section with new parenthesis function (based on algorithm in evaluator_fil.py)
-
 //  - further design sign button functionality
 //     - remove negation on already negated term
 //     - wrap previous term in parens
@@ -32,20 +28,14 @@ const hstPanel = document.querySelector('#history-panel');
 // question history
 let history = [];
 
-// Object literal for evaluation request
-let input = {
-    'problem': '',
-    'use_logs': '0', // 1 activates logs && 0 deactivates logs
-};
-
 // question structures
 let problem = [];
 let answer = [];
 
 // Mode toggles
-let shiftMode = 0; // 0 value indicates default mode
-let cursorMode = false;
-let cursorModeToggled = false; // prevents defaulting on nav
+let shiftMode = 0; // stores a shift mode in the shift cycle
+let cursorMode = false; // controls activation of cursor mode features
+let cursorModeToggled = false; // prevents defaulting on timeout cursor navigation
 
 // format toggles
 let formatSuperscript = false;
@@ -1586,17 +1576,13 @@ function validProblem() {
 function updateProblem(cursor = null) {
     // clear problem in display
     Q.innerHTML = '';
-    let compile = '';
     for (let i = 0; i < problem.length; i++) {
-        // compile strings
-        compile += problem[i];
         // build element
         const div = document.createElement('div');
         div.innerHTML = problem[i];
         // lay element
         Q.appendChild(div);
     }
-    input.problem = compile;
     cursorDefault(cursor);
     cursorHighlight();
 };
@@ -1689,7 +1675,6 @@ function evaluate() {
         // clear data
         problem = [];
         answer = [];
-        input.problem = '';
 
         // handle cursor mode
         cursorMode = false;
@@ -1817,7 +1802,6 @@ btns.addEventListener('click', (e) => {
                 console.log('clear');
                 // clear data in structures
                 problem = [];
-                input.problem = '';
                 answer = [];
                 // toggle off cursor mode (leave shift mode)
                 cursorMode = false;
