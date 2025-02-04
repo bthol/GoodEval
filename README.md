@@ -16,25 +16,25 @@ The API takes a JSON format object containing a formatted problem string ("probl
 ## Developer Resources
 
 ### Commands
- - start server             : $python manage.py runserver 8000
- - stop server              : ctrl + c
- - new project              : $django-admin startproject project-name
- - new app                  : $python manage.py startapp app_name
- - django version           : $python -m django --version
- - activate venv            : $venv/Scripts/activate
- - deactivate venv          : $deactivate
- - activate virtualenv      : $pipenv shell
- - deactivate virtualenv    : $exit
- - run in virtualenv        : $pipenv run
- - list pipenv installments : $pipenv graph
- - update static files      : $python manage.py collectstatic --noinput
- - update Pipfile.lock      : $pipenv lock
- - update requirements.txt  : $pip freeze > requirements.txt
- - heroku no static         : $heroku config:set DISABLE_COLLECTSTATIC=1
- - heroku yes static        : $heroku config:unset DISABLE_COLLECTSTATIC
- - heroku debug static      : $heroku config:set DEBUG_COLLECTSTATIC=1
- - heroku no debug          : $heroku config:unset DEBUG_COLLECTSTATIC
- - heroku push update       : $git push heroku main
+ - start server             : `$python manage.py runserver 8000`
+ - stop server              : `ctrl + c`
+ - new project              : `$django-admin startproject project-name`
+ - new app                  : `$python manage.py startapp app_name`
+ - django version           : `$python -m django --version`
+ - activate venv            : `$venv/Scripts/activate`
+ - deactivate venv          : `$deactivate`
+ - activate virtualenv      : `$pipenv shell`
+ - deactivate virtualenv    : `$exit`
+ - run in virtualenv        : `$pipenv run`
+ - list pipenv installments : `$pipenv graph`
+ - update static files      : `$python manage.py collectstatic --noinput`
+ - update Pipfile.lock      : `$pipenv lock`
+ - update requirements.txt  : `$pip freeze > requirements.txt`
+ - heroku no static         : `$heroku config:set DISABLE_COLLECTSTATIC=1`
+ - heroku yes static        : `$heroku config:unset DISABLE_COLLECTSTATIC`
+ - heroku debug static      : `$heroku config:set DEBUG_COLLECTSTATIC=1`
+ - heroku no debug          : `$heroku config:unset DEBUG_COLLECTSTATIC`
+ - heroku push update       : `$git push heroku main`
 
 *REMINDER: add to Procfile once database is setup*
 $release: python manage.py migrate$
@@ -47,14 +47,14 @@ $release: python manage.py migrate$
 
 **Setup virtual environment (with venv)**
 1) Navigate to root directory
-2) run command: $python -m venv venv
-3) run command: $venv/Scripts/activate
-4) run command: $python -m pip install --upgrade pip
-5) run command: $pipenv install -r requirements.txt
-6) run command: $python manage.py runserver 3000
+2) run command: `$python -m venv venv`
+3) run command: `$venv/Scripts/activate`
+4) run command: `$python -m pip install --upgrade pip`
+5) run command: `$pipenv install -r requirements.txt`
+6) run command: `$python manage.py runserver 3000`
 
 **Breakdown virtual environment**
-1) run command (stop Django server if running): $ctrl+c
-2) run command: $python -m pip freeze > requirements.txt
-3) run command: $deactivate
+1) run command (stop Django server if running): `$ctrl+c`
+2) run command: `$python -m pip freeze > requirements.txt`
+3) run command: `$deactivate`
 4) delete virtual environment folder (venv)

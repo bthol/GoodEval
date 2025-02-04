@@ -2,9 +2,7 @@ console.log('Problem Script Loaded.');
 
 // Development Plan
 
-//  -  popup description of buttons on hover
-
-//  - remove parenthesis around multidigit single values
+//  - popup description of buttons on hover
 
 //  - display history in screen
 
@@ -1273,32 +1271,51 @@ function handleParen(closing = false) {
                 }
             } else {
                 // closing parens
-                if (str !== '(') {
-                    // last str is not a opening parenthesis
-                    if (!isOp(i)) {
-                        // last str is not an operation
-                        if (!isKey(i)) {
-                            // last str is not a key function
-                            const start = findOpen(i, '(', ')');
-                            if (start - 1 > -1 && removeFormatElements(start - 1) === '^') {
-                                // end of power expression
-                                insert(')');
-                                formatSuperscript = false;
+
+                // remove parenthesis around single multidigit values
+                let removed = false;
+                for (let x = 0; x < problem.length - i; x++) {
+                    const a = removeFormatElements(x);
+                    if (a === '(') {
+                        removed = true;
+                        problem.splice(x, 0);
+                        updateProblem();
+                        break;
+                    } else if (isNaN(a)) {
+                        break;
+                    }
+                }
+                console.log(removed);
+                
+                if (!removed) {
+                    // if not removed
+                    if (str !== '(') {
+                        // last str is not a opening parenthesis
+                        if (!isOp(i)) {
+                            // last str is not an operation
+                            if (!isKey(i)) {
+                                // last str is not a key function
+                                const start = findOpen(i, '(', ')');
+                                if (start - 1 > -1 && removeFormatElements(start - 1) === '^') {
+                                    // end of power expression
+                                    insert(')');
+                                    formatSuperscript = false;
+                                } else {
+                                    // end of normal expression
+                                    insert(')');
+                                }
                             } else {
-                                // end of normal expression
-                                insert(')');
+                                // cannot close parenthesis after key function
+                                customError(error.paren);
                             }
                         } else {
-                            // cannot close parenthesis after key function
+                            // cannot close parenthesis after operation
                             customError(error.paren);
                         }
                     } else {
-                        // cannot close parenthesis after operation
+                        // cannot place ) right after (
                         customError(error.paren);
                     }
-                } else {
-                    // cannot place ) right after (
-                    customError(error.paren);
                 }
             }
         } else {

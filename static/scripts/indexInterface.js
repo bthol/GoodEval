@@ -77,8 +77,6 @@ const cWidth = 504.9 * scale; // px
 let ch = 748 * scale; // px
 let cw = 504.9 * scale; // px
 
-calc.setAttribute('style', `--scale-calc-size: ${.6}`);
-
 // scaling function
 function scaleIt() {
     // determine amount by which to scale calculator using viewport dimensions
@@ -94,20 +92,6 @@ function scaleIt() {
     ch = (cHeight * scale) / 100 * vh; // convert vmin to px
 
     // compare differences
-
-    // diff in both, scale to max
-        // both positive
-            // identify larger scale
-        // both negative
-            // identify smaller scale
-        // negative height
-            // scale to max height
-        // negative width
-            // scale to max width
-    
-    // diff in one, only scale down (negative difference)
-        // negative difference of width = scale to max by width
-        // positive difference = no scaling
 
     const hDiff = vh - ch;
     if (hDiff !== 0) {
