@@ -64,11 +64,16 @@ const error = {
     format: 'Error: Invalid format',
     input: 'Error: Invalid input',
     operation: 'Error: invalid operation',
+    consecutive: 'Error: No consecutive operations',
     paren: 'Error: Invalid parenthesis',
+    noFraction: 'Error: No fractional argument',
     reqOperation: 'Error: Requires operation',
     reqQuantity: 'Error: Requires quantity',
     reqBase: 'Error: Invalid base for exponent',
-    noFraction: 'Error: No fractional argument',
+    reqPower: 'Error: Invalid power for exponent',
+    exponent: 'Error: invalid exponent form',
+    reqRadicand: 'Error: Invalid radicand for radical',
+    radical: 'Error: invalid radical form',
 }
 
 // special number info
@@ -932,6 +937,26 @@ function findOpen(start, open, close) {
     return index;
 };
 
+function findOpen2(start, open, close) {
+    // finds opening index for open and close char pairs
+    // accounts for nesting
+    let index = 0;
+    let nest = 0;
+    for (let i = start; i > -1; i--) {
+        const str = removeFormatElements(i);
+        if (str === open) {
+            if (nest === 0) {
+                index = i;
+                break;
+            }
+            nest += 1;
+        } else if (str === close) {
+            nest -= 1;
+        }
+    }
+    return index;
+};
+
 // error functions
 function customError(error) {
     Q.innerText = error;
@@ -998,16 +1023,32 @@ function validQuant(key = false, special = false) {
 
                     // regular numbers
 
-                    // let format = false;
-                    // for (let x = problem.length - 1; x > -1; x--) {
+                    const i = problem.length - 1;
+                    const str = removeFormatElements(i);
 
-                    // }
-
-                    const str = removeFormatElements(problem.length - 1);
                     if (str !== ')') {
-                        if (!isSpecial(problem.length - 1)) {
+                        if (!isSpecial(i)) {
                             // last str is not a special number
-                            return true;
+                            if (formatSuperscript) {
+                                // allow superscript formatting
+                                return true;
+                            } else {
+                                if (formatSubscript) {
+                                    // allow subscript formatting
+                                    return true;
+                                } else {
+                                    // test formatting
+                                    if (str === problem[i] && !isNaN(i)) {
+                                        // last str is not a formatted number
+                                        return true;
+                                    } else {
+                                        // last str is a formatted number
+                                        customError(error.reqOperation);
+                                        return false;
+                                    }
+                                }
+                            }
+
                         }
                     }
                     // last str is a special number
@@ -1027,7 +1068,14 @@ function validQuant(key = false, special = false) {
                                 // last str is not a special number
                                 if (!isKey(i)) {
                                     // last str is not key
-                                    return true;
+                                    if (expFormat()) {
+                                        // start of a power expression
+                                        formatSuperscript = true;
+                                        insert('(');
+                                        return true;
+                                    } else {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -1070,7 +1118,12 @@ function validQuant(key = false, special = false) {
                     if (str !== ')') {
                         if (!isSpecial(cursorIdx)) {
                             // str at cursorIdx is not a special number
-                            return true;
+                            if (str === problem[cursorIdx]) {
+                                return true;
+                            } else {
+                                // last str is a formatted number
+                                customError(error.reqOperation);
+                            }
                         }
                     }
                     // str at cursorIdx is special number
@@ -1248,6 +1301,7 @@ function handleParen(closing = false) {
             const str = removeFormatElements(i);
             if (!closing) {
                 // opening parens
+
                 if (str !== ')') {
                     // last str is not a closing parenthesis
                     if (isNaN(str)) {
@@ -1283,6 +1337,9 @@ function handleParen(closing = false) {
                     removed = true;
                     problem.splice(i - 1, 1);
                     updateProblem();
+                    if (i - 2 > -1 && removeFormatElements(i - 2) === operation.exp) {
+                        formatSuperscript = false;
+                    }
                 } else {
                     // remove parenthesis around single multidigit values
                     for (let x = i; x > -1; x--) {
@@ -1291,6 +1348,9 @@ function handleParen(closing = false) {
                             removed = true;
                             problem.splice(x, 1);
                             updateProblem();
+                            if (x - 1 > -1 && removeFormatElements(x - 1) === operation.exp) {
+                                formatSuperscript = false;
+                            }
                             break;
                         } else if (isNaN(a)) {
                             if (a === '.') {
@@ -1310,7 +1370,8 @@ function handleParen(closing = false) {
                             // last str is not an operation
                             if (!isKey(i)) {
                                 // last str is not a key function
-                                const start = findOpen(i, '(', ')');
+                                const start = findOpen2(i, '(', ')');
+                                console.log(start);
                                 if (start - 1 > -1 && removeFormatElements(start - 1) === '^') {
                                     // end of power expression
                                     insert(')');
@@ -1385,15 +1446,15 @@ function handleParen(closing = false) {
 };
 
 // post validation
-function validParenthesis() {
-    // validates parenthesis in problem structure
+function validParenthesis(prob) {
+    // post-validates parenthesis in copy of problem structure
     let nestLvl = 0;
     let parens = [];
-    for (let i = 0; i < problem.length; i++) {
-        if (problem[i] === '(') {
+    for (let i = 0; i < prob.length; i++) {
+        if (prob[i] === '(') {
             parens.push('(');
             nestLvl += 1;
-        } else if (problem[i] === ')') {
+        } else if (prob[i] === ')') {
             parens.push(')');
             nestLvl -= 1;
         }
@@ -1414,14 +1475,14 @@ function validParenthesis() {
             return false;
         } else {
             // match each open paren to a closing paren (accounting for nesting)
-            for (let i = 0; i < problem.length; i++) {
-                if (problem[i] === '(') {
+            for (let i = 0; i < prob.length; i++) {
+                if (prob[i] === '(') {
                     // search for match
                     let x = 0;
-                    for (let j = i; j < problem.length; j++) {
-                        if (problem[j] === ')') {
+                    for (let j = i; j < prob.length; j++) {
+                        if (prob[j] === ')') {
                             x -= 1;
-                        } else if (problem[j] === "(") {
+                        } else if (prob[j] === "(") {
                             x += 1;
                         }
                         if (x === 0) {
@@ -1443,18 +1504,80 @@ function validParenthesis() {
     }
 };
 
+function validOperations(prob) {
+    // post-validates operations in copy of problem structure
+    if (prob[0] !== operation.rad && isOp(0) || isOp(prob.length - 1)) {
+        // no operations on start or end of problem
+        customError(error.operation);
+        return false;
+    } else {
+        for (let i = 0; i < prob.length; i++) {
+            // exponent form test
+            if (prob[i] === operation.exp) {
+                if (i - 1 > -1 && i + 1 < prob.length) {
+                    if (isNaN(prob[i - 1]) && !isSpecial(i - 1)) {
+                        // invalid base exponent form
+                        customError(error.reqBase);
+                        return false;
+                    } else if (isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
+                        // invalid power exponent form
+                        customError(error.reqPower);
+                        return false;
+                    }
+                } else {
+                    // invalid exponent form
+                    customError(error.exponent);
+                    return false;
+                }
+            }
+            
+            // radical form test
+            if (prob[i] === operation.rad) {
+                if (i + 1 < prob.length) {
+                    if (isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
+                        // invalid radical form
+                        customError(error.reqRadicand);
+                        return false;
+                    }
+                } else {
+                    // invalid radical form
+                    customError(error.radical);
+                    return false;
+                }
+            }
+            
+            // consecutive operations test
+            if (isOp(i) && i + 1 < prob.length && isOp(i + 1)) {
+                // no consecutive operations
+                customError(error.consecutive);
+                return false;
+            }
+        }
+    }
+    // if nothing returns false
+    return true;
+};
+
 function validProblem() {
     // post-validates problem after structuring
-    let valid = false;
     // validate string data
     if (!isEmptyProblem()) {
+        // removes format elements on copy of problem
+        let prob = [];
+        for (let i = 0; i < problem.length; i++) {
+            prob.push(removeFormatElements(i));
+        }
+
         // validate parenthesis
-        valid = validParenthesis();
-        if (!valid) {
-            return false;
+        if (validParenthesis(prob)) {
+            if (validOperations(prob)) {
+                // add further validation here
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            // add further validation here
-            return true;
+            return false;
         }
     }
 };
@@ -1521,16 +1644,18 @@ function cursorHighlight() {
 
 function evaluate() {
     // run on equal button click
-    for (let i = 0; i < problem.length; i++) {
-        // remove formatElements in problem structure
-        problem.splice(i, 1, removeFormatElements(i));
-    }
+    
     console.log(problem);
     console.log('Validating...');
     if (validProblem()) {
         console.log('Valid.');
 
         // evaluate problem structure into answer structure
+
+        // remove formatElements in problem structure
+        for (let i = 0; i < problem.length; i++) {
+            problem.splice(i, 1, removeFormatElements(i));
+        }
 
         console.log('Structuring strings...');
         structureString();
@@ -1569,9 +1694,11 @@ function evaluate() {
         // handle cursor mode
         cursorMode = false;
         updateToggleDisplay();
-
-        // prevent cursor navigation until further input
         cursorDefault();
+
+        // prevent format carry-over
+        formatSuperscript = false;
+        formatSubscript = false;
 
     } else {
         console.log('Invalid.');
