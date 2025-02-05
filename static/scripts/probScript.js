@@ -21,7 +21,7 @@ const shiftBtn4 = document.querySelector('#btn-shift-4');
 const shiftBtn5 = document.querySelector('#btn-shift-5');
 const shiftBtn6 = document.querySelector('#btn-shift-6');
 
-// History 
+// History
 const btnHst = document.querySelector('#history-button');
 const hstPanel = document.querySelector('#history-panel');
 
@@ -51,14 +51,11 @@ let cursorModeCache = {};
 // error messages
 const error = {
     empty: 'Error: Empty string',
-    format: 'Error: Invalid format',
-    input: 'Error: Invalid input',
     operation: 'Error: invalid operation',
     consecutive: 'Error: No consecutive operations',
     paren: 'Error: Invalid parenthesis',
     noFraction: 'Error: No fractional argument',
     reqOperation: 'Error: Requires operation',
-    reqQuantity: 'Error: Requires quantity',
     reqBase: 'Error: Invalid base for exponent',
     reqPower: 'Error: Invalid power for exponent',
     exponent: 'Error: invalid exponent form',
@@ -176,7 +173,7 @@ function summateVariable(x) {
         }
     } else {
         // no fractional arguments
-        customError(error.noFraction);
+        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -197,7 +194,7 @@ function productSum(x) {
         }
     } else {
         // no fractional arguments
-        customError(error.noFraction);
+        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -218,7 +215,7 @@ function quotientSum1(x) {
         }
     } else {
         // no fractional arguments
-        customError(error.noFraction);
+        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -239,7 +236,7 @@ function quotientSum2(x) {
         }
     } else {
         // no fractional arguments
-        customError(error.noFraction);
+        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -948,7 +945,7 @@ function findOpen2(start, open, close) {
 };
 
 // error functions
-function customError(error) {
+function serveError(error) {
     Q.innerText = error;
     clearTimeout(formatErrorCache);
     formatErrorCache = setTimeout(() => {
@@ -957,20 +954,12 @@ function customError(error) {
     }, 1300)
 };
 
-function isEmptyProblem() {
-    if (problem.length === 0) {
-        customError(error.empty);
-        return true;
-    } else {
-        return false;
-    }
-};
-
 // pre validation
 function validOp() {
     // pre-validates that an operation can be added to the problem structure
-    if (isEmptyProblem()) {
+    if (problem.length === 0) {
         // cannot operate on empty string
+        serveError(error.operation);
         return false;
     } else {
         // run validation
@@ -994,7 +983,7 @@ function validOp() {
             }
         }
     }
-    customError(error.operation);
+    serveError(error.operation);
     return false;
 };
 
@@ -1033,7 +1022,7 @@ function validQuant(key = false, special = false) {
                                         return true;
                                     } else {
                                         // last str is a formatted number
-                                        customError(error.reqOperation);
+                                        serveError(error.reqOperation);
                                         return false;
                                     }
                                 }
@@ -1042,7 +1031,7 @@ function validQuant(key = false, special = false) {
                         }
                     }
                     // last str is a special number
-                    customError(error.reqOperation);
+                    serveError(error.reqOperation);
                     return false;
 
                 } else {
@@ -1071,7 +1060,7 @@ function validQuant(key = false, special = false) {
                         }
                     }
                     // last str is a number or a special number or a key
-                    customError(error.reqOperation);
+                    serveError(error.reqOperation);
                     return false;
 
                 }
@@ -1092,7 +1081,7 @@ function validQuant(key = false, special = false) {
                     }
                 }
                 // last str is a number or a special number
-                customError(error.reqOperation);
+                serveError(error.reqOperation);
                 return false;
 
             }
@@ -1112,12 +1101,12 @@ function validQuant(key = false, special = false) {
                                 return true;
                             } else {
                                 // last str is a formatted number
-                                customError(error.reqOperation);
+                                serveError(error.reqOperation);
                             }
                         }
                     }
                     // str at cursorIdx is special number
-                    customError(error.reqOperation);
+                    serveError(error.reqOperation);
                     return false;
 
                 } else {
@@ -1138,7 +1127,7 @@ function validQuant(key = false, special = false) {
                         }
                     }
                     // str at cursorIdx is a number or a special number or a key
-                    customError(error.reqOperation);
+                    serveError(error.reqOperation);
                     return false;
 
                 }
@@ -1158,7 +1147,7 @@ function validQuant(key = false, special = false) {
                     }
                 }
                 // str at cursorIdx is a number or a special number
-                customError(error.reqOperation);
+                serveError(error.reqOperation);
                 return false;
 
             }
@@ -1203,7 +1192,7 @@ function handleRadical() {
                     }
                 } else {
                     // no radical just after key function
-                    customError(error.input);
+                    serveError(error.radical);
                 }
             } 
         } else {
@@ -1236,7 +1225,7 @@ function handleRadical() {
                     }
                 } else {
                     // no radical just after key function
-                    customError(error.input);
+                    serveError(error.input);
                 }
             }
         }
@@ -1245,7 +1234,7 @@ function handleRadical() {
 
 function handlePower() {
     if (problem.length === 0) {
-        customError(error.reqBase);
+        serveError(error.reqBase);
     } else {
         if (!cursorMode) {
             const i = problem.length - 1;
@@ -1255,7 +1244,7 @@ function handlePower() {
                 insert(operation.exp);
             } else {
                 // base is neither a number nor special number
-                customError(error.reqBase);
+                serveError(error.reqBase);
             }
         } else {
             // cursor mode
@@ -1264,7 +1253,7 @@ function handlePower() {
                 insert(operation.exp);
             } else {
                 // base is neither a number nor special number
-                customError(error.reqBase);
+                serveError(error.reqBase);
             }
         }
     }
@@ -1275,7 +1264,7 @@ function handleParen(closing = false) {
     if (problem.length === 0) {
         if (closing) {
             // no closing parenthesis at start of problem
-            customError(error.paren);
+            serveError(error.paren);
         } else {
             // nothing to validate
             if (closing) {
@@ -1308,15 +1297,15 @@ function handleParen(closing = false) {
                             }
                         } else {
                             // last str is a special number
-                            customError(error.reqOperation);
+                            serveError(error.reqOperation);
                         }
                     } else {
                         // last str is a regular number
-                        customError(error.reqOperation);
+                        serveError(error.reqOperation);
                     }
                 } else {
                     // cannot place ( right after )
-                    customError(error.paren);
+                    serveError(error.paren);
                 }
             } else {
                 // closing parens
@@ -1372,15 +1361,15 @@ function handleParen(closing = false) {
                                 }
                             } else {
                                 // cannot close parenthesis after key function
-                                customError(error.paren);
+                                serveError(error.paren);
                             }
                         } else {
                             // cannot close parenthesis after operation
-                            customError(error.paren);
+                            serveError(error.paren);
                         }
                     } else {
                         // cannot place ) right after (
-                        customError(error.paren);
+                        serveError(error.paren);
                     }
                 }
             }
@@ -1399,15 +1388,15 @@ function handleParen(closing = false) {
                             insert('(');
                         } else {
                             // last str is a special number
-                            customError(error.reqOperation);
+                            serveError(error.reqOperation);
                         }
                     } else {
                         // last str is a regular number
-                        customError(error.reqOperation);
+                        serveError(error.reqOperation);
                     }
                 } else {
                     // cannot place ( right after )
-                    customError(error.paren);
+                    serveError(error.paren);
                 }
             } else {
                 // closing parens
@@ -1420,15 +1409,15 @@ function handleParen(closing = false) {
                             insert(')');
                         } else {
                             // cannot close parenthesis after key function
-                            customError(error.paren);
+                            serveError(error.paren);
                         }
                     } else {
                         // cannot close parenthesis after operation
-                        customError(error.paren);
+                        serveError(error.paren);
                     }
                 } else {
                     // cannot place ) right after (
-                    customError(error.paren);
+                    serveError(error.paren);
                 }
             }
         }
@@ -1453,15 +1442,15 @@ function validParenthesis(prob) {
     if (parens.length > 0) {
         if (nestLvl !== 0) {
             // no non-zero sum of nestLvl
-            customError(error.paren);
+            serveError(error.paren);
             return false;
         } else if (parens[0] === ')') {
             // no closing paren at start
-            customError(error.paren);
+            serveError(error.paren);
             return false;
         } else if (parens[parens.length - 1] === '(') {
             // no opening paren at end
-            customError(error.paren);
+            serveError(error.paren);
             return false;
         } else {
             // match each open paren to a closing paren (accounting for nesting)
@@ -1481,7 +1470,7 @@ function validParenthesis(prob) {
                     }
                     if (x !== 0) {
                         // missing match
-                        customError(error.paren);
+                        serveError(error.paren);
                         return false;
                     }
                 }
@@ -1498,7 +1487,7 @@ function validOperations(prob) {
     // post-validates operations in copy of problem structure
     if (prob[0] !== operation.rad && isOp(0) || isOp(prob.length - 1)) {
         // no operations on start or end of problem
-        customError(error.operation);
+        serveError(error.operation);
         return false;
     } else {
         for (let i = 0; i < prob.length; i++) {
@@ -1507,16 +1496,16 @@ function validOperations(prob) {
                 if (i - 1 > -1 && i + 1 < prob.length) {
                     if (isNaN(prob[i - 1]) && !isSpecial(i - 1)) {
                         // invalid base exponent form
-                        customError(error.reqBase);
+                        serveError(error.reqBase);
                         return false;
                     } else if (isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
                         // invalid power exponent form
-                        customError(error.reqPower);
+                        serveError(error.reqPower);
                         return false;
                     }
                 } else {
                     // invalid exponent form
-                    customError(error.exponent);
+                    serveError(error.exponent);
                     return false;
                 }
             }
@@ -1526,12 +1515,12 @@ function validOperations(prob) {
                 if (i + 1 < prob.length) {
                     if (isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
                         // invalid radical form
-                        customError(error.reqRadicand);
+                        serveError(error.reqRadicand);
                         return false;
                     }
                 } else {
                     // invalid radical form
-                    customError(error.radical);
+                    serveError(error.radical);
                     return false;
                 }
             }
@@ -1539,7 +1528,7 @@ function validOperations(prob) {
             // consecutive operations test
             if (isOp(i) && i + 1 < prob.length && isOp(i + 1)) {
                 // no consecutive operations
-                customError(error.consecutive);
+                serveError(error.consecutive);
                 return false;
             }
         }
@@ -1551,7 +1540,10 @@ function validOperations(prob) {
 function validProblem() {
     // post-validates problem after structuring
     // validate string data
-    if (!isEmptyProblem()) {
+    if (problem.length === 0) {
+        // empty problem
+        serveError(error.empty);
+    } else {
         // removes format elements on copy of problem
         let prob = [];
         for (let i = 0; i < problem.length; i++) {
