@@ -4,24 +4,32 @@ console.log('Interface Script Loaded.');
 const calc = document.querySelector('.calculator-background');
 const nav = document.querySelector('nav');
 
+// dynamically update scale attribute
+window.addEventListener('resize', () => debounce(scaleIt, 10));
+
 // calculate navHeight for dynamic interface
-const borh = getComputedStyle(nav).getPropertyValue('--nav-border-height');
-const conh = getComputedStyle(nav).getPropertyValue('--nav-content-height');
-const navHeight = Number(borh.slice(0, borh.length - 4)) * 4 + Number(conh.slice(0, conh.length - 4));
+let navHeight = 0;
+let navState = false;
+
+function updateNavHeight() {
+    // adjusts 
+    const scale = Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'));
+    navHeight = 112.2 * scale + 1.5 * 4 * scale; // --nav-content-height * scale + --nav-border-height * scale
+};
+updateNavHeight(); // initialize navHeight value
 
 // logic for opening and closing the nav menu via the arrow
-let navState = false;
 const navArrow = document.querySelector('#nav-menu-arrow');
 navArrow.addEventListener('click', () => {
     navState = !navState;
     if (navState === true) {
         navArrow.classList.remove('downward-arrow');
         navArrow.classList.add('upward-arrow');
-        nav.style.top = '0vmin';
+        nav.style.top = '0px';
     } else {
         navArrow.classList.remove('upward-arrow');
         navArrow.classList.add('downward-arrow');
-        nav.style.top = `-${navHeight}vmin`;
+        nav.style.top = `-${navHeight}px`;
     }
 });
 
@@ -81,7 +89,7 @@ let cw = 504.9 * scale; // px
 function scaleIt() {
     // determine amount by which to scale calculator using viewport dimensions
     // update scale value
-    scale = Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'));
+    scale = Number(window.getComputedStyle(document.body).getPropertyValue('--scale-calc-size'));
 
     // update viewport dimensions
     vw = window.innerWidth;
@@ -113,17 +121,20 @@ function scaleIt() {
                     // use height scale
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    updateNavHeight();
                 } else if (hScale < wScale) {
                     // use width scale
                     scale = wScale;
                     // set the new scale attribute to trigger style re-render
-                    calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    updateNavHeight();
                 } else {
                     // use either bc they are the same
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    updateNavHeight();
                 }
 
             // both negative
@@ -133,17 +144,20 @@ function scaleIt() {
                     // use width scale
                     scale = wScale;
                     // set the new scale attribute to trigger style re-render
-                    calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    updateNavHeight();
                 } else if (hScale < wScale) {
                     // use height scale
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    updateNavHeight();
                 } else {
                     // use either bc they are the same
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                    updateNavHeight();
                 }
             
             // negative height
@@ -151,14 +165,16 @@ function scaleIt() {
                 // scale to max height
                 scale = hScale;
                 // set the new scale attribute to trigger style re-render
-                calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                updateNavHeight();
                 
             // negative width
             } else if (hDiff > 0 && wDiff < 0) {
                 // scale to max height
                 scale = wScale;
                 // set the new scale attribute to trigger style re-render
-                calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                updateNavHeight();
             }
         
         } else {
@@ -167,7 +183,8 @@ function scaleIt() {
                 // scale down from max width by height
                 scale = (ch + hDiff) / cHeight;
                 // set the new scale attribute to trigger style re-render
-                calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+                document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+                updateNavHeight();
             } // no difference of width and positive difference of height = overscaling width
         }
         
@@ -179,7 +196,8 @@ function scaleIt() {
             // scale down from max height by width
             scale = (cw + wDiff) / cWidth;
             // set the new scale attribute to trigger style re-render
-            calc.setAttribute('style', `--scale-calc-size: ${scale}`);
+            document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
+            updateNavHeight();
         } // no difference of height and positive difference of width = overscaling height
     }
 };
@@ -194,6 +212,3 @@ function debounce(funct, defer) {
         funct();
     }, defer)
 };
-
-// dynamically update scale attribute
-window.addEventListener('resize', () => debounce(scaleIt, 10));

@@ -1,14 +1,15 @@
 .body {
     margin: 0px;
-    height: 100vh;
+    /* scaling */
+    --scale-calc-size: 1;
 }
 
 /* NAVIGATION */
 nav {
     position: absolute;
     width: 100%;
-    --nav-content-height: 15vmin;
-    --nav-border-height: .2vmin;
+    --nav-content-height: calc(112.2px * var(--scale-calc-size));
+    --nav-border-height: calc(1.5px * var(--scale-calc-size));
     --nav-height: calc(var(--nav-border-height) * 4 + var(--nav-content-height));
     top: calc(var(--nav-height) * -1);
     transition: top 300ms;
@@ -25,6 +26,11 @@ nav {
 
 .title-container > h1 {
     font-size: 10vmin;
+}
+@media(min-width: 670px) {
+    .title-container > h1 {
+        font-size: calc(50px * var(--scale-calc-size));
+    }
 }
 
 .nav-button-container {
@@ -58,8 +64,6 @@ nav {
     background-color: white;
 }
 
-
-
 /* ARROW */
 .arrow-layout {
     display: flex;
@@ -70,11 +74,11 @@ nav {
 .arrow {
     position: relative;
     z-index: 2;
-    height: 3vmin;
-    width: 3vmin;
+    height: calc(30px * var(--scale-calc-size));
+    width: calc(30px * var(--scale-calc-size));
     margin: 0px auto;
-    border-left: 3vmin double #f0ede6;
-    border-top: 3vmin double hsl(240, 25%, 25%);
+    border-left: calc(30px * var(--scale-calc-size)) double #f0ede6;
+    border-top: calc(30px * var(--scale-calc-size)) double hsl(240, 25%, 25%);
 }
 
 .upward-arrow > div.arrow {
@@ -88,8 +92,8 @@ nav {
 .arrow-container {
     position: relative;
     cursor: pointer;
-    height: 4vmin;
-    width: 4vmin;
+    height: calc(30px * var(--scale-calc-size));
+    width: calc(30px * var(--scale-calc-size));
 }
 
 @keyframes pointing {
@@ -106,10 +110,6 @@ nav {
 }
 
 .calculator-background {
-
-    /* scaling */
-    --scale-calc-size: 1;
-
     width: calc(504.9px * var(--scale-calc-size));
     height: calc(748px * var(--scale-calc-size));
     padding: calc(33.66px * var(--scale-calc-size));
@@ -262,7 +262,7 @@ nav {
 
 .top-button {
     position: relative;
-    padding: calc(0.3vmin * var(--scale-calc-size)) calc(8.6px * var(--scale-calc-size));
+    padding: calc(2.2px * var(--scale-calc-size)) calc(8.6px * var(--scale-calc-size));
     cursor: pointer;
     background-color: var(--color-fill-2);
     color: var(--color-font);
@@ -293,7 +293,7 @@ nav {
 
 .button {
     position: relative;
-    padding: 0vmin calc(20.2px * var(--scale-calc-size));
+    padding: 0px calc(20.2px * var(--scale-calc-size));
     color: var(--color-font);
     cursor: pointer;
     font-size: calc(24.3px * var(--scale-calc-size));
