@@ -278,11 +278,32 @@ function toggleShiftMode() {
         shiftBtn3.innerText = 'atanh';
         // Σ = html entity: &sum; + html code: &#8721;
         // ∏ = html entity: &prod; + html code: &#8719;
-        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${2.8 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>n</div></div>`;
-        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${2.8 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub></div></div>`;
-        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${2.8 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}vmin">a<sub id="btn-shift-6-sub" class="key" style="font-size:1.5vmin">i</sub>${operation.div}n</div></div>`;
+        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>n</div></div>`;
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub></div></div>`;
+        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>${operation.div}n</div></div>`;
     }
 };
+
+// general purpose debounce2
+// NOTE: must use a different identifier than in indexInterface.js debouncer for function and global variable
+let debounceCache2 = {};
+function debounce2(funct, defer) {
+    clearTimeout(debounceCache2);
+    debounceCache2 = setTimeout(() => {
+        clearTimeout(debounceCache2);
+        funct();
+    }, defer)
+};
+
+function formatShiftBtn() {
+    // updates shift buttons along with scaleIt function in indexInterface.js
+    shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>n</div></div>`;
+    shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub></div></div>`;
+    shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>${operation.div}n</div></div>`;
+};
+
+// dynamically update scale attribute
+window.addEventListener('resize', () => debounce2(formatShiftBtn, 11));
 
 // Cursor Mode Toggles
 function cursorDefault(cursor = null) {
