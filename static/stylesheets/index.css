@@ -58,10 +58,7 @@ nav {
     background-color: white;
 }
 
-.button-hover-blue:hover {
-    color: hsl(240, 84%, 52%);
-    cursor: pointer;
-}
+
 
 /* ARROW */
 .arrow-layout {
@@ -93,14 +90,6 @@ nav {
     cursor: pointer;
     height: 4vmin;
     width: 4vmin;
-}
-
-.arrow-container.downward-arrow:hover {
-    animation: pointing 800ms linear 250ms infinite;
-}
-
-.arrow-container.upward-arrow:hover {
-    animation: pointing 800ms linear reverse 250ms infinite;
 }
 
 @keyframes pointing {
@@ -437,11 +426,6 @@ nav {
     border-radius: calc(7.5px * var(--scale-calc-size)) calc(7.5px * var(--scale-calc-size)) calc(3.7px * var(--scale-calc-size)) calc(3.7px * var(--scale-calc-size));
 }
 
-.highlight-back:hover {
-    /* relative coloring */
-    background: rgb(from var(--color-bckgrnd-2) 176 g b);
-}
-
 /* history pannel */
 #history-panel {
     position: absolute;
@@ -452,4 +436,27 @@ nav {
     color: #040410;
     opacity: 0;
     cursor: default;
+}
+
+/* Hover Events */
+@media(hover: hover) and (pointer: fine) {
+    /* only on desktop */
+    
+    .highlight-back:hover {
+        /* relative coloring */
+        background: rgb(from var(--color-bckgrnd-2) 176 g b);
+    }
+
+    .arrow-container.downward-arrow:hover {
+        animation: pointing 800ms linear 250ms infinite;
+    }
+
+    .arrow-container.upward-arrow:hover {
+        animation: pointing 800ms linear reverse 250ms infinite;
+    }
+
+    .button-hover-blue:hover {
+        color: hsl(240, 84%, 52%);
+        cursor: pointer;
+    }
 }
