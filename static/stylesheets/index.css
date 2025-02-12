@@ -2,14 +2,15 @@
     margin: 0px;
     /* scaling */
     --scale-calc-size: 1;
+    height: 100vh;
 }
 
 /* NAVIGATION */
 nav {
     position: absolute;
     width: 100%;
-    --nav-content-height: calc(112.2px * var(--scale-calc-size));
-    --nav-border-height: calc(1.5px * var(--scale-calc-size));
+    --nav-content-height: 150px;
+    --nav-border-height: 1.5px;
     --nav-height: calc(var(--nav-border-height) * 4 + var(--nav-content-height));
     top: calc(var(--nav-height) * -1);
     transition: top 300ms;
@@ -29,15 +30,16 @@ nav {
 }
 @media(min-width: 670px) {
     .title-container > h1 {
-        font-size: calc(50px * var(--scale-calc-size));
+        font-size: 70px;
     }
 }
 
 .nav-button-container {
     height: calc(var(--nav-content-height) * (2/5));
+    padding: 0vmin 1.5vmin;
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr max-content 1fr;
     background-color: #fafafa;
     border-top: var(--nav-border-height) solid #7c7e8d;
     border-bottom: calc(var(--nav-border-height)*3) double #7c7e8d;
@@ -47,21 +49,20 @@ nav {
     align-self: center;
 }
 
-.nav-button-container:first-child {
-    justify-items: start;
-    background-color: red;
+.nav-button-container > div:first-child {
+    justify-self: start;
 }
 
-.nav-button-container:last-child {
-    justify-items: end;
+.nav-button-container > div:last-child {
+    justify-self: end;
 }
 
 .theme-button {
+    font-size: 2.5vmin;
+}
+
+#select-theme {
     font-size: 2.8vmin;
-    margin: 0px;
-    cursor: pointer;
-    border: none;
-    background-color: white;
 }
 
 /* ARROW */
@@ -73,12 +74,11 @@ nav {
 
 .arrow {
     position: relative;
-    z-index: 2;
-    height: calc(30px * var(--scale-calc-size));
-    width: calc(30px * var(--scale-calc-size));
+    height: var(--arrow-size);
+    width: var(--arrow-size);
     margin: 0px auto;
-    border-left: calc(30px * var(--scale-calc-size)) double #f0ede6;
-    border-top: calc(30px * var(--scale-calc-size)) double hsl(240, 25%, 25%);
+    border-left: calc(35px * var(--scale-calc-size)) double #f0ede6;
+    border-top: calc(35px * var(--scale-calc-size)) double #303050;
 }
 
 .upward-arrow > div.arrow {
@@ -92,8 +92,9 @@ nav {
 .arrow-container {
     position: relative;
     cursor: pointer;
-    height: calc(30px * var(--scale-calc-size));
-    width: calc(30px * var(--scale-calc-size));
+    --arrow-size: calc(35px * var(--scale-calc-size));
+    height: var(--arrow-size);
+    width: var(--arrow-size);
 }
 
 @keyframes pointing {
@@ -428,10 +429,11 @@ nav {
 
 /* history pannel */
 #history-panel {
-    position: absolute;
     z-index: 2;
-    transform: translate(0vmin, -4.41vmin);
+    position: absolute;
+    transform: translate(0vmin, calc(-35px * var(--scale-calc-size)));
     width: 100vw;
+    padding: 10px 0px;
     background: #e6e5d8;
     color: #040410;
     opacity: 0;

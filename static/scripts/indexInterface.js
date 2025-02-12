@@ -4,19 +4,15 @@ console.log('Interface Script Loaded.');
 const calc = document.querySelector('.calculator-background');
 const nav = document.querySelector('nav');
 
-// dynamically update scale attribute
-window.addEventListener('resize', () => debounce(scaleIt, 10));
-
 // calculate navHeight for dynamic interface
-let navHeight = 0;
-let navState = false;
+let navContentHeight = window.getComputedStyle(document.querySelector('nav')).getPropertyValue('--nav-content-height');
+navContentHeight = Number(navContentHeight.substring(0, navContentHeight.length - 2));
 
-function updateNavHeight() {
-    // adjusts 
-    const scale = Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'));
-    navHeight = 112.2 * scale + 1.5 * 4 * scale; // --nav-content-height * scale + --nav-border-height * scale
-};
-updateNavHeight(); // initialize navHeight value
+let navBorderHeight = window.getComputedStyle(document.querySelector('nav')).getPropertyValue('--nav-border-height');
+navBorderHeight = Number(navBorderHeight.substring(0, navBorderHeight.length - 2));
+
+const navHeight = navContentHeight + navBorderHeight * 4;
+let navState = false;
 
 // logic for opening and closing the nav menu via the arrow
 const navArrow = document.querySelector('#nav-menu-arrow');
@@ -70,20 +66,28 @@ function setThemeUmbral() {
 };
 btnUmbral.addEventListener("click", setThemeUmbral);
 
-// responsive scaling of calculator
+// responsive calculator scaling
 
 // initial scale value (should be 1; included in case of change)
-let scale = Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'));
+let scale = Number(window.getComputedStyle(document.body).getPropertyValue('--scale-calc-size'));
 
 // viewport dimensional reference
 let vw = window.innerWidth; // viewport width
 let vh = window.innerHeight; // viewport height
 
 // calculator dimensional reference
-const cHeight = 748 * scale; // px
-const cWidth = 504.9 * scale; // px
-let ch = 748 * scale; // px
-let cw = 504.9 * scale; // px
+// initial calculator height
+let cHeight = window.getComputedStyle(document.querySelector('.calculator-background')).getPropertyValue('height');
+cHeight = Number(cHeight.substring(0, cHeight.length - 2)); // px
+
+// initial calculator width
+let cWidth = window.getComputedStyle(document.querySelector('.calculator-background')).getPropertyValue('width');
+cWidth = Number(cWidth.substring(0, cWidth.length - 2)); // px
+
+// dynamical height and width for scaling calculator
+// leave cHeight and cWidth unscaled to prevent double scaling
+let ch = cHeight * scale; // px
+let cw = cWidth * scale; // px
 
 // scaling function
 function scaleIt() {
@@ -122,19 +126,19 @@ function scaleIt() {
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
                     document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                    updateNavHeight();
+                    // updateNavHeight();
                 } else if (hScale < wScale) {
                     // use width scale
                     scale = wScale;
                     // set the new scale attribute to trigger style re-render
                     document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                    updateNavHeight();
+                    // updateNavHeight();
                 } else {
                     // use either bc they are the same
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
                     document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                    updateNavHeight();
+                    // updateNavHeight();
                 }
 
             // both negative
@@ -145,19 +149,19 @@ function scaleIt() {
                     scale = wScale;
                     // set the new scale attribute to trigger style re-render
                     document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                    updateNavHeight();
+                    // updateNavHeight();
                 } else if (hScale < wScale) {
                     // use height scale
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
                     document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                    updateNavHeight();
+                    // updateNavHeight();
                 } else {
                     // use either bc they are the same
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
                     document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                    updateNavHeight();
+                    // updateNavHeight();
                 }
             
             // negative height
@@ -166,7 +170,7 @@ function scaleIt() {
                 scale = hScale;
                 // set the new scale attribute to trigger style re-render
                 document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                updateNavHeight();
+                // updateNavHeight();
                 
             // negative width
             } else if (hDiff > 0 && wDiff < 0) {
@@ -174,7 +178,7 @@ function scaleIt() {
                 scale = wScale;
                 // set the new scale attribute to trigger style re-render
                 document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                updateNavHeight();
+                // updateNavHeight();
             }
         
         } else {
@@ -184,7 +188,7 @@ function scaleIt() {
                 scale = (ch + hDiff) / cHeight;
                 // set the new scale attribute to trigger style re-render
                 document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-                updateNavHeight();
+                // updateNavHeight();
             } // no difference of width and positive difference of height = overscaling width
         }
         
@@ -197,7 +201,7 @@ function scaleIt() {
             scale = (cw + wDiff) / cWidth;
             // set the new scale attribute to trigger style re-render
             document.body.setAttribute('style', `--scale-calc-size: ${scale}`);
-            updateNavHeight();
+            // updateNavHeight();
         } // no difference of height and positive difference of width = overscaling height
     }
 };
@@ -212,3 +216,6 @@ function debounce(funct, defer) {
         funct();
     }, defer)
 };
+
+// dynamically update scale attribute
+window.addEventListener('resize', () => debounce(scaleIt, 10));
