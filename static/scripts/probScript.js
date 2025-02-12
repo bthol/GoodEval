@@ -1966,11 +1966,3 @@ btnHst.addEventListener('click', () => {
         hstPanel.innerHTML = '';
     }
 });
-
-hstPanel.addEventListener('click', () => {
-    // turn off history visibility on click of panel
-    if (window.getComputedStyle(hstPanel).getPropertyValue('opacity') === '1') {
-        hstPanel.style.opacity = 0;
-        hstPanel.innerHTML = '';
-    }
-});
