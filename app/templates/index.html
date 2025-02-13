@@ -18,13 +18,14 @@
             <h1>GoodEval Calculator</h1>
         </div>
         <div class="nav-button-container">
-            <div>
-                <label for="select-theme">Theme: </label>
+            <div id="select-theme-container">
+                <label name="theme-label" for="select-theme">Theme</label>
                 <select id="select-theme">
-                    <option id="modern-theme" class="theme-button button-hover-blue">Modern</option>
-                    <option id="retro-theme" class="theme-button button-hover-blue">Retro</option>
-                    <option id="sleek-theme" class="theme-button button-hover-blue">Sleek</option>
-                    <option id="umbral-theme" class="theme-button button-hover-blue">Umbral</option>
+                    <option class="theme-option" value="placeholder" selected disabled>--theme--</option>
+                    <option class="theme-option" value="modern-theme" >Modern</option>
+                    <option class="theme-option" value="retro-theme">Retro</option>
+                    <option class="theme-option" value="sleek-theme">Sleek</option>
+                    <option class="theme-option" value="umbral-theme">Umbral</option>
                 </select>
             </div>
             <div>
