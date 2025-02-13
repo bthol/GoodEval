@@ -25,6 +25,9 @@ const shiftBtn6 = document.querySelector('#btn-shift-6');
 const btnHst = document.querySelector('#history-button');
 const hstPanel = document.querySelector('#history-panel');
 
+// Calculator Buttons
+const btns = document.querySelector('.btns');
+
 // question history
 let history = [];
 
@@ -1705,7 +1708,6 @@ function evaluate() {
 };
 
 // User Interface Control
-const btns = document.querySelector('.btns');
 // single listener on wrap element for event delegation
 btns.addEventListener('click', (e) => {
     // exclude the container elements

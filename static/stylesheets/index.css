@@ -29,7 +29,7 @@ nav {
 .title-container > h1 {
     font-size: 10vmin;
 }
-@media(min-width: 670px) {
+@media(min-width: 700px) {
     .title-container > h1 {
         font-size: 70px;
     }
@@ -96,11 +96,6 @@ nav {
     --arrow-size: calc(.047 * var(--scale-calc-size));
     height: var(--arrow-size);
     width: var(--arrow-size);
-}
-
-@keyframes pointing {
-    0%, 62.5%, 100% {top: 0px}
-    25%, 50% {top: -10px}
 }
 
 /* container for calculator */
@@ -435,11 +430,16 @@ nav {
     position: absolute;
     transform: translate(0vmin, calc(-.048 * var(--scale-calc-size)));
     width: 100vw;
-    padding: 10px 0px;
     background: #e6e5d8;
     color: #040410;
     opacity: 0;
     cursor: default;
+}
+
+/* Keyframe Animations */
+@keyframes pointing {
+    0%, 62.5%, 100% {top: 0vmin}
+    37%, 50% {top: -1.5vmin}
 }
 
 /* Hover Events */

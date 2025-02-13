@@ -3,7 +3,9 @@ console.log('Interface Script Loaded.');
 // DOM selections
 const calc = document.querySelector('.calculator-background');
 const nav = document.querySelector('nav');
-const hstPanel2 = document.querySelector('#history-panel');
+const hstPanelTest = document.querySelector('#history-panel');
+const navArrowContainer = document.querySelector('#nav-menu-arrow');
+const arrowNav = document.querySelector('#nav-arrow');
 
 // calculate navHeight for dynamic interface
 let navContentHeight = window.getComputedStyle(document.querySelector('nav')).getPropertyValue('--nav-content-height');
@@ -16,38 +18,41 @@ const navHeight = navContentHeight + navBorderHeight * 4;
 let navState = false;
 
 // logic for opening and closing the nav menu via the arrow
-const navArrow = document.querySelector('#nav-menu-arrow');
-navArrow.addEventListener('click', () => {
-    if (window.getComputedStyle(hstPanel2).getPropertyValue('opacity') === '0') {
+navArrowContainer.addEventListener('click', () => {
+    if (window.getComputedStyle(hstPanelTest).getPropertyValue('opacity') === '0') {
         navState = !navState;
         if (navState === true) {
-            navArrow.classList.remove('downward-arrow');
-            navArrow.classList.remove('downward-arrow-anim');
-            navArrow.classList.add('upward-arrow');
-            navArrow.classList.add('upward-arrow-anim');
+            // orientation
+            navArrowContainer.classList.remove('downward-arrow');
+            navArrowContainer.classList.add('upward-arrow');
+            // animation
+            arrowNav.classList.remove('downward-arrow-anim');
+            arrowNav.classList.add('upward-arrow-anim');
             nav.style.top = '0px';
         } else {
-            navArrow.classList.remove('upward-arrow');
-            navArrow.classList.remove('upward-arrow-anim');
-            navArrow.classList.add('downward-arrow');
-            navArrow.classList.add('downward-arrow-anim');
+            // orientation
+            navArrowContainer.classList.remove('upward-arrow');
+            navArrowContainer.classList.add('downward-arrow');
+            // animation
+            arrowNav.classList.remove('upward-arrow-anim');
+            arrowNav.classList.add('downward-arrow-anim');
             nav.style.top = `-${navHeight}px`;
         }
     }
 });
 
 // handle arrow animation in relation to history panel display
-navArrow.addEventListener('mouseover', () => {
-    if (window.getComputedStyle(hstPanel2).getPropertyValue('opacity') === '1') {
-        navArrow.classList.remove('downward-arrow-anim');
-        navArrow.classList.remove('upward-arrow-anim');
-        navArrow.style.cursor = 'default';
+navArrowContainer.addEventListener('mouseover', () => {
+    if (window.getComputedStyle(hstPanelTest).getPropertyValue('opacity') === '1') {
+        arrowNav.classList.remove('downward-arrow-anim');
+        arrowNav.classList.remove('upward-arrow-anim');
+        navArrowContainer.style.cursor = 'default';
     } else {
-        navArrow.style.cursor = 'pointer';
+        navArrowContainer.style.cursor = 'pointer';
         if (navState === true) {
-            navArrow.classList.add('upward-arrow-anim');
+            arrowNav.classList.add('upward-arrow-anim');
         } else {
-            navArrow.classList.add('downward-arrow-anim');
+            arrowNav.classList.add('downward-arrow-anim');
         }
     }
 });
