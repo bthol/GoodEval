@@ -1001,17 +1001,10 @@ function validOp() {
         } else {
 
             // cursor mode
-
-            if (cursorIdx === 0) {
-                // cursor at starting index
+            const str = removeFormatElements(cursorIdx);
+            if (str === ')' || !isNaN(str) || isSpecial(cursorIdx)) {
+                // last str is ')' or a regular number or a special number
                 return true;
-            } else { 
-                // cursor not at starting index
-                const str = removeFormatElements(cursorIdx);
-                if (str === ')' || !isNaN(str) || isSpecial(cursorIdx)) {
-                    // last str is ')' or a regular number or a special number
-                    return true;
-                }
             }
         }
     }
@@ -1040,20 +1033,26 @@ function validQuant(key = false, special = false) {
                     if (str !== ')') {
                         if (!isSpecial(i)) {
                             // last str is not a special number
-                            if (formatSuperscript || formatSubscript) {
-                                // allow superscript and subscript formatting
+                            if (formatSuperscript) {
+                                // allow superscript formatting
                                 return true;
                             } else {
-                                // test formatting
-                                if (problem[i] === str && !isNaN(i)) {
-                                    // last str is not a formatted number
+                                if (formatSubscript) {
+                                    // allow subscript formatting
                                     return true;
                                 } else {
-                                    // last str is a formatted number
-                                    serveError(error.reqOperation);
-                                    return false;
+                                    // test formatting
+                                    if (str === str && !isNaN(i)) {
+                                        // last str is not a formatted number
+                                        return true;
+                                    } else {
+                                        // last str is a formatted number
+                                        serveError(error.reqOperation);
+                                        return false;
+                                    }
                                 }
                             }
+
                         }
                     }
                     // last str is a special number
@@ -1102,20 +1101,7 @@ function validQuant(key = false, special = false) {
                         // last str is not a number
                         if (!isSpecial(i)) {
                             // last str is not a special number
-                            if (formatSuperscript || formatSubscript) {
-                                // allow superscript and subscript formatting
-                                return true;
-                            } else {
-                                // test formatting
-                                if (problem[i] === str && !isNaN(i)) {
-                                    // last str is not a formatted number
-                                    return true;
-                                } else {
-                                    // last str is a formatted number
-                                    serveError(error.reqOperation);
-                                    return false;
-                                }
-                            }
+                            return true;
                         }
                     }
                 }
@@ -1125,75 +1111,32 @@ function validQuant(key = false, special = false) {
 
             }
         } else {
-
             // cursor mode
+            if (!special) {
+                // not special numbers
+                if (!key) {
 
-            if (cursorIdx === 0) {
-                // cursor at starting index
-                return true;
-            } else {
-                // cursor not at starting index
-                if (!special) {
-                    // not special numbers
-                    if (!key) {
+                    // regular numbers
 
-                        // regular numbers
-
-                        const str = removeFormatElements(cursorIdx);
-                        if (str !== ')') {
-                            if (!isSpecial(cursorIdx)) {
-                                // str at cursorIdx is not a special number
-                                if (formatSuperscript || formatSubscript) {
-                                    // allow superscript and subscript formatting
-                                    return true;
-                                } else {
-                                    // test formatting
-                                    if (str === problem[cursorIdx]) {
-                                        // str at cursorIdx is not a formatted number
-                                        return true;
-                                    } else {
-                                        // str at cursorIdx is a formatted number
-                                        serveError(error.reqOperation);
-                                    }
-                                }
+                    const str = removeFormatElements(cursorIdx);
+                    if (str !== ')') {
+                        if (!isSpecial(cursorIdx)) {
+                            // str at cursorIdx is not a special number
+                            if (str === problem[cursorIdx]) {
+                                return true;
+                            } else {
+                                // last str is a formatted number
+                                serveError(error.reqOperation);
                             }
                         }
-                        // str at cursorIdx is special number
-                        serveError(error.reqOperation);
-                        return false;
-    
-                    } else {
-
-                        // key function
-
-                        const str = removeFormatElements(cursorIdx);
-                        if (str !== ')') {
-                            if (isNaN(str)) {
-                                // str at cursorIdx is not a number
-                                if (!isSpecial(cursorIdx)) {
-                                    // str at cursorIdx is not a special number
-                                    if (!isKey(cursorIdx)) {
-                                        // str at cursorIdx is not key
-                                        if (expFormat()) {
-                                            // start of a power expression
-                                            formatSuperscript = true;
-                                            insert('(');
-                                            return true;
-                                        } else {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // str at cursorIdx is a number or a special number or a key
-                        serveError(error.reqOperation);
-                        return false;
                     }
-    
+                    // str at cursorIdx is special number
+                    serveError(error.reqOperation);
+                    return false;
+
                 } else {
 
-                    // special numbers
+                    // key function
 
                     const str = removeFormatElements(cursorIdx);
                     if (str !== ')') {
@@ -1201,26 +1144,37 @@ function validQuant(key = false, special = false) {
                             // str at cursorIdx is not a number
                             if (!isSpecial(cursorIdx)) {
                                 // str at cursorIdx is not a special number
-                                if (formatSuperscript || formatSubscript) {
-                                    // allow superscript and subscript formatting
+                                if (!isKey(cursorIdx)) {
+                                    // str at cursorIdx is not key
                                     return true;
-                                } else {
-                                    // test formatting
-                                    if (str === problem[cursorIdx]) {
-                                        // str at cursorIdx is not a formatted number
-                                        return true;
-                                    } else {
-                                        // str at cursorIdx is a formatted number
-                                        serveError(error.reqOperation);
-                                    }
                                 }
                             }
                         }
                     }
-                    // str at cursorIdx is a number or a special number
+                    // str at cursorIdx is a number or a special number or a key
                     serveError(error.reqOperation);
                     return false;
+
                 }
+
+            } else {
+
+                // special numbers
+
+                const str = removeFormatElements(cursorIdx);
+                if (str !== ')') {
+                    if (isNaN(str)) {
+                        // str at cursorIdx is not a number
+                        if (!isSpecial(cursorIdx)) {
+                            // str at cursorIdx is not a special number
+                            return true;
+                        }
+                    }
+                }
+                // str at cursorIdx is a number or a special number
+                serveError(error.reqOperation);
+                return false;
+
             }
         }
     }
