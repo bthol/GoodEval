@@ -1,12 +1,7 @@
 console.log('Problem Script Loaded.');
 
 // Development Plan
-
-//  - popup description of buttons on hover
-
-//  - further design sign button functionality
-//     - remove negation on already negated term
-//     - wrap previous term in parens
+//  - create a manual accessible via the navbar for the calculator
 
 // Display
 const T = document.querySelector('#screen-toggles');

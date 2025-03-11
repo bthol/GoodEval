@@ -88,6 +88,7 @@ key_modules = [
     {"module":"geometric", "use":False},
     {"module":"combinatoric", "use":False},
     {"module":"statistical", "use":False},
+    {"module":"algebraic", "use":False},
 ]
 
 # use_logs determines whether or not to use logging
@@ -172,7 +173,7 @@ info = {
 
             {"name":"Permutation", "key":"perm", "syntax": "perm[n,r]", "about": "Gets a permutation given n number of objects with r number of objects per permutation, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. perm[n,[r+x]]."},
 
-            {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are  values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
+            {"name":"Combination", "key":"comb", "syntax": "comb[n,r]", "about": "Gets a combination given n number of objects with r number of objects per combination, where n and r are values or an expression that evaulates to a value wrapped within square brackets, e.g. comb[n,[r+x]]."},
         ],
 
         # Statistical Module
@@ -200,6 +201,13 @@ info = {
             {"name":"Logarithm", "key":"log", "syntax": "log[x,b]", "about": "Gets the logarithm of x with base b, where x and b are values or an expression wrapped in square brackets that evaluates to a value."},
 
             {"name":"Natural Log", "key":"ln", "syntax": "ln(x)", "about": "Gets the natural log of x with base e, where x is a value or an expression wrapped in square brackets that evaluates to a value."},
+        ],
+
+        # Algebraic
+        [
+            {"name":"Algebraic Exponentiation", "key":"algexp", "syntax":"algexp[[a],x]", "about":"Gets an algebraic exponentiation given a polynomial expression a and power x, where x is a value or an arithmetic expression that evaluates to a value wrapped within square brackets, e.g. expand[[a],[x]]"},
+            
+            {"name":"Polynomial Expansion", "key":"expand", "syntax":"expand[[x][y]]", "about":"Gets a polynomial expansion given a list of at least 2 polynomial expressions x and y, where each expression may have a unique number of any number of terms, e.g. expand[[a][b+c][d+e+f]]"},
         ],
     ],
 }
@@ -1351,6 +1359,337 @@ def evaluator(input):
             
         return arrVar
 
+    def algebraic(arr):
+        # key function module for algebraic functions
+        # algebraic operations translate to algebraic expressions
+        # rather than solving for single value
+        arrVar = arr
+
+        if key_modules[4]["use"] == True:
+
+            # performs all algebraic exponentiation
+            ref = getIdx("algexp", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+
+                # get arguments
+                args = arrVar[ref + 1]
+
+                # handle power
+                if isinstance(args[1], str):
+                    # convert then append power value
+                    x = float(args[1])
+                    args[1] = x
+                else:
+                    # simplify power expression then append power value
+                    x = section(distribute(args[1]))
+                    args[1] = x
+
+                # perform algebraic operation using numeral set
+                base = args[0] # base expression
+                power = args[1] # power value
+
+                # log values
+                log_process("Base expression = %s" % base)
+                log_process("Power value = %s" % power)
+
+                # build exponentiation by power value
+                if power == 0:
+                    # x^0 = 1
+                    # Log keyword
+                    log_process(arrVar[ref])
+                    # restructure with section
+                    arrVar = restructure(["1"], ref, ref + 1, arrVar)
+                    # get next instance
+                    ref = getIdx("algexp", arrVar)
+
+                elif power < 0:
+                    # x^-y = 1/(x^y)
+                    sect = ["1", "/", "("] + base
+                    for j in range(0, abs(power) - 1):
+                        sect = sect + ["*"]
+                        sect = sect + base
+                    sect = sect + [")"]
+
+                    # Log keyword
+                    log_process(arrVar[ref])
+                    # restructure with section
+                    arrVar = restructure(sect, ref, ref + 1, arrVar)
+                    # get next instance
+                    ref = getIdx("algexp", arrVar)
+
+                else:
+                    # general
+                    # build section
+                    sect = ["("] + base + [")"]
+                    for j in range(0, power - 1):
+                        sect = sect + ["*"]
+                        sect = sect + ["("] + base + [")"]
+                    
+                    # Log keyword
+                    log_process(arrVar[ref])
+                    # restructure with section
+                    arrVar = restructure(sect, ref, ref + 1, arrVar)
+                    # get next instance
+                    ref = getIdx("algexp", arrVar)
+
+            # performs all polynomial expansions
+            ref = getIdx("expand", arrVar)
+            itr = 0
+            while itr < key_limit and ref is not None:
+                itr = itr + 1
+
+                # get arguments
+                args = arrVar[ref + 1]
+
+                # build section with arguments
+                section = []
+                for i in range(0, len(args)):
+                    section.append("(")
+                    for j in range(0, len(args[i])):
+                        section.append(args[i][j])
+                    section.append(")")
+                    if (i < len(args) - 1):
+                        section.append("*")
+                
+                # print(section)
+
+                # reference structure for section with distribution
+                sect_struct = []
+
+                # Use section for distribution to create sect_struct
+
+                # test for leading monomial
+                if section[0] != "(":
+                    sect_struct.append([[section[0]]]) # monomial
+                
+                # test middle of sect_struct
+                count = 0
+                for i in range(0, len(section)):
+                    # only test on update to prevent false positives
+                    # positive case indicates index in section for the end of the first nomial
+                    is_zero = False
+                    if section[i] == "(":
+                        # update count
+                        count += 1
+                        # test count
+                        if count == 0:
+                            is_zero = True
+                    elif section[i] == ")":
+                        # update count
+                        count -= 1
+                        # test count
+                        if count == 0:
+                            is_zero = True
+                    
+                    if is_zero == True:
+                        # each zero counted after update count is the last index of another nomial
+                        nomial = []
+                        term = []
+                        nest = 0
+                        
+                        # backtrack to start of nomial identifying terms as-you-go
+                        for k in range(0, i + 1):
+                            char = section[i - k]
+                            try:
+                                # test for number
+                                int(char)
+                                # insert character at start of term structure since iterating backward
+                                term.insert(0, char)
+                            except:
+                                # count zeros
+                                if char == "(":
+                                    nest += 1
+                                    if nest == 0:
+                                        # zero identified
+                                        nomial.insert(0, term) # add term to polynomial
+                                        term = [] # clear term buffer
+                                        break
+
+                                    elif nest > -2:
+                                        # add first character of expression term
+                                        term.insert(0, char)
+
+                                elif char == ")":
+                                    nest -= 1
+                                
+                                elif nest == -1:
+                                    if char == "+":
+                                        # different term if added
+                                        nomial.insert(0, term)
+                                        term = [] # clear term buffer
+                                    elif char == "-":
+                                        # different term if subtracted
+                                        if section[i - k + 1] == "(":
+                                            # negate expression term
+                                            term.insert(0, "*")
+                                            term.insert(0, "-1")
+                                            nomial.insert(0, term)
+                                            term = [] # clear term buffer
+                                        else:
+                                            # negate previous term
+                                            term.pop(0) # remove positive value
+                                            term.insert(0, "-%s" % section[i - k + 1]) # add negated value
+                                            nomial.insert(0, term)
+                                            term = [] # clear term buffer
+                                    elif char == "*" or char == "/":
+                                        # same term if multiplied or divided
+                                        term.insert(0, char)
+
+                                if nest < -1:
+                                    term.insert(0, char)
+
+                        sect_struct.append(nomial)
+                
+                # test for ending monomial
+                if section[len(section) - 1] != ")":
+                    sect_struct.append([[section[len(section) - 1]]])
+
+                print(sect_struct)
+
+                # total number of nomials
+                nomials_total = len(sect_struct)
+
+                # total number of terms
+                terms_total = 0
+                for i in range(0, len(sect_struct)):
+                    terms_total += len(sect_struct[i])
+                
+                # total number of terms in product of distribution
+                # calculates the number of terms in the product expression of a nomial multiplication
+                # using the nested summation method
+                # where it works for:
+                #  - any number of nomials
+                #  - any number of terms in nomial
+                #  - different number of terms in different nomials
+
+                product_terms_total = 0
+                for i in range(0, len(sect_struct)):
+                    # get terms of current nomial
+                    k = len(sect_struct[i])
+                    # sum previous terms
+                    s = 0
+                    for l in range(0, i):
+                        s += len(sect_struct[l])
+                    s += k
+                    product_terms_total += k * (terms_total - s)
+                
+                # print(nomials_total)
+                # print(terms_total)
+                # print(product_terms_total)
+
+                # construct product expression
+
+                # now that the number of terms in the product expression is known, the number of multiplications is also known,
+                # because one multiplication creates one term, so the number of terms and multiplcations are the same number.
+
+                # the design of product expression construction is thus:
+                #  - to access two terms in the reference structure of unique combination, 
+                #  - build a list which includes those terms separated by a multication symbol,
+                #  - compile that list into the product structure, demarcating each concatenation to the product structure with an addition symbol,
+                #  - and repeating this process for the number of multiplications,
+                #  - except for the last multiplication, which should have no addition symbol following it.
+
+                # multiplier indexes
+                term1 = 0
+                nomial1 = 0
+
+                # multiplicand indexes
+                term2 = 0
+                nomial2 = 0
+
+                # structures
+                multiplier = []
+                multiplicand = []
+                product = []
+
+                for i in range(0, product_terms_total - 1):
+                    # initialize
+                    if nomial2 == 0:
+                        # first term in product expression
+                        multiplier = sect_struct[nomial1][term1]
+                        nomial2 += 1
+                        multiplicand = sect_struct[nomial2][term2]
+                    
+                    # update indexes
+                    # multiplicand term
+                        # multiplicand nomial
+                            # multiplier term
+                                # multiplier nomial
+
+                    # multiplicand term
+                    elif term2 + 1 != len(sect_struct[nomial2]):
+                        # mid term in nomial for the multiplicand
+                        term2 += 1
+                    else:
+                        # last term of nomial for the multiplicand
+                        term2 = 0 # first term of next nomial
+
+                        
+                        # multiplicand nomial
+                        if nomial2 + 1 != nomials_total:
+                            # mid nomial for multiplicand
+                            nomial2 += 1
+                        else:
+                            # last nomial for multiplicand
+                            nomial2 = nomial1 + 1
+
+
+                            # multiplier term
+                            if term1 + 1 != len(sect_struct[nomial1]):
+                                # mid term of nomial for multiplier
+                                term1 += 1
+                            else:
+                                # last term of nomial for multiplier
+                                term1 = 0 # first term of next nomial
+                                
+                                
+                                # multiplier nomial
+                                if nomial1 + 1 != nomials_total - 1: # -1 : multiplier never the last nomial
+                                    # mid nomial for multiplier
+                                    nomial1 += 1
+                                    nomial2 = nomial1 + 1
+                                    term2 = 0
+                                else:
+                                    # last nomial for multiplier
+                                    break
+
+                    # update multiplier
+                    multiplier = sect_struct[nomial1][term1]
+                    # update multiplicand
+                    multiplicand = sect_struct[nomial2][term2]
+
+                    # print("nomial: %s" % str(int(nomial2) + 1))
+                    # print("term: %s" % str(int(term2) + 1))
+                    # print(multiplier)
+                    # print(multiplicand)
+
+                    # concatenate multiplier and multiplicand with product
+                    product = product + multiplier + ["*"] + multiplicand + ["+"]
+
+                # last term
+                if len(sect_struct[len(sect_struct) - 1]) > 1:
+                    # for ending monomial
+                    term2 += 1
+                    multiplicand = sect_struct[nomial2][term2]
+                    product = product + multiplier + ["*"] + multiplicand
+                else:
+                    term1 += 1
+                    multiplier = sect_struct[nomial1][term1]
+                    product = product + multiplier + ["*"] + multiplicand
+                
+                log_process(product)
+
+                # Log keyword
+                log_process(arrVar[ref])
+                # restructure with product expression
+                arrVar = restructure(product, ref, ref + 1, arrVar)
+                # identify further cases of polynomial expansion
+                ref = getIdx("expand", arrVar)
+            
+        return arrVar
+
     def key_functions(arr):
         # conditionally runs key function modules
         # Log process label for key functions
@@ -1364,6 +1703,8 @@ def evaluator(input):
         arrVar = combinatoric(arrVar)
         # STATISTICAL FUNCTIONS
         arrVar = statistical(arrVar)
+        # ALGEBRAIC FUNCTIONS
+        arrVar = algebraic(arrVar)
         
         return arrVar
     # KEY FUNCTIONS END
@@ -1940,117 +2281,6 @@ def evaluator(input):
                 identify_entities(arrVar)
 
         return arrVar
-    
-    def poly_expan(arr):
-        # performs polynomial expansion
-        global is_poly_expan
-        global is_dist
-        global is_mult
-        arrVar = arr
-        x = 0
-        while is_poly_expan == True and x < poly_fact_limit:
-            x = x + 1
-            # get idexes of "^" in arrVar to determine number of instances of expansion
-            idxs = []
-            for i in range(1, len(arrVar) - 1):
-                if arrVar[i] == "^" and arrVar[i - 1] == ")":
-                    idxs.append(i)
-            
-            # run expansion that many times
-            for i in range(0, len(idxs)):
-                # log for each instance of expansion
-                log_process("Start Expansion")
-                # get base expression
-                sect_start_idx = 0
-                sect_end_idx = 0
-                power = 0
-                base = []
-                x = 0
-                for j in range(idxs[i], 0, -1):
-                    if arrVar[j] == "(":
-                        x += 1
-                        if x == 0:
-                            sect_start_idx = j
-                            break
-                    elif arrVar[j] == ")":
-                        x -= 1
-                
-                for j in range(sect_start_idx, idxs[i]):
-                    base.append(arrVar[j])
-                
-                # log base expression
-                log_process("Base expression = %s" % base)
-
-                # get power if expression else value
-                if arrVar[idxs[i] + 1] == "(":
-                    # is an expression
-                    expression = []
-                    x = 0
-                    for j in range(idxs[i] + 1, len(arrVar)):
-                        if arrVar[j] == "(":
-                            x += 1
-                            expression.append(arrVar[j])
-                        elif arrVar[j] == ")":
-                            x -= 1
-                            expression.append(arrVar[j])
-                            if x == 0:
-                                sect_end_idx = j
-                                break
-                        else:
-                            expression.append(arrVar[j])
-                    
-                    # log power expression
-                    log_process("Power expression = %s" % expression)
-
-                    # calculate power value from power expression
-                    power = poly_expan(expression)
-                    power = distribute(power)
-                    power = section(power)
-
-                else:
-                    # is a value
-                    sect_end_idx = idxs[i] + 1
-                    power = arrVar[idxs[i] + 1]
-                
-                power = num_cast(power)
-
-                # log power value
-                log_process("Power value = %s" % power)
-
-                # test power for special cases
-                if power == 0:
-                    # x^0 = 1
-                    arrVar = restructure(["1"], sect_start_idx, sect_end_idx, arrVar)
-                elif power < 0:
-                    # x^-y = 1/(x^y)
-                    sect = ["1", "/", "("] + base
-                    for j in range(0, abs(power) - 1):
-                        sect = sect + ["*"]
-                        sect = sect + base
-                    sect = sect + [")"]
-                    arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
-                else:
-                    # general
-                    # build section
-                    sect = base
-                    for j in range(0, power - 1):
-                        sect = sect + ["*"]
-                        sect = sect + base
-                    # restructure with section
-                    arrVar = restructure(sect, sect_start_idx, sect_end_idx, arrVar)
-
-                # expand by distribution property
-                is_dist = True
-                arrVar = distribute(arrVar)
-
-                # correct bypass
-                identify_entities(arrVar)
-
-                # write logs
-                log_process(arrVar)
-                log_process("End Expansion")
-
-        return arrVar
     # Phase II Process END
 
     # System Operations
@@ -2114,8 +2344,8 @@ def evaluator(input):
                 process_log["0"] = "Process Log Start"
             # Identify program entities in structured string
             identify_entities(structure)
-            # restructure to expand polynomial multiplications
-            structure = poly_expan(structure)
+            # # restructure to expand polynomial multiplications
+            # structure = poly_expan(structure)
             # restructure to distribute out terms
             structure = distribute(structure)
             # restructure for "sets" (substructures)
@@ -2125,62 +2355,61 @@ def evaluator(input):
 
             return structure
 
+    # # Evaluation
+    # use_logs = input["use_logs"]
+
+    # print(input["problem"])
+    # answer = evaluate(input["problem"])
+
+    # output = {
+    #     "problem": input["problem"],
+    #     "answer": answer,
+    #     "logs": process_log,
+    # }
+
+    # return output
+    
+    # TESTING
+    # Simulated Program Input
+    test = {
+        # "problem": "info",
+        # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+        # "problem": "3*(4-1)", # monomial start 9
+        # "problem": "(2+3)*4", # monomial end 20
+        # "problem": "4*(7-(3-1))", # expression term 17
+        # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
+        # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
+        # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
+        # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
+        # "problem": "2*(2+3)", # should be 10
+
+        "problem": "expand[[a+b][c+d][e+f]]", # note
+        # "problem": "algexp[[a+b],[2*(2-1)+1]]", # note
+        # "problem": "(1+2)*(3+4)*(5+6)", # note
+        "use_logs": "1",
+    }
+    use_logs = test["use_logs"]
+
     # Evaluation
-    use_logs = input["use_logs"]
+    answer = evaluate(test["problem"])
 
-    print(input["problem"])
-    answer = evaluate(input["problem"])
-
+    # Simulated Program Output
     output = {
-        "problem": input["problem"],
+        "problem": test["problem"],
         "answer": answer,
         "logs": process_log,
     }
 
-    return output
-    
-#     # TESTING
-#     # Simulated Program Input
-#     test = {
-#         # "problem": "info",
-#         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
-#         # "problem": "3*(4-1)", # monomial start 9
-#         # "problem": "(2+3)*4", # monomial end 20
-#         # "problem": "4*(7-(3-1))", # expression term 17
-#         # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
-#         # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
-#         # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
-#         # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
-#         # "problem": "2*(2+3)", # should be 10
+    # Prints feedback for program development
+    logs = """"""
+    process_log_keys = list(process_log.keys())
+    for key in process_log_keys:
+        logs += """%s
+""" % process_log[key]
 
-#         "problem": "(2+3)^(2+1)", # should be 125 but is 75
-#         # "problem": "(2*(4-3))^(1*(3-1))", # should be 4
-#         # "problem": "3+(2+4)^(1+1)+3", # should be 42
-#         # "problem": "3+(2+4)^2+3", # should be 42
-#         "use_logs": "1",
-#     }
-#     use_logs = test["use_logs"]
+    print(test["problem"])
+    print(answer)
+    print(logs)
+    # print("Output Object: %s" % output)
 
-#     # Evaluation
-#     answer = evaluate(test["problem"])
-
-#     # Simulated Program Output
-#     output = {
-#         "problem": test["problem"],
-#         "answer": answer,
-#         "logs": process_log,
-#     }
-
-#     # Prints feedback for program development
-#     logs = """"""
-#     process_log_keys = list(process_log.keys())
-#     for key in process_log_keys:
-#         logs += """%s
-# """ % process_log[key]
-
-#     print(test["problem"])
-#     print(answer)
-#     print(logs)
-#     # print("Output Object: %s" % output)
-
-# evaluator("") # remove or comment out after testing
+evaluator("") # remove or comment out after testing
