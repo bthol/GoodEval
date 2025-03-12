@@ -17,7 +17,7 @@ function runAnimation() {
     addDot();
     clearInterval(interval);
     interval = setInterval(() => {
-        if (intervalCount < 8) {
+        if (intervalCount < 10) {
             addDot();
             intervalCount += 1;
         } else {
@@ -26,7 +26,7 @@ function runAnimation() {
             setTimeout(() => {
                 removeDots();
                 runAnimation();
-            }, 600);
+            }, 525);
         }
     }, 525);
 };

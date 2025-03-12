@@ -1,0 +1,47 @@
+.body {
+    margin: 0px;
+}
+
+header {
+    margin: 0px;
+    font-size: 5vw;
+    background: var(--title-background);
+}
+
+nav {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    font-size: 3.5vw;
+    background: var(--nav-background);
+    border-top: 1px double #7c7e8d;
+    border-bottom: 1px double #7c7e8d;
+}
+
+.software-card {
+    background: hsl(0, 0%, 91%);
+    border-radius: 7px;
+    border: 1px solid black;
+    margin: 7px;
+    padding: 3px;
+}
+
+/* maximum fonts for navigation */
+@media(min-width: 941px) {
+    header {
+        font-size: 48px;
+    }
+    nav {
+        font-size: 34px;
+    }
+}
+
+/* minimum fonts for navigation */
+@media(max-width: 712px) {
+    header {
+        font-size: 35px;
+    }
+    nav {
+        font-size: 25px;
+    }
+}

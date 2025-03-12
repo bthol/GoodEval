@@ -9,40 +9,47 @@
 nav {
     position: absolute;
     width: 100%;
-    --nav-content-height: 250px;
+    --nav-content-height: 200px;
     --nav-border-height: 1.5px;
     --nav-height: calc(var(--nav-border-height) * 4 + var(--nav-content-height));
     top: calc(var(--nav-height) * -1);
     transition: top 300ms;
     white-space: nowrap;
+    z-index: 1;
 }
 
 .title-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #eeeed3;
+    background-color: var(--title-background);
+    margin: 0px;
     height: calc(var(--nav-content-height) * (3/5));
 }
 
 .title-container > h1 {
-    font-size: 10vmin;
-}
-@media(min-width: 670px) {
-    .title-container > h1 {
-        font-size: 70px;
-    }
+    font-size: 5vw;
 }
 
 .nav-button-container {
     height: calc(var(--nav-content-height) * (2/5));
-    padding: 0vmin 1.5vmin;
+    padding: 0px 10px;
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr max-content 1fr;
-    background-color: #fafafa;
+    background-color: var(--nav-background);
     border-top: var(--nav-border-height) solid #7c7e8d;
     border-bottom: calc(var(--nav-border-height)*3) double #7c7e8d;
+    font-size: 3.5vw;
+}
+
+#select-theme {
+    cursor: pointer;
+    font-size: 2.5vw;
+}
+
+.theme-option {
+    font-size: 2.2vw;
 }
 
 .nav-button-container > div {
@@ -57,13 +64,6 @@ nav {
     justify-self: end;
 }
 
-.theme-button {
-    font-size: 2.5vmin;
-}
-
-#select-theme {
-    font-size: 2.8vmin;
-}
 
 /* ARROW */
 .arrow-layout {
@@ -77,8 +77,8 @@ nav {
     height: var(--arrow-size);
     width: var(--arrow-size);
     margin: 0px auto;
-    border-left: calc(.047 * var(--scale-calc-size)) double #f0ede6;
-    border-top: calc(.047 * var(--scale-calc-size)) double #303050;
+    border-left: calc(.05 * var(--scale-calc-size)) double #f0ede6;
+    border-top: calc(.05 * var(--scale-calc-size)) double #303050;
 }
 
 .upward-arrow > div.arrow {
@@ -92,14 +92,9 @@ nav {
 .arrow-container {
     position: relative;
     cursor: pointer;
-    --arrow-size: calc(.047 * var(--scale-calc-size));
+    --arrow-size: calc(.05 * var(--scale-calc-size));
     height: var(--arrow-size);
     width: var(--arrow-size);
-}
-
-@keyframes pointing {
-    0%, 62.5%, 100% {top: 0px}
-    25%, 50% {top: -10px}
 }
 
 /* container for calculator */
@@ -120,7 +115,6 @@ nav {
     border-right: calc(.012 * var(--scale-calc-size)) groove var(--color-border-2);
     border-bottom: calc(.012 * var(--scale-calc-size)) groove var(--color-border-2);
     border-left: calc(.012 * var(--scale-calc-size)) ridge var(--color-border-2);
-    z-index: -1;
 }
 
 /* SCREEN */
@@ -173,6 +167,10 @@ nav {
     overflow-x: scroll;
 }
 
+#screen-content sup, #screen-content sub {
+    font-size: .7em;
+}
+
 #screen-content > div {
     margin: 0px;
 }
@@ -220,12 +218,8 @@ nav {
     font-size: calc(.017 * var(--scale-calc-size));
 }
 
-#btn-power-sup {
-    font-size: calc(.019 * var(--scale-calc-size));
-}
-
-#btn-root-sup {
-    font-size: calc(.019 * var(--scale-calc-size));
+#btn-power-sup, #btn-root-sup {
+    font-size: calc(.022 * var(--scale-calc-size));
 }
 
 /* BUTTONS */
@@ -265,17 +259,17 @@ nav {
 
 .top-button {
     position: relative;
-    padding: calc(.003 * var(--scale-calc-size)) calc(.011 * var(--scale-calc-size));
-    cursor: pointer;
+    padding: calc(.003 * var(--scale-calc-size)) calc(.009 * var(--scale-calc-size));
     background-color: var(--color-fill-2);
     color: var(--color-font);
     border: calc(.003 * var(--scale-calc-size)) solid var(--color-border-3);
     border-bottom: calc(.004 * var(--scale-calc-size)) solid var(--color-border-3);
     font-size: calc(.028 * var(--scale-calc-size));
+    cursor: pointer;
 }
 .top-button:active {
     border: calc(.0024 * var(--scale-calc-size)) solid var(--color-border-3);
-    border-bottom: calc(.001 * var(--scale-calc-size)) solid var(--color-border-3);
+    border-bottom: calc(.003 * var(--scale-calc-size)) solid var(--color-border-3);
     top: calc(.002 * var(--scale-calc-size));
 }
 
@@ -286,17 +280,16 @@ nav {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr; /* 5 rows */
-    grid-gap: calc(.018 * var(--scale-calc-size));
-    padding: calc(.009 * var(--scale-calc-size));
+    padding: calc(.006 * var(--scale-calc-size)); /* controls bottom-button size */
     margin: 0px auto;
-    margin-top: calc(.009 * var(--scale-calc-size));
     background: var(--color-bckgrnd-2);
     border: calc(.001 * var(--scale-calc-size)) solid var(--color-border-1);
 }
 
 .button {
     position: relative;
-    padding: 0px calc(.027 * var(--scale-calc-size));
+    padding: 0px;
+    margin: calc(.012 * var(--scale-calc-size)); /* controls bottom-button size */
     color: var(--color-font);
     cursor: pointer;
     font-size: calc(.032 * var(--scale-calc-size));
@@ -304,8 +297,8 @@ nav {
 
 .button.normal {
     background: var(--color-fill-2);
-    border: calc(.005 * var(--scale-calc-size)) solid var(--color-border-3);
-    border-bottom: calc(.007 * var(--scale-calc-size)) solid var(--color-border-3);
+    border: calc(.004 * var(--scale-calc-size)) solid var(--color-border-3);
+    border-bottom: calc(.006 * var(--scale-calc-size)) solid var(--color-border-3);
 }
 .button.normal:active {
     border-bottom: calc(.004 * var(--scale-calc-size)) solid var(--color-border-3);
@@ -417,6 +410,10 @@ nav {
     grid-row: 5;
 }
 
+.soft-edge-style {
+    border-radius: calc(.01 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size)) calc(.005 * var(--scale-calc-size)) calc(.005 * var(--scale-calc-size));
+}
+
 .left-right-style {
     border-radius: calc(.01 * var(--scale-calc-size)) calc(.018 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size)) calc(.018 * var(--scale-calc-size));
 }
@@ -425,21 +422,74 @@ nav {
     border-radius: calc(.018 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size)) calc(.018 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size));
 }
 
-.soft-edge-style {
-    border-radius: calc(.01 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size)) calc(.005 * var(--scale-calc-size)) calc(.005 * var(--scale-calc-size));
+/* for parenthesis buttons */
+.left-right-style-2 {
+    border-radius: calc(.01 * var(--scale-calc-size)) calc(.025 * var(--scale-calc-size)) calc(.018 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size));
+}
+
+.right-left-style-2 {
+    border-radius: calc(.025 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size)) calc(.018 * var(--scale-calc-size));
 }
 
 /* history pannel */
 #history-panel {
     z-index: 2;
     position: absolute;
-    transform: translate(0vmin, calc(-.048 * var(--scale-calc-size)));
+    transform: translate(0vmin, calc(-.05 * var(--scale-calc-size)));
     width: 100vw;
-    padding: 10px 0px;
     background: #e6e5d8;
     color: #040410;
     opacity: 0;
     cursor: default;
+    font-size: 3.4vw;
+}
+
+#history-panel > div {
+    overflow-x: scroll;
+}
+
+/* Keyframe Animations */
+@keyframes pointing {
+    0%, 62.5%, 100% {top: 0vmin}
+    37%, 50% {top: -1.5vmin}
+}
+
+/* maximum fonts for navigation */
+@media(min-width: 941px) {
+    .title-container > h1 {
+        font-size: 48px;
+    }
+    .nav-button-container {
+        font-size: 34px;
+    }
+    #select-theme {
+        font-size: 24px;
+    }
+    .theme-option {
+        font-size: 20px;
+    }
+    #history-panel {
+        font-size: 34px;
+    }
+}
+
+/* minimum fonts for navigation */
+@media(max-width: 712px) {
+    .title-container > h1 {
+        font-size: 35px;
+    }
+    .nav-button-container {
+        font-size: 25px;
+    }
+    #select-theme {
+        font-size: 20px;
+    }
+    .theme-option {
+        font-size: 20px;
+    }
+    #history-panel {
+        font-size: 24px;
+    }
 }
 
 /* Hover Events */

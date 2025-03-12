@@ -1,12 +1,7 @@
 console.log('Problem Script Loaded.');
 
 // Development Plan
-
-//  - popup description of buttons on hover
-
-//  - further design sign button functionality
-//     - remove negation on already negated term
-//     - wrap previous term in parens
+//  - create a manual accessible via the navbar for the calculator
 
 // Display
 const T = document.querySelector('#screen-toggles');
@@ -57,12 +52,12 @@ const error = {
     operation: 'Error: invalid operation',
     consecutive: 'Error: No consecutive operations',
     paren: 'Error: Invalid parenthesis',
-    noFraction: 'Error: No fractional argument',
+    argument: 'Error: Invalid key argument',
     reqOperation: 'Error: Requires operation',
     reqBase: 'Error: Invalid base for exponent',
     reqPower: 'Error: Invalid power for exponent',
     exponent: 'Error: invalid exponent form',
-    reqRadicand: 'Error: Invalid radicand for radical',
+    reqRadicand: 'Error: Invalid radicand',
     radical: 'Error: invalid radical form',
 }
 
@@ -83,46 +78,7 @@ const operation = {
     rad: '√',
 };
 
-// key function info
-const keyInfo = [
-    // static values
-    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
-    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
-
-    // static operations
-    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
-    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
-    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
-    
-    // key functions
-    {key: 'sin', funct: (x) => Math.sin(x)}, // sine
-    {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
-    {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
-    {key: 'asinh', funct: (x) => Math.asinh(x)}, // arch hyperbolic sine
-
-    {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
-    {key: 'acos', funct: (x) => Math.acos(x)}, // arch cosine
-    {key: 'cosh', funct: (x) => Math.cosh(x)}, // hyperbolic cosine
-    {key: 'acosh', funct: (x) => Math.acosh(x)}, // arch hyperbolic cosine
-
-    {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
-    {key: 'atan', funct: (x) => Math.atan(x)}, // arch tangent
-    {key: 'tanh', funct: (x) => Math.tanh(x)}, // hyperbolic tangent
-    {key: 'atanh', funct: (x) => Math.atanh(x)}, // arch hypberbolic tangent
-
-    {key: 'log10', funct: (x) => Math.log10(x)}, // logarithm (base 10)
-    {key: 'log2', funct: (x) => Math.log2(x)}, // logarithm (base 2)
-    {key: 'ln', funct: (x) => Math.log(x)}, // natural logarithm
-    
-    {key: 'round', funct: (x) => Math.round(x)}, // rounds to nearest integer
-
-    
-    {key: '!', funct: (x) => factorial(x)}, // factorial of x
-    {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
-    {key: 'Σain', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
-    {key: `Σn${operation.div}ai`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
-    {key: `Σai${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
-];
+const negate = '-';
 
 // custom key functions
 function rndx(x) {
@@ -176,7 +132,6 @@ function summateVariable(x) {
         }
     } else {
         // no fractional arguments
-        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -197,7 +152,6 @@ function productSum(x) {
         }
     } else {
         // no fractional arguments
-        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -218,7 +172,6 @@ function quotientSum1(x) {
         }
     } else {
         // no fractional arguments
-        serveError(error.noFraction);
         return NaN;
     }
 };
@@ -239,10 +192,50 @@ function quotientSum2(x) {
         }
     } else {
         // no fractional arguments
-        serveError(error.noFraction);
         return NaN;
     }
 };
+
+// key function info
+const keyInfo = [
+    // static values
+    {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
+    {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
+
+    // static operations
+    {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
+    {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
+    {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
+    
+    // key functions
+    {key: 'sin', funct: (x) => Math.sin(x)}, // sine
+    {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
+    {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
+    {key: 'asinh', funct: (x) => Math.asinh(x)}, // arch hyperbolic sine
+
+    {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
+    {key: 'acos', funct: (x) => Math.acos(x)}, // arch cosine
+    {key: 'cosh', funct: (x) => Math.cosh(x)}, // hyperbolic cosine
+    {key: 'acosh', funct: (x) => Math.acosh(x)}, // arch hyperbolic cosine
+
+    {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
+    {key: 'atan', funct: (x) => Math.atan(x)}, // arch tangent
+    {key: 'tanh', funct: (x) => Math.tanh(x)}, // hyperbolic tangent
+    {key: 'atanh', funct: (x) => Math.atanh(x)}, // arch hypberbolic tangent
+
+    {key: 'log10', funct: (x) => Math.log10(x)}, // logarithm (base 10)
+    {key: 'log2', funct: (x) => Math.log2(x)}, // logarithm (base 2)
+    {key: 'ln', funct: (x) => Math.log(x)}, // natural logarithm
+    
+    {key: 'round', funct: (x) => Math.round(x)}, // rounds to nearest integer
+
+    
+    {key: '!', funct: (x) => factorial(x)}, // factorial of x
+    {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
+    {key: 'Σain', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
+    {key: `Σn${operation.div}ai`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
+    {key: `Σai${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
+];
 
 // Shift Mode Toggles
 function toggleShiftMode() {
@@ -307,7 +300,7 @@ function formatShiftBtn() {
     }
 };
 
-window.addEventListener('resize', () => debounce3(formatShiftBtn, 11));
+window.addEventListener('resize', () => debounce3(formatShiftBtn, 10));
 
 // Cursor Mode Toggles
 function cursorDefault(cursor = null) {
@@ -450,250 +443,40 @@ function expFormat() {
     }
 };
 
-// Structuring
-function insert(char) {
-    if (!cursorMode) {
-        // defaultly inserts at end of problem
-        if (!formatSuperscript) {
-            if (!expFormat()) {
-                // no formatting
-                problem.push(char);
-            } else {
-                // apply superscript formatting
-                problem.push('<sup>' + char + '</sup>');
-            }
-        } else {
-            // apply superscript formatting
-            problem.push('<sup>' + char + '</sup>');
-        }
-        updateProblem();
-    } else {
-        // in cursor mode, inserts at cursor index
-        if (problem.length > 0) {
-            // non-empty problem structure
-            if (cursorIdx === 0) {
-                // cursor at start
-                problem.unshift(char);
-                updateProblem('cursor');
-            } else {
-                // cursor at middle and end
-                if (!formatSuperscript) {
-                    if (!expFormat()) {
-                        // no formatting
-                        problem.splice(cursorIdx + 1, 0, char);
-                    } else {
-                        // apply superscript formatting
-                        problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
-                    }
-                } else {
-                    // apply superscript formatting
-                    problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
-                }
-                cursorForward();
-            }
-        } else {
-            // empty problem structure
-            problem.push(char);
-            cursorForward();
-            updateProblem('cursor');
-        }
-    }
-};
-
-function restructure(solution, start, end, problem) {
-    let before = [];
-    for (let i = 0; i < start; i++) {
-        before.push(problem[i])
-    }
-    let after = [];
-    for (let i = end + 1; i < problem.length; i++) {
-        after.push(problem[i])
-    }
-    if (typeof solution === 'string') {
-        before.push(solution);
-        return before.concat(after);
-    } else if (typeof solution === 'number') {
-        before.push(`${solution}`);
-        return before.concat(after);
-    } else {
-        return before.concat(solution).concat(after);
-    }
-};
-
-function getIdx(key, struct) {
-    // returns index of key in iterable structure
-    for (let i = 0; i < struct.length; i++) {
-        if (struct[i] === key) {
-            return i;
-        }
-    }
-    return false;
-};
-
-function specialNumberValues() {
-    // convert special number symbols to values for calculation in whole problem structure
-    for (let i = 0; i < specialInfo.length; i++) {
-        let idx = getIdx(specialInfo[i].symbol, answer);
-        let itr = 0;
-        while (itr < 100 && idx !== false) {
-            answer = restructure(specialInfo[i].value, idx, idx + 1, answer);
-            idx = getIdx(specialInfo[i].symbol, answer);
-        }
-    }
-};
-
-function structureString() {
-    // emulates backend string structuring algorithm
-    let struct = [];
-    let buffer = "";
-    try {
-        for (let i = 0; i < problem.length; i++) {
-            const char = problem.slice(i, i + 1)[0];
-            // skip spaces
-            if (char === " ") {
-                continue;
-            } else {
-                if (char === "." || !isNaN(char)) {
-                    buffer += char;
-                } else {
-                    // handle negatives start
-                    if (char === "-" && struct[struct.length - 1] === "(") {
-                        struct.pop();
-                        buffer = char;
-                    } else if (char === ")") {
-                        try {
-                            if (Number(buffer) < 0) {
-                                struct.push(buffer);
-                                buffer = "";
-                                // handle negatives end
-                            } else {
-                                if (buffer.length > 0) {
-                                    struct.push(buffer);
-                                    buffer = "";
-                                }
-                                struct.push(char);
-                            }
-                        } catch {
-                            if (buffer.length > 0) {
-                                struct.push(buffer);
-                            }
-                            buffer = "";
-                            struct.push(char);
-                        }
-                    } else {
-                        if (buffer.length > 0) {
-                            struct.push(buffer);
-                        }
-                        buffer = "";
-                        struct.push(char);
-                    }
-    
-                }
-                // push buffer at end
-                if (i === problem.length - 1 && buffer.length > 0) {
-                    struct.push(buffer);
-                }
-            }
-        }
-    } catch (error) {
-        console.log(error);
-    }
-    answer = struct;
-};
-
-function getSection(open, close) {
-    // returns section for calculation
-    let ref = [];
-    for (let i = 0; i < answer.length; i++) {
-        if (answer[i] === open || answer[i] === close) {
-            ref.push({char: answer[i], index: i});
-        }
-    }
-    if (ref.length > 0) {
-        let start, end;
-        let section = [];
-        for (let i = 0; i < ref.length; i++) {
-            if (ref[i].char === open && i + 1 < ref.length && ref[i + 1].char === close) {
-                start = ref[i].index;
-                end = ref[i + 1].index;
-            }
-        }
-        for (let i = start + 1; i < end; i++) {
-            section.push(answer[i]);
-        }
-        return true && {start: start, end: end, sect: section};
-    } else {
-        return false;
-    }
-};
-
-function section() {
-    let section = getSection('(', ')');
-    let count = 0;
-    while (count < 10 && section) {
-        answer = restructure(calculate(section.sect), section.start, section.end, answer);
-        // prepare for next iteraton
-        section = getSection('(', ')');
-        count += 1;
-    }
-    answer = calculate(answer);
-};
-
-// Key Functions
-function keyFunction(key, funct, prob) {
-    // generalizes single argument key functions
-    let idx = getIdx(key, prob);
-    let x = 0;
-    while (x < 100 && idx !== false) {
-        x += 1;
-        let solution;
-        if (prob[idx + 1] === '(') {
-            // expression argument
-            let expression = [];
-            let nest = 0;
-            for (let i = idx + 1; i < prob.length; i++) {
-                expression.push(prob[i]);
-                if (prob[i] === '(') {
-                    nest += 1;
-                } else if (prob[i] === ')') {
-                    nest -= 1;
-                    if (nest === 0) {
-                        break;
-                    }
-                }
-            }
-        } else {
-            // single argument
-            solution = funct(Number(prob[idx + 1]));
-        }
-        prob = restructure(solution, idx, idx + 1, prob);
-        idx = getIdx(key, prob);
-    }
-    return prob;
-};
-
-function runKeyFunctions(prob) {
-    // runs all key functions
-    let p = prob;
-    for (let i = 0; i < keyInfo.length; i++) {
-        p = keyFunction(keyInfo[i].key, keyInfo[i].funct, p);
-    }
-    return p;
-};
-
 // calculation
 function calculate(prob) {
+    // parameters
+    const max = 10;
+
+    // negate values
+    console.log('Negating values...');
+    let negations = true;
+    let count = 0;
+    while (count < max && negations) {
+        count += 1;
+        for (let i = 0; i < prob.length - 1; i++) {
+            if (prob[i] === negate) {
+                // case of negation
+                prob = restructure(-(prob[i + 1]), i, i + 1, prob);
+                break;
+            } else if (i === prob.length - 1) {
+                // at end and no negations means stop negations
+                negations = false;
+            }
+        }
+    }
+    console.log('Negated.');
+
     // run key functions
     console.log('Running key functions...');
     prob = runKeyFunctions(prob);
     console.log('Ran.');
     console.log('Performing Arithmetic...');
-    // parameters
-    const max = 10;
+    
     // perform all Exponents and Radicals as they appear from left to right
     let expIdx = getIdx(operation.exp, prob);
     let radIdx = getIdx(operation.rad, prob);
-    let count = 0;
+    count = 0;
     while (count < max && expIdx !== false || count <max && radIdx !== false) {
         count += 1;
         if (radIdx === false && expIdx !== false) {
@@ -893,6 +676,227 @@ function calculate(prob) {
     return prob;
 };
 
+// Structuring
+function insert(char) {
+    if (!cursorMode) {
+        // defaultly inserts at end of problem
+        if (!formatSuperscript) {
+            if (!expFormat()) {
+                // no formatting
+                problem.push(char);
+            } else {
+                // apply superscript formatting
+                problem.push('<sup>' + char + '</sup>');
+            }
+        } else {
+            // apply superscript formatting
+            problem.push('<sup>' + char + '</sup>');
+        }
+        updateProblem();
+    } else {
+        // in cursor mode, inserts at cursor index
+        if (problem.length > 0) {
+            // non-empty problem structure
+            if (cursorIdx === 0) {
+                // cursor at start
+                problem.unshift(char);
+                updateProblem('cursor');
+            } else {
+                // cursor at middle and end
+                if (!formatSuperscript) {
+                    if (!expFormat()) {
+                        // no formatting
+                        problem.splice(cursorIdx + 1, 0, char);
+                    } else {
+                        // apply superscript formatting
+                        problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
+                    }
+                } else {
+                    // apply superscript formatting
+                    problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
+                }
+                cursorForward();
+            }
+        } else {
+            // empty problem structure
+            problem.push(char);
+            cursorForward();
+            updateProblem('cursor');
+        }
+    }
+};
+
+function restructure(solution, start, end, problem) {
+    let before = [];
+    for (let i = 0; i < start; i++) {
+        before.push(problem[i])
+    }
+    let after = [];
+    for (let i = end + 1; i < problem.length; i++) {
+        after.push(problem[i])
+    }
+    if (typeof solution === 'string') {
+        before.push(solution);
+        return before.concat(after);
+    } else if (typeof solution === 'number') {
+        before.push(`${solution}`);
+        return before.concat(after);
+    } else {
+        return before.concat(solution).concat(after);
+    }
+};
+
+function getIdx(key, struct) {
+    // returns index of key in iterable structure
+    for (let i = 0; i < struct.length; i++) {
+        if (struct[i] === key) {
+            return i;
+        }
+    }
+    return false;
+};
+
+function specialNumberValues() {
+    // convert special number symbols to values for calculation in whole problem structure
+    for (let i = 0; i < specialInfo.length; i++) {
+        let idx = getIdx(specialInfo[i].symbol, answer);
+        let itr = 0;
+        while (itr < 100 && idx !== false) {
+            answer = restructure(specialInfo[i].value, idx, idx + 1, answer);
+            idx = getIdx(specialInfo[i].symbol, answer);
+        }
+    }
+};
+
+function structureString() {
+    // structures string
+    let struct = [];
+    let buffer = "";
+    try {
+        for (let i = 0; i < problem.length; i++) {
+            const char = problem.slice(i, i + 1)[0];
+            // skip spaces
+            if (char === " ") {
+                continue;
+            } else {
+                if (char === "." || !isNaN(char)) {
+                    buffer += char;
+                } else {
+                    if (char === ")") {
+                        try {
+                            if (buffer.length > 0) {
+                                struct.push(buffer);
+                                buffer = "";
+                            }
+                            struct.push(char);
+                        } catch {
+                            if (buffer.length > 0) {
+                                struct.push(buffer);
+                            }
+                            buffer = "";
+                            struct.push(char);
+                        }
+                    } else {
+                        if (buffer.length > 0) {
+                            struct.push(buffer);
+                        }
+                        buffer = "";
+                        struct.push(char);
+                    }
+    
+                }
+                // push buffer at end
+                if (i === problem.length - 1 && buffer.length > 0) {
+                    struct.push(buffer);
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+    answer = struct;
+};
+
+function getSection(open, close) {
+    // returns section for calculation
+    let ref = [];
+    for (let i = 0; i < answer.length; i++) {
+        if (answer[i] === open || answer[i] === close) {
+            ref.push({char: answer[i], index: i});
+        }
+    }
+    if (ref.length > 0) {
+        let start, end;
+        let section = [];
+        for (let i = 0; i < ref.length; i++) {
+            if (ref[i].char === open && i + 1 < ref.length && ref[i + 1].char === close) {
+                start = ref[i].index;
+                end = ref[i + 1].index;
+            }
+        }
+        for (let i = start + 1; i < end; i++) {
+            section.push(answer[i]);
+        }
+        return true && {start: start, end: end, sect: section};
+    } else {
+        return false;
+    }
+};
+
+function section() {
+    let section = getSection('(', ')');
+    let count = 0;
+    while (count < 10 && section) {
+        answer = restructure(calculate(section.sect), section.start, section.end, answer);
+        // prepare for next iteraton
+        section = getSection('(', ')');
+        count += 1;
+    }
+    answer = calculate(answer);
+};
+
+// Key Functions
+function keyFunction(key, funct, prob) {
+    // generalizes single argument key functions
+    let idx = getIdx(key, prob);
+    let x = 0;
+    while (x < 100 && idx !== false) {
+        x += 1;
+        let solution;
+        if (prob[idx + 1] === '(') {
+            // expression argument
+            let expression = [];
+            let nest = 0;
+            for (let i = idx + 1; i < prob.length; i++) {
+                expression.push(prob[i]);
+                if (prob[i] === '(') {
+                    nest += 1;
+                } else if (prob[i] === ')') {
+                    nest -= 1;
+                    if (nest === 0) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            // single argument
+            solution = funct(Number(prob[idx + 1]));
+        }
+        prob = restructure(solution, idx, idx + 1, prob);
+        idx = getIdx(key, prob);
+    }
+    return prob;
+};
+
+function runKeyFunctions(prob) {
+    // runs all key functions
+    let p = prob;
+    for (let i = 0; i < keyInfo.length; i++) {
+        p = keyFunction(keyInfo[i].key, keyInfo[i].funct, p);
+    }
+    return p;
+};
+
 // tests
 function isKey(i) {
     // test for match of str at problem index i with key property of keyInfo structure
@@ -971,7 +975,7 @@ function findOpen2(start, open, close) {
 
 // error functions
 function serveError(error) {
-    Q.innerText = error;
+    Q.innerHTML = `<div>${error}</div>`;
     clearTimeout(formatErrorCache);
     formatErrorCache = setTimeout(() => {
         updateProblem('cursor');
@@ -1001,10 +1005,17 @@ function validOp() {
         } else {
 
             // cursor mode
-            const str = removeFormatElements(cursorIdx);
-            if (str === ')' || !isNaN(str) || isSpecial(cursorIdx)) {
-                // last str is ')' or a regular number or a special number
+
+            if (cursorIdx === 0) {
+                // cursor at starting index
                 return true;
+            } else { 
+                // cursor not at starting index
+                const str = removeFormatElements(cursorIdx);
+                if (str === ')' || !isNaN(str) || isSpecial(cursorIdx)) {
+                    // last str is ')' or a regular number or a special number
+                    return true;
+                }
             }
         }
     }
@@ -1029,35 +1040,36 @@ function validQuant(key = false, special = false) {
 
                     const i = problem.length - 1;
                     const str = removeFormatElements(i);
-
-                    if (str !== ')') {
-                        if (!isSpecial(i)) {
-                            // last str is not a special number
-                            if (formatSuperscript) {
-                                // allow superscript formatting
-                                return true;
-                            } else {
-                                if (formatSubscript) {
-                                    // allow subscript formatting
+                    if (str === '.' || str === '(' || isOp(i)) {
+                        // allow decimal numbers + open parens + operations
+                        return true;
+                    } else {
+                        if (str !== ')') {
+                            // last str is not a closing parens
+                            if (!isSpecial(i)) {
+                                // last str is not a special number
+                                if (formatSuperscript || formatSubscript) {
+                                    // allow superscript and subscript formatting
                                     return true;
                                 } else {
                                     // test formatting
-                                    if (str === problem[i] && !isNaN(i)) {
-                                        // last str is not a formatted number
+                                    if (problem[i] === str && !isNaN(str)) {
+                                        // last str is not formatted
                                         return true;
                                     } else {
-                                        // last str is a formatted number
-                                        serveError(error.reqOperation);
-                                        return false;
+                                        // last str is formatted
+                                        if (isKey(i)) {
+                                            // formatted key is allowed
+                                            return true;
+                                        }
                                     }
                                 }
                             }
-
                         }
+                        // last str is a special number
+                        serveError(error.reqOperation);
+                        return false;
                     }
-                    // last str is a special number
-                    serveError(error.reqOperation);
-                    return false;
 
                 } else {
 
@@ -1101,7 +1113,22 @@ function validQuant(key = false, special = false) {
                         // last str is not a number
                         if (!isSpecial(i)) {
                             // last str is not a special number
-                            return true;
+                            if (formatSuperscript || formatSubscript) {
+                                // allow superscript and subscript formatting
+                                return true;
+                            } else {
+                                // test formatting
+                                if (problem[i] === str && !isNaN(i)) {
+                                    // last str is not formatted
+                                    return true;
+                                } else {
+                                    // last str is formatted
+                                    if (isKey(i)) {
+                                        // formatted key is allowed
+                                        return true;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1111,32 +1138,83 @@ function validQuant(key = false, special = false) {
 
             }
         } else {
+
             // cursor mode
-            if (!special) {
-                // not special numbers
-                if (!key) {
 
-                    // regular numbers
+            if (cursorIdx === 0) {
+                // cursor at starting index
+                return true;
+            } else {
+                // cursor not at starting index
+                if (!special) {
+                    // not special numbers
+                    if (!key) {
 
-                    const str = removeFormatElements(cursorIdx);
-                    if (str !== ')') {
-                        if (!isSpecial(cursorIdx)) {
-                            // str at cursorIdx is not a special number
-                            if (str === problem[cursorIdx]) {
-                                return true;
-                            } else {
-                                // last str is a formatted number
-                                serveError(error.reqOperation);
+                        // regular numbers
+
+                        const str = removeFormatElements(cursorIdx);
+                        if (str === '.' || str === '(' || isOp(cursorIdx)) {
+                            // allow decimal numbers + open parens + operations
+                            return true;
+                        } else {
+                            if (str !== ')') {
+                                if (!isSpecial(cursorIdx)) {
+                                    // str at cursorIdx is not a special number
+                                    if (formatSuperscript || formatSubscript) {
+                                        // allow superscript and subscript formatting
+                                        return true;
+                                    } else {
+                                        // test formatting
+                                        if (str === problem[cursorIdx]) {
+                                            // str at cursorIdx is not formatted
+                                            return true;
+                                        } else {
+                                            // str at cursorIdx is formatted
+                                            if (isKey(cursorIdx)) {
+                                                // formatted key is allowed
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // str at cursorIdx is special number
+                            serveError(error.reqOperation);
+                            return false;
+                        }
+    
+                    } else {
+
+                        // key function
+
+                        const str = removeFormatElements(cursorIdx);
+                        if (str !== ')') {
+                            if (isNaN(str)) {
+                                // str at cursorIdx is not a number
+                                if (!isSpecial(cursorIdx)) {
+                                    // str at cursorIdx is not a special number
+                                    if (!isKey(cursorIdx)) {
+                                        // str at cursorIdx is not key
+                                        if (expFormat()) {
+                                            // start of a power expression
+                                            formatSuperscript = true;
+                                            insert('(');
+                                            return true;
+                                        } else {
+                                            return true;
+                                        }
+                                    }
+                                }
                             }
                         }
+                        // str at cursorIdx is a number or a special number or a key
+                        serveError(error.reqOperation);
+                        return false;
                     }
-                    // str at cursorIdx is special number
-                    serveError(error.reqOperation);
-                    return false;
-
+    
                 } else {
 
-                    // key function
+                    // special numbers
 
                     const str = removeFormatElements(cursorIdx);
                     if (str !== ')') {
@@ -1144,37 +1222,29 @@ function validQuant(key = false, special = false) {
                             // str at cursorIdx is not a number
                             if (!isSpecial(cursorIdx)) {
                                 // str at cursorIdx is not a special number
-                                if (!isKey(cursorIdx)) {
-                                    // str at cursorIdx is not key
+                                if (formatSuperscript || formatSubscript) {
+                                    // allow superscript and subscript formatting
                                     return true;
+                                } else {
+                                    // test formatting
+                                    if (str === problem[cursorIdx]) {
+                                        // str at cursorIdx is not formatted
+                                        return true;
+                                    } else {
+                                        // str at cursorIdx is formatted
+                                        if (isKey(cursorIdx)) {
+                                            // formatted key is allowed
+                                            return true;
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                    // str at cursorIdx is a number or a special number or a key
+                    // str at cursorIdx is a number or a special number
                     serveError(error.reqOperation);
                     return false;
-
                 }
-
-            } else {
-
-                // special numbers
-
-                const str = removeFormatElements(cursorIdx);
-                if (str !== ')') {
-                    if (isNaN(str)) {
-                        // str at cursorIdx is not a number
-                        if (!isSpecial(cursorIdx)) {
-                            // str at cursorIdx is not a special number
-                            return true;
-                        }
-                    }
-                }
-                // str at cursorIdx is a number or a special number
-                serveError(error.reqOperation);
-                return false;
-
             }
         }
     }
@@ -1510,8 +1580,9 @@ function validParenthesis(prob) {
 
 function validOperations(prob) {
     // post-validates operations in copy of problem structure
-    if (prob[0] !== operation.rad && isOp(0) || isOp(prob.length - 1)) {
+    if (isOp(0) && prob[0] !== operation.rad || isOp(prob.length - 1)) {
         // no operations on start or end of problem
+        // unless radical character at operation.rad
         serveError(error.operation);
         return false;
     } else {
@@ -1523,7 +1594,7 @@ function validOperations(prob) {
                         // invalid base exponent form
                         serveError(error.reqBase);
                         return false;
-                    } else if (isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
+                    } else if (prob[i + 1] !== '(' && isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
                         // invalid power exponent form
                         serveError(error.reqPower);
                         return false;
@@ -1562,6 +1633,53 @@ function validOperations(prob) {
     return true;
 };
 
+function validNegations(prob) {
+    // post-validates negations in copy of problem structure
+    for (let i = 0; i < prob.length - 1; i++) {
+        if (prob[i] === negate) {
+            // case of negation
+            if (i + 1 < prob.length - 1) {
+                // test value after negate
+                if (prob[i + 1] !== '(') {
+                    // not negating an expression
+                    if (!isSpecial(i + 1) && !isNaN(prob[i + 1])) {
+                        // not negating a special or regular number
+                        return false;
+                    }
+                } else {
+                    continue;
+                }
+            } else {
+                // no negation at end
+                return false;
+            }
+        }
+    }
+};
+
+function validKeys(prob) {
+    // post-validates key functions in copy of problem structure
+    for (let i = 0; i < prob.length; i++) {
+        // test for key function
+        if (isKey(i)) {
+            // test if key has no argument
+            if (i + 1 < prob.length) {
+                // test if argument is invalid 
+                if (!isSpecial(i + 1) && isNaN(prob[i + 1])) {
+                    // neither a special nor regular number
+                    serveError(error.argument);
+                    return false;
+                }
+            } else {
+                // key at end of problem with no argument
+                serveError(error.argument);
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
 function validProblem() {
     // post-validates problem after structuring
     // validate string data
@@ -1569,7 +1687,7 @@ function validProblem() {
         // empty problem
         serveError(error.empty);
     } else {
-        // removes format elements on copy of problem
+        // removes format elements on copy of problem (prob)
         let prob = [];
         for (let i = 0; i < problem.length; i++) {
             prob.push(removeFormatElements(i));
@@ -1577,9 +1695,15 @@ function validProblem() {
 
         // validate parenthesis
         if (validParenthesis(prob)) {
+            // validate operations
             if (validOperations(prob)) {
-                // add further validation here
-                return true;
+                // validate key functions
+                if (validKeys(prob)) {
+                    // add further validation here
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -1602,6 +1726,9 @@ function updateProblem(cursor = null) {
     }
     cursorDefault(cursor);
     cursorHighlight();
+    if (problem.length > 0) {
+        Q.lastElementChild.scrollIntoView(true);
+    }
 };
 
 function updateAnswer() {
@@ -1647,11 +1774,17 @@ function cursorHighlight() {
 
 function evaluate() {
     // run on equal button click
-    
     console.log(problem);
+
     console.log('Validating...');
+
     if (validProblem()) {
+
         console.log('Valid.');
+        
+        // update problem display
+        cursorMode = false;
+        updateProblem();
 
         // evaluate problem structure into answer structure
 
@@ -1660,6 +1793,7 @@ function evaluate() {
             problem.splice(i, 1, removeFormatElements(i));
         }
 
+        // structure string
         console.log('Structuring strings...');
         structureString();
         console.log('Structured.');
@@ -1793,8 +1927,8 @@ btns.addEventListener('click', (e) => {
                     insert(operation.div);
                 }
             } else if (id === 'btn-sign' || id === 'btn-sign-sup' || id === 'btn-sign-sub') {
+                insert(negate);
                 insert('(');
-                insert('-');
             } else if (id === 'btn-power' || id === 'btn-power-sup') {
                 handlePower();
             } else if (id === 'btn-root' || id === 'btn-root-sup') {
@@ -1953,6 +2087,7 @@ btnHst.addEventListener('click', () => {
                 const div = document.createElement('div');
                 div.innerText = `${hist.prob} = ${hist.ans}`;
                 div.style.borderBottom = '1px solid #adafb8';
+                div.style.paddingBottom = '5px';
                 hstPanel.appendChild(div);
             });
         } else {
