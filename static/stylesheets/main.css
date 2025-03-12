@@ -53,6 +53,11 @@
     text-align: center;
 }
 
+.template-theme {
+    --title-background: #fafac7;
+    --nav-background: #fafafa;
+}
+
 .body {
     background-color: #0f0f15;
 }
@@ -60,6 +65,8 @@
 a {
     text-decoration: none;
 }
-a:hover {
-    color: hsl(240, 84%, 52%);
+@media (hover: hover) {
+    a:hover {
+        color: hsl(240, 84%, 52%);
+    }
 }
