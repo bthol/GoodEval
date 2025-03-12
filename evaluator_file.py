@@ -32,6 +32,14 @@ c_limit = 10
 # the key_limit parameter controls the maximum number of the same key function allowed in any one evaluation
 key_limit = 10
 
+# PROGRAM MODES
+
+# defines valid variable characters
+variables = "abcdefghijklmnopqrstuvwxyz"
+
+# algebraic_mode controls whether the program solves for an algebraic expression, True, or a single value, False
+algebraic_mode = False
+
 # PROGRAM ENTITY REFERENCE
 
 # system_operation indicates whether there are system operations, True, or not, False
@@ -45,10 +53,6 @@ is_paren = False
 # is_dist indicates whether there is distribution, True, or not, False
 # If False, bypasses distribute function
 is_dist = False
-
-# is_poly_expan indicates whether there is a need to expand an expression with polynomial multiplication, True, or not, False
-# If False, bypasses poly_expan function
-is_poly_expan = False
 
 # is_brack indicates whether there are square brackets, True, or not, False
 # If False, bypasses key_functions function
@@ -395,8 +399,23 @@ def evaluator(input):
                 if (arr[i] == "(" and arr[i - 1] == "*") or (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "*"):
                     is_dist = True
                     break
+    
+    def is_var(str):
+        # test for variables
+        global variables
+        for i in variables:
+            if i == str:
+                return True
+        return False
 
     def identify_entities(arr):
+        # Identify algebraic mode
+        global algebraic_mode
+        for i in range(0, len(arr)):
+            if is_var(arr[i]):
+                algebraic_mode = True
+                break
+        
         # Identify parenthesis
         global is_paren
         if is_paren == False:
@@ -424,17 +443,6 @@ def evaluator(input):
                 if arr[i] == "^":
                     is_exp = True
                     break
-        
-        # identify polynomial factoring
-        global is_poly_expan
-        if is_poly_expan == False:
-            if (is_paren and is_exp):
-                for i in range(0, len(arr)):
-                    if i != 0 and i != len(arr):
-                        if (arr[i] == ")" and i < len(arr) - 1 and arr[i + 1] == "^"):
-                            # exponential distribution
-                            is_poly_expan = True
-                            break
         
         # Identify square brackets
         global is_brack
@@ -1373,6 +1381,9 @@ def evaluator(input):
             while itr < key_limit and ref is not None:
                 itr = itr + 1
 
+                # Log keyword
+                log_process(arrVar[ref])
+
                 # get arguments
                 args = arrVar[ref + 1]
 
@@ -1427,8 +1438,6 @@ def evaluator(input):
                         sect = sect + ["*"]
                         sect = sect + ["("] + base + [")"]
                     
-                    # Log keyword
-                    log_process(arrVar[ref])
                     # restructure with section
                     arrVar = restructure(sect, ref, ref + 1, arrVar)
                     # get next instance
@@ -1441,112 +1450,52 @@ def evaluator(input):
                 itr = itr + 1
 
                 # get arguments
-                args = arrVar[ref + 1]
+                nomials = arrVar[ref + 1]
 
-                # build section with arguments
-                section = []
-                for i in range(0, len(args)):
-                    section.append("(")
-                    for j in range(0, len(args[i])):
-                        section.append(args[i][j])
-                    section.append(")")
-                    if (i < len(args) - 1):
-                        section.append("*")
-                
-                # print(section)
+                # print(nomials)
 
                 # reference structure for section with distribution
                 sect_struct = []
 
-                # Use section for distribution to create sect_struct
-
-                # test for leading monomial
-                if section[0] != "(":
-                    sect_struct.append([[section[0]]]) # monomial
-                
-                # test middle of sect_struct
-                count = 0
-                for i in range(0, len(section)):
-                    # only test on update to prevent false positives
-                    # positive case indicates index in section for the end of the first nomial
-                    is_zero = False
-                    if section[i] == "(":
-                        # update count
-                        count += 1
-                        # test count
-                        if count == 0:
-                            is_zero = True
-                    elif section[i] == ")":
-                        # update count
-                        count -= 1
-                        # test count
-                        if count == 0:
-                            is_zero = True
-                    
-                    if is_zero == True:
-                        # each zero counted after update count is the last index of another nomial
-                        nomial = []
-                        term = []
-                        nest = 0
-                        
-                        # backtrack to start of nomial identifying terms as-you-go
-                        for k in range(0, i + 1):
-                            char = section[i - k]
+                # Use nomials to create sect_struct
+                for i in range(0, len(nomials)):
+                    # identify terms for each nomial
+                    length = len(nomials[i])
+                    if length == 1:
+                        # monomial
+                        sect_struct.append([nomials[i]])
+                    else:
+                        # polynomial
+                        terms = []
+                        for j in range(0, len(nomials[i])):
+                            # test each character in nomial for terms
+                            char = nomials[i][j]
                             try:
-                                # test for number
-                                int(char)
-                                # insert character at start of term structure since iterating backward
-                                term.insert(0, char)
+                                # char is a number
+                                float(char)
+                                if nomials[i][j - 1] == "-":
+                                    # negative
+                                    terms.append(["- % s" % char])
+                                else:
+                                    # positive
+                                    terms.append([char])
                             except:
-                                # count zeros
-                                if char == "(":
-                                    nest += 1
-                                    if nest == 0:
-                                        # zero identified
-                                        nomial.insert(0, term) # add term to polynomial
-                                        term = [] # clear term buffer
-                                        break
+                                if is_var(char):
+                                    # char is a variable
+                                    if nomials[i][j - 1] == "-":
+                                        # negative
+                                        terms.append(["- % s" % char])
+                                    else:
+                                        # positive
+                                        terms.append([char])
+                                else:
+                                    # char is not a term
+                                    continue
 
-                                    elif nest > -2:
-                                        # add first character of expression term
-                                        term.insert(0, char)
+                        # after terms are identified for that nomial
+                        sect_struct.append(terms)
 
-                                elif char == ")":
-                                    nest -= 1
-                                
-                                elif nest == -1:
-                                    if char == "+":
-                                        # different term if added
-                                        nomial.insert(0, term)
-                                        term = [] # clear term buffer
-                                    elif char == "-":
-                                        # different term if subtracted
-                                        if section[i - k + 1] == "(":
-                                            # negate expression term
-                                            term.insert(0, "*")
-                                            term.insert(0, "-1")
-                                            nomial.insert(0, term)
-                                            term = [] # clear term buffer
-                                        else:
-                                            # negate previous term
-                                            term.pop(0) # remove positive value
-                                            term.insert(0, "-%s" % section[i - k + 1]) # add negated value
-                                            nomial.insert(0, term)
-                                            term = [] # clear term buffer
-                                    elif char == "*" or char == "/":
-                                        # same term if multiplied or divided
-                                        term.insert(0, char)
-
-                                if nest < -1:
-                                    term.insert(0, char)
-
-                        sect_struct.append(nomial)
-                
-                # test for ending monomial
-                if section[len(section) - 1] != ")":
-                    sect_struct.append([[section[len(section) - 1]]])
-
-                print(sect_struct)
+                # print(sect_struct)
 
                 # total number of nomials
                 nomials_total = len(sect_struct)
@@ -1678,8 +1627,6 @@ def evaluator(input):
                     term1 += 1
                     multiplier = sect_struct[nomial1][term1]
                     product = product + multiplier + ["*"] + multiplicand
-                
-                log_process(product)
 
                 # Log keyword
                 log_process(arrVar[ref])
@@ -1687,25 +1634,28 @@ def evaluator(input):
                 arrVar = restructure(product, ref, ref + 1, arrVar)
                 # identify further cases of polynomial expansion
                 ref = getIdx("expand", arrVar)
-            
+        
         return arrVar
 
     def key_functions(arr):
-        # conditionally runs key function modules
+        # runs key function modules
         # Log process label for key functions
+        global algebraic_mode
         log_process("Key Functions")
         arrVar = arr
-        # TRIGONOMIC FUNCTIONS
-        arrVar = trigonomic(arrVar)
-        # GEOMETRIC FUNCTIONS
-        arrVar = geometric(arrVar)
-        # COMBINATORIC FUNCTIONS
-        arrVar = combinatoric(arrVar)
-        # STATISTICAL FUNCTIONS
-        arrVar = statistical(arrVar)
-        # ALGEBRAIC FUNCTIONS
-        arrVar = algebraic(arrVar)
-        
+        if algebraic_mode == True:
+            # ALGEBRAIC MODULE
+            arrVar = algebraic(arrVar)
+        else:
+            # TRIGONOMIC MODULE
+            arrVar = trigonomic(arrVar)
+            # GEOMETRIC MODULE
+            arrVar = geometric(arrVar)
+            # COMBINATORIC MODULE
+            arrVar = combinatoric(arrVar)
+            # STATISTICAL MODULE
+            arrVar = statistical(arrVar)
+
         return arrVar
     # KEY FUNCTIONS END
 
@@ -1716,11 +1666,12 @@ def evaluator(input):
         arrVar = arr
 
         # Phase III
-        # perform all key functions
+        # perform all key functions (in section)
+
+        # if there are identified key functions
         is_key_len = len(is_key)
-        # if there are required program entities for key functions: parenthesis and keywords or square brackets and keywords
-        if is_paren == True and is_key_len > 0  or is_brack == True and is_key_len > 0:
-            # then test if there are keys in section
+        if is_key_len > 0:
+            # test if there are keys in section
             keys_in_section = False
             for i in range(0, is_key_len):
                 for j in range(0, len(arrVar)):
@@ -1730,141 +1681,152 @@ def evaluator(input):
                 if keys_in_section == True:
                     break
             if keys_in_section == True:
-                # run key functions
+                # run key functions on section
                 arrVar = key_functions(arrVar)
 
-        # Phase IV
-        # perform all arithmetic operations in operator precedence
-        
-        # perform all Multiplications and Divisions as they appear from left to right
-        if is_mult == True and is_div == True:
-            m_ref = getIdx("*", arrVar)
-            d_ref = getIdx("/", arrVar)
-            while m_ref is not None or d_ref is not None:
-                if d_ref is None and m_ref is not None:
-                    # Only Multiply
-                    x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
-                    arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
-                    m_ref = getIdx("*", arrVar)
+        # test for variables in section
+        is_variables = False
+        for i in range(0, len(arrVar)):
+            if is_var(arrVar[i]) == True:
+                is_variables = True
+                break
 
-                elif m_ref is None and d_ref is not None:
-                    # Only Divide
-                    x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
-                    arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
-                    d_ref = getIdx("/", arrVar)
-
-                elif m_ref is not None and d_ref is not None and m_ref < d_ref:
-                    # Multiply first
-                    x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
-                    arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
-
-                    d_ref = getIdx("/", arrVar)
-                    y = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
-                    arrVar = restructure(y, d_ref - 1, d_ref + 1, arrVar)
-
-                    m_ref = getIdx("*", arrVar)
-                    d_ref = getIdx("/", arrVar)
-
-                elif d_ref is not None and m_ref is not None and d_ref < m_ref:
-                    # Divide First
-                    x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
-                    arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
-                    m_ref = getIdx("*", arrVar)
-
-                    y = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
-                    arrVar = restructure(y, m_ref - 1, m_ref + 1, arrVar)
-
-                    m_ref = getIdx("*", arrVar)
-                    d_ref = getIdx("/", arrVar)
-
-        elif is_mult == True:
-            m_ref = getIdx("*", arrVar)
-            while m_ref is not None:
-                x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
-                arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
+        if is_variables == True:
+            # return expression
+            return arrVar
+        else:
+            # Phase IV
+            # perform all arithmetic operations in operator precedence
+            
+            # perform all Multiplications and Divisions as they appear from left to right
+            if is_mult == True and is_div == True:
                 m_ref = getIdx("*", arrVar)
-
-        elif is_div == True:
-            d_ref = getIdx("/", arrVar)
-            while d_ref is not None:
-                x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
-                arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
                 d_ref = getIdx("/", arrVar)
+                while m_ref is not None or d_ref is not None:
+                    if d_ref is None and m_ref is not None:
+                        # Only Multiply
+                        x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                        arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
+                        m_ref = getIdx("*", arrVar)
 
-        # perform all Additions and Subtractions as they appear from left to right
-        if is_add == True and is_sub == True:
-            a_ref = getIdx("+", arrVar)
-            s_ref = getIdx("-", arrVar)
-            while a_ref is not None or s_ref is not None:
-                if s_ref is None and a_ref is not None:
-                    # only add
-                    x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
-                    arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
-                    a_ref = getIdx("+", arrVar)
+                    elif m_ref is None and d_ref is not None:
+                        # Only Divide
+                        x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                        arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
+                        d_ref = getIdx("/", arrVar)
 
-                elif a_ref is None and s_ref is not None:
-                    # only subtract
-                    x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
-                    arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
-                    s_ref = getIdx("-", arrVar)
+                    elif m_ref is not None and d_ref is not None and m_ref < d_ref:
+                        # Multiply first
+                        x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                        arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
 
-                elif a_ref is not None and s_ref is not None and a_ref < s_ref:
-                    # add first
-                    x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
-                    arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
-                    a_ref = getIdx("+", arrVar)
+                        d_ref = getIdx("/", arrVar)
+                        y = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                        arrVar = restructure(y, d_ref - 1, d_ref + 1, arrVar)
 
-                    s_ref = getIdx("-", arrVar)
-                    y = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
-                    arrVar = restructure(y, s_ref - 1, s_ref + 1, arrVar)
+                        m_ref = getIdx("*", arrVar)
+                        d_ref = getIdx("/", arrVar)
 
-                    a_ref = getIdx("+", arrVar)
-                    s_ref = getIdx("-", arrVar)
+                    elif d_ref is not None and m_ref is not None and d_ref < m_ref:
+                        # Divide First
+                        x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                        arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
+                        m_ref = getIdx("*", arrVar)
 
-                elif s_ref is not None and a_ref is not None and s_ref < a_ref:
-                    # subtract first
-                    x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
-                    arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
-                    s_ref = getIdx("-", arrVar)
+                        y = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                        arrVar = restructure(y, m_ref - 1, m_ref + 1, arrVar)
 
-                    a_ref = getIdx("+", arrVar)
-                    y = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
-                    arrVar = restructure(y, a_ref - 1, a_ref + 1, arrVar)
+                        m_ref = getIdx("*", arrVar)
+                        d_ref = getIdx("/", arrVar)
 
-                    a_ref = getIdx("+", arrVar)
-                    s_ref = getIdx("-", arrVar)
-        
-        elif is_add == True:
-            a_ref = getIdx("+", arrVar)
-            while a_ref is not None:
-                x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
-                arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
+            elif is_mult == True:
+                m_ref = getIdx("*", arrVar)
+                while m_ref is not None:
+                    x = multiply(arrVar[m_ref - 1], arrVar[m_ref + 1])
+                    arrVar = restructure(x, m_ref - 1, m_ref + 1, arrVar)
+                    m_ref = getIdx("*", arrVar)
+
+            elif is_div == True:
+                d_ref = getIdx("/", arrVar)
+                while d_ref is not None:
+                    x = divide(arrVar[d_ref - 1], arrVar[d_ref + 1])
+                    arrVar = restructure(x, d_ref - 1, d_ref + 1, arrVar)
+                    d_ref = getIdx("/", arrVar)
+
+            # perform all Additions and Subtractions as they appear from left to right
+            if is_add == True and is_sub == True:
                 a_ref = getIdx("+", arrVar)
-        
-        elif is_sub == True:
-            s_ref = getIdx("-", arrVar)
-            while s_ref is not None:
-                x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
-                arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
                 s_ref = getIdx("-", arrVar)
-        
-        # perform all exponentiations
-        if is_exp == True:
-            ref = getIdx("^", arrVar)
-            while ref is not None:
-                x = exponentiate(arrVar[ref - 1], arrVar[ref + 1])
-                arrVar = restructure(x, ref - 1, ref + 1, arrVar)
-                ref = getIdx("^", arrVar)
+                while a_ref is not None or s_ref is not None:
+                    if s_ref is None and a_ref is not None:
+                        # only add
+                        x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                        arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
+                        a_ref = getIdx("+", arrVar)
 
-        # Perform all square roots
-        if is_root == True:
-            ref = getIdx("√", arrVar)
-            while ref is not None:
-                x = root(arrVar[ref + 1], 2)
-                arrVar = restructure(x, ref, ref + 1, arrVar)
+                    elif a_ref is None and s_ref is not None:
+                        # only subtract
+                        x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                        arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
+                        s_ref = getIdx("-", arrVar)
+
+                    elif a_ref is not None and s_ref is not None and a_ref < s_ref:
+                        # add first
+                        x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                        arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
+                        a_ref = getIdx("+", arrVar)
+
+                        s_ref = getIdx("-", arrVar)
+                        y = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                        arrVar = restructure(y, s_ref - 1, s_ref + 1, arrVar)
+
+                        a_ref = getIdx("+", arrVar)
+                        s_ref = getIdx("-", arrVar)
+
+                    elif s_ref is not None and a_ref is not None and s_ref < a_ref:
+                        # subtract first
+                        x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                        arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
+                        s_ref = getIdx("-", arrVar)
+
+                        a_ref = getIdx("+", arrVar)
+                        y = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                        arrVar = restructure(y, a_ref - 1, a_ref + 1, arrVar)
+
+                        a_ref = getIdx("+", arrVar)
+                        s_ref = getIdx("-", arrVar)
+            
+            elif is_add == True:
+                a_ref = getIdx("+", arrVar)
+                while a_ref is not None:
+                    x = add(arrVar[a_ref - 1], arrVar[a_ref + 1])
+                    arrVar = restructure(x, a_ref - 1, a_ref + 1, arrVar)
+                    a_ref = getIdx("+", arrVar)
+            
+            elif is_sub == True:
+                s_ref = getIdx("-", arrVar)
+                while s_ref is not None:
+                    x = subtract(arrVar[s_ref - 1], arrVar[s_ref + 1])
+                    arrVar = restructure(x, s_ref - 1, s_ref + 1, arrVar)
+                    s_ref = getIdx("-", arrVar)
+            
+            # perform all exponentiations
+            if is_exp == True:
+                ref = getIdx("^", arrVar)
+                while ref is not None:
+                    x = exponentiate(arrVar[ref - 1], arrVar[ref + 1])
+                    arrVar = restructure(x, ref - 1, ref + 1, arrVar)
+                    ref = getIdx("^", arrVar)
+
+            # Perform all square roots
+            if is_root == True:
                 ref = getIdx("√", arrVar)
-        
-        return arrVar[0]
+                while ref is not None:
+                    x = root(arrVar[ref + 1], 2)
+                    arrVar = restructure(x, ref, ref + 1, arrVar)
+                    ref = getIdx("√", arrVar)
+            
+            return arrVar[0]
 
     # Phase II Process START
     def section(arr):
@@ -2344,8 +2306,6 @@ def evaluator(input):
                 process_log["0"] = "Process Log Start"
             # Identify program entities in structured string
             identify_entities(structure)
-            # # restructure to expand polynomial multiplications
-            # structure = poly_expan(structure)
             # restructure to distribute out terms
             structure = distribute(structure)
             # restructure for "sets" (substructures)
@@ -2355,61 +2315,61 @@ def evaluator(input):
 
             return structure
 
-    # # Evaluation
-    # use_logs = input["use_logs"]
+    # Evaluation
+    use_logs = input["use_logs"]
 
     # print(input["problem"])
-    # answer = evaluate(input["problem"])
+    answer = evaluate(input["problem"])
 
-    # output = {
-    #     "problem": input["problem"],
-    #     "answer": answer,
-    #     "logs": process_log,
-    # }
-
-    # return output
-    
-    # TESTING
-    # Simulated Program Input
-    test = {
-        # "problem": "info",
-        # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
-        # "problem": "3*(4-1)", # monomial start 9
-        # "problem": "(2+3)*4", # monomial end 20
-        # "problem": "4*(7-(3-1))", # expression term 17
-        # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
-        # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
-        # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
-        # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
-        # "problem": "2*(2+3)", # should be 10
-
-        "problem": "expand[[a+b][c+d][e+f]]", # note
-        # "problem": "algexp[[a+b],[2*(2-1)+1]]", # note
-        # "problem": "(1+2)*(3+4)*(5+6)", # note
-        "use_logs": "1",
-    }
-    use_logs = test["use_logs"]
-
-    # Evaluation
-    answer = evaluate(test["problem"])
-
-    # Simulated Program Output
     output = {
-        "problem": test["problem"],
+        "problem": input["problem"],
         "answer": answer,
         "logs": process_log,
     }
 
-    # Prints feedback for program development
-    logs = """"""
-    process_log_keys = list(process_log.keys())
-    for key in process_log_keys:
-        logs += """%s
-""" % process_log[key]
+    return output
+    
+#     # TESTING
+#     # Simulated Program Input
+#     test = {
+#         # "problem": "info",
+#         # "problem": "sd[[sin(100+4*((-26)+1))],1]+0.5",
+#         # "problem": "3*(4-1)", # monomial start 9
+#         # "problem": "(2+3)*4", # monomial end 20
+#         # "problem": "4*(7-(3-1))", # expression term 17
+#         # "problem": "1+(2+3)*4*(7-2)", # monomial intermittent 66
+#         # "problem": "1+(2+3)*4+3*2", # monomial intermittent not case 27
+#         # "problem": "(2+3)*4*(7-(5-3))", # nested distribution 47
+#         # "problem": "1+(1+2)*(3+4)*(5+6)-4", # general 128
+#         # "problem": "2*(2+3)", # should be 10
 
-    print(test["problem"])
-    print(answer)
-    print(logs)
-    # print("Output Object: %s" % output)
+#         # "problem": "expand[[a+b][c][d+e]]", # note
+#         "problem": "algexp[[a+b],[2*(2-1)+1]]", # note
+#         # "problem": "(1+2)*(3+4)*(5+6)", # note
+#         "use_logs": "1",
+#     }
+#     use_logs = test["use_logs"]
 
-evaluator("") # remove or comment out after testing
+#     # Evaluation
+#     answer = evaluate(test["problem"])
+
+#     # Simulated Program Output
+#     output = {
+#         "problem": test["problem"],
+#         "answer": answer,
+#         "logs": process_log,
+#     }
+
+#     # Prints feedback for program development
+#     logs = """"""
+#     process_log_keys = list(process_log.keys())
+#     for key in process_log_keys:
+#         logs += """%s
+# """ % process_log[key]
+
+#     print(test["problem"])
+#     print(answer)
+#     print(logs)
+#     # print("Output Object: %s" % output)
+
+# evaluator("") # remove or comment out after testing
