@@ -9,7 +9,7 @@
 nav {
     position: absolute;
     width: 100%;
-    --nav-content-height: 200px;
+    --nav-content-height: 150px;
     --nav-border-height: 1.5px;
     --nav-height: calc(var(--nav-border-height) * 4 + var(--nav-content-height));
     top: calc(var(--nav-height) * -1);

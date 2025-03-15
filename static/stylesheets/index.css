@@ -43,11 +43,11 @@ nav {
 }
 
 .software-card {
-    background: hsl(143, 31%, 92%);
+    background: var(--content-highlight);
     border-radius: 7px;
     border: 1px solid #7c7e8d;
     margin: 0px 7px 7px 7px;
-    padding: 1.8vmin;
+    padding: 1.5vmin 0vmin;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,7 +57,15 @@ nav {
 .software-card-text {
     height: 0px;
     overflow: hidden;
+    padding: 0em 1.5em;
     margin-bottom: 7px;
+    background: var(--nav-background);
+    outline: 1px solid #7c7e8d;
+}
+
+.software-card-text > p:last-child {
+    text-align: left;
+    text-indent: 3em;
 }
 
 .software-card > a {
