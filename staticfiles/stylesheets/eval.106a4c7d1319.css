@@ -22,8 +22,8 @@
     background: none;
     border: 1px ridge #0dff00;
     border-radius: .5vw;
-    font-size: calc(var(--font-size) * .667);
     color: #2fff2f;
+    font-size: calc(var(--font-size) * .667);
 }
 
 .title {
