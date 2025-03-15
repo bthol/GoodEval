@@ -54,7 +54,7 @@
 }
 
 .template-theme {
-    --title-background: #fafac7;
+    --title-background: #fdf7a5;
     --nav-background: #fafafa;
 }
 
@@ -67,6 +67,6 @@ a {
 }
 @media (hover: hover) {
     a:hover {
-        color: hsl(240, 84%, 52%);
+        color: #1e1eeb;
     }
 }
