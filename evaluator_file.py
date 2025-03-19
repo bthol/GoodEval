@@ -2316,18 +2316,20 @@ def evaluator(input):
             return structure
 
     # Evaluation
-    use_logs = input["use_logs"]
+    return evaluate(input)
+
+    # use_logs = input["use_logs"]
 
     # print(input["problem"])
-    answer = evaluate(input["problem"])
+    # answer = evaluate(input["problem"])
 
-    output = {
-        "problem": input["problem"],
-        "answer": answer,
-        "logs": process_log,
-    }
+    # output = {
+    #     "problem": input["problem"],
+    #     "answer": answer,
+    #     "logs": process_log,
+    # }
 
-    return output
+    # return output
     
 #     # TESTING
 #     # Simulated Program Input

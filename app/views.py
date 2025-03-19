@@ -1,10 +1,10 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
-from django.template import loader
+# from django.http import HttpResponse
+# from django.template import loader
 
 from evaluator_file import *
-from django.core.management import call_command
+# from django.core.management import call_command
 
 # view functions handle requests and send responses
 

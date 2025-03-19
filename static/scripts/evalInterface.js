@@ -1,5 +1,6 @@
 console.log('Interface Script Loaded.');
 
+// loader animation
 function addDot() {
     const dot = document.createElement('div');
     dot.classList.add('elipses-dot');
@@ -10,24 +11,29 @@ function removeDots() {
     document.querySelector('.elipses-container').innerHTML = '';
 };
 
-let interval = {};
-let intervalCount = 1;
+let dotInterval = {};
+let dotCount = 1;
 
-function runAnimation() {
+function startLoader() {
     addDot();
-    clearInterval(interval);
-    interval = setInterval(() => {
-        if (intervalCount < 10) {
+    clearInterval(dotInterval);
+    dotInterval = setInterval(() => {
+        if (dotCount < 10) {
             addDot();
-            intervalCount += 1;
+            dotCount += 1;
         } else {
-            clearInterval(interval);
-            intervalCount = 1;
+            clearInterval(dotInterval);
+            dotCount = 1;
             setTimeout(() => {
                 removeDots();
-                runAnimation();
+                startLoader();
             }, 525);
         }
     }, 525);
 };
-runAnimation();
+
+function stopLoader() {
+    removeDots();
+    clearInterval(dotInterval);
+    dotCount = 1;
+};

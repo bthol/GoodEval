@@ -8,19 +8,27 @@
     <link rel="stylesheet" href="{% static 'stylesheets/main.css'%}">
     <link rel="stylesheet" href="{% static 'stylesheets/eval.css'%}">
     <script defer src="{% static 'scripts/evalInterface.js'%}"></script>
+
+    <!-- PyScript for python scripting -->
+    <link rel="stylesheet" href="https://pyscript.net/snapshots/2024.9.2/core.css">
+    <script type="module" src="https://pyscript.net/snapshots/2024.9.2/core.js"></script>
+
 </head>
 <body class="body">
     
-    <!-- <a href="http://127.0.0.1:8000/" rel="noopener noreferrer" class="home-button">Home</a> -->
-    <a href="https://goodeval-1d265775b25d.herokuapp.com/" rel="noopener noreferrer" class="home-button">Home</a>
+    <a href="http://127.0.0.1:8000/" rel="noopener noreferrer" class="home-button">Home</a>
+    <!-- <a href="https://goodeval-1d265775b25d.herokuapp.com/" rel="noopener noreferrer" class="home-button">Home</a> -->
 
     <div>
         <h2 class="title">The GoodEval Evaluator</h2>
         <form action="./" method="post" class="form-root">
-            <input type="text" class="form-style input-style" min="1" required>
-            <button type="button" class="form-style button-style">evaluate</button>
+            <input id="problem-string" type="text" class="form-style input-style" min="1" required>
+            <button id="evaluate-button" type="button" class="form-style button-style">evaluate</button>
         </form>
         <div class="elipses-container"></div>
     </div>
+
+    <!-- run python script -->
+    <script type="mpy" terminal>print("Hello World!")</script>
 </body>
 </html>
