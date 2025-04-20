@@ -37,3 +37,36 @@ function stopLoader() {
     clearInterval(dotInterval);
     dotCount = 1;
 };
+
+// Evaluates problem string by request to Eval API
+const evalBtn = document.querySelector('#evaluate-button');
+evalBtn.addEventListener('click', () => {
+    // select answer field
+    const answer = document.querySelector('#answer-field');
+
+    // clear previous answer
+    answer.innerText = '';
+
+    // get problem string
+    const problem = document.querySelector('#problem-string').value;
+
+    // start loader
+    startLoader();
+
+    // fetch request to Eval API with problem string JSON object in body
+    // fetch("URL FOR Eval API", {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ input: problem })
+    // })
+    // .then(response => response.json())
+    // .then((data) => {
+    //     console.log(data);
+    //     // update answer field with response
+    //     answer.innerText = stringify(data);
+    //     // stop loader
+    //     stopLoader();
+    // });
+});
