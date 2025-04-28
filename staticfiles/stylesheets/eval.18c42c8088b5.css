@@ -8,10 +8,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 1vw;
     /* font-family: Cambria, Times, serif; */
     font-family: Arial, Helvetica, sans-serif;
-    --font-size: 1.8vw;
-    --form-width: 60vw;
+    --font-size: 2.1vw;
+    --form-width: 100vw;
 }
 
 .home-button {
@@ -33,34 +35,37 @@
     position: relative;
 }
 
+.center-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .form-style {
-    padding: .67vw 1vw 1vw 1vw;
+    padding: 1vw;
+    height: 5vw;
     background-color: #153215;
     border: 1px ridge #0dff00;
 }
 
-.form-root {
-    width: var(--form-width);
-    display: flex;
-}
-
-.input-style {
-    width: calc( var(--form-width) * (2/3) );
+.field-style {
+    width: calc( var(--form-width) * (13/32) );
     font-size: var(--font-size);
     transition: border 300ms;
 }
 
 .button-style {
-    width: calc(var(--form-width) / 5);
+    width: calc(var(--form-width) / 8);
     font-size: var(--font-size);
     border-radius: 1vw;
-    margin-left: 1.5vw;
+    margin-left: 1.6vw;
+    margin-right: 1.6vw;
     transition: outline 100ms;
 }
 
 @media (hover: none) {
     /* no hover functionality: touchscreens */
-    .input-style:focus {
+    .field-style:focus {
         border: 1px ridge #e9ede7;
     }
     .button-style:focus {
@@ -75,7 +80,7 @@
 
 @media (hover: hover) {
     /* hover functionality: everyhting else */
-    .input-style:hover {
+    .field-style:hover {
         border: 1px ridge #e9ede7;
     }
     .button-style:hover {
@@ -89,22 +94,21 @@
 }
 
 .elipses-container {
-    width: var(--form-width);
-    margin: 1vw 0vmin;
-    gap: 2.2vw;
+    width: 60%;
+    gap: 4.4vw;
     display: flex;
 }
 
 .elipses-dot {
     width: 2vw;
     height: 1vw;
-    border: .15vw solid #2fff2f;
+    border: .6vw solid #2fff2f;
     border-radius: 10px;
     position: relative;
-    animation: 500ms linear 0s infinite alternate wave;
+    animation: 300ms linear 0s infinite alternate wave;
 }
 
 @keyframes wave {
     0% {transform: translateY(0vmin)}
-    25%, 100% {transform: translateY(1.5vmin)}
+    20%, 100% {transform: translateY(1.5vmin)}
 }
