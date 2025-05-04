@@ -15,18 +15,20 @@
     <a href="https://goodeval-1d265775b25d.herokuapp.com/" rel="noopener noreferrer" class="home-button">Home</a>
     
     <h2 class="title">GoodEval Evaluator</h2>
-
+    
     <form action="./" method="GET" class="center-form">
         <input id="problem-field" type="text" class="form-style field-style" min="1" required>
         <button id="evaluate-button" type="button" class="form-style button-style">evaluate</button>
         <div id="answer-field" class="form-style field-style"></div>
     </form>
-
-    <div class="connection-display">
+    
+    <div class="center-text">
         <div>Status: </div>
         <div id="connection-status"></div>
     </div>
-
+    
+    <div id="error-display" class="center-text"></div>
+    
     <div class="elipses-container form-width"></div>
 
 </body>

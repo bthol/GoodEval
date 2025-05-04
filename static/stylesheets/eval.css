@@ -97,7 +97,7 @@
     }
 }
 
-.connection-display {
+.center-text {
     font-size: var(--font-size);
     width: var(--form-width);
     display: flex;
