@@ -16,6 +16,10 @@
     --form-width: 100vw;
 }
 
+.normalize-font {
+    font-size: var(--font-size);
+}
+
 .home-button {
     position: absolute;
     top: 20px;
@@ -91,6 +95,13 @@
         color: #e9ede7;
         border: 1px ridge #e9ede7;
     }
+}
+
+.connection-display {
+    font-size: var(--font-size);
+    width: var(--form-width);
+    display: flex;
+    justify-content: center;
 }
 
 .elipses-container {
