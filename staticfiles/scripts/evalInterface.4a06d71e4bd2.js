@@ -52,7 +52,7 @@ function startLoader() {
 };
 
 function stopLoader() {
-    display.innerHTML = '';
+    loader.innerHTML = '';
     clearInterval(dotInterval);
     dotCount = 1;
 };
