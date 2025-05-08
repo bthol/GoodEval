@@ -18,9 +18,17 @@ const connectionStatus = [
     'online'
 ];
 
-const errors = {
+const error = {
     emptyString: 'Invalid: empty string',
-    parenthesis: 'Invalid: parenthesis'
+    parenthesis: 'Invalid: parenthesis',
+    operation: 'Invalid: operation',
+};
+
+const operations = {
+    addition: '+',
+    subtraction: '-',
+    multiplication: '*',
+    division: '/'
 };
 
 // DOM selections
@@ -93,8 +101,24 @@ function serveError(error) {
     }, 2000);
 };
 
-function validParenthesis(prob) {
-    // post-validates parenthesis in prob argument
+function isOp(index, prob) {
+    // tests if character at indedx in prob string is an operation
+    if (index < prob.length) {
+        const char = prob.substring(index, index + 1);
+        const values = Object.values(operations);
+        for (let i = 0; i < values.length - 1; i++) {
+            if (char === values[i]) {
+                // found a match
+                return true;
+            }
+        }
+        // none matched
+        return false;
+    }
+};
+
+function validParen(prob) {
+    // post-validates parenthesis in problem string
     let nestLvl = 0;
     let parens = [];
     for (let i = 0; i < prob.length; i++) {
@@ -110,15 +134,15 @@ function validParenthesis(prob) {
     if (parens.length > 0) {
         if (nestLvl !== 0) {
             // no non-zero sum of nestLvl
-            serveError(errors.parenthesis);
+            serveError(error.parenthesis);
             return false;
         } else if (parens[0] === ')') {
             // no closing paren at start
-            serveError(errors.parenthesis);
+            serveError(error.parenthesis);
             return false;
         } else if (parens[parens.length - 1] === '(') {
             // no opening paren at end
-            serveError(errors.parenthesis);
+            serveError(error.parenthesis);
             return false;
         } else {
             // match each open paren to a closing paren (accounting for nesting)
@@ -138,7 +162,7 @@ function validParenthesis(prob) {
                     }
                     if (x !== 0) {
                         // missing match
-                        serveError(errors.parenthesis);
+                        serveError(error.parenthesis);
                         return false;
                     }
                 }
@@ -147,6 +171,27 @@ function validParenthesis(prob) {
         return true;
     } else {
         // can't test parens format with no parens
+        return true;
+    }
+};
+
+function validOp(prob) {
+    // post-validates operations in problem string
+
+    // test for operations on start or end of problem
+    if (isOp(0, prob) || isOp(prob.length - 1, prob)) {
+        serveError(error.operation);
+        return false;
+    } else {
+        for (let i = 0; i < prob.length; i++) {
+            // consecutive operations test
+            if (isOp(i, prob) && i + 1 < prob.length && isOp(i + 1, prob)) {
+                // no consecutive operations
+                serveError(error.operation);
+                return false;
+            }
+        }
+        // if nothing returns false
         return true;
     }
 };
@@ -178,18 +223,22 @@ evalBtn.addEventListener('click', () => {
             if (problem.length === 0) {
 
                 // empty string
-                serveError(errors.emptyString);
+                serveError(error.emptyString);
 
             } else {
                 
                 // non-empty string
-                console.log('passed1');
                 
                 // run parenthesis test
-                if (validParenthesis(problem)) {
-                    // add further validation before "valid = true"
-                    console.log('passed2');
-                    valid = true;
+                if (validParen(problem)) {
+                    // valid parenthesis
+                    
+                    // run operation test
+                    if (validOp(problem)) {
+                        console.log('pass');
+                        // add further validation here; before "valid = true"
+                        valid = true;
+                    }
                 }
             }
 
@@ -199,24 +248,24 @@ evalBtn.addEventListener('click', () => {
                 // start loader
                 startLoader();
 
-                // // fetch request to Eval API
-                // const root = 'https://eval-api-8ece55f267c1.herokuapp.com/';
-                // fetch(`${root}/eval/answer`, {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: JSON.stringify({ problem: problem, use_logs: "0" })
-                // })
-                // .then(response => response.json())
-                // .then((data) => {
-                //     setTimeout(() => {
-                //         // stop loader after a single duration
-                //         stopLoader();
-                //         // update answer field with response
-                //         answer.innerText = data;
-                //     }, loaderDuration);
-                // });
+                // fetch request to Eval API
+                const root = 'https://eval-api-8ece55f267c1.herokuapp.com/';
+                fetch(`${root}/eval/answer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ problem: problem, use_logs: "0" })
+                })
+                .then(response => response.json())
+                .then((data) => {
+                    setTimeout(() => {
+                        // stop loader after a single duration
+                        stopLoader();
+                        // update answer field with response
+                        answer.innerText = data;
+                    }, loaderDuration);
+                });
 
             }
         }, 1000);
