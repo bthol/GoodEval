@@ -1445,7 +1445,6 @@ function handleParen(closing = false) {
                             if (!isKey(i)) {
                                 // last str is not a key function
                                 const start = findOpen2(i, '(', ')');
-                                console.log(start);
                                 if (start - 1 > -1 && removeFormatElements(start - 1) === '^') {
                                     // end of power expression
                                     insert(')');
@@ -1665,8 +1664,8 @@ function validKeys(prob) {
             // test if key has no argument
             if (i + 1 < prob.length) {
                 // test if argument is invalid 
-                if (!isSpecial(i + 1) && isNaN(prob[i + 1])) {
-                    // neither a special nor regular number
+                if (!isSpecial(i + 1) && isNaN(prob[i + 1] && prob[i] !== '(') && prob[i] !== negate) {
+                    // neither a special nor regular number nor an expression
                     serveError(error.argument);
                     return false;
                 }
@@ -1963,6 +1962,7 @@ btns.addEventListener('click', (e) => {
                 updateAnswer();
                 updateToggleDisplay();
             } else if (id === 'btn-equals') {
+                // equal button
                 evaluate();
             } else if (id === 'btn-shift') {
                 toggleShiftMode();
@@ -2080,7 +2080,6 @@ btns.addEventListener('click', (e) => {
 
 // History controls
 btnHst.addEventListener('click', () => {
-    console.log('history');
     if (window.getComputedStyle(hstPanel).getPropertyValue('opacity') === '0') {
         if (history.length > 0) {
             history.forEach((hist) => {
