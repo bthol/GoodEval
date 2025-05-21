@@ -106,7 +106,7 @@ function isOp(index, prob) {
     if (index < prob.length) {
         const char = prob.substring(index, index + 1);
         const values = Object.values(operations);
-        for (let i = 0; i < values.length - 1; i++) {
+        for (let i = 0; i < values.length; i++) {
             if (char === values[i]) {
                 // found a match
                 return true;
@@ -235,7 +235,6 @@ evalBtn.addEventListener('click', () => {
                     
                     // run operation test
                     if (validOp(problem)) {
-                        console.log('pass');
                         // add further validation here; before "valid = true"
                         valid = true;
                     }
