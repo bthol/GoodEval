@@ -34,7 +34,7 @@ const operations = {
 // DOM selections
 const connectionStatusDisplay = document.querySelector('#connection-status');
 const loader = document.querySelector('.elipses-container');
-const errorDisplay = document.querySelector('#error-display');
+const errorDisplay = document.querySelector('#answer-field');
 
 // loader animation
 function startLoader() {
@@ -98,7 +98,7 @@ function serveError(error) {
     errorTimeout = setTimeout(() => {
         clearTimeout(errorTimeout);
         errorDisplay.innerText = '';
-    }, 2000);
+    }, 3000);
 };
 
 function isOp(index, prob) {
