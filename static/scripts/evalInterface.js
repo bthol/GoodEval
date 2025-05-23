@@ -209,16 +209,16 @@ evalBtn.addEventListener('click', () => {
 
             // select answer field
             const answer = document.querySelector('#answer-field');
-        
+            
             // clear previous answer
             answer.innerText = '';
-        
+            
             // get problem string
             const problem = document.querySelector('#problem-field').value;
 
             // validate problem
             let valid = false;
-
+            
             // run empty string test
             if (problem.length === 0) {
 
