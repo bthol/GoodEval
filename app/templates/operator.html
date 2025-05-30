@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoodEval Operator</title>
+    <link rel="stylesheet" href="{% static 'stylesheets/main.css'%}">
+    <link rel="stylesheet" href="{% static 'stylesheets/oper.css'%}">
+    <script defer src="{% static 'scripts/operInterface.js'%}"></script>
+</head>
+<body class="body">
+    <!-- <a href="http://127.0.0.1:8000/" rel="noopener noreferrer" class="home-button">Home</a> -->
+    <a href="https://goodeval-1d265775b25d.herokuapp.com/" rel="noopener noreferrer" class="home-button">Home</a>
+
+    <form id="operator-form" action="./operator.html" method="POST">
+        <select name="operator-type" id="operator-type" required>
+            <option name="addition" value="addition">addition</option>
+            <option name="superaddition" value="superaddition">superaddition</option>
+
+            <option name="subtraction" value="subtraction">subtraction</option>
+            <option name="supersubtraction" value="supersubtraction">supersubtraction</option>
+
+            <option name="multiplication" value="multiplication">multiplication</option>
+            <option name="supermultiplication" value="supermultiplication">supermultiplication</option>
+
+            <option name="division" value="division">division</option>
+            <option name="superdivision" value="superdivision">superdivision</option>
+
+            <option name="exponentiation" value="exponentiation">exponentiation</option>
+            <option name="superexponentiation" value="superexponentiation">superexponentiation</option>
+
+            <option name="radication" value="radication">radication</option>
+            <option name="superradication" value="superradication">superradication</option>
+        </select>
+
+        <input type="number" placeholder="1" required>
+
+        <input type="number" placeholder="1" required>
+
+        <button id="operate-button" type="submit">Operate</button>
+    </form>
+    
+</body>
+</html>

@@ -10,10 +10,14 @@ from django.shortcuts import render
 def render_index(request):
     return render(request, "index.html")
 
-# The GoodEval Calculator (default)
+# The GoodEval Calculator
 def render_calculator(request):
     return render(request, "calculator.html")
 
 # The GoodEval Evaluator
 def render_evaluator(request):
     return render(request, "evaluator.html")
+
+# The GoodEval Operator
+def render_operator(request):
+    return render(request, "operator.html")

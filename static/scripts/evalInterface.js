@@ -102,7 +102,7 @@ function serveError(error) {
 };
 
 function isOp(index, prob) {
-    // tests if character at indedx in prob string is an operation
+    // tests if character at index in prob string is an operation
     if (index < prob.length) {
         const char = prob.substring(index, index + 1);
         const values = Object.values(operations);
