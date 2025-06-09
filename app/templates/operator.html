@@ -17,31 +17,20 @@
     <a href="https://goodeval-1d265775b25d.herokuapp.com/" rel="noopener noreferrer" class="home-button">Home</a>
 
     <form id="operator-form" action="./" method="POST">
-        <select name="operator-type" id="operator-type" required>
-
-            <option name="addition" value="addition">addition</option>
-            <option name="subtraction" value="subtraction">subtraction</option>
-            <option name="multiplication" value="multiplication">multiplication</option>
-            <option name="division" value="division">division</option>
-            <option name="exponentiation" value="exponentiation">exponentiation</option>
-            <option name="radication" value="radication">radication</option>
-            
-            <option name="superaddition" value="superaddition">superaddition</option>
-            <option name="supersubtraction" value="supersubtraction">supersubtraction</option>
-            <option name="supermultiplication" value="supermultiplication">supermultiplication</option>
-            <option name="superdivision" value="superdivision">superdivision</option>
-            <option name="superexponentiation" value="superexponentiation">superexponentiation</option>
-            <option name="superradication" value="superradication">superradication</option>
-
+        <!-- Operand type -->
+        <label for="operand-type">Operand Type</label>
+        <select name="operand-type" id="operand-type" class="field-width" required>
+            <option name="quantity" value="quantity">Quantity</option>
+            <option name="set" value="set">Set</option>
+            <option name="codomain" value="codomain">Codomain</option>
         </select>
-
-        <input id="variable-a" type="number" placeholder="1" required>
-
-        <input id="variable-b" type="number" placeholder="1" required>
+        
+        <div id="dynamic-content-container" class="field-width"></div>
 
         <button id="operate-button" type="button">Operate</button>
 
-        <div id="answer-field"></div>
+        <div id="answer-field" class="field-width"></div>
+
     </form>
     
 </body>
