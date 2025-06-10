@@ -1,23 +1,12 @@
 console.log('Interface script loaded');
 
-function positive(group) {
-    // returns the positive subgroup
-    return group.filter((x) => x > 0);
-};
-
-function negative(group) {
-    // returns the negative subgroup
-    return group.filter((x) => x < 0);
-};
-
-function even(group) {
-    // returns the even subgroup
-    return group.filter((x) => {if (x % 2 === 0) {return true} else {return false}});
-};
-
-function odd(group) {
-    // returns the odd subgroup
-    return group.filter((x) => {if (x % 2 === 1) {return true} else {return false}});
+// linear operator on set
+function translation(groupA, translate) {
+    let groupB = [];
+    for (let i = 0; i < groupA.length; i++) {
+        groupB.push(groupA[i] + translate);
+    }
+    return groupB;
 };
 
 function nonEmptyGroups(groupA, groupB) {
@@ -35,6 +24,7 @@ function nonEmptyGroups(groupA, groupB) {
     }
 };
 
+// logical operators on codomains
 function conjunction(groupA, groupB) {
     // returns the conjunction of non-empty groups A and B
     if (nonEmptyGroups(groupA, groupB)) {
@@ -93,6 +83,7 @@ function disjunction(groupA, groupB) {
     }
 };
 
+// group operators on codomains
 function isSubgroup(groupA, groupB) {
     // tests if group B is a subgroup of group A
     if (nonEmptyGroups(groupA, groupB)) {
@@ -139,15 +130,6 @@ function isIdenticalGroup(groupA, groupB) {
     }
 };
 
-// linear operator
-function translation(groupA, translate) {
-    let groupB = [];
-    for (let i = 0; i < groupA.length; i++) {
-        groupB.push(groupA[i] + translate);
-    }
-    return groupB;
-};
-
 // arithmetic operators
 function addition(a,b) {
     return a + b;
@@ -189,16 +171,119 @@ function spropr(a, b, op, id) {
     return y;
 };
 
+// form input validation
+function maximumSetValueValid() {
+    // validates input on change event
+    const maxVal = Number(document.querySelector('#maximum-set-value').value);
+    const minVal = Number(document.querySelector('#minimum-set-value').value);
+    // prevent maximum from being lowered below minimum
+    if (maxVal < minVal) {
+        document.querySelector('#maximum-set-value').value = minVal;
+    }
+};
+
+function minimumSetValueValid() {
+    // validates input on change event
+    const maxVal = Number(document.querySelector('#maximum-set-value').value);
+    const minVal = Number(document.querySelector('#minimum-set-value').value);
+    // prevent minimum from being raised above maximum
+    if (minVal > maxVal) {
+        document.querySelector('#minimum-set-value').value = maxVal;
+    }
+};
+
+function maximumDomainValueValidA() {
+    // validates input on change event
+    const maxVal = Number(document.querySelector('#maximum-domain-a').value);
+    const minVal = Number(document.querySelector('#minimum-domain-a').value);
+    // prevent maximum from being lowered below minimum
+    if (maxVal < minVal) {
+        document.querySelector('#maximum-domain-a').value = minVal;
+    }
+};
+
+function minimumDomainValueValidA() {
+    // validates input on change event
+    const maxVal = Number(document.querySelector('#maximum-domain-a').value);
+    const minVal = Number(document.querySelector('#minimum-domain-a').value);
+    // prevent minimum from being raised above maximum
+    if (minVal > maxVal) {
+        document.querySelector('#minimum-domain-a').value = maxVal;
+    }
+};
+
+function maximumDomainValueValidB() {
+    // validates input on change event
+    const maxVal = Number(document.querySelector('#maximum-domain-b').value);
+    const minVal = Number(document.querySelector('#minimum-domain-b').value);
+    // prevent maximum from being lowered below minimum
+    if (maxVal < minVal) {
+        document.querySelector('#maximum-domain-b').value = minVal;
+    }
+};
+
+function minimumDomainValueValidB() {
+    // validates input on change event
+    const maxVal = Number(document.querySelector('#maximum-domain-b').value);
+    const minVal = Number(document.querySelector('#minimum-domain-b').value);
+    // prevent minimum from being raised above maximum
+    if (minVal > maxVal) {
+        document.querySelector('#minimum-domain-b').value = maxVal;
+    }
+};
+
 // dynamically update form elements
 const containerElement = document.querySelector('#dynamic-content-container');
 function updateForm() {
-    // clear previous answer
-    document.querySelector('#answer-field').innerHTML = '';
+    // remove validation listeners
+
+    // Sets
+    const maxSet = document.querySelector('#maximum-set-value');
+    if (maxSet !== null) {
+        maxSet.removeEventListener("change", maximumSetValueValid);
+    }
+
+    const minSet = document.querySelector('#minimum-set-value');
+    if (minSet !== null) {
+        minSet.removeEventListener("change", minimumSetValueValid);
+    }
+
+    // Codomains
+
+    // Domain A
+    const maxDomA = document.querySelector('#maximum-domain-a');
+    if (maxDomA !== null) {
+        maxDomA.removeEventListener("change", maximumDomainValueValidA);
+    }
+
+    const minDomA = document.querySelector('#minimum-domain-a');
+    if (minDomA !== null) {
+        minDomA.removeEventListener("change", minimumDomainValueValidA);
+    }
+
+    // Domain B
+    const maxDomB = document.querySelector('#minimum-domain-a');
+    if (maxDomB !== null) {
+        maxDomB.removeEventListener("change", maximumDomainValueValidB);
+    }
+
+    const minDomB = document.querySelector('#minimum-domain-b');
+    if (minDomB !== null) {
+        minDomB.removeEventListener("change", minimumDomainValueValidB);
+    }
+
     // clear previous elements
     containerElement.innerHTML = '';
+    // clear previous answer
+    document.querySelector('#answer-field').innerHTML = '';
     // get type data from form
     const type = document.querySelector('#operand-type').value;
     if (type === 'quantity') {
+        // clear previous answer
+        document.querySelector('#answer-field').innerHTML = '';
+        // clear previous elements
+        containerElement.innerHTML = '';
+
         // build elements
 
         // operator selector label
@@ -310,6 +395,7 @@ function updateForm() {
         containerElement.appendChild(quantityB);
 
     } else if (type === 'set') {
+
         // build elements
 
         // operator selector label
@@ -378,89 +464,152 @@ function updateForm() {
         containerElement.appendChild(maximum);
         containerElement.appendChild(minimum);
         containerElement.appendChild(step);
-    } 
-    // } else if (type === 'codomain') {
-    //     // build elements
 
-    //     // A
-    //     const labelA = document.createElement('label');
-    //     labelA.setAttribute('for', 'number-type-domain-a');
-    //     labelA.innerText = 'Domain A';
+        // add listeners
+        document.querySelector('#maximum-set-value').addEventListener("change", maximumSetValueValid);
+        document.querySelector('#minimum-set-value').addEventListener("change", minimumSetValueValid);
 
-    //     const selectA = document.createElement('select');
-    //     selectA.setAttribute('id', 'number-type-group-a');
-    //     selectA.setAttribute('name', 'number-type-group-a');
-    //     selectA.setAttribute('required', 'true');
+    } else if (type === 'codomain') {
 
-    //     const option1A = document.createElement('option');
-    //     option1A.setAttribute('name', 'integers');
-    //     option1A.setAttribute('value', 'integers');
-    //     option1A.innerText = 'Integers';
-    //     selectA.appendChild(option1A);
+        // build elements
+
+        // operator selector label
+        const selectLabel = document.createElement('label');
+        selectLabel.setAttribute('for', 'operator-type');
+        selectLabel.innerText = 'Operator';
         
-    //     const option2A = document.createElement('option');
-    //     option2A.setAttribute('name', 'rational');
-    //     option2A.setAttribute('value', 'rational');
-    //     option2A.innerText = 'Rational';
-    //     selectA.appendChild(option2A);
+        // operator selection
+        const select = document.createElement('select');
+        select.setAttribute('id', 'operator-type');
+        select.setAttribute('name', 'operator-type');
+        select.setAttribute('required', 'true');
+        select.setAttribute('value', 'conjunction');
 
-    //     const maximumA = document.createElement('input');
-    //     maximumA.setAttribute('id', 'maximum-domain-a');
-    //     maximumA.setAttribute('type', 'number');
-    //     maximumA.setAttribute('placeholder', 'maximum');
-    //     maximumA.setAttribute('required', 'true');
+        const option1 = document.createElement('option');
+        option1.setAttribute('name', 'conjunction');
+        option1.setAttribute('value', 'conjunction');
+        option1.innerText = 'conjunction';
+        select.appendChild(option1);
         
-    //     const minimumA = document.createElement('input');
-    //     minimumA.setAttribute('id', 'minimum-domain-a');
-    //     minimumA.setAttribute('type', 'number');
-    //     minimumA.setAttribute('placeholder', 'minimum');
-    //     minimumA.setAttribute('required', 'true');
+        const option2 = document.createElement('option');
+        option2.setAttribute('name', 'disjunction');
+        option2.setAttribute('value', 'disjunction');
+        option2.innerText = 'disjunction';
+        select.appendChild(option2);
 
-    //     // B
-    //     const labelB = document.createElement('label');
-    //     labelB.setAttribute('for', 'number-type-domain-b');
-    //     labelB.innerText = 'Domain B';
+        // Domain A
+        const labelA = document.createElement('label');
+        labelA.setAttribute('for', 'number-type-domain-a');
+        labelA.innerText = 'Domain A';
 
-    //     const selectB = document.createElement('select');
-    //     selectB.setAttribute('id', 'number-type-group-b');
-    //     selectB.setAttribute('name', 'number-type-group-b');
-    //     selectB.setAttribute('required', 'true');
+        const selectA = document.createElement('select');
+        selectA.setAttribute('id', 'number-type-domain-a');
+        selectA.setAttribute('name', 'number-type-domain-a');
+        selectA.setAttribute('required', 'true');
 
-    //     const option1B = document.createElement('option');
-    //     option1B.setAttribute('name', 'integers');
-    //     option1B.setAttribute('value', 'integers');
-    //     option1B.innerText = 'Integers';
-    //     selectB.appendChild(option1B);
+        const option1A = document.createElement('option');
+        option1A.setAttribute('name', 'integers');
+        option1A.setAttribute('value', 'integers');
+        option1A.innerText = 'Integers';
+        selectA.appendChild(option1A);
         
-    //     const option2B = document.createElement('option');
-    //     option2B.setAttribute('name', 'rational');
-    //     option2B.setAttribute('value', 'rational');
-    //     option2B.innerText = 'Rational';
-    //     selectB.appendChild(option2B);
+        const option2A = document.createElement('option');
+        option2A.setAttribute('name', 'rational');
+        option2A.setAttribute('value', 'rational-tenth');
+        option2A.innerText = 'Rational (nearest tenth)';
+        selectA.appendChild(option2A);
         
-    //     const maximumB = document.createElement('input');
-    //     maximumB.setAttribute('id', 'minimum-domain-b');
-    //     maximumB.setAttribute('type', 'number');
-    //     maximumB.setAttribute('placeholder', 'minimum');
-    //     maximumB.setAttribute('required', 'true');
-
-    //     const minimumB = document.createElement('input');
-    //     minimumB.setAttribute('id', 'minimum-domain-b');
-    //     minimumB.setAttribute('type', 'number');
-    //     minimumB.setAttribute('placeholder', 'minimum');
-    //     minimumB.setAttribute('required', 'true');
-
-    //     // append elements
-    //     containerElement.appendChild(labelA);
-    //     containerElement.appendChild(selectA);
-    //     containerElement.appendChild(maximumA);
-    //     containerElement.appendChild(minimumA);
+        const option3A = document.createElement('option');
+        option3A.setAttribute('name', 'rational');
+        option3A.setAttribute('value', 'rational-hundredth');
+        option3A.innerText = 'Rational (nearest hundredth)';
+        selectA.appendChild(option3A);
         
-    //     containerElement.appendChild(labelB);
-    //     containerElement.appendChild(selectB);
-    //     containerElement.appendChild(maximumB);
-    //     containerElement.appendChild(minimumB);
-    // }
+        const option4A = document.createElement('option');
+        option4A.setAttribute('name', 'rational');
+        option4A.setAttribute('value', 'rational-thousandth');
+        option4A.innerText = 'Rational (nearest thousandth)';
+        selectA.appendChild(option4A);
+
+        const maximumA = document.createElement('input');
+        maximumA.setAttribute('id', 'maximum-domain-a');
+        maximumA.setAttribute('type', 'number');
+        maximumA.setAttribute('placeholder', 'maximum');
+        maximumA.setAttribute('required', 'true');
+        
+        const minimumA = document.createElement('input');
+        minimumA.setAttribute('id', 'minimum-domain-a');
+        minimumA.setAttribute('type', 'number');
+        minimumA.setAttribute('placeholder', 'minimum');
+        minimumA.setAttribute('required', 'true');
+
+        // Domain B
+        const labelB = document.createElement('label');
+        labelB.setAttribute('for', 'number-type-domain-b');
+        labelB.innerText = 'Domain B';
+
+        const selectB = document.createElement('select');
+        selectB.setAttribute('id', 'number-type-domain-b');
+        selectB.setAttribute('name', 'number-type-domain-b');
+        selectB.setAttribute('required', 'true');
+
+        const option1B = document.createElement('option');
+        option1B.setAttribute('name', 'integers');
+        option1B.setAttribute('value', 'integers');
+        option1B.innerText = 'Integers';
+        selectB.appendChild(option1B);
+
+        const option2B = document.createElement('option');
+        option2B.setAttribute('name', 'rational');
+        option2B.setAttribute('value', 'rational-tenth');
+        option2B.innerText = 'Rational (nearest tenth)';
+        selectB.appendChild(option2B);
+        
+        const option3B = document.createElement('option');
+        option3B.setAttribute('name', 'rational');
+        option3B.setAttribute('value', 'rational-hundredth');
+        option3B.innerText = 'Rational (nearest hundredth)';
+        selectB.appendChild(option3B);
+        
+        const option4B = document.createElement('option');
+        option4B.setAttribute('name', 'rational');
+        option4B.setAttribute('value', 'rational-thousandth');
+        option4B.innerText = 'Rational (nearest thousandth)';
+        selectB.appendChild(option4B);
+        
+        const maximumB = document.createElement('input');
+        maximumB.setAttribute('id', 'maximum-domain-b');
+        maximumB.setAttribute('type', 'number');
+        maximumB.setAttribute('placeholder', 'maximum');
+        maximumB.setAttribute('required', 'true');
+
+        const minimumB = document.createElement('input');
+        minimumB.setAttribute('id', 'minimum-domain-b');
+        minimumB.setAttribute('type', 'number');
+        minimumB.setAttribute('placeholder', 'minimum');
+        minimumB.setAttribute('required', 'true');
+
+        // append elements
+        containerElement.appendChild(selectLabel);
+        containerElement.appendChild(select);
+
+        containerElement.appendChild(labelA);
+        containerElement.appendChild(selectA);
+        containerElement.appendChild(maximumA);
+        containerElement.appendChild(minimumA);
+        
+        containerElement.appendChild(labelB);
+        containerElement.appendChild(selectB);
+        containerElement.appendChild(maximumB);
+        containerElement.appendChild(minimumB);
+
+        // add listeners
+        document.querySelector('#maximum-domain-a').addEventListener("change", maximumDomainValueValidA);
+        document.querySelector('#minimum-domain-a').addEventListener("change", minimumDomainValueValidA);
+        
+        document.querySelector('#maximum-domain-b').addEventListener("change", maximumDomainValueValidB);
+        document.querySelector('#minimum-domain-b').addEventListener("change", minimumDomainValueValidB);
+    }
 };
 updateForm();
 document.querySelector('#operand-type').addEventListener('change', updateForm);
@@ -628,34 +777,55 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
         // build domain A
         let domainA = [];
         if (numberTypeA === 'integers') {
-            for (let i = minimumA; i < maximumA; i++) {
+            for (let i = minimumA; i <= maximumA; i++) {
                 domainA.push(i);
             }
-        } else if (numberTypeA === 'rational') {
-            for (let i = minimumA; i < maximumA; i = i + 0.001) {
+        } else if (numberTypeA === 'rational-tenth') {
+            for (let i = minimumA; i <= maximumA; i = i + 0.1) {
                 domainA.push(i);
+            }
+        } else if (numberTypeA === 'rational-hundredth') {
+            for (let i = minimumA; i <= maximumA; i = i + 0.01) {
+                domainB.push(i);
+            }
+        } else if (numberTypeA === 'rational-thousandth') {
+            for (let i = minimumA; i <= maximumA; i = i + 0.001) {
+                domainB.push(i);
             }
         }
 
         // build domain b
         let domainB = [];
         if (numberTypeB === 'integers') {
-            for (let i = minimumB; i < maximumB; i++) {
+            for (let i = minimumB; i <= maximumB; i++) {
                 domainB.push(i);
             }
-        } else if (numberTypeB === 'rational') {
-            for (let i = minimumB; i < maximumB; i = i + 0.001) {
+        } else if (numberTypeB === 'rational-tenth') {
+            for (let i = minimumB; i <= maximumB; i = i + 0.1) {
+                domainB.push(i);
+            }
+        } else if (numberTypeB === 'rational-hundredth') {
+            for (let i = minimumB; i <= maximumB; i = i + 0.01) {
+                domainB.push(i);
+            }
+        } else if (numberTypeB === 'rational-thousandth') {
+            for (let i = minimumB; i <= maximumB; i = i + 0.001) {
                 domainB.push(i);
             }
         }
 
-        // // linear operators
-        // if (operatorType === '') {
-        //     // example of linear operator being assigned to "answer" variable
-        // }
+        console.log(domainA);
+        console.log(domainB);
 
-        // display answer
-        document.querySelector('#answer-field').innerText = `${answer}`;
-
+        // linear operators
+        if (operatorType === 'conjunction') {
+            answer = conjunction(domainA, domainB);
+            // display answer
+            answerField.innerHTML = `<div>Conjunction</div><div>${answer}</div><div>Domain A</div><div>${domainA.toString()}</div><div>Domain B</div><div>${domainB.toString()}</div>`;
+        } else if (operatorType === 'disjunction') {
+            answer = disjunction(domainA, domainB);
+            // display answer
+            answerField.innerHTML = `<div>Disjunction</div><div>${answer}</div><div>Domain A</div><div>${domainA.toString()}</div><div>Domain B</div><div>${domainB.toString()}</div>`;
+        }
     }
 });
