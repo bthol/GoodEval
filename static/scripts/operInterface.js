@@ -132,11 +132,15 @@ function division(a,b) {
 };
 
 function exponentiation(a,b) {
-    return Math.pow(a,b);
+    return a**b;
 };
 
 function radication(a,b) {
     return Math.pow(a,1/b);
+};
+
+function modulus(a,b) {
+    return ((a % b) + b) % b;
 };
 
 // generalizes superoperation for operators with identity elements
@@ -388,6 +392,12 @@ function updateForm() {
         option12.setAttribute('value', 'superradication');
         option12.innerText = 'superradication';
         select.appendChild(option12);
+        
+        const option13 = document.createElement('option');
+        option13.setAttribute('name', 'modulus');
+        option13.setAttribute('value', 'modulus');
+        option13.innerText = 'modulus';
+        select.appendChild(option13);
 
         // operand label
         const operandLabel = document.createElement('label');
@@ -476,6 +486,12 @@ function updateForm() {
         option4l1.setAttribute('value', 'division');
         option4l1.innerText = 'division';
         select.appendChild(option4l1);
+        
+        const option5l1 = document.createElement('option');
+        option5l1.setAttribute('name', 'modulus');
+        option5l1.setAttribute('value', 'modulus');
+        option5l1.innerText = 'modulus';
+        select.appendChild(option5l1);
         
         // operand label
         const operandLabel = document.createElement('label');
@@ -709,6 +725,10 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
             answer = spropr(a,b,exponentiation,1);
         } else if (operatorType === 'superradication') {
             answer = spropr(a,b,radication,1);
+        
+        // modular arithmetic
+        } else if (operatorType === 'modulus') {
+            answer = modulus(a,b);
         }
 
         // display answer
@@ -772,7 +792,6 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                     for (let i = 0; i < set.length; i++) {
                         answer = multiplication(answer,set[i]);
                     }
-        
                 } else if (operatorType === 'division') {
                     // initialize with first element in list
                     answer = set[0];
@@ -780,7 +799,17 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                     for (let i = 1; i < set.length; i++) {
                         answer = division(answer,set[i]);
                     }
+                } else if (operatorType === 'modulus') {
+                    // initialize with first element in list
+                    answer = set[0];
+                    // operate on set in order and assign to answer variable
+                    for (let i = 1; i < set.length; i++) {
+                        answer = modulus(answer,set[i]);
+                    }
                 }
+
+                // display answer
+                answerField.innerHTML = `<di>Result</div><div>${answer}</div><div>Original Set</div><div>${set.toString()}</div>`;
 
             } else if (operend === 'element') {
 
@@ -793,7 +822,7 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                     let operated = [];
                     // operate on set and assign to answer variable
                     for (let i = 0; i < set.length; i++) {
-                        operated.push(set[i] + elementalOperand);
+                        operated.push(addition(set[i], elementalOperand));
                     }
                     // assign operated array to answer variable as a string
                     answer = operated.toString();
@@ -802,7 +831,7 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                     let operated = [];
                     // operate on set and assign to answer variable
                     for (let i = 0; i < set.length; i++) {
-                        operated.push(set[i] - elementalOperand);
+                        operated.push(subtraction(set[i], elementalOperand));
                     }
                     // assign operated array to answer variable as a string
                     answer = operated.toString();
@@ -811,7 +840,7 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                     let operated = [];
                     // operate on set and assign to answer variable
                     for (let i = 0; i < set.length; i++) {
-                        operated.push(set[i] * elementalOperand);
+                        operated.push(multiplication(set[i], elementalOperand));
                     }
                     // assign operated array to answer variable as a string
                     answer = operated.toString();
@@ -820,22 +849,25 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                     let operated = [];
                     // operate on set and assign to answer variable
                     for (let i = 0; i < set.length; i++) {
-                        operated.push(set[i] / elementalOperand);
+                        operated.push(division(set[i], elementalOperand));
+                    }
+                    // assign operated array to answer variable as a string
+                    answer = operated.toString();
+                } else if (operatorType === 'modulus') {
+                    // declare an empty array to contain set of operated elements
+                    let operated = [];
+                    // operate on set and assign to answer variable
+                    for (let i = 0; i < set.length; i++) {
+                        operated.push(modulus(set[i], elementalOperand));
                     }
                     // assign operated array to answer variable as a string
                     answer = operated.toString();
                 }
+
+                // display answer
+                answerField.innerHTML = `<di>Resultant Set</div><div>${answer}</div><div>Original Set</div><div>${set.toString()}</div>`;
             }
         }
-
-        // display answer
-        answerField.innerHTML = `<div>${answer}</div>`;
-
-        // display set
-        const setElement = document.createElement('div');
-        setElement.innerText = set.toString();
-        answerField.appendChild(setElement);
-
     } else if (operandType === 'codomain') {
         // get domain properties for domain A
         const numberTypeA = document.querySelector('#number-type-domain-a').value;
