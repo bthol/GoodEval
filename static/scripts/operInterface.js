@@ -139,8 +139,13 @@ function radication(a,b) {
     return Math.pow(a,1/b);
 };
 
-function modulus(a,b) {
-    return ((a % b) + b) % b;
+function modulus(a,m) {
+    if (a > m) {
+        // return ((a/m) - Math.floor(a/m)) * m;
+        return ((a % m) + m) % m;
+    } else {
+        return 0;
+    }
 };
 
 // generalizes superoperation for operators with identity elements
