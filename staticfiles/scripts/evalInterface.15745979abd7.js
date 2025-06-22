@@ -183,7 +183,7 @@ function validOp(prob) {
     // post-validates operations in problem string
 
     // test for operations on start or end of problem
-    if (isOp(0, prob) || isOp(prob.length - 1, prob)) {
+    if (isOp(0, prob) && prob[0] !== operations.radication || isOp(prob.length - 1, prob)) {
         serveError(error.operation);
         return false;
     } else {
