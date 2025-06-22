@@ -11,6 +11,12 @@ label {
     color: #fffef0;
 }
 
+.center-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .field-width {
     width: 99vw;
     overflow: scroll;
@@ -31,6 +37,10 @@ label {
     align-items: center;
     gap: 10px;
     margin-top: 10px;
+}
+
+#operate-button {
+    width: min-content;
 }
 
 #answer-field {

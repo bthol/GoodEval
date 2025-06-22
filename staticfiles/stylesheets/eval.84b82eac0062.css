@@ -6,7 +6,7 @@
 .body {
     height: 100vmin;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     gap: 1vw;
@@ -33,7 +33,7 @@
 }
 
 .title {
-    width: 95%;
+    width: 70%;
     font-size: calc(var(--font-size) * 1.667);
     margin: 1.5vw 0vw;
     position: relative;
@@ -78,6 +78,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#info-button {
+    margin-bottom: 15px;
+}
+
+#info-container {
+    width: calc(var(--form-width) * .97);
+    height: max-content;
+    font-size: var(--font-size);
 }
 
 .center-text {
@@ -170,6 +180,7 @@
     width: 60%;
     gap: 4.4vw;
     display: flex;
+    margin-bottom: 30px;
 }
 
 .elipses-dot {

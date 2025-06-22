@@ -24,11 +24,14 @@ const error = {
     operation: 'Invalid: operation',
 };
 
+// operation characters
 const operations = {
     addition: '+',
     subtraction: '-',
     multiplication: '*',
-    division: '/'
+    division: '/',
+    exponentiation: '^',
+    radication: '√',
 };
 
 // DOM selections
@@ -93,28 +96,13 @@ window.addEventListener('offline', () => {
 
 // problem string validation
 function serveError(error) {
+    // displays string in error argument on page for 3000 ms
     errorDisplay.innerText = error;
     clearTimeout(errorTimeout);
     errorTimeout = setTimeout(() => {
         clearTimeout(errorTimeout);
         errorDisplay.innerText = '';
     }, 3000);
-};
-
-function isOp(index, prob) {
-    // tests if character at index in prob string is an operation
-    if (index < prob.length) {
-        const char = prob.substring(index, index + 1);
-        const values = Object.values(operations);
-        for (let i = 0; i < values.length; i++) {
-            if (char === values[i]) {
-                // found a match
-                return true;
-            }
-        }
-        // none matched
-        return false;
-    }
 };
 
 function validParen(prob) {
@@ -175,6 +163,22 @@ function validParen(prob) {
     }
 };
 
+function isOp(index, prob) {
+    // tests if character at index in prob string is an operation
+    if (index < prob.length) {
+        const char = prob.substring(index, index + 1);
+        const values = Object.values(operations);
+        for (let i = 0; i < values.length; i++) {
+            if (char === values[i]) {
+                // found a match
+                return true;
+            }
+        }
+        // none matched
+        return false;
+    }
+};
+
 function validOp(prob) {
     // post-validates operations in problem string
 
@@ -196,6 +200,111 @@ function validOp(prob) {
     }
 };
 
+// info button displays program information
+const infoBtn = document.querySelector('#info-button');
+infoBtn.addEventListener('click', () => {
+    // test for internet connection
+    if (window.navigator.onLine === true) {
+        // debounce to prevent excessive requests
+        clearTimeout(debounceRequest);
+        debounceRequest = setTimeout(() => {
+            // debounced
+            clearTimeout(debounceRequest);
+
+            // select container element
+            const container = document.querySelector('#info-container');
+
+            // start loader
+            startLoader();
+
+            // fetch request to Eval API
+            const root = 'https://eval-api-8ece55f267c1.herokuapp.com/';
+            fetch(`${root}/eval/info`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then((data) => {
+                setTimeout(() => {
+                    // stop loader after a single duration
+                    stopLoader();
+
+                    // clear previous info
+                    container.innerHTML = '';
+
+                    // append response to container element
+                    console.log(data);
+                    // container.innerHTML = JSON.stringify(data);
+
+                    // build elements for info display format
+                    const headTitle = document.createElement('h3');
+                    headTitle.innerText = 'Program Information';
+                    
+                    const constantTitle = document.createElement('h3');
+                    constantTitle.innerText = 'Constants';
+
+                    const operationTitle = document.createElement('h3');
+                    operationTitle.innerText = 'Operations';
+
+                    const keysTitle = document.createElement('h3');
+                    keysTitle.innerText = 'Key Functions';
+
+                    function addSpace() {
+                        const space = document.createElement('br');
+                        return space;
+                    };
+
+
+                    // assemble and append elements to display
+                    container.appendChild(headTitle);
+                    
+                    container.appendChild(addSpace());
+                    container.appendChild(constantTitle);
+                    container.appendChild(addSpace());
+                    for (let i = 0; i < data.constants.length; i++) {
+                        const constant = document.createElement('div');
+                        constant.innerText = `Name: ${data.constants[i].name}\nSyntax: ${data.constants[i].syntax}\n\n`;
+                        container.appendChild(constant);
+                    }
+                    
+                    container.appendChild(addSpace());
+                    container.appendChild(operationTitle);
+                    container.appendChild(addSpace());
+                    for (let i = 0; i < data.operations.length; i++) {
+                        const operation = document.createElement('div');
+                        operation.innerText = `Name: ${data.operations[i].name}\nSyntax: ${data.operations[i].syntax}\n\n`;
+                        container.appendChild(operation);
+                    }
+                    
+                    container.appendChild(addSpace());
+                    container.appendChild(keysTitle);
+                    container.appendChild(addSpace());
+                    for (let i = 0; i < data.key_functions.length; i++) {
+                        for (let j = 0; j < data.key_functions[i].length; j++) {
+                            const key_function = document.createElement('div');
+                            key_function.innerText = `Name: ${data.key_functions[i][j].name}\nSyntax: ${data.key_functions[i][j].syntax}\nAbout: ${data.key_functions[i][j].about}\n\n`;
+                            container.appendChild(key_function);
+                        }
+                    }
+                    container.appendChild(addSpace());
+                    
+                }, loaderDuration);
+            });
+
+        }, 1000);
+
+
+    } else {
+        // highlight connection status
+        connectionStatusDisplay.style.color = '#a90d00';
+        setTimeout(() => {
+            connectionStatusDisplay.style.color = '#2fff2f';
+        }, 1000);
+    }
+});
+
 // Evaluate problem string by request to Eval API
 const evalBtn = document.querySelector('#evaluate-button');
 evalBtn.addEventListener('click', () => {
@@ -215,7 +324,7 @@ evalBtn.addEventListener('click', () => {
             
             // get problem string
             const problem = document.querySelector('#problem-field').value;
-
+            
             // validate problem
             let valid = false;
             
@@ -228,7 +337,7 @@ evalBtn.addEventListener('click', () => {
             } else {
                 
                 // non-empty string
-                
+
                 // run parenthesis test
                 if (validParen(problem)) {
                     // valid parenthesis
@@ -239,6 +348,7 @@ evalBtn.addEventListener('click', () => {
                         valid = true;
                     }
                 }
+                
             }
 
             // make request if valid
@@ -267,7 +377,9 @@ evalBtn.addEventListener('click', () => {
                 });
 
             }
+
         }, 1000);
+
 
     } else {
         // highlight connection status

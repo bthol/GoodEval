@@ -435,7 +435,7 @@ function updateForm() {
         // operend selector label
         const selectLabel2 = document.createElement('label');
         selectLabel2.setAttribute('for', 'operend-type');
-        selectLabel2.innerText = 'Operend Type';
+        selectLabel2.innerText = 'Operend';
 
         // operend selection
         const select2 = document.createElement('select');

@@ -16,18 +16,23 @@
     
     <h2 class="title">GoodEval Evaluator</h2>
     
+    <div class="center-text status-text">
+        <div>Status: </div>
+        <div id="connection-status"></div>
+    </div>
+    
     <form action="./" method="GET" class="center-form">
         <input id="problem-field" type="text" class="form-style field-style" min="1" required>
         <button id="evaluate-button" type="button" class="form-style button-style">evaluate</button>
         <div id="answer-field" class="form-style field-style"></div>
     </form>
     
-    <div class="center-text status-text">
-        <div>Status: </div>
-        <div id="connection-status"></div>
-    </div>
-    
-    <div class="elipses-container form-width"></div>
+
+    <div class="elipses-container"></div>
+
+    <button id="info-button" class="form-style button-style" type="button">Info</button>
+
+    <div id="info-container" class="form-style"></div>
 
 </body>
 </html>
