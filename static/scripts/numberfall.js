@@ -3,10 +3,11 @@ console.log('Numberfall script loaded');
 
 // parameters
 const colNum = 20; // number of columns for numbers
-const fallTime = 151; // milliseconds for drop to fall to bottom of screen
+const fallTime = 302; // milliseconds for drop to fall to bottom of screen
 const maxDrops = 100; // maximum number of drops added per fallTime
 const dropRate = fallTime / maxDrops; // period of time between genDrop calls
 const rainLast = fallTime * 2; // milliseconds duration of window for numberfall effect
+const bottom = 8; // distance from bottom of screen
 
 // parameter reference
 
@@ -62,7 +63,7 @@ function genDrop() {
     drop.style.color = dropPallete[Math.floor(Math.random() * dropPallete.length)];
 
     // size drop for viewport
-    drop.style.fontSize = '3.5em';
+    drop.style.fontSize = '6vmin';
 
     // position drop at top in random column
     drop.style.position = 'absolute';
@@ -86,7 +87,7 @@ function genDrop() {
         nthDrop -= 1;
         // console.log(nthDrop);
         clearTimeout(cache);
-    }, fallTime);
+    }, fallTime - bottom);
 
     // update id so unique on next drop
     dropID += 1;

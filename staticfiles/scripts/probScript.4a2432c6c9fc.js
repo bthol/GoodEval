@@ -197,7 +197,7 @@ function quotientSum2(x) {
 };
 
 // key function info
-const keyInfo = [    
+const keyInfo = [
     // static operations
     {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
     {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
@@ -234,6 +234,12 @@ const keyInfo = [
     {key: `Σn${operation.div}ai`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
     {key: `Σai${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
 ];
+
+function getScale() {
+    const x = getComputedStyle(document.body).getPropertyValue('--scale-calc-size');
+    return Number(x.substring(0, x.length - 2));
+};
+console.log(getScale());
 
 // Shift Mode Toggles
 function toggleShiftMode() {
@@ -272,9 +278,9 @@ function toggleShiftMode() {
         shiftBtn3.innerText = 'atanh';
         // Σ = html entity: &sum; + html code: &#8721;
         // ∏ = html entity: &prod; + html code: &#8719;
-        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>n</div></div>`;
-        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub></div></div>`;
-        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>${operation.div}n</div></div>`;
+        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>n</div></div>`;
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${.025 * getScale()}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub></div></div>`;
+        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>${operation.div}n</div></div>`;
     }
 };
 
@@ -292,9 +298,9 @@ function debounce3(funct, defer) {
 function formatShiftBtn() {
     // updates shift buttons along with scaleIt function in indexInterface.js
     if (shiftMode === 3) {
-        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>n</div></div>`;
-        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub></div></div>`;
-        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${21 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${15 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${11.2 * Number(window.getComputedStyle(calc).getPropertyValue('--scale-calc-size'))}px">i</sub>${operation.div}n</div></div>`;
+        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>n</div></div>`;
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${.025 * getScale()}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub></div></div>`;
+        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>${operation.div}n</div></div>`;
     }
 };
 

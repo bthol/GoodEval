@@ -259,7 +259,7 @@ nav {
 
 .top-button {
     position: relative;
-    padding: calc(.003 * var(--scale-calc-size)) calc(.009 * var(--scale-calc-size));
+    padding: calc(.000 * var(--scale-calc-size)) calc(.009 * var(--scale-calc-size));
     background-color: var(--color-fill-2);
     color: var(--color-font);
     border: calc(.003 * var(--scale-calc-size)) solid var(--color-border-3);
@@ -292,7 +292,7 @@ nav {
     margin: calc(.012 * var(--scale-calc-size)); /* controls bottom-button size */
     color: var(--color-font);
     cursor: pointer;
-    font-size: calc(.032 * var(--scale-calc-size));
+    font-size: calc(.028 * var(--scale-calc-size));
 }
 
 .button.normal {
@@ -489,6 +489,24 @@ nav {
     }
     #history-panel {
         font-size: 24px;
+    }
+}
+
+@media(max-width: 430px) {
+    .title-container > h1 {
+        font-size: 8vw;
+    }
+    .nav-button-container {
+        font-size: 5.5vw;
+    }
+    #select-theme {
+        font-size: 4.4vw;
+    }
+    .theme-option {
+        font-size: 4.4vw;
+    }
+    #history-panel {
+        font-size: 5.3vw;
     }
 }
 
