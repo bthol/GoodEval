@@ -197,12 +197,10 @@ function quotientSum2(x) {
 };
 
 // key function info
-const keyInfo = [
-    // static values
+const keyInfo = [    
+    // static operations
     {key: 'rndx', funct: (x) => rndx(x)}, // generates a random number between 0 - x
     {key: 'rndy', funct: (x) => rndy(x)}, // generates random number between -x - x
-
-    // static operations
     {key: 'abs', funct: (x) => Math.abs(x)}, // absolute value
     {key: 'floor', funct: (x) => Math.floor(x)}, // rounds to integer just below
     {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
@@ -900,9 +898,8 @@ function runKeyFunctions(prob) {
 // tests
 function isKey(i) {
     // test for match of str at problem index i with key property of keyInfo structure
-    // excludes static values (random number generator functions)
     const str = removeFormatElements(i);
-    for (let i = 2; i < keyInfo.length; i++) {
+    for (let i = 0; i < keyInfo.length; i++) {
         if (keyInfo[i].key === str) {
             return true;
         }
@@ -1058,6 +1055,7 @@ function validQuant(key = false, special = false) {
                                         return true;
                                     } else {
                                         // last str is formatted
+                                        console.log(i);
                                         if (isKey(i)) {
                                             // formatted key is allowed
                                             return true;
