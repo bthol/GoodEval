@@ -4,17 +4,20 @@
 
 **Stack:** Django stack (Django, Python, Pip, HTML, CSS, JavaScript)
 
+**Links**
+https://github.com/bthol/EvalAPI
+
 ## Introduction
-GoodEval is a multi-page web app computational package composed of the GoodEval Calulator, its more advanced counterpart the GoodEval Evaluator powered by the Eval API, as well as a variety of form interfaces making use of the Eval API or dedicated scripts. The GoodEval Calculator is, as the name suggests, a calculator, offering calculation of arithmetic expressions by conventional operators and a compact selection of special functions via a skeuomorphic and themable graphical user interface. On the other hand, the Goodeval Evaluator offers a much more flexible and comprehensive functionality from a much more minimalistic interface. While both programs depend on string data, the GoodEval Evaluator takes this to its ultimate extent by beginning from a single string and performing string evaluation, whereas the Calculator uses buttons to create a problem structure that is solved when the equal button is pressed. The form interfaces offer a simplified and intuitive approach to utilizing the computational functionality of the Eval API, which also powers the string evaluation for the GoodEval Evaluator.
+GoodEval is a multi-page web app computational package composed of the GoodEval Calulator, its more advanced counterpart the GoodEval Evaluator powered by the Eval API, as well as a variety of form interfaces making use of the Eval API or dedicated scripts. The GoodEval Calculator is, as the name suggests, a calculator, and it offers calculation of arithmetic expressions by conventional operators and a compact selection of special functions via a skeuomorphic and themable graphical user interface. On the other hand, the Goodeval Evaluator offers a much more flexible and comprehensive functionality from a much more minimalistic interface. While both programs depend on string data, the GoodEval Evaluator takes this to its ultimate extent by beginning from a single string and performing string evaluation, whereas the Calculator uses buttons to create a problem structure that is solved when the equal button is pressed. The form interfaces offer a simplified and intuitive approach to utilizing the computational functionality of Eval API, which also powers the string evaluation for the GoodEval Evaluator.
 
 ## The GoodEval Calculator: Feature Overview
-Being a scientific grade calculator, the GoodEval Calulator is a computational software that can perform a wide array of mathematical problems by the inclusion of trigonomic, logarithmic, and summation special functions, as well as a few stochastic and rounding functions just for good measure. The calculator interface comes in 4 distinctive themes that may be switched between at any time using the top panel, where a history of previous calculations and a link to its about page can also be found. The calculator page element will scale to the dimenions of available screen space, such that the original dimensions of the element fill as much available space as possible without dimensional warping, so that the interface should be identical on all devices.
+Being a scientific grade calculator, the GoodEval Calulator is a computational software that can perform a wide array of mathematical problems by the inclusion of trigonomic, logarithmic, and summation special functions, as well as a few stochastic and rounding functions just for good measure. The calculator interface comes in 4 distinctive themes that may be switched between at any time using the top panel, where a history of previous calculations and a link to its about page can also be found. The calculator page element will scale to the dimenions of available screen space, such that the original dimensions of the element fill as much available space as possible without dimensional warping, so that the UI should be identical accross device viewports.
 
 ## The GoodEval Calculator: Modes
-A shift button is available on the bottom row of the top buttons, which will cycle through each of the 4 shift modes and display the current shift mode on the mode indicator section in the top right corner of the calculator screen. In each shift mode, a different set of 6 special functions will be available on the top row of the top buttons. If the user wishes to edit the problem instead of re-entering the whole problem, they have several options. The first and simplest option is to use the backspace button to delete from the end to where the modification is to be made, make the modification, and re-enter everything after the modificaton. A second and most precise option is to toggle on the cursor mode. When cursor mode is active, the word cursor will appear in the mode indicator section. After toggling on cursor mode, navigate with the cursor arrows to just before where the modification is to be made, delete backward from the cursor position what need be removed, enter forward from the cursor position what need be added, and hit the equal button. The equal button will deactivate cusor mode on solve, so toggling off, while harmless, is unecessary unless the user wishes to continue to enter the problem in default mode after modification. A third and final option is to enter a temporary cursor mode using the cursor navigation arrows without toggling on the cursor mode, which will auto-magically handle the cursor mode activation and deactivation, while offering full functionality of the cursor mode.
+A shift button is available on the bottom row of the top buttons, which will cycle through each of the 4 shift modes and display the current shift mode in the mode indicator section at the top right corner of the calculator screen. In each shift mode, a different set of 6 special functions will be available on the top row of the top buttons. If the user wishes to edit the problem instead of re-entering the whole problem, they have several options. The first and simplest option is to use the backspace button to delete from the end of the problem to where the modification is to be made, make the modification, and re-enter everything after the modificaton. A second and most precise option is to toggle on the cursor mode. When cursor mode is active, the word cursor will appear in the mode indicator section. After toggling on cursor mode, navigate with the cursor arrows to just before where the modification is to be made, delete backward from the cursor position to the end of what is to be removed, enter forward from the cursor position what need be added, and hit the equal button. The equal button will deactivate cusor mode on solve, so toggling off, while harmless, is unecessary unless the user wishes to continue to enter the problem in default mode after modification. A third and final option is to enter a temporary cursor mode using the cursor navigation arrows without toggling on the cursor mode, which will auto-magically handle the cursor mode activation and deactivation, while offering full functionality of the cursor mode.
 
 ## The GoodEval Calculator: Validation
-Performing a wide array of mathematical problems--in systems terms, a dynamical system--comes with the problem of a subtantial number of invalid inputs. To correct for this, there are two stages of validation: pre-validation and post-validation. Pre-validation serves a context-relevant error to the user when they attempt to enter an invalid problem, whereas post-validation tests the problem only on equal button press to ensure that any modifications made during cursor mode won't prohibit the calculation process or else, as in pre-validation, serve a context-relevant error. The automatic formatting for superscript and subscript in the calculator screen can be broken in cursor mode, though, this should not affect the calculation process, as formatting is merely a way to provide user feedback for clarity about how that problem will be interpretted if it were properly entered.
+Performing a wide array of mathematical problems--in systems terms: a dynamical system--comes with the problem of a subtantial number of invalid inputs. To correct for this, there are two stages of validation: pre-validation and post-validation. Pre-validation serves a context-relevant error to the user when they attempt to enter an invalid problem, whereas post-validation tests the problem only on equal button press to ensure that any modifications made during cursor mode won't prohibit the calculation process or else, as in pre-validation, serve a context-relevant error. The automatic formatting for superscript and subscript in the calculator screen can be broken in cursor mode, though, this should not affect the calculation process, as formatting is merely a way to provide user feedback for clarity about how that problem will be interpretted if it were properly entered.
 
 ## The GoodEval Evaluator: Feature Overview
 Free from the graphical user interface constraints of the GoodEval Calculator, the GoodEval Evaluator offers a more comprehensive assortment of functionality powered by the Eval API. In order that the functionality remain extensible without over-processing, Eval API has a comprehensive system of modular bypasses that prevent running of functionality irrelevant to the expression that the Evaluator is tasked with solving. While advanced calculators are capable of complex calculation, same as the Evaluator, the user is required to endure the tedium of memorizing how to input such complex expressions in an arbitrary textual equivilent to mathematical notation. In contrast, the Evaluator maintains a convenient shorthand for longer or more complex expressions by involving keywords that access a multitude of built-in special functions.
@@ -26,7 +29,7 @@ Different from calculation of numeral data in real-time, string evaluation calcu
 The GoodEval Operator is a computational software for demonstrating the properties of mathematical operators over a variety of operands, e.g. quantities, sets, and domains or groups. It can be used to explore and compare operations either for pleasure or study or both.
 
 ## The GoodEval Operator: Operators
-Mathematical operators are the generalization or abstraction of an arithemetic operation, such as addition or multiplication, and are important to understanding properties of operation by which operators may be compared and contrasted, then applied to respective domains of application. The arity of an operator is the number of quantities or mathematical objects involved in that operator's operation, and includes binary operators, which have two inputs, trinary operators, which have three inputs, and so on so forth. Operators with an arity of one either don't operate at all or operate at a higher arity with that same input, so that the operation doesn't truly have an arity of one. Binary operators are special in that they serve as foundation for more complex operators that may combine or extend their operation, so it is sufficient to create a computational technology for operators that only requires two inputs.
+Mathematical operators are the generalization or abstraction of arithemetic operations like addition or multiplication, and are important to understanding properties of operation. The arity of an operator is the number of quantities or mathematical objects involved in that operator's operation, and includes unary operators, which have one operand, binary operators, which have two operands, trinary operators, which have three operands, and n-ary operators, which have n number of operands. Operators are further differentiated by operator properties, such as commutativity, associativity, reflexivity, Idempotency, ect., and the object types that they accept as operands and produce as products of their operation, such as vectors, matrices, and sets.
 
 ## Developer Resources
 
@@ -36,6 +39,7 @@ Mathematical operators are the generalization or abstraction of an arithemetic o
  - new project                              : `$django-admin startproject project-name`
  - new app                                  : `$python manage.py startapp app_name`
  - django version                           : `$python -m django --version`
+ - create venv                              : `$python -m venv env`
  - activate venv                            : `$venv/Scripts/activate`
  - deactivate venv                          : `$deactivate`
  - activate virtualenv                      : `$pipenv shell`
@@ -46,6 +50,7 @@ Mathematical operators are the generalization or abstraction of an arithemetic o
  - update Pipfile.lock                      : `$pipenv lock`
  - update requirements.txt                  : `$pip freeze > requirements.txt`
  - import pipfile from requirements.txt     : `$pipenv install -r path/to/requirements.txt`
+ - heroku remote branch                     : `$heroku git:remote --app goodeval`
  - heroku no static                         : `$heroku config:set DISABLE_COLLECTSTATIC=1`
  - heroku yes static                        : `$heroku config:unset DISABLE_COLLECTSTATIC`
  - heroku debug static                      : `$heroku config:set DEBUG_COLLECTSTATIC=1`
@@ -61,16 +66,11 @@ $release: python manage.py migrate$
 
 ### Procedures
 
-**Setup virtual environment (with venv)**
-1) Navigate to root directory
-2) run command: `$python -m venv venv`
-3) run command: `$venv/Scripts/activate`
-4) run command: `$python -m pip install --upgrade pip`
-5) run command: `$pipenv install -r requirements.txt`
-6) run command: `$python manage.py runserver 3000`
-
-**Breakdown virtual environment**
-1) run command (stop Django server if running): `$ctrl+c`
-2) run command: `$python -m pip freeze > requirements.txt`
-3) run command: `$deactivate`
-4) delete virtual environment folder (venv)
+**Setup Virtual Environment**
+1) create venv: `$python -m venv env`
+2) activate venv: `$venv/Scripts/activate`
+3) add environment variables
+4) install env manager: `$pip install pipenv`
+5) install dependencies `$pipenv sync`
+6) migrate `$python manage.py migrate`
+7) run local server `$python manage.py runserver 8000`
