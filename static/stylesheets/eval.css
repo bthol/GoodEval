@@ -23,7 +23,7 @@
 .home-button {
     position: absolute;
     top: 10px;
-    left: 5px;
+    left: 8px;
     background: none;
     border: 1px ridge #0dff00;
     color: #2fff2f;
@@ -59,13 +59,15 @@
     width: 95%;
     font-size: var(--font-size);
     transition: border 300ms;
+    text-wrap: nowrap;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #answer-field {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-y: scroll;
 }
 
 .button-style {
@@ -81,7 +83,7 @@
 }
 
 #info-button {
-    margin-bottom: 15px;
+    margin: 15px;
 }
 
 #info-container {
@@ -161,7 +163,7 @@
 }
 
 @media (hover: hover) {
-    /* hover functionality: everyhting else */
+    /* hover functionality: everything else */
     .field-style:hover {
         border: 1px ridge #e9ede7;
     }
@@ -178,9 +180,10 @@
 /* loader style */
 .elipses-container {
     width: 60%;
-    gap: 4.4vw;
     display: flex;
-    margin-bottom: 30px;
+    gap: 4.4vw;
+    margin-top: -15px;
+    margin-bottom: 20px;
 }
 
 .elipses-dot {

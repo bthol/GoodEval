@@ -14,25 +14,24 @@
     <!-- <a href="http://127.0.0.1:8000/" rel="noopener noreferrer" class="home-button">Home</a> -->
     <a href="https://goodeval-1d265775b25d.herokuapp.com/" rel="noopener noreferrer" class="home-button">Home</a>
     
-    <h2 class="title">GoodEval Evaluator</h2>
+    <h2 class="title" tabindex="0">GoodEval Evaluator</h2>
     
-    <div class="center-text status-text">
+    <div class="elipses-container"></div>
+    
+    <div class="center-text status-text" tabindex="0">
         <div>Status: </div>
         <div id="connection-status"></div>
     </div>
     
     <form action="./" method="GET" class="center-form">
-        <input id="problem-field" type="text" class="form-style field-style" min="1" required>
+        <input id="problem-field" type="text" class="form-style field-style" min="1" spellcheck="false" autocomplete="off" autofocus required>
         <button id="evaluate-button" type="button" class="form-style button-style">evaluate</button>
-        <div id="answer-field" class="form-style field-style"></div>
+        <div id="answer-field" class="form-style field-style" tabindex="0"></div>
     </form>
     
-
-    <div class="elipses-container"></div>
-
     <button id="info-button" class="form-style button-style" type="button">Info</button>
 
-    <div id="info-container" class="form-style"></div>
+    <div id="info-container" class="form-style" tabindex="0"></div>
 
 </body>
 </html>

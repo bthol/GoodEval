@@ -213,6 +213,7 @@ infoBtn.addEventListener('click', () => {
 
             // select container element
             const container = document.querySelector('#info-container');
+            container.innerHTML = '';
 
             // start loader
             startLoader();
@@ -233,10 +234,6 @@ infoBtn.addEventListener('click', () => {
 
                     // clear previous info
                     container.innerHTML = '';
-
-                    // append response to container element
-                    console.log(data);
-                    // container.innerHTML = JSON.stringify(data);
 
                     // build elements for info display format
                     const headTitle = document.createElement('h3');
@@ -306,8 +303,7 @@ infoBtn.addEventListener('click', () => {
 });
 
 // Evaluate problem string by request to Eval API
-const evalBtn = document.querySelector('#evaluate-button');
-evalBtn.addEventListener('click', () => {
+function eval() {
     // test for internet connection
     if (window.navigator.onLine === true) {
         // debounce to prevent excessive requests
@@ -388,5 +384,12 @@ evalBtn.addEventListener('click', () => {
             connectionStatusDisplay.style.color = '#2fff2f';
         }, 1000);
     }
+};
 
+document.querySelector('#evaluate-button').addEventListener('click', eval);
+document.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        eval();
+    }
 });

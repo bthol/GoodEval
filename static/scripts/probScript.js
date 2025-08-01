@@ -470,7 +470,9 @@ function calculate(prob) {
     }
 
     // run key functions
-    prob = runKeyFunctions(prob);
+    for (let i = 0; i < keyInfo.length; i++) {
+        prob = keyFunction(keyInfo[i].key, keyInfo[i].funct, prob);
+    }
     
     // perform all Exponents and Radicals as they appear from left to right
     let expIdx = getIdx(operation.exp, prob);
@@ -873,15 +875,6 @@ function keyFunction(key, funct, prob) {
         idx = getIdx(key, prob);
     }
     return prob;
-};
-
-function runKeyFunctions(prob) {
-    // runs all key functions
-    let p = prob;
-    for (let i = 0; i < keyInfo.length; i++) {
-        p = keyFunction(keyInfo[i].key, keyInfo[i].funct, p);
-    }
-    return p;
 };
 
 // tests
