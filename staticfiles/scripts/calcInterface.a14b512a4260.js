@@ -232,23 +232,19 @@ function scaleIt() {
 function conditionalRender() {
     // adjust view by breakpoints
     const selectThemeContainer = document.body.querySelector('#select-theme-container');
-    const width = window.innerWidth;
-    if (width < 712) {
+    if (window.innerWidth < 712) {
         if (selectThemeContainer.firstElementChild.getAttributeNode('for') !== null) {
             // first child is label tag
             // remove label
-            console.log('below');
             selectThemeContainer.removeChild(selectThemeContainer.firstElementChild);
         }
     } else {
         if (selectThemeContainer.firstElementChild.id === 'select-theme') {
             // first child is select tag = no label element
             // add label
-            console.log('above');
             const label = document.createElement('label');
             label.setAttribute('for', 'select-theme');
             label.innerText = 'Theme';
-            console.log(label);
             selectThemeContainer.prepend(label);
         }
     }

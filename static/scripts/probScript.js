@@ -24,6 +24,7 @@ const hstPanel = document.querySelector('#history-panel');
 const btns = document.querySelector('.btns');
 
 // question history
+const historyMax = 50; // sets the maximum number of problems stored in history
 let history = [];
 
 // question structures
@@ -239,7 +240,6 @@ function getScale() {
     const x = getComputedStyle(document.body).getPropertyValue('--scale-calc-size');
     return Number(x.substring(0, x.length - 2));
 };
-console.log(getScale());
 
 // Shift Mode Toggles
 function toggleShiftMode() {
@@ -453,7 +453,6 @@ function calculate(prob) {
     const max = 10;
 
     // negate values
-    console.log('Negating values...');
     let negations = true;
     let count = 0;
     while (count < max && negations) {
@@ -469,13 +468,9 @@ function calculate(prob) {
             }
         }
     }
-    console.log('Negated.');
 
     // run key functions
-    console.log('Running key functions...');
     prob = runKeyFunctions(prob);
-    console.log('Ran.');
-    console.log('Performing Arithmetic...');
     
     // perform all Exponents and Radicals as they appear from left to right
     let expIdx = getIdx(operation.exp, prob);
@@ -676,7 +671,7 @@ function calculate(prob) {
             aIdx = getIdx(operation.add, prob);
         }
     }
-    console.log('Performed.');
+
     return prob;
 };
 
@@ -760,18 +755,6 @@ function getIdx(key, struct) {
     return false;
 };
 
-function specialNumberValues() {
-    // convert special number symbols to values for calculation in whole problem structure
-    for (let i = 0; i < specialInfo.length; i++) {
-        let idx = getIdx(specialInfo[i].symbol, answer);
-        let itr = 0;
-        while (itr < 100 && idx !== false) {
-            answer = restructure(specialInfo[i].value, idx, idx + 1, answer);
-            idx = getIdx(specialInfo[i].symbol, answer);
-        }
-    }
-};
-
 function structureString() {
     // structures string
     let struct = [];
@@ -850,7 +833,7 @@ function getSection(open, close) {
 function section() {
     let section = getSection('(', ')');
     let count = 0;
-    while (count < 10 && section) {
+    while (count < 100 && section) {
         answer = restructure(calculate(section.sect), section.start, section.end, answer);
         // prepare for next iteraton
         section = getSection('(', ')');
@@ -1061,7 +1044,6 @@ function validQuant(key = false, special = false) {
                                         return true;
                                     } else {
                                         // last str is formatted
-                                        console.log(i);
                                         if (isKey(i)) {
                                             // formatted key is allowed
                                             return true;
@@ -1777,14 +1759,7 @@ function cursorHighlight() {
 
 function evaluate() {
     // run on equal button click
-    console.log(problem);
-
-    console.log('Validating...');
-
     if (validProblem()) {
-
-        console.log('Valid.');
-        
         // update problem display
         cursorMode = false;
         updateProblem();
@@ -1797,24 +1772,28 @@ function evaluate() {
         }
 
         // structure string
-        console.log('Structuring strings...');
         structureString();
-        console.log('Structured.');
+        
         // convert special number symbols to values
-        console.log('Converting special number symbols to values...');
-        specialNumberValues();
-        console.log('Converted.');
+        for (let i = 0; i < specialInfo.length; i++) {
+            let idx = getIdx(specialInfo[i].symbol, answer);
+            let itr = 0;
+            while (itr < 100 && idx !== false) {
+                answer = restructure(specialInfo[i].value, idx, idx, answer);
+                idx = getIdx(specialInfo[i].symbol, answer);
+            }
+        }
+        
         // perform arithmetic
-        console.log('Solving...');
         section();
+
         // display answer
-        console.log('Solved.');
         updateAnswer();
 
         // reset program for next question
 
         // save question to history
-        if (history.length < 10) {
+        if (history.length < historyMax) {
             // convert problem structure to string
             let prob = '';
             problem.forEach((p) => {
@@ -1839,8 +1818,6 @@ function evaluate() {
         formatSuperscript = false;
         formatSubscript = false;
 
-    } else {
-        console.log('Invalid.');
     }
 };
 
@@ -1952,7 +1929,6 @@ btns.addEventListener('click', (e) => {
 
         } else if (type === 'special') {
             if (id === 'btn-clear') {
-                console.log('clear');
                 // clear data in structures
                 problem = [];
                 answer = [];
@@ -1986,16 +1962,12 @@ btns.addEventListener('click', (e) => {
 
         } else if (type === 'cursor') {
             if (id === 'btn-backspace') {
-                console.log('<—');
                 backspace(problem);
             } else if (id === 'btn-cursor-mode') {
-                console.log("cursor mode toggled");
                 toggleCursorMode();
             } else if (id === 'btn-cursor-forward') {
-                console.log('>');
                 cursorForward();
             } else if (id === 'btn-cursor-backward') {
-                console.log('<');
                 cursorBack();
             }
         
@@ -2092,7 +2064,7 @@ btnHst.addEventListener('click', () => {
                 div.style.borderBottom = '1px solid #adafb8';
                 div.style.paddingBottom = '5px';
                 hstPanel.appendChild(div);
-            });
+            })
         } else {
             const div = document.createElement('div');
             div.innerText = 'No History';
