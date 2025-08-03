@@ -39,6 +39,7 @@ let cursorModeToggled = false; // prevents defaulting on timeout cursor navigati
 // format toggles
 let formatSuperscript = false;
 let formatSubscript = false;
+let answered = false; // used to determine when answer should clear on input of new problem
 
 // Global Indexes
 let cursorIdx = 0;
@@ -450,7 +451,7 @@ function expFormat() {
 // calculation
 function calculate(prob) {
     // parameters
-    const max = 10;
+    const max = 100;
 
     // negate values
     let negations = true;
@@ -1811,6 +1812,8 @@ function evaluate() {
         formatSuperscript = false;
         formatSubscript = false;
 
+        // set bool for clear answer on input of new problem
+        answered = true;
     }
 };
 
@@ -1819,6 +1822,14 @@ function evaluate() {
 btns.addEventListener('click', (e) => {
     // exclude the container elements
     if (e.target.classList[0] !== 'top-button-container' && e.target.classList[0] !== 'bottom-button-container') {
+        // clear answer to previous problem on input of new problem
+        if (answered) {
+            answered = false;
+            if (answer.length > 0) {
+                answer = [];
+            }
+            updateAnswer();
+        }
         // clear cache for input while error is displaying
         clearTimeout(formatErrorCache);
         // get target info
