@@ -1,13 +1,13 @@
 /* THEMES */
 .color-theme-1 {
     --color-font: #ffffff;
-    --color-bckgrnd-2: #2e2e2e;
-    --color-bckgrnd-3: #3b3b3e;
+    --color-bckgrnd-2: #333333;
+    --color-bckgrnd-3: #3c3c44;
     --color-border-1: #808080;
     --color-border-2: #6c6c6c;
     --color-border-3: #1f1f1f;
     --color-border-4: #ababab;
-    --color-fill-2: #262239;
+    --color-fill-2: #2b2640;
     --color-screen: #a3c2a8;
 }
 
