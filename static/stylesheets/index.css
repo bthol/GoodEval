@@ -15,14 +15,17 @@ nav {
     font-size: 3.5vw;
 }
 
+.software-card-arrow {
+    cursor: pointer;
+}
+
 .arrow {
-    margin: 10px;
+    margin: 5px;
     width: 15px;
     height: 15px;
     border-left: 5px solid black;
     border-top: 5px solid black;
     position: relative;
-    cursor: pointer;
 }
 
 .arrow-up {
@@ -48,18 +51,18 @@ nav {
     border-radius: 7px;
     border: 1px solid #7c7e8d;
     margin: 0px 7px 7px 7px;
-    padding: 1.5vmin 0vmin;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 15px 0px;
+    gap: 12px;
 }
 
 .software-card-text {
     height: 0px;
     overflow: hidden;
-    padding: 0em 1.5em;
-    margin-bottom: 7px;
+    padding: 0px 8px;
     background: var(--nav-background);
     outline: 1px solid #7c7e8d;
 }
@@ -71,7 +74,6 @@ nav {
 
 .software-card > a {
     font-size: 3.5vw;
-    padding-bottom: 1.5vmin;
 }
 
 .software-card > div {
