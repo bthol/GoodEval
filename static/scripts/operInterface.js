@@ -278,7 +278,7 @@ function buildMatrix(mat, col, row) {
             x.setAttribute('type', 'number');
             x.setAttribute('value', '0');
             x.setAttribute('name', `${mat}-${r},${c}`);
-            x.setAttribute('class', `matrix-${mat}-col-${c} matrix-${mat}-row-${r}`);
+            x.setAttribute('class', `matrix-${mat}-row-${r} matrix-${mat}-col-${c}`);
             x.innerText = matVal;
 
             // append elements
@@ -2013,35 +2013,39 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
         }
     } else if (operandType === 'matrix') {
         if (operatorType === 'matrix addition') {
-            // build array row by row
+            // get matrix ranks
             const rowRankA = Number(document.querySelector('#row-rank-a').value);
             const colRankA = Number(document.querySelector('#col-rank-a').value);
             const rowRankB = Number(document.querySelector('#row-rank-b').value);
             const colRankB = Number(document.querySelector('#col-rank-b').value);
 
             if (rowRankA === rowRankB && colRankA === colRankB) {
-                let rowsA = []; // contains all rows of Matrix A in order
-                let rowsB = []; // contains all rows of Matrix B in order
-                let rows = []; // contains sums of all elements in rowsA and rowsB
+                let colsA = []; // contains all columns of Matrix A in order
+                let colsB = []; // contains all columns of Matrix B in order
+                let cols = []; // contains sums of all elements in colsA and colsB
                 
-                // populate rowsA
+                // populate colsA
                 for (let i = 1; i < rowRankA + 1; i++) {
-                    document.querySelectorAll(`.matrix-A-row-${i}`).forEach((val) => {
-                        rowsA.push(Number(val.value));
+                    document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                        colsA.push(Number(val.value));
                     });
                 }
                 
-                // populate rowsB
+                // populate colsB
                 for (let i = 1; i < rowRankB + 1; i++) {
-                    document.querySelectorAll(`.matrix-B-row-${i}`).forEach((val) => {
-                        rowsB.push(Number(val.value));
+                    document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
+                        colsB.push(Number(val.value));
                     });
                 }
     
-                // populate rows
-                for (let i = 0; i < rowsA.length; i++) {
-                    rows.push(rowsA[i] + rowsB[i]);
+                // populate cols
+                for (let i = 0; i < colsA.length; i++) {
+                    cols.push(colsA[i] + colsB[i]);
                 }
+
+                console.log(colsA);
+                console.log(colsB);
+                console.log(cols);
 
                 // build product matrix element
                 const matProd = document.createElement('div');
@@ -2055,7 +2059,7 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                         label.innerText = `C ${r},${c}`;
                         
                         const matProdVal = document.createElement('div');
-                        matProdVal.innerText = `${rows[count]}`; 
+                        matProdVal.innerText = `${cols[count]}`; 
                         
                         // append elements
                         matProd.appendChild(label);
