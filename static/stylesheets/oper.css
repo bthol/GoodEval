@@ -56,3 +56,8 @@ label {
 #answer-field {
     border: 2px solid #fffef0;
 }
+
+.matrix {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
