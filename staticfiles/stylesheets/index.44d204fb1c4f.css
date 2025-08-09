@@ -1,0 +1,115 @@
+.body {
+    margin: 0px;
+}
+
+header {
+    margin: 0px;
+    font-size: 5vw;
+    background: var(--title-background);
+}
+
+nav {
+    background: var(--nav-background);
+    border-top: 1px double #7c7e8d;
+    border-bottom: 1px double #7c7e8d;
+    font-size: 3.5vw;
+}
+
+.software-card-arrow {
+    cursor: pointer;
+}
+
+.arrow {
+    margin: 5px;
+    width: 15px;
+    height: 15px;
+    border-left: 5px solid black;
+    border-top: 5px solid black;
+}
+
+.arrow-up {
+    transform: rotate(45deg);
+}
+
+.arrow-down {
+    transform: rotate(-135deg);
+}
+
+.software-card-container {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    font-size: 3.5vw;
+    background: var(--nav-background);
+    border-bottom: 1px double #7c7e8d;
+    padding-top: 7px;
+}
+
+.software-card {
+    background: var(--content-highlight);
+    border-radius: 7px;
+    border: 1px solid #7c7e8d;
+    margin: 0px 7px 7px 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 15px 0px;
+    gap: 12px;
+}
+
+.software-card-text {
+    height: 0px;
+    overflow: hidden;
+    padding: 0px 8px;
+    background: var(--nav-background);
+    outline: 1px solid #7c7e8d;
+}
+
+.software-card-text > p:last-child {
+    text-align: left;
+    text-indent: 3em;
+}
+
+.software-card > a {
+    font-size: 3.5vw;
+}
+
+.software-card > div {
+    font-size: 2vw;
+}
+
+/* maximum fonts for navigation */
+@media(min-width: 941px) {
+    header {
+        font-size: 48px;
+    }
+    nav {
+        font-size: 34px;
+    }
+    .software-card > a {
+        font-size: 34px;
+    }
+    .software-card > div {
+        font-size: 20px;
+    }
+}
+
+/* minimum fonts for navigation */
+@media(max-width: 712px) {
+    header {
+        font-size: 35px;
+    }
+    nav {
+        font-size: 25px;
+    }
+    .software-card-container {
+        grid-template-columns: 1fr;
+    }
+    .software-card > a {
+        font-size: 25px;
+    }
+    .software-card > div {
+        font-size: 15px;
+    }
+}
