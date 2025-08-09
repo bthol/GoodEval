@@ -255,7 +255,7 @@ function minimumDomainValueValidB() {
 
 // Matrix
 
-function buildMatrix(mat, col, row) {
+function buildMatrix(mat, row, col) {
     // builds a matrix
     // mat = matrix letter (e.g., A, B, C)
     // col = number of columns
@@ -409,14 +409,6 @@ function updateMatrixForm() {
         const labelA = document.createElement('label');
         labelA.setAttribute('for', 'Matrix A');
         labelA.innerText = 'Matrix A';
-
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
         
         const rowRankA = document.createElement('input');
         rowRankA.setAttribute('id', 'row-rank-a');
@@ -425,19 +417,19 @@ function updateMatrixForm() {
         rowRankA.setAttribute('min', '2');
         rowRankA.setAttribute('value', rowsA);
         rowRankA.setAttribute('required', 'true');
+        
+        const colRankA = document.createElement('input');
+        colRankA.setAttribute('id', 'col-rank-a');
+        colRankA.setAttribute('type', 'number');
+        colRankA.setAttribute('name', 'col-rank-a');
+        colRankA.setAttribute('min', '2');
+        colRankA.setAttribute('value', columnsA);
+        colRankA.setAttribute('required', 'true');
 
         // Matrix B
         const labelB = document.createElement('label');
         labelB.setAttribute('for', 'Matrix B');
         labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
         
         const rowRankB = document.createElement('input');
         rowRankB.setAttribute('id', 'row-rank-b');
@@ -447,20 +439,28 @@ function updateMatrixForm() {
         rowRankB.setAttribute('value', rowsB);
         rowRankB.setAttribute('required', 'true');
 
+        const colRankB = document.createElement('input');
+        colRankB.setAttribute('id', 'col-rank-b');
+        colRankB.setAttribute('type', 'number');
+        colRankB.setAttribute('name', 'col-rank-b');
+        colRankB.setAttribute('min', '2');
+        colRankB.setAttribute('value', columnsB);
+        colRankB.setAttribute('required', 'true');
+
         // append elements
         containerElement.appendChild(selectLabel);
         containerElement.appendChild(select);
 
         containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
         containerElement.appendChild(rowRankA);
+        containerElement.appendChild(colRankA);
         
         containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
+        containerElement.appendChild(colRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
     } else if (option === 'matrix multiplication') {
         // operator selector label
@@ -572,8 +572,8 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
     } else if (option === 'scalar multiplication') {
         // operator selector label
@@ -685,8 +685,8 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
     } else if (option === 'multiply by inverse') {
         // operator selector label
@@ -798,8 +798,8 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
     } else if (option === 'inverse') {
         // operator selector label
@@ -911,8 +911,8 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
     } else if (option === 'transpose') {
         // operator selector label
@@ -1024,8 +1024,8 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
     } else if (option === 'negation') {
         // operator selector label
@@ -1137,8 +1137,8 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
 
-        containerElement.appendChild(buildMatrix('A', columnsA, rowsA));
-        containerElement.appendChild(buildMatrix('B', columnsB, rowsB));
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
     }
 
     // add listeners
@@ -1686,14 +1686,6 @@ function updateForm() {
         labelA.setAttribute('for', 'Matrix A');
         labelA.innerText = 'Matrix A';
 
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', `${defaultColumns}`);
-        colRankA.setAttribute('required', 'true');
-        
         const rowRankA = document.createElement('input');
         rowRankA.setAttribute('id', 'row-rank-a');
         rowRankA.setAttribute('type', 'number');
@@ -1702,18 +1694,18 @@ function updateForm() {
         rowRankA.setAttribute('value', `${defaultRows}`);
         rowRankA.setAttribute('required', 'true');
         
+        const colRankA = document.createElement('input');
+        colRankA.setAttribute('id', 'col-rank-a');
+        colRankA.setAttribute('type', 'number');
+        colRankA.setAttribute('name', 'col-rank-a');
+        colRankA.setAttribute('min', '2');
+        colRankA.setAttribute('value', `${defaultColumns}`);
+        colRankA.setAttribute('required', 'true');
+        
         // Matrix B
         const labelB = document.createElement('label');
         labelB.setAttribute('for', 'Matrix B');
         labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', `${defaultColumns}`);
-        colRankB.setAttribute('required', 'true');
         
         const rowRankB = document.createElement('input');
         rowRankB.setAttribute('id', 'row-rank-b');
@@ -1723,20 +1715,28 @@ function updateForm() {
         rowRankB.setAttribute('value', `${defaultRows}`);
         rowRankB.setAttribute('required', 'true');
 
+        const colRankB = document.createElement('input');
+        colRankB.setAttribute('id', 'col-rank-b');
+        colRankB.setAttribute('type', 'number');
+        colRankB.setAttribute('name', 'col-rank-b');
+        colRankB.setAttribute('min', '2');
+        colRankB.setAttribute('value', `${defaultColumns}`);
+        colRankB.setAttribute('required', 'true');
+
         // append elements
         containerElement.appendChild(selectLabel);
         containerElement.appendChild(select);
 
         containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
         containerElement.appendChild(rowRankA);
+        containerElement.appendChild(colRankA);
         
         containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
         containerElement.appendChild(rowRankB);
+        containerElement.appendChild(colRankB);
 
-        containerElement.appendChild(buildMatrix('A', defaultColumns, defaultRows));
-        containerElement.appendChild(buildMatrix('B', defaultColumns, defaultRows));
+        containerElement.appendChild(buildMatrix('A', defaultRows, defaultColumns));
+        containerElement.appendChild(buildMatrix('B', defaultRows, defaultColumns));
 
         // add listeners
         document.querySelector('#operator-type').addEventListener('change', updateMatrixForm);
@@ -2019,33 +2019,61 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
             const rowRankB = Number(document.querySelector('#row-rank-b').value);
             const colRankB = Number(document.querySelector('#col-rank-b').value);
 
+            // compare ranks between matrices
             if (rowRankA === rowRankB && colRankA === colRankB) {
-                let colsA = []; // contains all columns of Matrix A in order
-                let colsB = []; // contains all columns of Matrix B in order
-                let cols = []; // contains sums of all elements in colsA and colsB
-                
-                // populate colsA
-                for (let i = 1; i < rowRankA + 1; i++) {
-                    document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
-                        colsA.push(Number(val.value));
-                    });
-                }
-                
-                // populate colsB
-                for (let i = 1; i < rowRankB + 1; i++) {
-                    document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
-                        colsB.push(Number(val.value));
-                    });
-                }
-    
-                // populate cols
-                for (let i = 0; i < colsA.length; i++) {
-                    cols.push(colsA[i] + colsB[i]);
-                }
 
-                console.log(colsA);
-                console.log(colsB);
-                console.log(cols);
+                // initialize strutures
+                let valsA = []; // contains all values of Matrix A in order
+                let valsB = []; // contains all values of Matrix B in order
+                let vals = []; // contains sums of all elements in valsA and valsB
+                
+                // determine larger rank
+                if (rowRankA < colRankA) {
+
+                    // columns have larger rank
+                    
+                    // populate valsA
+                    for (let i = 1; i < colRankA + 1; i++) {
+                        document.querySelectorAll(`.matrix-A-row-${i}`).forEach((val) => {
+                            valsA.push(Number(val.value));
+                        });
+                    }
+                    
+                    // populate valsB
+                    for (let i = 1; i < colRankA + 1; i++) {
+                        document.querySelectorAll(`.matrix-B-row-${i}`).forEach((val) => {
+                            valsB.push(Number(val.value));
+                        });
+                    }
+        
+                    // populate vals
+                    for (let i = 0; i < valsA.length; i++) {
+                        vals.push(valsA[i] + valsB[i]);
+                    }
+
+                } else {
+
+                    // ranks are the same or rows have larger rank
+
+                    // populate valsA
+                    for (let i = 1; i < rowRankA + 1; i++) {
+                        document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                            valsA.push(Number(val.value));
+                        });
+                    }
+                    
+                    // populate valsB
+                    for (let i = 1; i < rowRankA + 1; i++) {
+                        document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
+                            valsB.push(Number(val.value));
+                        });
+                    }
+        
+                    // populate vals
+                    for (let i = 0; i < valsA.length; i++) {
+                        vals.push(valsA[i] + valsB[i]);
+                    }
+                }
 
                 // build product matrix element
                 const matProd = document.createElement('div');
@@ -2059,7 +2087,7 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                         label.innerText = `C ${r},${c}`;
                         
                         const matProdVal = document.createElement('div');
-                        matProdVal.innerText = `${cols[count]}`; 
+                        matProdVal.innerText = `${vals[count]}`; 
                         
                         // append elements
                         matProd.appendChild(label);
