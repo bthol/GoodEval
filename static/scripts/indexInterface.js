@@ -1,7 +1,7 @@
 console.log('Interface Script Loaded.');
 
 // event delegation for extensible software card interface
-function softwareCardFunction(event) {
+function softwareCardUpdate(event) {
     event.preventDefault();
     const className = event.target.classList[0];
     // if target is software arrow container or has arrow class and parent is software arrow container
@@ -43,5 +43,5 @@ function softwareCardFunction(event) {
     }
 }
 
-document.querySelector('.software-card-container').addEventListener('click', softwareCardFunction);
-// document.querySelector('.software-card-container').addEventListener('touchstart', softwareCardFunction);
+document.querySelector('.software-card-container').addEventListener('click', softwareCardUpdate);
+document.querySelector('.software-card-container').addEventListener('touchstart', softwareCardUpdate);
