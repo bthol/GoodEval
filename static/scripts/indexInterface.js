@@ -2,7 +2,6 @@ console.log('Interface Script Loaded.');
 
 // event delegation for extensible software card interface
 function softwareCardUpdate(event) {
-    event.preventDefault();
     const className = event.target.classList[0];
     // if target is software arrow container or has arrow class and parent is software arrow container
     if (className === 'software-card-arrow' || className === 'arrow' && event.target.parentNode.classList[0] === 'software-card-arrow') {
