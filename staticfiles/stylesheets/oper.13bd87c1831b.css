@@ -19,7 +19,7 @@ label {
 
 .field-width {
     width: 99vw;
-    overflow: scroll;
+    overflow: hidden;
 }
 @media (min-width: 300px) {
     .field-width {
