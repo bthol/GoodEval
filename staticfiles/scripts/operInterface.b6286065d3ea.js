@@ -319,12 +319,21 @@ function displayProductMatrix(rows, cols, vals) {
     document.querySelector('#answer-field').appendChild(matProd);
 };
 
+function buildOption(name, selected = false) {
+    const option = document.createElement('option');
+    option.setAttribute('name', name);
+    option.setAttribute('value', name);
+    option.innerText = name;
+    if (selected) {option.setAttribute('selected', true)};
+    return option;
+};
+
 function updateMatrixForm() {
     
-    // store option
+    // store parameters
     const option = document.querySelector('#operator-type').value;
     
-    // store parameters
+    // matrix A parameters
     let columnsA = '2';
     let rowsA = '2';
     const columnElementA = document.querySelector('#col-rank-a');
@@ -336,6 +345,7 @@ function updateMatrixForm() {
         rowsA = rowElementA.value;
     }
     
+    // matrix B parameters
     let columnsB = '2';
     let rowsB = '2';
     const columnElementB = document.querySelector('#col-rank-b');
@@ -376,6 +386,9 @@ function updateMatrixForm() {
     // clear previous elements
     containerElement.innerHTML = '';
 
+    // clear previous answer
+    document.querySelector('#answer-field').innerHTML = '';
+
     // render correct content
     if (option === 'matrix addition') {
         // operator selector label
@@ -390,48 +403,14 @@ function updateMatrixForm() {
         select.setAttribute('required', 'true');
         select.setAttribute('value', 'matrix addition');
 
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.setAttribute('selected', true);
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        // const option3 = document.createElement('option');
-        // option3.setAttribute('name', 'scalar multiplication');
-        // option3.setAttribute('value', 'scalar multiplication');
-        // option3.innerText = 'scalar multiplication';
-        // select.appendChild(option3);
-        
-        // const option4 = document.createElement('option');
-        // option4.setAttribute('name', 'multiply by inverse');
-        // option4.setAttribute('value', 'multiply by inverse');
-        // option4.innerText = 'multiply by inverse';
-        // select.appendChild(option4);
-        
-        // const option5 = document.createElement('option');
-        // option5.setAttribute('name', 'inverse');
-        // option5.setAttribute('value', 'inverse');
-        // option5.innerText = 'inverse';
-        // select.appendChild(option5);
-        
-        // const option6 = document.createElement('option');
-        // option6.setAttribute('name', 'transpose');
-        // option6.setAttribute('value', 'transpose');
-        // option6.innerText = 'tranpose';
-        // select.appendChild(option6);
-        
-        // const option7 = document.createElement('option');
-        // option7.setAttribute('name', 'negation');
-        // option7.setAttribute('value', 'negation');
-        // option7.innerText = 'negation';
-        // select.appendChild(option7);
+        select.appendChild(buildOption('matrix addition', true));
+        select.appendChild(buildOption('matrix multiplication'));
+        select.appendChild(buildOption('matrix subtraction'));
+        // select.appendChild(buildOption('matrix division'));
+        // select.appendChild(buildOption('scalar multiplication'));
+        // select.appendChild(buildOption('negation'));
+        // select.appendChild(buildOption('inversion'));
+        // select.appendChild(buildOption('transposition'));
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -503,48 +482,14 @@ function updateMatrixForm() {
         select.setAttribute('required', 'true');
         select.setAttribute('value', 'matrix addition');
 
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.setAttribute('selected', true);
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        // const option3 = document.createElement('option');
-        // option3.setAttribute('name', 'scalar multiplication');
-        // option3.setAttribute('value', 'scalar multiplication');
-        // option3.innerText = 'scalar multiplication';
-        // select.appendChild(option3);
-        
-        // const option4 = document.createElement('option');
-        // option4.setAttribute('name', 'multiply by inverse');
-        // option4.setAttribute('value', 'multiply by inverse');
-        // option4.innerText = 'multiply by inverse';
-        // select.appendChild(option4);
-        
-        // const option5 = document.createElement('option');
-        // option5.setAttribute('name', 'inverse');
-        // option5.setAttribute('value', 'inverse');
-        // option5.innerText = 'inverse';
-        // select.appendChild(option5);
-        
-        // const option6 = document.createElement('option');
-        // option6.setAttribute('name', 'transpose');
-        // option6.setAttribute('value', 'transpose');
-        // option6.innerText = 'tranpose';
-        // select.appendChild(option6);
-        
-        // const option7 = document.createElement('option');
-        // option7.setAttribute('name', 'negation');
-        // option7.setAttribute('value', 'negation');
-        // option7.innerText = 'negation';
-        // select.appendChild(option7);
+        select.appendChild(buildOption('matrix addition'));
+        select.appendChild(buildOption('matrix multiplication', true));
+        select.appendChild(buildOption('matrix subtraction'));
+        // select.appendChild(buildOption('matrix division'));
+        // select.appendChild(buildOption('scalar multiplication'));
+        // select.appendChild(buildOption('negation'));
+        // select.appendChild(buildOption('inversion'));
+        // select.appendChild(buildOption('transposition'));
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -603,570 +548,90 @@ function updateMatrixForm() {
         containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
         containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
 
+    } else if (option === 'matrix subtraction') {
+        // operator selector label
+        const selectLabel = document.createElement('label');
+        selectLabel.setAttribute('for', 'operator-type');
+        selectLabel.innerText = 'Operator';
+        
+        // operator selection
+        const select = document.createElement('select');
+        select.setAttribute('id', 'operator-type');
+        select.setAttribute('name', 'operator-type');
+        select.setAttribute('required', 'true');
+        select.setAttribute('value', 'matrix addition');
+
+        select.appendChild(buildOption('matrix addition'));
+        select.appendChild(buildOption('matrix multiplication'));
+        select.appendChild(buildOption('matrix subtraction', true));
+        // select.appendChild(buildOption('matrix division'));
+        // select.appendChild(buildOption('scalar multiplication'));
+        // select.appendChild(buildOption('negation'));
+        // select.appendChild(buildOption('inversion'));
+        // select.appendChild(buildOption('transposition'));
+
+        // Matrix A
+        const labelA = document.createElement('label');
+        labelA.setAttribute('for', 'Matrix A');
+        labelA.innerText = 'Matrix A';
+        
+        const rowRankA = document.createElement('input');
+        rowRankA.setAttribute('id', 'row-rank-a');
+        rowRankA.setAttribute('type', 'number');
+        rowRankA.setAttribute('name', 'row-rank-a');
+        rowRankA.setAttribute('min', '2');
+        rowRankA.setAttribute('value', rowsA);
+        rowRankA.setAttribute('required', 'true');
+        
+        const colRankA = document.createElement('input');
+        colRankA.setAttribute('id', 'col-rank-a');
+        colRankA.setAttribute('type', 'number');
+        colRankA.setAttribute('name', 'col-rank-a');
+        colRankA.setAttribute('min', '2');
+        colRankA.setAttribute('value', columnsA);
+        colRankA.setAttribute('required', 'true');
+
+        // Matrix B
+        const labelB = document.createElement('label');
+        labelB.setAttribute('for', 'Matrix B');
+        labelB.innerText = 'Matrix B';
+        
+        const rowRankB = document.createElement('input');
+        rowRankB.setAttribute('id', 'row-rank-b');
+        rowRankB.setAttribute('type', 'number');
+        rowRankB.setAttribute('name', 'row-rank-b');
+        rowRankB.setAttribute('min', '2');
+        rowRankB.setAttribute('value', rowsB);
+        rowRankB.setAttribute('required', 'true');
+
+        const colRankB = document.createElement('input');
+        colRankB.setAttribute('id', 'col-rank-b');
+        colRankB.setAttribute('type', 'number');
+        colRankB.setAttribute('name', 'col-rank-b');
+        colRankB.setAttribute('min', '2');
+        colRankB.setAttribute('value', columnsB);
+        colRankB.setAttribute('required', 'true');
+
+        // append elements
+        containerElement.appendChild(selectLabel);
+        containerElement.appendChild(select);
+
+        containerElement.appendChild(labelA);
+        containerElement.appendChild(rowRankA);
+        containerElement.appendChild(colRankA);
+        
+        containerElement.appendChild(labelB);
+        containerElement.appendChild(rowRankB);
+        containerElement.appendChild(colRankB);
+
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
+
+    } else if (option === 'matrix division') {
     } else if (option === 'scalar multiplication') {
-        // operator selector label
-        const selectLabel = document.createElement('label');
-        selectLabel.setAttribute('for', 'operator-type');
-        selectLabel.innerText = 'Operator';
-        
-        // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.setAttribute('selected', true);
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        const option3 = document.createElement('option');
-        option3.setAttribute('name', 'scalar multiplication');
-        option3.setAttribute('value', 'scalar multiplication');
-        option3.innerText = 'scalar multiplication';
-        select.appendChild(option3);
-        
-        const option4 = document.createElement('option');
-        option4.setAttribute('name', 'multiply by inverse');
-        option4.setAttribute('value', 'multiply by inverse');
-        option4.innerText = 'multiply by inverse';
-        select.appendChild(option4);
-        
-        const option5 = document.createElement('option');
-        option5.setAttribute('name', 'inverse');
-        option5.setAttribute('value', 'inverse');
-        option5.innerText = 'inverse';
-        select.appendChild(option5);
-        
-        const option6 = document.createElement('option');
-        option6.setAttribute('name', 'transpose');
-        option6.setAttribute('value', 'transpose');
-        option6.innerText = 'tranpose';
-        select.appendChild(option6);
-        
-        const option7 = document.createElement('option');
-        option7.setAttribute('name', 'negation');
-        option7.setAttribute('value', 'negation');
-        option7.innerText = 'negation';
-        select.appendChild(option7);
-
-        // Matrix A
-        const labelA = document.createElement('label');
-        labelA.setAttribute('for', 'Matrix A');
-        labelA.innerText = 'Matrix A';
-
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
-        
-        const rowRankA = document.createElement('input');
-        rowRankA.setAttribute('id', 'row-rank-a');
-        rowRankA.setAttribute('type', 'number');
-        rowRankA.setAttribute('name', 'row-rank-a');
-        rowRankA.setAttribute('min', '2');
-        rowRankA.setAttribute('value', rowsA);
-        rowRankA.setAttribute('required', 'true');
-
-        // Matrix B
-        const labelB = document.createElement('label');
-        labelB.setAttribute('for', 'Matrix B');
-        labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
-        
-        const rowRankB = document.createElement('input');
-        rowRankB.setAttribute('id', 'row-rank-b');
-        rowRankB.setAttribute('type', 'number');
-        rowRankB.setAttribute('name', 'row-rank-b');
-        rowRankB.setAttribute('min', '2');
-        rowRankB.setAttribute('value', rowsB);
-        rowRankB.setAttribute('required', 'true');
-
-        // append elements
-        containerElement.appendChild(selectLabel);
-        containerElement.appendChild(select);
-
-        containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
-        containerElement.appendChild(rowRankA);
-        
-        containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
-        containerElement.appendChild(rowRankB);
-
-        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
-
-    } else if (option === 'multiply by inverse') {
-        // operator selector label
-        const selectLabel = document.createElement('label');
-        selectLabel.setAttribute('for', 'operator-type');
-        selectLabel.innerText = 'Operator';
-        
-        // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.setAttribute('selected', true);
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        const option3 = document.createElement('option');
-        option3.setAttribute('name', 'scalar multiplication');
-        option3.setAttribute('value', 'scalar multiplication');
-        option3.innerText = 'scalar multiplication';
-        select.appendChild(option3);
-        
-        const option4 = document.createElement('option');
-        option4.setAttribute('name', 'multiply by inverse');
-        option4.setAttribute('value', 'multiply by inverse');
-        option4.innerText = 'multiply by inverse';
-        select.appendChild(option4);
-        
-        const option5 = document.createElement('option');
-        option5.setAttribute('name', 'inverse');
-        option5.setAttribute('value', 'inverse');
-        option5.innerText = 'inverse';
-        select.appendChild(option5);
-        
-        const option6 = document.createElement('option');
-        option6.setAttribute('name', 'transpose');
-        option6.setAttribute('value', 'transpose');
-        option6.innerText = 'tranpose';
-        select.appendChild(option6);
-        
-        const option7 = document.createElement('option');
-        option7.setAttribute('name', 'negation');
-        option7.setAttribute('value', 'negation');
-        option7.innerText = 'negation';
-        select.appendChild(option7);
-
-        // Matrix A
-        const labelA = document.createElement('label');
-        labelA.setAttribute('for', 'Matrix A');
-        labelA.innerText = 'Matrix A';
-
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
-        
-        const rowRankA = document.createElement('input');
-        rowRankA.setAttribute('id', 'row-rank-a');
-        rowRankA.setAttribute('type', 'number');
-        rowRankA.setAttribute('name', 'row-rank-a');
-        rowRankA.setAttribute('min', '2');
-        rowRankA.setAttribute('value', rowsA);
-        rowRankA.setAttribute('required', 'true');
-
-        // Matrix B
-        const labelB = document.createElement('label');
-        labelB.setAttribute('for', 'Matrix B');
-        labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
-        
-        const rowRankB = document.createElement('input');
-        rowRankB.setAttribute('id', 'row-rank-b');
-        rowRankB.setAttribute('type', 'number');
-        rowRankB.setAttribute('name', 'row-rank-b');
-        rowRankB.setAttribute('min', '2');
-        rowRankB.setAttribute('value', rowsB);
-        rowRankB.setAttribute('required', 'true');
-
-        // append elements
-        containerElement.appendChild(selectLabel);
-        containerElement.appendChild(select);
-
-        containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
-        containerElement.appendChild(rowRankA);
-        
-        containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
-        containerElement.appendChild(rowRankB);
-
-        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
-
-    } else if (option === 'inverse') {
-        // operator selector label
-        const selectLabel = document.createElement('label');
-        selectLabel.setAttribute('for', 'operator-type');
-        selectLabel.innerText = 'Operator';
-        
-        // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.setAttribute('selected', true);
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        const option3 = document.createElement('option');
-        option3.setAttribute('name', 'scalar multiplication');
-        option3.setAttribute('value', 'scalar multiplication');
-        option3.innerText = 'scalar multiplication';
-        select.appendChild(option3);
-        
-        const option4 = document.createElement('option');
-        option4.setAttribute('name', 'multiply by inverse');
-        option4.setAttribute('value', 'multiply by inverse');
-        option4.innerText = 'multiply by inverse';
-        select.appendChild(option4);
-        
-        const option5 = document.createElement('option');
-        option5.setAttribute('name', 'inverse');
-        option5.setAttribute('value', 'inverse');
-        option5.innerText = 'inverse';
-        select.appendChild(option5);
-        
-        const option6 = document.createElement('option');
-        option6.setAttribute('name', 'transpose');
-        option6.setAttribute('value', 'transpose');
-        option6.innerText = 'tranpose';
-        select.appendChild(option6);
-        
-        const option7 = document.createElement('option');
-        option7.setAttribute('name', 'negation');
-        option7.setAttribute('value', 'negation');
-        option7.innerText = 'negation';
-        select.appendChild(option7);
-
-        // Matrix A
-        const labelA = document.createElement('label');
-        labelA.setAttribute('for', 'Matrix A');
-        labelA.innerText = 'Matrix A';
-
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
-        
-        const rowRankA = document.createElement('input');
-        rowRankA.setAttribute('id', 'row-rank-a');
-        rowRankA.setAttribute('type', 'number');
-        rowRankA.setAttribute('name', 'row-rank-a');
-        rowRankA.setAttribute('min', '2');
-        rowRankA.setAttribute('value', rowsA);
-        rowRankA.setAttribute('required', 'true');
-
-        // Matrix B
-        const labelB = document.createElement('label');
-        labelB.setAttribute('for', 'Matrix B');
-        labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
-        
-        const rowRankB = document.createElement('input');
-        rowRankB.setAttribute('id', 'row-rank-b');
-        rowRankB.setAttribute('type', 'number');
-        rowRankB.setAttribute('name', 'row-rank-b');
-        rowRankB.setAttribute('min', '2');
-        rowRankB.setAttribute('value', rowsB);
-        rowRankB.setAttribute('required', 'true');
-
-        // append elements
-        containerElement.appendChild(selectLabel);
-        containerElement.appendChild(select);
-
-        containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
-        containerElement.appendChild(rowRankA);
-        
-        containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
-        containerElement.appendChild(rowRankB);
-
-        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
-
-    } else if (option === 'transpose') {
-        // operator selector label
-        const selectLabel = document.createElement('label');
-        selectLabel.setAttribute('for', 'operator-type');
-        selectLabel.innerText = 'Operator';
-        
-        // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.setAttribute('selected', true);
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        const option3 = document.createElement('option');
-        option3.setAttribute('name', 'scalar multiplication');
-        option3.setAttribute('value', 'scalar multiplication');
-        option3.innerText = 'scalar multiplication';
-        select.appendChild(option3);
-        
-        const option4 = document.createElement('option');
-        option4.setAttribute('name', 'multiply by inverse');
-        option4.setAttribute('value', 'multiply by inverse');
-        option4.innerText = 'multiply by inverse';
-        select.appendChild(option4);
-        
-        const option5 = document.createElement('option');
-        option5.setAttribute('name', 'inverse');
-        option5.setAttribute('value', 'inverse');
-        option5.innerText = 'inverse';
-        select.appendChild(option5);
-        
-        const option6 = document.createElement('option');
-        option6.setAttribute('name', 'transpose');
-        option6.setAttribute('value', 'transpose');
-        option6.innerText = 'tranpose';
-        select.appendChild(option6);
-        
-        const option7 = document.createElement('option');
-        option7.setAttribute('name', 'negation');
-        option7.setAttribute('value', 'negation');
-        option7.innerText = 'negation';
-        select.appendChild(option7);
-
-        // Matrix A
-        const labelA = document.createElement('label');
-        labelA.setAttribute('for', 'Matrix A');
-        labelA.innerText = 'Matrix A';
-
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
-        
-        const rowRankA = document.createElement('input');
-        rowRankA.setAttribute('id', 'row-rank-a');
-        rowRankA.setAttribute('type', 'number');
-        rowRankA.setAttribute('name', 'row-rank-a');
-        rowRankA.setAttribute('min', '2');
-        rowRankA.setAttribute('value', rowsA);
-        rowRankA.setAttribute('required', 'true');
-
-        // Matrix B
-        const labelB = document.createElement('label');
-        labelB.setAttribute('for', 'Matrix B');
-        labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
-        
-        const rowRankB = document.createElement('input');
-        rowRankB.setAttribute('id', 'row-rank-b');
-        rowRankB.setAttribute('type', 'number');
-        rowRankB.setAttribute('name', 'row-rank-b');
-        rowRankB.setAttribute('min', '2');
-        rowRankB.setAttribute('value', rowsB);
-        rowRankB.setAttribute('required', 'true');
-
-        // append elements
-        containerElement.appendChild(selectLabel);
-        containerElement.appendChild(select);
-
-        containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
-        containerElement.appendChild(rowRankA);
-        
-        containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
-        containerElement.appendChild(rowRankB);
-
-        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
-
     } else if (option === 'negation') {
-        // operator selector label
-        const selectLabel = document.createElement('label');
-        selectLabel.setAttribute('for', 'operator-type');
-        selectLabel.innerText = 'Operator';
-        
-        // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.setAttribute('selected', true);
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        const option3 = document.createElement('option');
-        option3.setAttribute('name', 'scalar multiplication');
-        option3.setAttribute('value', 'scalar multiplication');
-        option3.innerText = 'scalar multiplication';
-        select.appendChild(option3);
-        
-        const option4 = document.createElement('option');
-        option4.setAttribute('name', 'multiply by inverse');
-        option4.setAttribute('value', 'multiply by inverse');
-        option4.innerText = 'multiply by inverse';
-        select.appendChild(option4);
-        
-        const option5 = document.createElement('option');
-        option5.setAttribute('name', 'inverse');
-        option5.setAttribute('value', 'inverse');
-        option5.innerText = 'inverse';
-        select.appendChild(option5);
-        
-        const option6 = document.createElement('option');
-        option6.setAttribute('name', 'transpose');
-        option6.setAttribute('value', 'transpose');
-        option6.innerText = 'tranpose';
-        select.appendChild(option6);
-        
-        const option7 = document.createElement('option');
-        option7.setAttribute('name', 'negation');
-        option7.setAttribute('value', 'negation');
-        option7.innerText = 'negation';
-        select.appendChild(option7);
-
-        // Matrix A
-        const labelA = document.createElement('label');
-        labelA.setAttribute('for', 'Matrix A');
-        labelA.innerText = 'Matrix A';
-
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
-        
-        const rowRankA = document.createElement('input');
-        rowRankA.setAttribute('id', 'row-rank-a');
-        rowRankA.setAttribute('type', 'number');
-        rowRankA.setAttribute('name', 'row-rank-a');
-        rowRankA.setAttribute('min', '2');
-        rowRankA.setAttribute('value', rowsA);
-        rowRankA.setAttribute('required', 'true');
-
-        // Matrix B
-        const labelB = document.createElement('label');
-        labelB.setAttribute('for', 'Matrix B');
-        labelB.innerText = 'Matrix B';
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
-        
-        const rowRankB = document.createElement('input');
-        rowRankB.setAttribute('id', 'row-rank-b');
-        rowRankB.setAttribute('type', 'number');
-        rowRankB.setAttribute('name', 'row-rank-b');
-        rowRankB.setAttribute('min', '2');
-        rowRankB.setAttribute('value', rowsB);
-        rowRankB.setAttribute('required', 'true');
-
-        // append elements
-        containerElement.appendChild(selectLabel);
-        containerElement.appendChild(select);
-
-        containerElement.appendChild(labelA);
-        containerElement.appendChild(colRankA);
-        containerElement.appendChild(rowRankA);
-        
-        containerElement.appendChild(labelB);
-        containerElement.appendChild(colRankB);
-        containerElement.appendChild(rowRankB);
-
-        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
+    } else if (option === 'inversion') {
+    } else if (option === 'transposition') {
     }
 
     // add listeners
@@ -1667,47 +1132,14 @@ function updateForm() {
         select.setAttribute('required', 'true');
         select.setAttribute('value', 'matrix addition');
 
-        const option1 = document.createElement('option');
-        option1.setAttribute('name', 'matrix addition');
-        option1.setAttribute('value', 'matrix addition');
-        option1.innerText = 'matrix addition';
-        select.appendChild(option1);
-        
-        const option2 = document.createElement('option');
-        option2.setAttribute('name', 'matrix multiplication');
-        option2.setAttribute('value', 'matrix multiplication');
-        option2.innerText = 'matrix multiplication';
-        select.appendChild(option2);
-        
-        // const option3 = document.createElement('option');
-        // option3.setAttribute('name', 'scalar multiplication');
-        // option3.setAttribute('value', 'scalar multiplication');
-        // option3.innerText = 'scalar multiplication';
-        // select.appendChild(option3);
-        
-        // const option4 = document.createElement('option');
-        // option4.setAttribute('name', 'multiply by inverse');
-        // option4.setAttribute('value', 'multiply by inverse');
-        // option4.innerText = 'multiply by inverse';
-        // select.appendChild(option4);
-        
-        // const option5 = document.createElement('option');
-        // option5.setAttribute('name', 'inverse');
-        // option5.setAttribute('value', 'inverse');
-        // option5.innerText = 'inverse';
-        // select.appendChild(option5);
-        
-        // const option6 = document.createElement('option');
-        // option6.setAttribute('name', 'transpose');
-        // option6.setAttribute('value', 'transpose');
-        // option6.innerText = 'tranpose';
-        // select.appendChild(option6);
-        
-        // const option7 = document.createElement('option');
-        // option7.setAttribute('name', 'negation');
-        // option7.setAttribute('value', 'negation');
-        // option7.innerText = 'negation';
-        // select.appendChild(option7);
+        select.appendChild(buildOption('matrix addition', true));
+        select.appendChild(buildOption('matrix multiplication'));
+        select.appendChild(buildOption('matrix subtraction'));
+        // select.appendChild(buildOption('matrix division'));
+        // select.appendChild(buildOption('scalar multiplication'));
+        // select.appendChild(buildOption('negation'));
+        // select.appendChild(buildOption('inversion'));
+        // select.appendChild(buildOption('transposition'));
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -1779,10 +1211,7 @@ updateForm();
 document.querySelector('#operand-type').addEventListener('change', updateForm);
 
 // operate button click
-document.querySelector('#operate-button').addEventListener('click', (event) => {
-    // prevent default to prevent page refresh
-    // event.preventDefault();
-
+document.querySelector('#operate-button').addEventListener('click', () => {
     // clear previous answer
     const answerField = document.querySelector('#answer-field');
     answerField.innerHTML = '';
@@ -2157,8 +1586,84 @@ document.querySelector('#operate-button').addEventListener('click', (event) => {
                 // display answer
                 answerField.innerText = NaN;
             }
+
+        } else if (operatorType === 'matrix subtraction') {
+            // get matrix ranks
+            const rowRankA = Number(document.querySelector('#row-rank-a').value);
+            const colRankA = Number(document.querySelector('#col-rank-a').value);
+            const rowRankB = Number(document.querySelector('#row-rank-b').value);
+            const colRankB = Number(document.querySelector('#col-rank-b').value);
+
+            // compare ranks between matrices
+            if (rowRankA === rowRankB && colRankA === colRankB) {
+
+                // initialize strutures
+                let valsA = []; // contains all values of Matrix A in order
+                let valsB = []; // contains all values of Matrix B in order
+                let vals = []; // contains sums of all elements in valsA and valsB
+                
+                // determine larger rank
+                if (rowRankA < colRankA) {
+
+                    // columns have larger rank
+                    
+                    // populate valsA
+                    for (let i = 1; i < colRankA + 1; i++) {
+                        document.querySelectorAll(`.matrix-A-row-${i}`).forEach((val) => {
+                            valsA.push(Number(val.value));
+                        });
+                    }
+                    
+                    // populate valsB
+                    for (let i = 1; i < colRankB + 1; i++) {
+                        document.querySelectorAll(`.matrix-B-row-${i}`).forEach((val) => {
+                            valsB.push(Number(val.value));
+                        });
+                    }
+        
+                    // populate vals
+                    for (let i = 0; i < valsA.length; i++) {
+                        vals.push(valsA[i] - valsB[i]);
+                    }
+
+                } else {
+
+                    // ranks are the same or rows have larger rank
+
+                    // populate valsA
+                    for (let i = 1; i < rowRankA + 1; i++) {
+                        document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                            valsA.push(Number(val.value));
+                        });
+                    }
+                    
+                    // populate valsB
+                    for (let i = 1; i < rowRankB + 1; i++) {
+                        document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
+                            valsB.push(Number(val.value));
+                        });
+                    }
+        
+                    // populate vals
+                    for (let i = 0; i < valsA.length; i++) {
+                        vals.push(valsA[i] - valsB[i]);
+                    }
+                }
+
+                displayProductMatrix(rowRankA, colRankA, vals);
+
+            } else {
+                // display answer
+                answerField.innerText = NaN;
+            }
+
+        } else if (operatorType === 'matrix division') {
+        } else if (operatorType === 'scalar multiplication') {
+        } else if (operatorType === 'negation') {
+        } else if (operatorType === 'inversion') {
+        } else if (operatorType === 'tranposition') {
+
         } else {
-            console.log("pass");
             // display answer
             answerField.innerText = NaN;
         }
