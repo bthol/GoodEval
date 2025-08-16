@@ -407,7 +407,7 @@ function updateMatrixForm() {
         select.appendChild(buildOption('matrix multiplication'));
         select.appendChild(buildOption('matrix subtraction'));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
         // select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
@@ -486,7 +486,7 @@ function updateMatrixForm() {
         select.appendChild(buildOption('matrix multiplication', true));
         select.appendChild(buildOption('matrix subtraction'));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
         // select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
@@ -565,7 +565,7 @@ function updateMatrixForm() {
         select.appendChild(buildOption('matrix multiplication'));
         select.appendChild(buildOption('matrix subtraction', true));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
         // select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
@@ -629,6 +629,73 @@ function updateMatrixForm() {
 
     } else if (option === 'multiply by inverse') {
     } else if (option === 'scalar multiplication') {
+        // operator selector label
+        const selectLabel = document.createElement('label');
+        selectLabel.setAttribute('for', 'operator-type');
+        selectLabel.innerText = 'Operator';
+        
+        // operator selection
+        const select = document.createElement('select');
+        select.setAttribute('id', 'operator-type');
+        select.setAttribute('name', 'operator-type');
+        select.setAttribute('required', 'true');
+        select.setAttribute('value', 'matrix addition');
+
+        select.appendChild(buildOption('matrix addition'));
+        select.appendChild(buildOption('matrix multiplication'));
+        select.appendChild(buildOption('matrix subtraction'));
+        // select.appendChild(buildOption('mutliply by inverse'));
+        select.appendChild(buildOption('scalar multiplication', true));
+        select.appendChild(buildOption('negation'));
+        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('transposition'));
+
+        // Scalar
+        const labelS = document.createElement('label');
+        labelS.setAttribute('for', 'scalar');
+        labelS.innerText = 'Scalar';
+
+        const scalar = document.createElement('input');
+        scalar.setAttribute('id','scalar');
+        scalar.setAttribute('type','number');
+        scalar.setAttribute('name','scalar');
+        scalar.setAttribute('value','1');
+        scalar.setAttribute('required','true');
+        
+        // Matrix A
+        const labelA = document.createElement('label');
+        labelA.setAttribute('for', 'Matrix A');
+        labelA.innerText = 'Matrix A';
+        
+        const rowRankA = document.createElement('input');
+        rowRankA.setAttribute('id', 'row-rank-a');
+        rowRankA.setAttribute('type', 'number');
+        rowRankA.setAttribute('name', 'row-rank-a');
+        rowRankA.setAttribute('min', '2');
+        rowRankA.setAttribute('value', rowsA);
+        rowRankA.setAttribute('required', 'true');
+        
+        const colRankA = document.createElement('input');
+        colRankA.setAttribute('id', 'col-rank-a');
+        colRankA.setAttribute('type', 'number');
+        colRankA.setAttribute('name', 'col-rank-a');
+        colRankA.setAttribute('min', '2');
+        colRankA.setAttribute('value', columnsA);
+        colRankA.setAttribute('required', 'true');
+
+        // append elements
+        containerElement.appendChild(selectLabel);
+        containerElement.appendChild(select);
+        
+        containerElement.appendChild(labelS);
+        containerElement.appendChild(scalar);
+
+        containerElement.appendChild(labelA);
+        containerElement.appendChild(rowRankA);
+        containerElement.appendChild(colRankA);
+
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+
     } else if (option === 'negation') {
         // operator selector label
         const selectLabel = document.createElement('label');
@@ -646,7 +713,7 @@ function updateMatrixForm() {
         select.appendChild(buildOption('matrix multiplication'));
         select.appendChild(buildOption('matrix subtraction'));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation', true));
         // select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
@@ -699,7 +766,7 @@ function updateMatrixForm() {
         select.appendChild(buildOption('matrix multiplication'));
         select.appendChild(buildOption('matrix subtraction'));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
         select.appendChild(buildOption('inversion', true));
         select.appendChild(buildOption('transposition'));
@@ -752,7 +819,7 @@ function updateMatrixForm() {
         select.appendChild(buildOption('matrix multiplication'));
         select.appendChild(buildOption('matrix subtraction'));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
         // select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition', true));
@@ -1292,7 +1359,7 @@ function updateForm() {
         select.appendChild(buildOption('matrix multiplication'));
         select.appendChild(buildOption('matrix subtraction'));
         // select.appendChild(buildOption('mutliply by inverse'));
-        // select.appendChild(buildOption('scalar multiplication'));
+        select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
         // select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
@@ -1692,7 +1759,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 displayProductMatrix(rowRankA, colRankA, vals);
 
             } else {
-                // display answer
+                // display error
                 answerField.innerText = NaN;
             }
 
@@ -1740,7 +1807,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 displayProductMatrix(rowRankA, colRankB, vals);
 
             } else {
-                // display answer
+                // display error
                 answerField.innerText = NaN;
             }
 
@@ -1810,22 +1877,21 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 displayProductMatrix(rowRankA, colRankA, vals);
 
             } else {
-                // display answer
+                // display error
                 answerField.innerText = NaN;
             }
 
         } else if (operatorType === 'multiply by inverse') {
         } else if (operatorType === 'scalar multiplication') {
-        } else if (operatorType === 'negation') {
+            // get scalar
+            const scalar = Number(document.querySelector('#scalar').value);
 
             // get matrix ranks
             const rowRankA = Number(document.querySelector('#row-rank-a').value);
             const colRankA = Number(document.querySelector('#col-rank-a').value);
 
-            // compare ranks between matrices
-
             // initialize strutures
-            let valsA = []; // contains each value of Matrix A in order
+            let valsA = []; // contains each value of Matrix A in display order
             let vals = []; // contains negated values
 
             // populate valsA with columns
@@ -1835,7 +1901,30 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 });
             }
 
-            console.log(valsA);
+            // negate all the vals
+            valsA.forEach((val) => {
+                vals.push(scalar * val);
+            });
+
+            // display results
+            displayProductMatrix(rowRankA, colRankA, vals);
+
+        } else if (operatorType === 'negation') {
+
+            // get matrix ranks
+            const rowRankA = Number(document.querySelector('#row-rank-a').value);
+            const colRankA = Number(document.querySelector('#col-rank-a').value);
+
+            // initialize strutures
+            let valsA = []; // contains each value of Matrix A in display order
+            let vals = []; // contains negated values
+
+            // populate valsA with columns
+            for (let i = 0; i < colRankA; i++) {
+                document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
+                    valsA.push(val.value);
+                });
+            }
 
             // negate all the vals
             valsA.forEach((val) => {
@@ -1851,8 +1940,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             // get matrix ranks
             const rowRankA = Number(document.querySelector('#row-rank-a').value);
             const colRankA = Number(document.querySelector('#col-rank-a').value);
-
-            // compare ranks between matrices
 
             // initialize strutures
             let valsA = []; // contains each column of Matrix A in order
@@ -1878,7 +1965,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             displayProductMatrix(colRankA, rowRankA, vals);
 
         } else {
-            // display answer
+            // display error
             answerField.innerText = NaN;
         }
     }
