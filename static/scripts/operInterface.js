@@ -409,7 +409,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
 
         // Matrix A
@@ -488,7 +488,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
 
         // Matrix A
@@ -567,7 +567,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
 
         // Matrix A
@@ -647,7 +647,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication', true));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
 
         // Scalar
@@ -715,7 +715,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation', true));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
 
         // Matrix A
@@ -821,7 +821,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition', true));
 
         // Matrix A
@@ -882,6 +882,57 @@ function updateMatrixForm() {
     if (element5 !== null) {
         element5.addEventListener('change', updateMatrixForm);
     }
+};
+
+function getScalars(matrix) {
+    // store length
+    const rank = matrix.length;
+
+    // collect scalars
+    let scalars = [];
+
+    // collection
+    for (let i = 0; i < rank; i++) {
+        // add scalar
+        scalars.push(matrix[i][0]);
+    }
+
+    return scalars;
+};
+
+function getMinors(matrix) {
+    // store length
+    const rank = matrix.length;
+
+    // collect minor submatrices (n - x by n - x submatrices "minors" of n by n matrix)
+    let minors = [];
+
+    // collection
+    for (let i = 0; i < rank; i++) {
+
+        // build minor
+        let minor = [];
+        for (let col = 0; col < rank; col++) {
+
+            let minorColumn = [];         
+            for (let row = 0; row < rank; row++) {
+                if (col !== i && row !== 0) {
+                    minorColumn.push(matrix[col][row]);
+                }
+            }
+
+            // don't add empty columns
+            if (minorColumn.length > 0) {
+                minor.push(minorColumn);
+            }
+
+        }
+
+        // add submatrix to submatrices
+        minors.push(minor);
+    }
+
+    return minors;
 };
 
 // dynamically update form elements
@@ -1361,7 +1412,7 @@ function updateForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
 
         // Matrix A
@@ -1935,6 +1986,258 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             displayProductMatrix(rowRankA, colRankA, vals);
 
         } else if (operatorType === 'inversion') {
+            // parameters
+            const maxRank = 11; // max is 11 because 11 is the highest rank for calculating the determinant in under a billion operations
+
+            // get matrix ranks
+            const rowRankA = Number(document.querySelector('#row-rank-a').value);
+            const colRankA = Number(document.querySelector('#col-rank-a').value);
+
+            // compare ranks between matrices
+            if (rowRankA === colRankA) {
+                // is a square matrix
+                if (rowRankA < maxRank) { // exclude the maximum and beyond for safe processing
+                    // initialize strutures
+                    let matrix = []; // contains 2D array; 1st D = column number; 2nd D = row number
+        
+                    // populate matrix with columns
+                    for (let i = 0; i < colRankA; i++) {
+                        let column = [];
+                        document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
+                            column.push(Number(val.value));
+                        });
+                        matrix.push(column);
+                    }
+
+                    console.log(matrix);
+                    
+                    // calculate determinant
+
+                    let determinant = 0;
+                    let rank = matrix.length;
+
+                    if (rank === 2) {
+                        // find det(A) for 2 X 2 matrix
+                        // where A is a 2 x 2 matrix with rows a,b and d,c, det(A) = ad − bc
+                        determinant = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]
+                        
+                    } else {
+                        // find det(A) for n X n matrix, where n is a positive integer and n > 2
+                        
+                        // Laplace Expansion Method
+                        
+                        let minors = getMinors(matrix); // set of minors
+                        let scalars = getScalars(matrix); // set of scalars
+
+                        let test = minors[0].length;
+                        let x = 1
+                        
+                        // break matrix into a matrix of minors
+                        while (x < maxRank - 2 && test > 2) {
+                            // runs for matrices with rank 4 and up to maxrank
+                            
+                            if (x === 1) { // rank 4
+                                console.log(1);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    minors.splice(a, 1, getMinors(minors[a]));
+                                    // scalars[i].push(getScalars(scalars[i]));
+                                }
+                                
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0].length;
+                                
+                            } else if (x === 2) { // rank 5
+                                console.log(2);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    for (let b = 0; b < minors[a].length; b++) {
+                                        minors[a].splice(b, 1, getMinors(minors[a][b]));
+                                        // scalars[i].push(getScalars(scalars[i]));
+                                    }
+                                }
+                                
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0][0].length;
+                                
+                            } else if (x === 3) { // rank 6
+                                console.log(3);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    for (let b = 0; b < minors[a].length; b++) {
+                                        for (let c = 0; c < minors[a][b].length; c++) {
+                                            minors[a][b].splice(c, 1, getMinors(minors[a][b][c]));
+                                            // scalars[i].push(getScalars(scalars[i]));
+                                        }
+                                    }
+                                }
+
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0][0][0].length;
+                                
+                            } else if (x === 4) { // rank 7
+                                console.log(4);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    for (let b = 0; b < minors[a].length; b++) {
+                                        for (let c = 0; c < minors[a][b].length; c++) {
+                                            for (let d = 0 ; d < minors[a][b][c].length; d++) {
+                                                minors[a][b][c].splice(d, 1, getMinors(minors[a][b][c][d]));
+                                                // scalars[i].push(getScalars(scalars[i]));
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0][0][0][0].length;
+                                
+                            } else if (x === 5) { // rank 8
+                                console.log(5);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    for (let b = 0; b < minors[a].length; b++) {
+                                        for (let c = 0; c < minors[a][b].length; c++) {
+                                            for (let d = 0 ; d < minors[a][b][c].length; d++) {
+                                                for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                    minors[a][b][c][d].splice(e, 1, getMinors(minors[a][b][c][d][e]));
+                                                    // scalars[i].push(getScalars(scalars[i]));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0][0][0][0][0].length;
+                                
+                            } else if (x === 6) { // rank 9
+                                console.log(6);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    for (let b = 0; b < minors[a].length; b++) {
+                                        for (let c = 0; c < minors[a][b].length; c++) {
+                                            for (let d = 0 ; d < minors[a][b][c].length; d++) {
+                                                for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                    for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
+                                                        minors[a][b][c][d][e].splice(f, 1, getMinors(minors[a][b][c][d][e][f]));
+                                                        // scalars[i].push(getScalars(scalars[i]));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0][0][0][0][0][0].length;
+                                
+                            } else if (x === 7) { // rank 10
+                                console.log(7);
+                                // get new set of minors + new set of scalars
+                                for (let a = 0; a < minors.length; a++) {
+                                    for (let b = 0; b < minors[a].length; b++) {
+                                        for (let c = 0; c < minors[a][b].length; c++) {
+                                            for (let d = 0 ; d < minors[a][b][c].length; d++) {
+                                                for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                    for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
+                                                        for (let g = 0; g < minors[a][b][c][d][e][f].length; g++) {
+                                                            minors[a][b][c][d][e][f].splice(g, 1, getMinors(minors[a][b][c][d][e][f][g]));
+                                                            // scalars[i].push(getScalars(scalars[i]));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // get length of first minor in last minors set to test if 2 by 2
+                                test = minors[0][0][0][0][0][0][0][0].length;
+                            }
+
+                            // // count levels of nesting
+                            x += 1;
+                        }
+                        
+                        console.log(minors);
+                        // console.log(scalars);
+                        
+                        // // scalar mulitplication property of determinants
+                        // // where A is n by n matrix and x is a scalar, x*det(A) = x^n*A
+                        // let productMinors = [];
+                        // for (let i = 0; i < rank; i++) {
+                        //     // calculate multiplier
+                        //     const multiplier = scalars[i]**(rank - 1);
+
+                        //     // scalar multiply with multiplier
+                        //     let productMinor = [];
+
+                        //     for (let col = 0; col < rank - 1; col++) {
+                        //         let productMinorColumn = [];
+
+                        //         for (let row = 0; row < rank - 1; row++) {
+                        //             productMinorColumn.push(minors[i][col][row] * multiplier);
+                        //         }
+
+                        //         productMinor.push(productMinorColumn);
+                        //     }
+
+                        //     productMinors.push(productMinor);
+                        // }
+
+                        // console.log(productMinors);
+                        
+                        // // matrix addition/subtraction of product minors
+                        // matrix = productMinors[0]; // compile difference sum into matrix
+                        // let addition = false; // bool to alternately subtract and add
+                        // for (let i = 1; i < rank; i++) {
+                        //     if (addition) {
+                        //         // matrix addition of product minors
+                        //         for (let col = 0; col < rank - 1; col++) {
+                        //             for (let row = 0; row < rank - 1; row++) {
+                        //                 matrix[col][row] = matrix[col][row] + productMinors[i][col][row];
+                        //             }
+                        //         }
+                        //     } else {
+                        //         // matrix subtraction of product minors
+                        //         for (let col = 0; col < rank - 1; col++) {
+                        //             for (let row = 0; row < rank - 1; row++) {
+                        //                 matrix[col][row] = matrix[col][row] - productMinors[i][col][row];
+                        //             }
+                        //         }
+                        //     }
+                        //     // negate bool in addition variable
+                        //     addition = !addition;
+                        // }
+
+                        // console.log(matrix);
+                    }
+    
+                    if (determinant !== 0) {
+                        // determinant is greater than zero
+            
+                        // perform matrix inversion
+    
+            
+                        // display results
+                        displayProductMatrix(rowRankA, colRankA, vals);
+    
+                    } else {
+                        // display error
+                        answerField.innerText = 'Determinant is equal to zero';
+                    }
+
+                } else {
+                    // display error
+                    answerField.innerText = `maximum rank of ${maxRank - 1} exceeded`;
+                }
+
+            } else {
+                // display error
+                answerField.innerText = 'not a square matrix';
+            }
+
         } else if (operatorType === 'transposition') {
             
             // get matrix ranks
