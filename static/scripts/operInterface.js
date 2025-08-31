@@ -935,6 +935,10 @@ function getMinors(matrix) {
     return minors;
 };
 
+function calculateMatrix(scalar, matrix) {
+    return (matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]) * scalar;
+};
+
 // dynamically update form elements
 const containerElement = document.querySelector('#dynamic-content-container');
 function updateForm() {
@@ -1987,7 +1991,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
         } else if (operatorType === 'inversion') {
             // parameters
-            const maxRank = 11; // max is 11 because 11 is the highest rank for calculating the determinant in under a billion operations
+            const maxRank = 10;
 
             // get matrix ranks
             const rowRankA = Number(document.querySelector('#row-rank-a').value);
@@ -2037,7 +2041,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                             // runs for matrices with rank 4 and up to maxrank
                             
                             if (x === 1) { // rank 4
-                                console.log(1);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     scalars[a] = [scalars[a], getScalars(minors[a])];
@@ -2048,7 +2051,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0].length;
                                 
                             } else if (x === 2) { // rank 5
-                                console.log(2);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2061,7 +2063,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0].length;
                                 
                             } else if (x === 3) { // rank 6
-                                console.log(3);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2076,7 +2077,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0].length;
                                 
                             } else if (x === 4) { // rank 7
-                                // console.log(4);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2093,7 +2093,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0][0].length;
                                 
                             } else if (x === 5) { // rank 8
-                                // console.log(5);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2112,7 +2111,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0][0][0].length;
                                 
                             } else if (x === 6) { // rank 9
-                                // console.log(6);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2133,7 +2131,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0][0][0][0].length;
                                 
                             } else if (x === 7) { // rank 10
-                                // console.log(7);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2162,56 +2159,500 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                         
                         console.log(minors);
                         console.log(scalars);
-                        
-                        // // scalar mulitplication property of determinants
-                        // // where A is n by n matrix and x is a scalar, x*det(A) = x^n*A
-                        // let productMinors = [];
-                        // for (let i = 0; i < rank; i++) {
-                        //     // calculate multiplier
-                        //     const multiplier = scalars[i]**(rank - 1);
 
-                        //     // scalar multiply with multiplier
-                        //     let productMinor = [];
+                        // calculate determinant with minors and scalars
+                        if (rank === 3) {
+                            // compile solution
+                            compile = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                if (op) {
+                                    op = !op;
+                                    compile += calculateMatrix(scalars[a], minors[a]);
+                                } else {
+                                    op = !op;
+                                    compile -= calculateMatrix(scalars[a], minors[a]);
+                                }
+                            }
 
-                        //     for (let col = 0; col < rank - 1; col++) {
-                        //         let productMinorColumn = [];
+                            // apply solution
+                            determinant = compile;
 
-                        //         for (let row = 0; row < rank - 1; row++) {
-                        //             productMinorColumn.push(minors[i][col][row] * multiplier);
-                        //         }
+                        } else if (rank === 4) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    if (op2) {
+                                        // add
+                                        op2 = !op2;
+                                        comp2 += calculateMatrix(scalars[a][1][b], minors[a][b]);
+                                    } else {
+                                        op2 = !op2;
+                                        // subtract
+                                        comp2 -= calculateMatrix(scalars[a][1][b], minors[a][b]);
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
 
-                        //         productMinor.push(productMinorColumn);
-                        //     }
+                            // apply solution
+                            determinant = comp;
 
-                        //     productMinors.push(productMinor);
-                        // }
+                        } else if (rank === 5) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    comp3 = 0;
+                                    op3 = true;
+                                    for (let c = 0; c < minors[a][b].length; c++) {
+                                        if (op3) {
+                                            // add
+                                            op3 = !op3;
+                                            comp3 += calculateMatrix(scalars[a][1][b][1][c], minors[a][b][c]);
+                                        } else {
+                                            op3 = !op3;
+                                            // subtract
+                                            comp3 -= calculateMatrix(scalars[a][1][b][1][c], minors[a][b][c]);
+                                        }
+                                    }
+                                    if (op2) {
+                                        op2 = !op2;
+                                        comp += comp2 * scalars[a][1][b][0];
+                                    } else {
+                                        op2 = !op2;
+                                        comp -= comp2 * scalars[a][1][b][0];
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
 
-                        // console.log(productMinors);
-                        
-                        // // matrix addition/subtraction of product minors
-                        // matrix = productMinors[0]; // compile difference sum into matrix
-                        // let addition = false; // bool to alternately subtract and add
-                        // for (let i = 1; i < rank; i++) {
-                        //     if (addition) {
-                        //         // matrix addition of product minors
-                        //         for (let col = 0; col < rank - 1; col++) {
-                        //             for (let row = 0; row < rank - 1; row++) {
-                        //                 matrix[col][row] = matrix[col][row] + productMinors[i][col][row];
-                        //             }
-                        //         }
-                        //     } else {
-                        //         // matrix subtraction of product minors
-                        //         for (let col = 0; col < rank - 1; col++) {
-                        //             for (let row = 0; row < rank - 1; row++) {
-                        //                 matrix[col][row] = matrix[col][row] - productMinors[i][col][row];
-                        //             }
-                        //         }
-                        //     }
-                        //     // negate bool in addition variable
-                        //     addition = !addition;
-                        // }
+                            // apply solution
+                            determinant = comp;
 
-                        // console.log(matrix);
+                        } else if (rank === 6) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    comp3 = 0;
+                                    op3 = true;
+                                    for (let c = 0; c < minors[a][b].length; c++) {
+                                        comp4 = 0;
+                                        op4 = true;
+                                        for (let d = 0; d < minors[a][b][c].length; d++) {
+                                            if (op4) {
+                                                // add
+                                                op4 = !op4;
+                                                comp4 += calculateMatrix(scalars[a][1][b][1][c][1][d], minors[a][b][c][d]);
+                                            } else {
+                                                op4 = !op4;
+                                                // subtract
+                                                comp4 -= calculateMatrix(scalars[a][1][b][1][c][1][d], minors[a][b][c][d]);
+                                            }
+                                        }
+                                        if (op3) {
+                                            // add
+                                            op3 = !op3;
+                                            comp3 += comp4 * scalars[a][1][b][1][c][0];
+                                        } else {
+                                            op3 = !op3;
+                                            // subtract
+                                            comp3 -= comp4 * scalars[a][1][b][1][c][0];
+                                        }
+                                    }
+                                    if (op2) {
+                                        op2 = !op2;
+                                        comp += comp2 * scalars[a][1][b][0];
+                                    } else {
+                                        op2 = !op2;
+                                        comp -= comp2 * scalars[a][1][b][0];
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
+
+                            // apply solution
+                            determinant = comp;
+
+                        } else if (rank === 7) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    comp3 = 0;
+                                    op3 = true;
+                                    for (let c = 0; c < minors[a][b].length; c++) {
+                                        comp4 = 0;
+                                        op4 = true;
+                                        for (let d = 0; d < minors[a][b][c].length; d++) {
+                                            comp5 = 0;
+                                            op5 = true;
+                                            for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                if (op5) {
+                                                    // add
+                                                    op5 = !op5;
+                                                    comp5 += calculateMatrix(scalars[a][1][b][1][c][1][d][1][e], minors[a][b][c][d][e]);
+                                                } else {
+                                                    op5 = !op5;
+                                                    // subtract
+                                                    comp5 -= calculateMatrix(scalars[a][1][b][1][c][1][d][1][e], minors[a][b][c][d][e]);
+                                                }
+                                            }
+                                            if (op4) {
+                                                // add
+                                                op4 = !op4;
+                                                comp4 += comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            } else {
+                                                op4 = !op4;
+                                                // subtract
+                                                comp4 -= comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            }
+                                        }
+                                        if (op3) {
+                                            // add
+                                            op3 = !op3;
+                                            comp3 += comp4 * scalars[a][1][b][1][c][0];
+                                        } else {
+                                            op3 = !op3;
+                                            // subtract
+                                            comp3 -= comp4 * scalars[a][1][b][1][c][0];
+                                        }
+                                    }
+                                    if (op2) {
+                                        op2 = !op2;
+                                        comp += comp2 * scalars[a][1][b][0];
+                                    } else {
+                                        op2 = !op2;
+                                        comp -= comp2 * scalars[a][1][b][0];
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
+
+                            // apply solution
+                            determinant = comp;
+
+                        } else if (rank === 8) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    comp3 = 0;
+                                    op3 = true;
+                                    for (let c = 0; c < minors[a][b].length; c++) {
+                                        comp4 = 0;
+                                        op4 = true;
+                                        for (let d = 0; d < minors[a][b][c].length; d++) {
+                                            comp5 = 0;
+                                            op5 = true;
+                                            for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                comp6 = 0;
+                                                op6 = true;
+                                                for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
+                                                    if (op6) {
+                                                        // add
+                                                        op6 = !op6;
+                                                        comp6 += calculateMatrix(scalars[a][1][b][1][c][1][d][1][e][1][f], minors[a][b][c][d][e][f]);
+                                                    } else {
+                                                        op6 = !op6;
+                                                        // subtract
+                                                        comp6 -= calculateMatrix(scalars[a][1][b][1][c][1][d][1][e][1][f], minors[a][b][c][d][e][f]);
+                                                    }
+                                                }
+                                                if (op5) {
+                                                    // add
+                                                    op5 = !op5;
+                                                    comp5 += comp6 * scalars[a][1][b][1][c][1][d][1][e][0];
+                                                } else {
+                                                    op5 = !op5;
+                                                    // subtract
+                                                    comp5 -= comp6 * scalars[a][1][b][1][c][1][d][1][e][0];
+                                                }
+                                            }
+                                            if (op4) {
+                                                // add
+                                                op4 = !op4;
+                                                comp4 += comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            } else {
+                                                op4 = !op4;
+                                                // subtract
+                                                comp4 -= comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            }
+                                        }
+                                        if (op3) {
+                                            // add
+                                            op3 = !op3;
+                                            comp3 += comp4 * scalars[a][1][b][1][c][0];
+                                        } else {
+                                            op3 = !op3;
+                                            // subtract
+                                            comp3 -= comp4 * scalars[a][1][b][1][c][0];
+                                        }
+                                    }
+                                    if (op2) {
+                                        op2 = !op2;
+                                        comp += comp2 * scalars[a][1][b][0];
+                                    } else {
+                                        op2 = !op2;
+                                        comp -= comp2 * scalars[a][1][b][0];
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
+
+                            // apply solution
+                            determinant = comp;
+
+                        } else if (rank === 9) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    comp3 = 0;
+                                    op3 = true;
+                                    for (let c = 0; c < minors[a][b].length; c++) {
+                                        comp4 = 0;
+                                        op4 = true;
+                                        for (let d = 0; d < minors[a][b][c].length; d++) {
+                                            comp5 = 0;
+                                            op5 = true;
+                                            for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                comp6 = 0;
+                                                op6 = true;
+                                                for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
+                                                    comp7 = 0;
+                                                    op7 = true;
+                                                    for (let g = 0; g < minors[a][b][c][d][e][f].length; g++) {
+                                                        if (op7) {
+                                                            // add
+                                                            op7 = !op7;
+                                                            comp7 += calculateMatrix(scalars[a][1][b][1][c][1][d][1][e][1][f][1][g], minors[a][b][c][d][e][f][g]);
+                                                        } else {
+                                                            op7 = !op7;
+                                                            // subtract
+                                                            comp7 -= calculateMatrix(scalars[a][1][b][1][c][1][d][1][e][1][f][1][g], minors[a][b][c][d][e][f][g]);
+                                                        }
+                                                    }
+                                                    if (op6) {
+                                                        // add
+                                                        op6 = !op6;
+                                                        comp6 += comp7 * scalars[a][1][b][1][c][1][d][1][e][1][f][0];
+                                                    } else {
+                                                        op6 = !op6;
+                                                        // subtract
+                                                        comp6 -= comp7 * scalars[a][1][b][1][c][1][d][1][e][1][f][0];
+                                                    }
+                                                }
+                                                if (op5) {
+                                                    // add
+                                                    op5 = !op5;
+                                                    comp5 += comp6 * scalars[a][1][b][1][c][1][d][1][e][0];
+                                                } else {
+                                                    op5 = !op5;
+                                                    // subtract
+                                                    comp5 -= comp6 * scalars[a][1][b][1][c][1][d][1][e][0];
+                                                }
+                                            }
+                                            if (op4) {
+                                                // add
+                                                op4 = !op4;
+                                                comp4 += comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            } else {
+                                                op4 = !op4;
+                                                // subtract
+                                                comp4 -= comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            }
+                                        }
+                                        if (op3) {
+                                            // add
+                                            op3 = !op3;
+                                            comp3 += comp4 * scalars[a][1][b][1][c][0];
+                                        } else {
+                                            op3 = !op3;
+                                            // subtract
+                                            comp3 -= comp4 * scalars[a][1][b][1][c][0];
+                                        }
+                                    }
+                                    if (op2) {
+                                        op2 = !op2;
+                                        comp += comp2 * scalars[a][1][b][0];
+                                    } else {
+                                        op2 = !op2;
+                                        comp -= comp2 * scalars[a][1][b][0];
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
+
+                            // apply solution
+                            determinant = comp;
+
+                        } else if (rank === 10) {
+                            // compile solution
+                            comp = 0;
+                            op = true;
+                            for (let a = 0; a < minors.length; a++) {
+                                comp2 = 0;
+                                op2 = true;
+                                for (let b = 0; b < minors[a].length; b++) {
+                                    comp3 = 0;
+                                    op3 = true;
+                                    for (let c = 0; c < minors[a][b].length; c++) {
+                                        comp4 = 0;
+                                        op4 = true;
+                                        for (let d = 0; d < minors[a][b][c].length; d++) {
+                                            comp5 = 0;
+                                            op5 = true;
+                                            for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                comp6 = 0;
+                                                op6 = true;
+                                                for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
+                                                    comp7 = 0;
+                                                    op7 = true;
+                                                    for (let g = 0; g < minors[a][b][c][d][e][f].length; g++) {
+                                                        comp8 = 0;
+                                                        op8 = true;
+                                                        for (let h = 0; h < minors[a][b][c][d][e][f][g].length; h++) {
+                                                            if (op8) {
+                                                                // add
+                                                                op8 = !op8;
+                                                                comp8 += calculateMatrix(scalars[a][1][b][1][c][1][d][1][e][1][f][1][g][1][h], minors[a][b][c][d][e][f][g][h]);
+                                                            } else {
+                                                                op8 = !op8;
+                                                                // subtract
+                                                                comp8 -= calculateMatrix(scalars[a][1][b][1][c][1][d][1][e][1][f][1][g][1][h], minors[a][b][c][d][e][f][g][h]);
+                                                            }
+                                                        }
+                                                        if (op7) {
+                                                            // add
+                                                            op7 = !op7;
+                                                            comp7 += comp8 * scalars[a][1][b][1][c][1][d][1][e][1][f][1][g][0];
+                                                        } else {
+                                                            op7 = !op7;
+                                                            // subtract
+                                                            comp7 -= comp8 * scalars[a][1][b][1][c][1][d][1][e][1][f][1][g][0];
+                                                        }
+                                                    }
+                                                    if (op6) {
+                                                        // add
+                                                        op6 = !op6;
+                                                        comp6 += comp7 * scalars[a][1][b][1][c][1][d][1][e][1][f][0];
+                                                    } else {
+                                                        op6 = !op6;
+                                                        // subtract
+                                                        comp6 -= comp7 * scalars[a][1][b][1][c][1][d][1][e][1][f][0];
+                                                    }
+                                                }
+                                                if (op5) {
+                                                    // add
+                                                    op5 = !op5;
+                                                    comp5 += comp6 * scalars[a][1][b][1][c][1][d][1][e][0];
+                                                } else {
+                                                    op5 = !op5;
+                                                    // subtract
+                                                    comp5 -= comp6 * scalars[a][1][b][1][c][1][d][1][e][0];
+                                                }
+                                            }
+                                            if (op4) {
+                                                // add
+                                                op4 = !op4;
+                                                comp4 += comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            } else {
+                                                op4 = !op4;
+                                                // subtract
+                                                comp4 -= comp5 * scalars[a][1][b][1][c][1][d][0];
+                                            }
+                                        }
+                                        if (op3) {
+                                            // add
+                                            op3 = !op3;
+                                            comp3 += comp4 * scalars[a][1][b][1][c][0];
+                                        } else {
+                                            op3 = !op3;
+                                            // subtract
+                                            comp3 -= comp4 * scalars[a][1][b][1][c][0];
+                                        }
+                                    }
+                                    if (op2) {
+                                        op2 = !op2;
+                                        comp += comp2 * scalars[a][1][b][0];
+                                    } else {
+                                        op2 = !op2;
+                                        comp -= comp2 * scalars[a][1][b][0];
+                                    }
+                                }
+                                if (op) {
+                                    op = !op;
+                                    comp += comp2 * scalars[a][0];
+                                } else {
+                                    op = !op;
+                                    comp -= comp2 * scalars[a][0];
+                                }
+                            }
+
+                            // apply solution
+                            determinant = comp;
+
+                        }
+
+                        console.log(determinant);
+
                     }
     
                     if (determinant !== 0) {
