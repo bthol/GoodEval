@@ -2040,8 +2040,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 console.log(1);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
+                                    scalars[a] = [scalars[a], getScalars(minors[a])];
                                     minors.splice(a, 1, getMinors(minors[a]));
-                                    // scalars[i].push(getScalars(scalars[i]));
                                 }
                                 
                                 // get length of first minor in last minors set to test if 2 by 2
@@ -2052,11 +2052,11 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
+                                        scalars[a][1][b] = [scalars[a][1][b], getScalars(minors[a][b])];
                                         minors[a].splice(b, 1, getMinors(minors[a][b]));
-                                        // scalars[i].push(getScalars(scalars[i]));
                                     }
                                 }
-                                
+
                                 // get length of first minor in last minors set to test if 2 by 2
                                 test = minors[0][0][0].length;
                                 
@@ -2066,8 +2066,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
                                         for (let c = 0; c < minors[a][b].length; c++) {
+                                            scalars[a][1][b][1][c] = [scalars[a][1][b][1][c] , getScalars(minors[a][b][c])];
                                             minors[a][b].splice(c, 1, getMinors(minors[a][b][c]));
-                                            // scalars[i].push(getScalars(scalars[i]));
                                         }
                                     }
                                 }
@@ -2076,32 +2076,32 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0].length;
                                 
                             } else if (x === 4) { // rank 7
-                                console.log(4);
+                                // console.log(4);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
                                         for (let c = 0; c < minors[a][b].length; c++) {
                                             for (let d = 0 ; d < minors[a][b][c].length; d++) {
+                                                scalars[a][1][b][1][c][1][d] = [scalars[a][1][b][1][c][1][d], getScalars(minors[a][b][c][d])];
                                                 minors[a][b][c].splice(d, 1, getMinors(minors[a][b][c][d]));
-                                                // scalars[i].push(getScalars(scalars[i]));
                                             }
                                         }
                                     }
                                 }
-                                
+
                                 // get length of first minor in last minors set to test if 2 by 2
                                 test = minors[0][0][0][0][0].length;
                                 
                             } else if (x === 5) { // rank 8
-                                console.log(5);
+                                // console.log(5);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
                                         for (let c = 0; c < minors[a][b].length; c++) {
                                             for (let d = 0 ; d < minors[a][b][c].length; d++) {
                                                 for (let e = 0; e < minors[a][b][c][d].length; e++) {
+                                                    scalars[a][1][b][1][c][1][d][1][e] = [scalars[a][1][b][1][c][1][e], getScalars(minors[a][b][c][d][e])];
                                                     minors[a][b][c][d].splice(e, 1, getMinors(minors[a][b][c][d][e]));
-                                                    // scalars[i].push(getScalars(scalars[i]));
                                                 }
                                             }
                                         }
@@ -2112,7 +2112,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0][0][0].length;
                                 
                             } else if (x === 6) { // rank 9
-                                console.log(6);
+                                // console.log(6);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2120,8 +2120,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                             for (let d = 0 ; d < minors[a][b][c].length; d++) {
                                                 for (let e = 0; e < minors[a][b][c][d].length; e++) {
                                                     for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
+                                                        scalars[a][1][b][1][c][1][d][1][e][1][f] = [scalars[a][1][b][1][c][1][d][1][e][1][f], getScalars(minors[a][b][c][d][e][f])];
                                                         minors[a][b][c][d][e].splice(f, 1, getMinors(minors[a][b][c][d][e][f]));
-                                                        // scalars[i].push(getScalars(scalars[i]));
                                                     }
                                                 }
                                             }
@@ -2133,7 +2133,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                 test = minors[0][0][0][0][0][0][0].length;
                                 
                             } else if (x === 7) { // rank 10
-                                console.log(7);
+                                // console.log(7);
                                 // get new set of minors + new set of scalars
                                 for (let a = 0; a < minors.length; a++) {
                                     for (let b = 0; b < minors[a].length; b++) {
@@ -2142,8 +2142,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                                 for (let e = 0; e < minors[a][b][c][d].length; e++) {
                                                     for (let f = 0; f < minors[a][b][c][d][e].length; f++) {
                                                         for (let g = 0; g < minors[a][b][c][d][e][f].length; g++) {
+                                                            scalars[a][1][b][1][c][1][d][1][e][1][f][1][g] = [scalars[a][1][b][1][c][1][d][1][e][1][f][1][g], getScalars(minors[a][b][c][d][e][f][g])];
                                                             minors[a][b][c][d][e][f].splice(g, 1, getMinors(minors[a][b][c][d][e][f][g]));
-                                                            // scalars[i].push(getScalars(scalars[i]));
                                                         }
                                                     }
                                                 }
@@ -2161,7 +2161,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                         }
                         
                         console.log(minors);
-                        // console.log(scalars);
+                        console.log(scalars);
                         
                         // // scalar mulitplication property of determinants
                         // // where A is n by n matrix and x is a scalar, x*det(A) = x^n*A
