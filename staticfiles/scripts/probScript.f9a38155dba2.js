@@ -1801,7 +1801,6 @@ function evaluate() {
 
         // clear data
         problem = [];
-        answer = [];
 
         // handle cursor mode
         cursorMode = false;
@@ -1822,19 +1821,24 @@ function evaluate() {
 btns.addEventListener('click', (e) => {
     // exclude the container elements
     if (e.target.classList[0] !== 'top-button-container' && e.target.classList[0] !== 'bottom-button-container') {
-        // clear answer to previous problem on input of new problem
-        if (answered) {
-            answered = false;
-            if (answer.length > 0) {
-                answer = [];
-            }
-            updateAnswer();
-        }
         // clear cache for input while error is displaying
         clearTimeout(formatErrorCache);
         // get target info
         const type = e.target.classList[0];
         const id = e.target.id;
+        // clear answer to previous problem on input of new problem
+        if (answered) {
+            answered = false;
+            if (answer.length > 0) {
+                if (type === 'operation') {
+                    // treat previous answer as first number in next problem
+                    problem.push(answer[0]);
+                }
+                // clear previous answer
+                answer = [];
+            }
+            updateAnswer();
+        }
         // reduce number of tests by testing types
         // tested from largest to smallest number of members in type
         // member ids tested from most to least estimated frequency of usage
