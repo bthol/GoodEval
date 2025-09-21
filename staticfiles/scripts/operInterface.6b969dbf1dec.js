@@ -981,7 +981,7 @@ function getScalars(matrix) {
     return scalars;
 };
 
-function getMinors(matrix) {
+function getMinors(matrix, mom = false) {
     // store length
     const rank = matrix.length;
 
@@ -989,28 +989,68 @@ function getMinors(matrix) {
     let minors = [];
 
     // collection
-    for (let i = 0; i < rank; i++) {
-
-        // build minor
-        let minor = [];
-        for (let col = 0; col < rank; col++) {
-
-            let minorColumn = [];         
-            for (let row = 0; row < rank; row++) {
-                if (col !== i && row !== 0) {
-                    minorColumn.push(matrix[col][row]);
+    if (!mom) {
+        for (let i = 0; i < rank; i++) {
+    
+            // build minor
+            let minor = [];
+            for (let col = 0; col < rank; col++) {
+    
+                let minorColumn = [];
+                for (let row = 0; row < rank; row++) {
+                    if (col !== i && row !== 0) {
+                        minorColumn.push(matrix[col][row]);
+                    }
                 }
+    
+                // don't add empty columns
+                if (minorColumn.length > 0) {
+                    minor.push(minorColumn);
+                }
+    
             }
-
-            // don't add empty columns
-            if (minorColumn.length > 0) {
-                minor.push(minorColumn);
-            }
-
+    
+            // add submatrix to submatrices
+            minors.push(minor);
         }
+    } else {
+        // matrix of minors
+        let r = 0;
+        let c = 0;
+        for (let i = 1; i <= rank**2; i++) {
+    
+            // build minor
+            let minor = [];
+            for (let col = 0; col < rank; col++) {
+                
+                let minorColumn = [];
+                for (let row = 0; row < rank; row++) {
 
-        // add submatrix to submatrices
-        minors.push(minor);
+                    if (col !== c && row !== r) {
+                        minorColumn.push(matrix[col][row]);
+                    }
+
+                }
+    
+                // don't add empty columns
+                if (minorColumn.length > 0) {
+                    minor.push(minorColumn);
+                }
+
+            }
+    
+            // add submatrix to submatrices
+            minors.push(minor);
+
+            // update row and column to be ommitted from minor
+            c += 1;
+            if (c === rank) {
+                c = 0;
+            }
+            if (i % rank === 0) {
+                r += 1;
+            }
+        }
     }
 
     return minors;
@@ -2923,7 +2963,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     // populate matrix with columns and rows
                     for (let i = 0; i < colRankA; i++) {
                         let column = [];
-                        const col = document.querySelectorAll(`.matrix-A-col-${i + 1}`)
+                        const col = document.querySelectorAll(`.matrix-A-col-${i + 1}`);
                         for (let j = 0; j < rowRankA; j++) {
                             column.push(Math.floor(Number(col[j].value)));
                         }
@@ -3155,11 +3195,80 @@ document.querySelector('#operate-button').addEventListener('click', () => {
         
                                 // display results
                                 displayProductMatrix(rowRankA, colRankA, vals);
-                                answerField.innerHTML = `<div>Elementary Row Operations: ${operations - 1}<div>` + answerField.innerHTML;
+                                answerField.innerHTML = `<div class="answer-data-layout"> <div class="answer-data-col-1">Inversion Method:</div> <div class="answer-data-col-2">Gauss Jordan Elimination</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Row Operations:</div> <div class="answer-data-col-2">${operations - 1}</div> </div> </div> ${answerField.innerHTML}`;
                             
                             } else {
-                                // display error
-                                answerField.innerText = 'exceeds maximum operations';
+
+                                // Method 2: Matrix of Minors, Cofactors, Adjugates
+
+                                // repopulate matrix
+                                matrix = [];
+                                for (let i = 0; i < colRankA; i++) {
+                                    let column = [];
+                                    const col = document.querySelectorAll(`.matrix-A-col-${i + 1}`);
+                                    for (let j = 0; j < rowRankA; j++) {
+                                        column.push(Math.floor(Number(col[j].value)));
+                                    }
+                                    matrix.push(column);
+                                }
+
+                                // get matrix of minors
+                                const minors = getMinors(matrix, true);
+                                
+                                for (let col = 0; col < colRankA; col++) {
+                                    for (let row = 0; row < rowRankA; row++) {
+                                        matrix[col][row] = getDeterminant(minors[col + row]);
+                                    }
+                                }
+
+                                // matrix now represents a matrix of minors
+
+                                // get matrix of cofactors
+                                let negate = false;
+                                for (let col = 0; col < colRankA; col++) {
+                                    for (let row = 0; row < rowRankA; row++) {
+                                        if (negate) {
+                                            matrix[col][row] = -Math.abs(matrix[col][row]);
+                                        } else {
+                                            matrix[col][row] = Math.abs(matrix[col][row]);
+                                        }
+                                        negate = !negate;
+                                    }
+                                }
+
+                                // matrix now represents a matrix of cofactors
+
+                                // get adjugate
+                                let adjugate = []; // contains each column as a row
+
+                                // populate vals with transposed values
+                                for (let row = 0; row < rowRankA; row++) {
+                                    let column = [];
+                                    for (let col = 0; col < colRankA; col++) {
+                                        column.push(matrix[col][row]);
+                                    }
+                                    adjugate.push(column);
+                                }
+
+                                // scale by the inverse determinant
+                                const inverseDeterminant = 1 / determinant;
+                                for (let col = 0; col < colRankA; col++) {
+                                    for (let row = 0; row < rowRankA; row++) {
+                                        adjugate[col][row] = adjugate[col][row] * inverseDeterminant;
+                                    }
+                                }
+
+                                // format solution into vals structure
+                                for (let col = 0; col < colRankA; col++) {
+                                    for (let row = 0; row < rowRankA; row++) {
+                                        vals.push(adjugate[col][row]);
+                                    }
+                                }
+        
+                                // display results
+                                displayProductMatrix(rowRankA, colRankA, vals);
+                                answerField.innerHTML = `<div class="answer-data-layout"> <div class="answer-data-col-1">Inversion Method:</div> <div class="answer-data-col-2">Matrix of Minors</div> </div> </div> ${answerField.innerHTML}`;
+                            
                             }
                             
         
