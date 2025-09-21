@@ -2648,6 +2648,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
         // use properties to structure data as a domain
 
+        const tolerance = 6; // nearest 0.0001
+
         // build domain A
         let domainA = [];
         if (numberTypeA === 'integers') {
@@ -2655,16 +2657,43 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 domainA.push(i);
             }
         } else if (numberTypeA === 'rational-tenth') {
-            for (let i = minimumA; i <= maximumA; i = i + 0.1) {
-                domainA.push(i);
+            for (let i = 0; i <= Math.abs(maximumA - minimumA); i = i + 0.1) {
+                const num = minimumA + i;
+                const str = num.toString();
+                const parts = str.split('.', 2);
+                if (parts.length > 1) {
+                    const x = Number(parts[0] + '.' + parts[1].slice(0, 1));
+                    domainA.push(x);
+                } else {
+                    const x = Number(parts[0]);
+                    domainA.push(x);
+                }
             }
         } else if (numberTypeA === 'rational-hundredth') {
-            for (let i = minimumA; i <= maximumA; i = i + 0.01) {
-                domainB.push(i);
+            for (let i = 0; i <= Math.abs(maximumA - minimumA); i = i + 0.01) {
+                const num = minimumA + i;
+                const str = num.toString();
+                const parts = str.split('.', 2);
+                if (parts.length > 1) {
+                    const x = Number(parts[0] + '.' + parts[1].slice(0, 2));
+                    domainA.push(x);
+                } else {
+                    const x = Number(parts[0]);
+                    domainA.push(x);
+                }
             }
         } else if (numberTypeA === 'rational-thousandth') {
-            for (let i = minimumA; i <= maximumA; i = i + 0.001) {
-                domainB.push(i);
+            for (let i = 0; i <= Math.abs(maximumA - minimumA); i = i + 0.001) {
+                const num = minimumA + i;
+                const str = num.toString();
+                const parts = str.split('.', 2);
+                if (parts.length > 1) {
+                    const x = Number(parts[0] + '.' + parts[1].slice(0, 3));
+                    domainA.push(x);
+                } else {
+                    const x = Number(parts[0]);
+                    domainA.push(x);
+                }
             }
         }
 
@@ -2675,16 +2704,43 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 domainB.push(i);
             }
         } else if (numberTypeB === 'rational-tenth') {
-            for (let i = minimumB; i <= maximumB; i = i + 0.1) {
-                domainB.push(i);
+            for (let i = 0; i <= Math.abs(maximumB - minimumB); i = i + 0.1) {
+                const num = minimumB + i;
+                const str = num.toString();
+                const parts = str.split('.', 2);
+                if (parts.length > 1) {
+                    const x = Number(parts[0] + '.' + parts[1].slice(0, 1));
+                    domainB.push(x);
+                } else {
+                    const x = Number(parts[0]);
+                    domainB.push(x);
+                }
             }
         } else if (numberTypeB === 'rational-hundredth') {
-            for (let i = minimumB; i <= maximumB; i = i + 0.01) {
-                domainB.push(i);
+            for (let i = 0; i <= Math.abs(maximumB - minimumB); i = i + 0.01) {
+                const num = minimumB + i;
+                const str = num.toString();
+                const parts = str.split('.', 2);
+                if (parts.length > 1) {
+                    const x = Number(parts[0] + '.' + parts[1].slice(0, 2));
+                    domainB.push(x);
+                } else {
+                    const x = Number(parts[0]);
+                    domainB.push(x);
+                }
             }
         } else if (numberTypeB === 'rational-thousandth') {
-            for (let i = minimumB; i <= maximumB; i = i + 0.001) {
-                domainB.push(i);
+            for (let i = 0; i <= Math.abs(maximumB - minimumB); i = i + 0.001) {
+                const num = minimumB + i;
+                const str = num.toString();
+                const parts = str.split('.', 2);
+                if (parts.length > 1) {
+                    const x = Number(parts[0] + '.' + parts[1].slice(0, 3));
+                    domainB.push(x);
+                } else {
+                    const x = Number(parts[0]);
+                    domainB.push(x);
+                }
             }
         }
 
@@ -3347,5 +3403,12 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             // display error
             answerField.innerText = NaN;
         }
+    }
+
+    // handle answer-field overflow
+    if (answerField.scrollWidth > answerField.offsetWidth || answerField.scrollHeight > answerField.offsetHeight) {
+        answerField.setAttribute('style', 'padding-bottom: 10px');
+    } else {
+        answerField.setAttribute('style', 'padding-bottom: 0px');
     }
 });

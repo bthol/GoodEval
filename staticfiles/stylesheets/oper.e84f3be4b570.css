@@ -55,6 +55,7 @@ label {
 
 #answer-field {
     border: 2px solid #fffef0;
+    overflow-x: scroll;
 }
 
 .answer-data-layout {
