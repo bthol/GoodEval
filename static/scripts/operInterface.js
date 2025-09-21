@@ -3,6 +3,22 @@ console.log('Interface script loaded');
 // parameters
 const maxRank = 10; // sets the maximum rank for matrices
 
+// Function to find the Greatest Common Divisor (GCD) using the Euclidean algorithm
+function gcd(a, b) {
+  if (b === 0) {
+    return a;
+  }
+  return gcd(b, a % b);
+};
+
+// Function to find the Least Common Multiple (LCM)
+function lcm(a, b) {
+  if (a === 0 || b === 0) {
+    return 0; // LCM is 0 if either number is 0
+  }
+  return Math.abs(a * b) / gcd(a, b);
+};
+
 function nonEmptyDomains(domainA, domainB) {
     if (domainA.length !== 0 && domainB !== 0) {
         return true;
@@ -256,7 +272,7 @@ function minimumDomainValueValidB() {
     }
 };
 
-// Matrix
+// Matrix display
 
 function buildMatrix(mat, row, col) {
     // builds a matrix
@@ -412,7 +428,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant'));
 
@@ -492,7 +508,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant'));
 
@@ -572,7 +588,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant'));
 
@@ -653,7 +669,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication', true));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant'));
 
@@ -722,7 +738,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation', true));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant'));
 
@@ -830,7 +846,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition', true));
         select.appendChild(buildOption('determinant'));
 
@@ -884,7 +900,7 @@ function updateMatrixForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant', true));
 
@@ -946,6 +962,8 @@ function updateMatrixForm() {
         element5.addEventListener('change', updateMatrixForm);
     }
 };
+
+// Matrix logic
 
 function getScalars(matrix) {
     // store length
@@ -1021,7 +1039,7 @@ function getDeterminant(matrix) {
         let test = minors[0].length;
         let x = 1
         
-        // break matrix into a matrix of minors
+        // break matrix into minors
         while (x < maxRank - 2 && test > 2) {
             // runs for matrices with rank 4 and up to maxrank
             
@@ -1142,8 +1160,8 @@ function getDeterminant(matrix) {
             x += 1;
         }
         
-        console.log(minors);
-        console.log(scalars);
+        // console.log(minors);
+        // console.log(scalars);
 
         // calculate determinant with minors and scalars
         if (rank === 3) {
@@ -1641,6 +1659,202 @@ function getDeterminant(matrix) {
     }
 };
 
+function isZeroRows(matrix) {
+    // returns true if it finds a zero row, else false
+    let zeroes = 0;
+    for (let row = 0; row < matrix[0].length; row++) {
+        zeroes = 0;
+        for (let column = 0; column < matrix.length; column++) {
+            if (matrix[column][row] == 0) {
+                zeroes += 1;
+            }
+        }
+        if (zeroes === matrix[0].length) {
+            return true;
+        }
+    }
+    return false;
+};
+
+function isZeroCols(matrix) {
+    // returns true if it finds a zero column, else false
+    let zeroes = 0;
+    for (let column = 0; column < matrix.length; column++) {
+        zeroes = 0;
+        for (let row = 0; row < matrix[0].length; row++) {
+            if (matrix[column][row] == 0) {
+                zeroes += 1;
+            }
+        }
+        if (zeroes === matrix.length) {
+            return true;
+        }
+    }
+    return false;
+};
+
+function isDuplicateRows(matrix) {
+    // test for duplicate rows
+    // duplicate rows are essentially an elementary operation away from being rows with all zeroes
+    let duplicateRows = false;
+    let currentIndex = 0;
+    let sameCount = 0;
+    let test = [];
+    let current = [];
+
+    for (a in matrix) {
+        // get current row to compare against various test rows
+        current = [];
+        for (let column = 0; column < matrix.length; column++) {
+            current.push(matrix[column][currentIndex]);
+        }
+
+        // get and compare rows
+        for (let row = currentIndex + 1; row < matrix[0].length; row++) {
+            // get next test row
+            test = [];
+            for (let column = 0; column < matrix.length; column++) {
+                test.push(matrix[column][row]);
+            }
+
+            // compare test row against current row
+            sameCount = 0
+            for (let i = 0; i < matrix[0].length; i++) {
+                if (current[i] === test[i]) {
+                    sameCount += 1;
+                }
+            }
+            if (sameCount === matrix[0].length) {
+                duplicateRows = true;
+                break;
+            }
+        }
+
+        if (duplicateRows === false) {
+            currentIndex += 1;
+        } else {
+            break;
+        }
+    }
+
+    return duplicateRows;
+};
+
+function isDuplicateCols(matrix) {
+    // test for duplicate cols
+    let duplicateCols = false;
+    let currentIndex = 0;
+    let sameCount = 0;
+    let test = [];
+    let current = [];
+    for (a in matrix) {
+        // get current column to compare against various test columns
+        current = [];
+        for (let row = 0; row < matrix[0].length; row++) {
+            current.push(matrix[currentIndex][row]);
+        }
+
+        // get and compare columns
+        for (let column = currentIndex + 1; column < matrix.length; column++) {
+            // get next test column
+            test = [];
+            for (let row = 0; row < matrix[0].length; row++) {
+                test.push(matrix[column][row]);
+            }
+
+            // compare test column against current column
+            sameCount = 0
+            for (let i = 0; i < matrix.length; i++) {
+                if (current[i] === test[i]) {
+                    sameCount += 1;
+                }
+            }
+            if (sameCount === matrix.length) {
+                duplicateCols = true;
+                break;
+            }
+        }
+
+        if (duplicateCols === false) {
+            currentIndex += 1;
+        } else {
+            break;
+        }
+    }
+
+    return duplicateCols;
+};
+
+// elementary row operations
+
+function interchangeRows(row1, row2, matrix) {
+    // elementary row operation to switch row1 with row 2
+    // get row vals
+    let r1 = [];
+    let r2 = [];
+    for (let col = 0; col < matrix.length; col++) {
+        r1.push(matrix[col][row1]);
+    }
+    for (let col = 0; col < matrix.length; col++) {
+        r2.push(matrix[col][row2]);
+    }
+    // apply vals to rows
+    for (let i = 0; i < matrix.length; i++) {
+        matrix[i][row1] = r2[i]
+    }
+    for (let i = 0; i < matrix.length; i++) {
+        matrix[i][row2] = r1[i]
+    }
+    // return matrix with interchanged rows
+    return matrix
+};
+
+function scaleRow(row, multiplier, matrix) {
+    // elementary row operation to multiply a row by a non-zero number
+    if (multiplier !== 0) {
+        for (let col = 0; col < matrix.length; col++) {
+            matrix[col][row] = matrix[col][row] * multiplier;
+        }
+    }
+    // return matrix with multiplied row
+    return matrix;
+};
+
+function rowAddition(row1, row2, matrix, multiplier = 1) {
+    // elementary row operation to add a non-zero multiple of row1 to row2, where those are different rows
+    
+    // get row vals
+    let r1 = [];
+    let r2 = [];
+    for (let col = 0; col < matrix.length; col++) {
+        r1.push(matrix[col][row1]);
+    }
+    for (let col = 0; col < matrix.length; col++) {
+        r2.push(matrix[col][row2]);
+    }
+
+    if (multiplier !== 0) {
+        if (multiplier !== 1) {
+            // multiply row 1 values by non-zero multiplier
+            for (let i = 0; i < r1.length; i++) {
+                r1[i] = r1[i] * multiplier;
+            }
+            // add multiplied row 1 values to values of row 2
+            for (let i = 0; i < r1.length; i++) {
+                matrix[i][row2] = r2[i] + r1[i];
+            }
+        } else {
+            // add multiplied row 1 values to values of row 2
+            for (let i = 0; i < r1.length; i++) {
+                matrix[i][row2] = r1[i] + r2[i];
+            }
+        }
+    }
+
+    // return matrix with multiplied row
+    return matrix;
+};
+
 // dynamically update form elements
 const containerElement = document.querySelector('#dynamic-content-container');
 function updateForm() {
@@ -2118,7 +2332,7 @@ function updateForm() {
         // select.appendChild(buildOption('mutliply by inverse'));
         select.appendChild(buildOption('scalar multiplication'));
         select.appendChild(buildOption('negation'));
-        // select.appendChild(buildOption('inversion'));
+        select.appendChild(buildOption('inversion'));
         select.appendChild(buildOption('transposition'));
         select.appendChild(buildOption('determinant'));
 
@@ -2702,31 +2916,258 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 // is a square matrix
                 if (rowRankA < maxRank) { // exclude the maximum and beyond for safe processing
                     // initialize strutures
-                    let matrix = []; // contains 2D array; 1st D = column number; 2nd D = row number
+                    let matrix = []; // contains 2D array; 1st D = column number; 2nd D = row number; matrix[column][row]
+                    let identityMatrix = []; // contains the identity matrix of matrix
+                    let vals = []; // contains values of inverted matrix
         
-                    // populate matrix with columns
+                    // populate matrix with columns and rows
                     for (let i = 0; i < colRankA; i++) {
                         let column = [];
-                        document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
-                            column.push(Number(val.value));
-                        });
+                        const col = document.querySelectorAll(`.matrix-A-col-${i + 1}`)
+                        for (let j = 0; j < rowRankA; j++) {
+                            column.push(Math.floor(Number(col[j].value)));
+                        }
                         matrix.push(column);
                     }
 
-                    // console.log(matrix);
+                    // test for rows and columns with all zeroes
+                    // test for rows and columns with duplicates
+                    let zeroRows = isZeroRows(matrix); // test for zero rows first
+                    let zeroCols = true;
+                    let duplicateRows = true;
+                    let duplicateCols = true;
                     
-                    if (getDeterminant(matrix) !== 0) {
-                        // non-zero determinant
-            
-                        // perform matrix inversion
-    
-            
-                        // display results
-                        displayProductMatrix(rowRankA, colRankA, vals);
-    
+                    // if no zero rows
+                    if (!zeroRows) {
+                        zeroCols = isZeroCols(matrix); // then, test for zero columns
+                        
+                        // if no zero columns
+                        if (!zeroCols) {
+                            duplicateRows = isDuplicateRows(matrix);
+
+                            // if no duplicate rows
+                            if (!duplicateRows) {
+                                duplicateCols = isDuplicateCols(matrix);
+                                
+                                // if there are duplicate columns
+                                if (duplicateCols) {
+                                    // display error
+                                    answerField.innerText = 'contains duplicate columns';
+                                }
+                                
+                            } else {
+                                // display error
+                                answerField.innerText = 'contains duplicate rows';
+                            }
+
+                        } else {
+                            // display error
+                            answerField.innerText = 'contains column with all zeroes';
+                        }
+
                     } else {
                         // display error
-                        answerField.innerText = 'Determinant is equal to zero';
+                        answerField.innerText = 'contains row with all zeroes';
+                    }
+
+                    if (!zeroRows && !zeroCols && !duplicateRows && !duplicateCols) {
+                        
+                        // calculate determinant of matrix
+                        const determinant = getDeterminant(matrix);
+    
+                        if (determinant !== 0) {
+                            // conditions for matrix inversion
+                            // non-zero determinant
+                            // no zero rows
+                            // no zero columns
+                            // no duplicate rows
+                            // no duplicate columns
+                            // is square matrix
+                            
+                            // Method 1: Gauss Jordan Elimination
+                            // get reduced row echelon form of matrix, applying same operations to identity matrix
+                            // reduced row echelon form  = upper and lower triangle matrix for square matrices
+                            // once reduced row echelon form is achieved with the given matrix,
+                            // then, the identity matrix will be the inverse of the given matrix
+
+                            // build identity matrix
+                            let indexOfOne = 0;
+                            for (let i = 0; i < colRankA; i++) {
+                                let column = [];
+                                for (let j = 0; j < rowRankA; j++) {
+                                    if (j === indexOfOne) {
+                                        column.push(1);
+                                    } else {
+                                        column.push(0);
+                                    }
+                                }
+                                identityMatrix.push(column);
+                                indexOfOne += 1;
+                            }
+
+                            let stop = false;
+                            let operating = true;
+                            let operations = 0;
+                            const maximum = (maxRank - 1) ** 2 * 10; // number of elements in the matrix * 10
+                            while (operations < maximum && operating && !zeroRows && !zeroCols) {
+                                // determine pivot column and pivot element
+                                for (let i = 0; i < colRankA; i++) {
+                                    for (let j = 0; j < rowRankA; j++) {
+                                        // i = pivot column index
+                                        // j = pivot element row index
+                                        // matrix[i][j] = pivot element of the matrix
+                                        const pivot = matrix[i][j];
+
+                                        if (i === j) {
+                                            // is a diagonal
+                                            if (pivot === 1) {
+                                                if (i === colRankA - 1) {
+                                                    // terminating condition
+                                                    // no pivot element on last element
+                                                    operating = false;
+                                                    stop = true;
+                                                    break;
+                                                } else {
+                                                    // skip diagonals with value of one
+                                                    continue;
+                                                }
+                                            } else if (pivot === 0) {
+                                                // zero valued diagonal pivot element
+
+                                                // find row k for row interchange
+                                                for (let k = 0; k < rowRankA; k++) {
+                                                    if (matrix[i][k] !== 0) {
+                                                        // matrix
+                                                        matrix = interchangeRows(k, j, matrix);
+                                                        // identity
+                                                        identityMatrix = interchangeRows(k, j, identityMatrix);
+                                                        break;
+                                                    }
+                                                }
+
+                                                // stop iterating and determine next pivot element
+                                                stop = true;
+                                                break;
+                                            }
+                                            
+                                        } else if (pivot !== 0) {
+                                            // non-diagonal and non-zero pivot element
+
+                                            for (let k = 0; k < rowRankA; k++) {
+                                                // search for a non-zero value in other row of pivot column
+                                                if (k !== j  && matrix[i][k] !== 0) {
+                                                    // matrix[i][k] is that value
+                                                    // get LCM of matrix[i][j] and matrix[i][k]
+                                                    const tovip = matrix[i][k];
+                                                    const LCM = lcm(pivot, tovip);
+
+                                                    // use LCM to get scalars
+                                                    const scalarA = LCM / pivot;
+                                                    const scalarB = -(LCM / tovip);
+
+                                                    // get rows
+                                                    let r1 = [];
+                                                    let r2 = [];
+                                                    let r1i = [];
+                                                    let r2i = [];
+                                                    for (let a = 0; a < colRankA; a++) {
+                                                        // matrix
+                                                        r1.push(matrix[a][j]);
+                                                        r2.push(matrix[a][k]);
+                                                        // identity
+                                                        r1i.push(identityMatrix[a][j]);
+                                                        r2i.push(identityMatrix[a][k]);
+                                                    }
+
+                                                    // scale rows
+                                                    for (let a = 0; a < colRankA; a++) {
+                                                        // matrix
+                                                        r1[a] = r1[a] * scalarA;
+                                                        r2[a] = r2[a] * scalarB;
+                                                        // identity
+                                                        r1i[a] = r1i[a] * scalarA;
+                                                        r2i[a] = r2i[a] * scalarB;
+                                                    }
+
+                                                    // add rows
+                                                    let r3 = [];
+                                                    let r3i = [];
+                                                    for (let a = 0; a < colRankA; a++) {
+                                                        // matrix
+                                                        r3.push(r1[a] + r2[a]);
+                                                        // identity
+                                                        r3i.push(r1i[a] + r2i[a]);
+                                                    }
+
+                                                    // assign summed row to matrix
+                                                    for (let a = 0; a < colRankA; a++) {
+                                                        // matrix
+                                                        matrix[a][j] = r3[a];
+                                                        // identity
+                                                        identityMatrix[a][j] = r3i[a];
+                                                    }
+
+                                                    break;
+                                                }
+                                            }
+
+                                            // test for zero rows
+                                            zeroRows = isZeroRows(matrix);
+
+                                            // if no zero rows
+                                            if (!zeroRows) {
+                                                zeroCols = isZeroCols(matrix); // then, test for zero columns
+
+                                                // if there are zero columns
+                                                if (zeroCols) {
+                                                    // display error
+                                                    answerField.innerText = 'contains column with all zeroes';
+                                                }
+
+                                            } else {
+                                                // display error
+                                                answerField.innerText = 'contains row with all zeroes';
+                                            }
+                                            
+                                            // stop iterating and determine next pivot element
+                                            stop = true;
+                                            break;
+                                        }
+                                    }
+                                    // if stop is true, operation already performed
+                                    // so no need to search for pivot column
+                                    if (stop) {
+                                        stop = false;
+                                        break;
+                                    }
+                                }
+                                // count each operation
+                                operations += 1;
+                            }
+
+                            if (operations < maximum) {
+                                // format solution into vals structure
+                                for (let i = 0; i < identityMatrix.length; i++) {
+                                    for (let j = 0; j < identityMatrix[i].length; j++) {
+                                        vals.push(identityMatrix[i][j]);
+                                    }
+                                }
+        
+                                // display results
+                                displayProductMatrix(rowRankA, colRankA, vals);
+                                answerField.innerHTML = `<div>Elementary Row Operations: ${operations - 1}<div>` + answerField.innerHTML;
+                            
+                            } else {
+                                // display error
+                                answerField.innerText = 'exceeds maximum operations';
+                            }
+                            
+        
+                        } else {
+                            // display error
+                            answerField.innerText = 'Determinant is equal to zero';
+                        }
+
                     }
 
                 } else {
@@ -2784,8 +3225,14 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 matrix.push(column);
             }
 
-            // display answer
-            answerField.innerText = `${getDeterminant(matrix)}`;
+            if (matrix.length >= maxRank) {
+                // display error
+                answerField.innerText = `maximum rank of ${maxRank - 1} exceeded`;
+            } else {
+                // display answer
+                answerField.innerText = `${getDeterminant(matrix)}`;
+            }
+
 
         } else {
             // display error
