@@ -86,6 +86,54 @@ function disjunction(domainA, domainB) {
     }
 };
 
+function common(domainA, domainB) {
+    // returns what elements domainA and domainB have in common
+    let common = [];
+    for (let i = 0; i < domainA.length; i++) {
+        for (let j = 0; j < domainB.length; j++) {
+            if (domainA[i] === domainB[j]) {
+                common.push(domainA[i]);
+            }
+        }
+    }
+    return common;
+};
+
+function removeDuplicates(domain) {
+    // returns domain removed of duplicates
+    let duplicates = true;
+    let x = 0;
+    while (x < 1000 && duplicates) {
+        x += 1;
+        let restart = false;
+        for (let i = 0; i < domain.length; i++) {
+            for (let j = i; j < domain.length; j++) {
+                if (i !== j && domain[i] === domain[j]) {
+                    // remove duplicate
+                    if (j !== domain.length - 1) {
+                        domain = domain.slice(0, j).concat(domain.slice(j + 1, domain.length));
+                    } else {
+                        domain = domain.slice(0, i).concat(domain.slice(i + 1, domain.length));
+                    }
+                    restart = true;
+                    break;
+                }
+                if (restart) {
+                    break;
+                }
+            }
+            if (restart) {
+                break;
+            }
+        }
+        if (restart) {
+            continue
+        }
+        duplicates = false;
+    }
+    return domain;
+};
+
 // group operators on codomains
 function isSubdomain(domainA, domainB) {
     // tests if domain B is a subdomain of domain A
@@ -2441,6 +2489,14 @@ function updateForm() {
         document.querySelector('#row-rank-b').addEventListener('change', updateMatrixForm);
 
     }
+
+    // handle answer-field overflow
+    const answerField = document.querySelector('#answer-field');
+    if (answerField.scrollWidth > answerField.offsetWidth || answerField.scrollHeight > answerField.offsetHeight) {
+        answerField.setAttribute('style', 'padding-bottom: 10px');
+    } else {
+        answerField.setAttribute('style', 'padding-bottom: 0px');
+    }
 };
 updateForm();
 document.querySelector('#operand-type').addEventListener('change', updateForm);
@@ -2648,8 +2704,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
         // use properties to structure data as a domain
 
-        const tolerance = 6; // nearest 0.0001
-
         // build domain A
         let domainA = [];
         if (numberTypeA === 'integers') {
@@ -2669,6 +2723,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     domainA.push(x);
                 }
             }
+            domainA.push(maximumA);
         } else if (numberTypeA === 'rational-hundredth') {
             for (let i = 0; i <= Math.abs(maximumA - minimumA); i = i + 0.01) {
                 const num = minimumA + i;
@@ -2682,6 +2737,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     domainA.push(x);
                 }
             }
+            domainA.push(maximumA);
         } else if (numberTypeA === 'rational-thousandth') {
             for (let i = 0; i <= Math.abs(maximumA - minimumA); i = i + 0.001) {
                 const num = minimumA + i;
@@ -2695,6 +2751,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     domainA.push(x);
                 }
             }
+            domainA.push(maximumA);
         }
 
         // build domain b
@@ -2716,6 +2773,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     domainB.push(x);
                 }
             }
+            domainB.push(maximumB);
         } else if (numberTypeB === 'rational-hundredth') {
             for (let i = 0; i <= Math.abs(maximumB - minimumB); i = i + 0.01) {
                 const num = minimumB + i;
@@ -2729,6 +2787,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     domainB.push(x);
                 }
             }
+            domainB.push(maximumB);
         } else if (numberTypeB === 'rational-thousandth') {
             for (let i = 0; i <= Math.abs(maximumB - minimumB); i = i + 0.001) {
                 const num = minimumB + i;
@@ -2742,7 +2801,12 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     domainB.push(x);
                 }
             }
+            domainB.push(maximumB);
         }
+
+        // remove duplicates
+        domainA = removeDuplicates(domainA);
+        domainB = removeDuplicates(domainB);
 
         // linear operators
         if (operatorType === 'conjunction') {
@@ -2750,15 +2814,25 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             if (answer.length === 0) {
                 answer = 0;
             }
+
+            // get display data
+            const percentA = common(answer, domainA).length / domainA.length * 100;
+            const percentB = common(answer, domainB).length / domainB.length * 100;
+
             // display answer
-            answerField.innerHTML = `<div>Conjunction</div><div>${answer.toString()}</div><div>Domain A</div><div>${domainA.toString()}</div><div>Domain B</div><div>${domainB.toString()}</div>`;
+            answerField.innerHTML = `<div>Conjunction</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent A: </div> <div class="answer-data-col-2">${percentA}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent B: </div> <div class="answer-data-col-2">${percentB}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${answer.toString()}</div> </div> <div>Domain A</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainA.toString()}</div> </div> <div>Domain B</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainB.toString()}</div> </div>`;
         } else if (operatorType === 'disjunction') {
             answer = disjunction(domainA, domainB);
             if (answer.length === 0) {
                 answer = 0;
             }
+
+            // get display data
+            const percentA = common(answer, domainA).length / domainA.length * 100;
+            const percentB = common(answer, domainB).length / domainB.length * 100;
+
             // display answer
-            answerField.innerHTML = `<div>Disjunction</div><div>${answer.toString()}</div><div>Domain A</div><div>${domainA.toString()}</div><div>Domain B</div><div>${domainB.toString()}</div>`;
+            answerField.innerHTML = `<div>Disjunction</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent A: </div> <div class="answer-data-col-2">${percentA}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent B: </div> <div class="answer-data-col-2">${percentB}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${answer.toString()}</div> </div> <div>Domain A</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainA.toString()}</div> </div> <div>Domain B</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainB.toString()}</div> </div>`;
         }
     } else if (operandType === 'matrix') {
         if (operatorType === 'matrix addition') {

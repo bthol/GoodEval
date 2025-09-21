@@ -54,24 +54,26 @@ label {
 }
 
 #answer-field {
+    padding: 0px 5px;
     border: 2px solid #fffef0;
     overflow-x: scroll;
 }
 
 .answer-data-layout {
     display: grid;
+    grid-gap: 5px;
     grid-template-columns: 1fr 1fr;
     border-bottom: 1px solid #fffef0;
 }
 
 .answer-data-col-1 {
     align-self: center;
-    justify-self: end;
+    justify-self: start;
 }
 
 .answer-data-col-2 {
     align-self: center;
-    justify-self: center;
+    justify-self: start;
 }
 
 .matrix {
