@@ -2772,7 +2772,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
             } else {
                 // display error
-                answerField.innerText = NaN;
+                answerField.innerText = 'Matrices have different rank';
             }
 
         } else if (operatorType === 'matrix multiplication') {
@@ -2820,7 +2820,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
             } else {
                 // display error
-                answerField.innerText = NaN;
+                answerField.innerText = 'A row ≠ B col or A col ≠ B row';
             }
 
         } else if (operatorType === 'matrix subtraction') {
@@ -2890,7 +2890,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
             } else {
                 // display error
-                answerField.innerText = NaN;
+                answerField.innerText = 'Matrices have different rank';
             }
 
         } else if (operatorType === 'multiply by inverse') {
