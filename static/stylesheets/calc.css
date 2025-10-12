@@ -141,18 +141,17 @@ nav {
     margin: 0px;
     grid-column: 1 / span 4;
     display: grid;
-    grid-template-columns: 9fr 1fr 1fr;
+    grid-template-columns: 7fr 1fr 1fr 1fr;
+    font-size: calc(.018 * var(--scale-calc-size));
 }
 
 .shift-mode {
     grid-column: 3;
-    font-size: calc(.018 * var(--scale-calc-size));
 }
 
 .cursor-mode {
     grid-column: 2;
     grid-row: 1;
-    font-size: calc(.018 * var(--scale-calc-size));
 }
 
 #screen-content {

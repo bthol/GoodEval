@@ -35,6 +35,7 @@ let answer = [];
 let shiftMode = 0; // stores a shift mode in the shift cycle
 let cursorMode = false; // controls activation of cursor mode features
 let cursorModeToggled = false; // prevents defaulting on timeout cursor navigation
+let radianMode = false; // determines whether trigonomic key function will return radians (true) or degrees (false)
 
 // format toggles
 let formatSuperscript = false;
@@ -198,6 +199,17 @@ function quotientSum2(x) {
     }
 };
 
+function degToRad(x) {
+    // conditionally converts trig function inputs
+    if (radianMode) {
+        // keep radians
+        return x;
+    } else {
+        // convert degrees to radians
+        return x * (Math.PI/180);
+    }
+};
+
 // key function info
 const keyInfo = [
     // static operations
@@ -208,20 +220,20 @@ const keyInfo = [
     {key: 'ceil', funct: (x) => Math.ceil(x)}, // rounds to integer just above
     
     // key functions
-    {key: 'sin', funct: (x) => Math.sin(x)}, // sine
-    {key: 'asin', funct: (x) => Math.asin(x)}, // arch sine
-    {key: 'sinh', funct: (x) => Math.sinh(x)}, // hyperbolic sine
-    {key: 'asinh', funct: (x) => Math.asinh(x)}, // arch hyperbolic sine
+    {key: 'sin', funct: (x) => Math.sin(degToRad(x))}, // sine
+    {key: 'asin', funct: (x) => Math.asin(degToRad(x))}, // arch sine
+    {key: 'sinh', funct: (x) => Math.sinh(degToRad(x))}, // hyperbolic sine
+    {key: 'asinh', funct: (x) => Math.asinh(degToRad(x))}, // arch hyperbolic sine
 
-    {key: 'cos', funct: (x) => Math.cos(x)}, // cosine
-    {key: 'acos', funct: (x) => Math.acos(x)}, // arch cosine
-    {key: 'cosh', funct: (x) => Math.cosh(x)}, // hyperbolic cosine
-    {key: 'acosh', funct: (x) => Math.acosh(x)}, // arch hyperbolic cosine
+    {key: 'cos', funct: (x) => Math.cos(degToRad(x))}, // cosine
+    {key: 'acos', funct: (x) => Math.acos(degToRad(x))}, // arch cosine
+    {key: 'cosh', funct: (x) => Math.cosh(degToRad(x))}, // hyperbolic cosine
+    {key: 'acosh', funct: (x) => Math.acosh(degToRad(x))}, // arch hyperbolic cosine
 
-    {key: 'tan', funct: (x) => Math.tan(x)}, // tangent
-    {key: 'atan', funct: (x) => Math.atan(x)}, // arch tangent
-    {key: 'tanh', funct: (x) => Math.tanh(x)}, // hyperbolic tangent
-    {key: 'atanh', funct: (x) => Math.atanh(x)}, // arch hypberbolic tangent
+    {key: 'tan', funct: (x) => Math.tan(degToRad(x))}, // tangent
+    {key: 'atan', funct: (x) => Math.atan(degToRad(x))}, // arch tangent
+    {key: 'tanh', funct: (x) => Math.tanh(degToRad(x))}, // hyperbolic tangent
+    {key: 'atanh', funct: (x) => Math.atanh(degToRad(x))}, // arch hypberbolic tangent
 
     {key: 'log10', funct: (x) => Math.log10(x)}, // logarithm (base 10)
     {key: 'log2', funct: (x) => Math.log2(x)}, // logarithm (base 2)
@@ -446,6 +458,187 @@ function expFormat() {
             }
         }
     }
+};
+
+// Structuring
+function insert(char) {
+    if (!cursorMode) {
+        // defaultly inserts at end of problem
+        if (!formatSuperscript) {
+            if (!expFormat()) {
+                // no formatting
+                problem.push(char);
+            } else {
+                // apply superscript formatting
+                problem.push('<sup>' + char + '</sup>');
+            }
+        } else {
+            // apply superscript formatting
+            problem.push('<sup>' + char + '</sup>');
+        }
+        updateProblem();
+    } else {
+        // in cursor mode, inserts at cursor index
+        if (problem.length > 0) {
+            // non-empty problem structure
+            if (cursorIdx === 0) {
+                // cursor at start
+                problem.unshift(char);
+                updateProblem('cursor');
+            } else {
+                // cursor at middle and end
+                if (!formatSuperscript) {
+                    if (!expFormat()) {
+                        // no formatting
+                        problem.splice(cursorIdx + 1, 0, char);
+                    } else {
+                        // apply superscript formatting
+                        problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
+                    }
+                } else {
+                    // apply superscript formatting
+                    problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
+                }
+                cursorForward();
+            }
+        } else {
+            // empty problem structure
+            problem.push(char);
+            cursorForward();
+            updateProblem('cursor');
+        }
+    }
+};
+
+function restructure(solution, start, end, problem) {
+    let before = [];
+    for (let i = 0; i < start; i++) {
+        before.push(problem[i])
+    }
+    let after = [];
+    for (let i = end + 1; i < problem.length; i++) {
+        after.push(problem[i])
+    }
+    if (typeof solution === 'string') {
+        before.push(solution);
+        return before.concat(after);
+    } else if (typeof solution === 'number') {
+        before.push(`${solution}`);
+        return before.concat(after);
+    } else {
+        return before.concat(solution).concat(after);
+    }
+};
+
+function getIdx(key, struct) {
+    // returns index of key in iterable structure
+    for (let i = 0; i < struct.length; i++) {
+        if (struct[i] === key) {
+            return i;
+        }
+    }
+    return false;
+};
+
+function structureString() {
+    // structures string
+    let struct = [];
+    let buffer = "";
+    try {
+        for (let i = 0; i < problem.length; i++) {
+            const char = problem.slice(i, i + 1)[0];
+            // skip spaces
+            if (char === " ") {
+                continue;
+            } else {
+                if (char === "." || !isNaN(char)) {
+                    buffer += char;
+                } else {
+                    if (char === ")") {
+                        try {
+                            if (buffer.length > 0) {
+                                struct.push(buffer);
+                                buffer = "";
+                            }
+                            struct.push(char);
+                        } catch {
+                            if (buffer.length > 0) {
+                                struct.push(buffer);
+                            }
+                            buffer = "";
+                            struct.push(char);
+                        }
+                    } else {
+                        if (buffer.length > 0) {
+                            struct.push(buffer);
+                        }
+                        buffer = "";
+                        struct.push(char);
+                    }
+    
+                }
+                // push buffer at end
+                if (i === problem.length - 1 && buffer.length > 0) {
+                    struct.push(buffer);
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+    answer = struct;
+};
+
+function getSection(open, close) {
+    // returns section for calculation
+    let ref = [];
+    for (let i = 0; i < answer.length; i++) {
+        if (answer[i] === open || answer[i] === close) {
+            ref.push({char: answer[i], index: i});
+        }
+    }
+    if (ref.length > 0) {
+        let start, end;
+        let section = [];
+        for (let i = 0; i < ref.length; i++) {
+            if (ref[i].char === open && i + 1 < ref.length && ref[i + 1].char === close) {
+                start = ref[i].index;
+                end = ref[i + 1].index;
+            }
+        }
+        for (let i = start + 1; i < end; i++) {
+            section.push(answer[i]);
+        }
+        return true && {start: start, end: end, sect: section};
+    } else {
+        return false;
+    }
+};
+
+function section() {
+    let section = getSection('(', ')');
+    let count = 0;
+    while (count < 100 && section) {
+        answer = restructure(calculate(section.sect), section.start, section.end, answer);
+        // prepare for next iteraton
+        section = getSection('(', ')');
+        count += 1;
+    }
+    answer = calculate(answer);
+};
+
+// Key Functions
+function keyFunction(key, funct, prob) {
+    // generalizes single argument key functions
+    let idx = getIdx(key, prob);
+    let x = 0;
+    while (x < 100 && idx !== false) {
+        x += 1;
+        let solution = funct(Number(prob[idx + 1]));
+        prob = restructure(solution, idx, idx + 1, prob);
+        idx = getIdx(key, prob);
+    }
+    return prob;
 };
 
 // calculation
@@ -675,206 +868,6 @@ function calculate(prob) {
         }
     }
 
-    return prob;
-};
-
-// Structuring
-function insert(char) {
-    if (!cursorMode) {
-        // defaultly inserts at end of problem
-        if (!formatSuperscript) {
-            if (!expFormat()) {
-                // no formatting
-                problem.push(char);
-            } else {
-                // apply superscript formatting
-                problem.push('<sup>' + char + '</sup>');
-            }
-        } else {
-            // apply superscript formatting
-            problem.push('<sup>' + char + '</sup>');
-        }
-        updateProblem();
-    } else {
-        // in cursor mode, inserts at cursor index
-        if (problem.length > 0) {
-            // non-empty problem structure
-            if (cursorIdx === 0) {
-                // cursor at start
-                problem.unshift(char);
-                updateProblem('cursor');
-            } else {
-                // cursor at middle and end
-                if (!formatSuperscript) {
-                    if (!expFormat()) {
-                        // no formatting
-                        problem.splice(cursorIdx + 1, 0, char);
-                    } else {
-                        // apply superscript formatting
-                        problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
-                    }
-                } else {
-                    // apply superscript formatting
-                    problem.splice(cursorIdx + 1, 0, '<sup>' + char + '</sup>');
-                }
-                cursorForward();
-            }
-        } else {
-            // empty problem structure
-            problem.push(char);
-            cursorForward();
-            updateProblem('cursor');
-        }
-    }
-};
-
-function restructure(solution, start, end, problem) {
-    let before = [];
-    for (let i = 0; i < start; i++) {
-        before.push(problem[i])
-    }
-    let after = [];
-    for (let i = end + 1; i < problem.length; i++) {
-        after.push(problem[i])
-    }
-    if (typeof solution === 'string') {
-        before.push(solution);
-        return before.concat(after);
-    } else if (typeof solution === 'number') {
-        before.push(`${solution}`);
-        return before.concat(after);
-    } else {
-        return before.concat(solution).concat(after);
-    }
-};
-
-function getIdx(key, struct) {
-    // returns index of key in iterable structure
-    for (let i = 0; i < struct.length; i++) {
-        if (struct[i] === key) {
-            return i;
-        }
-    }
-    return false;
-};
-
-function structureString() {
-    // structures string
-    let struct = [];
-    let buffer = "";
-    try {
-        for (let i = 0; i < problem.length; i++) {
-            const char = problem.slice(i, i + 1)[0];
-            // skip spaces
-            if (char === " ") {
-                continue;
-            } else {
-                if (char === "." || !isNaN(char)) {
-                    buffer += char;
-                } else {
-                    if (char === ")") {
-                        try {
-                            if (buffer.length > 0) {
-                                struct.push(buffer);
-                                buffer = "";
-                            }
-                            struct.push(char);
-                        } catch {
-                            if (buffer.length > 0) {
-                                struct.push(buffer);
-                            }
-                            buffer = "";
-                            struct.push(char);
-                        }
-                    } else {
-                        if (buffer.length > 0) {
-                            struct.push(buffer);
-                        }
-                        buffer = "";
-                        struct.push(char);
-                    }
-    
-                }
-                // push buffer at end
-                if (i === problem.length - 1 && buffer.length > 0) {
-                    struct.push(buffer);
-                }
-            }
-        }
-    } catch (error) {
-        console.log(error);
-    }
-    answer = struct;
-};
-
-function getSection(open, close) {
-    // returns section for calculation
-    let ref = [];
-    for (let i = 0; i < answer.length; i++) {
-        if (answer[i] === open || answer[i] === close) {
-            ref.push({char: answer[i], index: i});
-        }
-    }
-    if (ref.length > 0) {
-        let start, end;
-        let section = [];
-        for (let i = 0; i < ref.length; i++) {
-            if (ref[i].char === open && i + 1 < ref.length && ref[i + 1].char === close) {
-                start = ref[i].index;
-                end = ref[i + 1].index;
-            }
-        }
-        for (let i = start + 1; i < end; i++) {
-            section.push(answer[i]);
-        }
-        return true && {start: start, end: end, sect: section};
-    } else {
-        return false;
-    }
-};
-
-function section() {
-    let section = getSection('(', ')');
-    let count = 0;
-    while (count < 100 && section) {
-        answer = restructure(calculate(section.sect), section.start, section.end, answer);
-        // prepare for next iteraton
-        section = getSection('(', ')');
-        count += 1;
-    }
-    answer = calculate(answer);
-};
-
-// Key Functions
-function keyFunction(key, funct, prob) {
-    // generalizes single argument key functions
-    let idx = getIdx(key, prob);
-    let x = 0;
-    while (x < 100 && idx !== false) {
-        x += 1;
-        let solution;
-        if (prob[idx + 1] === '(') {
-            // expression argument
-            let expression = [];
-            let nest = 0;
-            for (let i = idx + 1; i < prob.length; i++) {
-                expression.push(prob[i]);
-                if (prob[i] === '(') {
-                    nest += 1;
-                } else if (prob[i] === ')') {
-                    nest -= 1;
-                    if (nest === 0) {
-                        break;
-                    }
-                }
-            }
-        } else {
-            // single argument
-            solution = funct(Number(prob[idx + 1]));
-        }
-        prob = restructure(solution, idx, idx + 1, prob);
-        idx = getIdx(key, prob);
-    }
     return prob;
 };
 
@@ -1966,6 +1959,13 @@ btns.addEventListener('click', (e) => {
                 handleParen();
             } else if (id === 'btn-paren-close') {
                 handleParen(true);
+            } else if (id == 'btn-radian') {
+                radianMode = !radianMode;
+                if (radianMode) {
+                    T.querySelector('.radian-mode').innerText = 'radian';
+                } else {
+                    T.querySelector('.radian-mode').innerText = '';
+                }
             }
 
         } else if (type === 'cursor') {
