@@ -391,8 +391,37 @@ function buildOption(name, selected = false) {
     option.setAttribute('name', name);
     option.setAttribute('value', name);
     option.innerText = name;
-    if (selected) {option.setAttribute('selected', true)};
+    if (selected) {
+        option.setAttribute('selected', true)
+    };
     return option;
+};
+
+function buildOptionAll(selected = 0) {
+    const options = [
+        'matrix addition',
+        'matrix subtraction',
+        'matrix multiplication',
+        'scalar multiplication',
+        'multiply by inverse',
+        'inversion',
+        'negation',
+        'transposition',
+        'determinant',
+    ];
+    const select = document.createElement('select');
+    select.setAttribute('id', 'operator-type');
+    select.setAttribute('name', 'operator-type');
+    select.setAttribute('required', 'true');
+    select.setAttribute('value', options[selected]);
+    for (const i in options) {
+        if (Number(i) === selected) {
+            select.appendChild(buildOption(options[i], true));
+        } else {
+            select.appendChild(buildOption(options[i]));
+        }
+    }
+    return select;
 };
 
 function updateMatrixForm() {
@@ -464,101 +493,7 @@ function updateMatrixForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition', true));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
-
-        // Matrix A
-        const labelA = document.createElement('label');
-        labelA.setAttribute('for', 'Matrix A');
-        labelA.innerText = 'Matrix A';
-        
-        const rowRankA = document.createElement('input');
-        rowRankA.setAttribute('id', 'row-rank-a');
-        rowRankA.setAttribute('type', 'number');
-        rowRankA.setAttribute('name', 'row-rank-a');
-        rowRankA.setAttribute('min', '2');
-        rowRankA.setAttribute('value', rowsA);
-        rowRankA.setAttribute('required', 'true');
-        
-        const colRankA = document.createElement('input');
-        colRankA.setAttribute('id', 'col-rank-a');
-        colRankA.setAttribute('type', 'number');
-        colRankA.setAttribute('name', 'col-rank-a');
-        colRankA.setAttribute('min', '2');
-        colRankA.setAttribute('value', columnsA);
-        colRankA.setAttribute('required', 'true');
-
-        // Matrix B
-        const labelB = document.createElement('label');
-        labelB.setAttribute('for', 'Matrix B');
-        labelB.innerText = 'Matrix B';
-        
-        const rowRankB = document.createElement('input');
-        rowRankB.setAttribute('id', 'row-rank-b');
-        rowRankB.setAttribute('type', 'number');
-        rowRankB.setAttribute('name', 'row-rank-b');
-        rowRankB.setAttribute('min', '2');
-        rowRankB.setAttribute('value', rowsB);
-        rowRankB.setAttribute('required', 'true');
-
-        const colRankB = document.createElement('input');
-        colRankB.setAttribute('id', 'col-rank-b');
-        colRankB.setAttribute('type', 'number');
-        colRankB.setAttribute('name', 'col-rank-b');
-        colRankB.setAttribute('min', '2');
-        colRankB.setAttribute('value', columnsB);
-        colRankB.setAttribute('required', 'true');
-
-        // append elements
-        containerElement.appendChild(selectLabel);
-        containerElement.appendChild(select);
-
-        containerElement.appendChild(labelA);
-        containerElement.appendChild(rowRankA);
-        containerElement.appendChild(colRankA);
-        
-        containerElement.appendChild(labelB);
-        containerElement.appendChild(rowRankB);
-        containerElement.appendChild(colRankB);
-
-        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
-
-    } else if (option === 'matrix multiplication') {
-        // operator selector label
-        const selectLabel = document.createElement('label');
-        selectLabel.setAttribute('for', 'operator-type');
-        selectLabel.innerText = 'Operator';
-        
-        // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication', true));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(0);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -624,21 +559,7 @@ function updateMatrixForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction', true));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(1);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -696,8 +617,73 @@ function updateMatrixForm() {
 
         containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
         containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
+    
+    } else if (option === 'matrix multiplication') {
+        // operator selector label
+        const selectLabel = document.createElement('label');
+        selectLabel.setAttribute('for', 'operator-type');
+        selectLabel.innerText = 'Operator';
+        
+        // operator selection
+        const select = buildOptionAll(2);
 
-    } else if (option === 'multiply by inverse') {
+        // Matrix A
+        const labelA = document.createElement('label');
+        labelA.setAttribute('for', 'Matrix A');
+        labelA.innerText = 'Matrix A';
+        
+        const rowRankA = document.createElement('input');
+        rowRankA.setAttribute('id', 'row-rank-a');
+        rowRankA.setAttribute('type', 'number');
+        rowRankA.setAttribute('name', 'row-rank-a');
+        rowRankA.setAttribute('min', '2');
+        rowRankA.setAttribute('value', rowsA);
+        rowRankA.setAttribute('required', 'true');
+        
+        const colRankA = document.createElement('input');
+        colRankA.setAttribute('id', 'col-rank-a');
+        colRankA.setAttribute('type', 'number');
+        colRankA.setAttribute('name', 'col-rank-a');
+        colRankA.setAttribute('min', '2');
+        colRankA.setAttribute('value', columnsA);
+        colRankA.setAttribute('required', 'true');
+
+        // Matrix B
+        const labelB = document.createElement('label');
+        labelB.setAttribute('for', 'Matrix B');
+        labelB.innerText = 'Matrix B';
+        
+        const rowRankB = document.createElement('input');
+        rowRankB.setAttribute('id', 'row-rank-b');
+        rowRankB.setAttribute('type', 'number');
+        rowRankB.setAttribute('name', 'row-rank-b');
+        rowRankB.setAttribute('min', '2');
+        rowRankB.setAttribute('value', rowsB);
+        rowRankB.setAttribute('required', 'true');
+
+        const colRankB = document.createElement('input');
+        colRankB.setAttribute('id', 'col-rank-b');
+        colRankB.setAttribute('type', 'number');
+        colRankB.setAttribute('name', 'col-rank-b');
+        colRankB.setAttribute('min', '2');
+        colRankB.setAttribute('value', columnsB);
+        colRankB.setAttribute('required', 'true');
+
+        // append elements
+        containerElement.appendChild(selectLabel);
+        containerElement.appendChild(select);
+
+        containerElement.appendChild(labelA);
+        containerElement.appendChild(rowRankA);
+        containerElement.appendChild(colRankA);
+        
+        containerElement.appendChild(labelB);
+        containerElement.appendChild(rowRankB);
+        containerElement.appendChild(colRankB);
+
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
+    
     } else if (option === 'scalar multiplication') {
         // operator selector label
         const selectLabel = document.createElement('label');
@@ -705,21 +691,7 @@ function updateMatrixForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication', true));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(3);
 
         // Scalar
         const labelS = document.createElement('label');
@@ -766,29 +738,15 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankA);
 
         containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-
-    } else if (option === 'negation') {
+    
+    } else if (option === 'multiply by inverse') {
         // operator selector label
         const selectLabel = document.createElement('label');
         selectLabel.setAttribute('for', 'operator-type');
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation', true));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(4);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -811,6 +769,27 @@ function updateMatrixForm() {
         colRankA.setAttribute('value', columnsA);
         colRankA.setAttribute('required', 'true');
 
+        // Matrix B
+        const labelB = document.createElement('label');
+        labelB.setAttribute('for', 'Matrix B');
+        labelB.innerText = 'Matrix B (Inversed)';
+        
+        const rowRankB = document.createElement('input');
+        rowRankB.setAttribute('id', 'row-rank-b');
+        rowRankB.setAttribute('type', 'number');
+        rowRankB.setAttribute('name', 'row-rank-b');
+        rowRankB.setAttribute('min', '2');
+        rowRankB.setAttribute('value', rowsB);
+        rowRankB.setAttribute('required', 'true');
+
+        const colRankB = document.createElement('input');
+        colRankB.setAttribute('id', 'col-rank-b');
+        colRankB.setAttribute('type', 'number');
+        colRankB.setAttribute('name', 'col-rank-b');
+        colRankB.setAttribute('min', '2');
+        colRankB.setAttribute('value', columnsB);
+        colRankB.setAttribute('required', 'true');
+
         // append elements
         containerElement.appendChild(selectLabel);
         containerElement.appendChild(select);
@@ -818,9 +797,14 @@ function updateMatrixForm() {
         containerElement.appendChild(labelA);
         containerElement.appendChild(rowRankA);
         containerElement.appendChild(colRankA);
+        
+        containerElement.appendChild(labelB);
+        containerElement.appendChild(rowRankB);
+        containerElement.appendChild(colRankB);
 
         containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
-
+        containerElement.appendChild(buildMatrix('B', rowsB, columnsB));
+    
     } else if (option === 'inversion') {
         // operator selector label
         const selectLabel = document.createElement('label');
@@ -828,21 +812,7 @@ function updateMatrixForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion', true));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(5);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -874,6 +844,48 @@ function updateMatrixForm() {
         containerElement.appendChild(colRankA);
 
         containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+    
+    } else if (option === 'negation') {
+        // operator selector label
+        const selectLabel = document.createElement('label');
+        selectLabel.setAttribute('for', 'operator-type');
+        selectLabel.innerText = 'Operator';
+        
+        // operator selection
+        const select = buildOptionAll(6);
+
+        // Matrix A
+        const labelA = document.createElement('label');
+        labelA.setAttribute('for', 'Matrix A');
+        labelA.innerText = 'Matrix A';
+        
+        const rowRankA = document.createElement('input');
+        rowRankA.setAttribute('id', 'row-rank-a');
+        rowRankA.setAttribute('type', 'number');
+        rowRankA.setAttribute('name', 'row-rank-a');
+        rowRankA.setAttribute('min', '2');
+        rowRankA.setAttribute('value', rowsA);
+        rowRankA.setAttribute('required', 'true');
+        
+        const colRankA = document.createElement('input');
+        colRankA.setAttribute('id', 'col-rank-a');
+        colRankA.setAttribute('type', 'number');
+        colRankA.setAttribute('name', 'col-rank-a');
+        colRankA.setAttribute('min', '2');
+        colRankA.setAttribute('value', columnsA);
+        colRankA.setAttribute('required', 'true');
+
+        // append elements
+        containerElement.appendChild(selectLabel);
+        containerElement.appendChild(select);
+
+        containerElement.appendChild(labelA);
+        containerElement.appendChild(rowRankA);
+        containerElement.appendChild(colRankA);
+
+        containerElement.appendChild(buildMatrix('A', rowsA, columnsA));
+
+    
 
     } else if (option === 'transposition') {
         // operator selector label
@@ -882,21 +894,7 @@ function updateMatrixForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition', true));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(7);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -936,21 +934,7 @@ function updateMatrixForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition'));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant', true));
+        const select = buildOptionAll(8);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -2408,21 +2392,7 @@ function updateForm() {
         selectLabel.innerText = 'Operator';
         
         // operator selection
-        const select = document.createElement('select');
-        select.setAttribute('id', 'operator-type');
-        select.setAttribute('name', 'operator-type');
-        select.setAttribute('required', 'true');
-        select.setAttribute('value', 'matrix addition');
-
-        select.appendChild(buildOption('matrix addition', true));
-        select.appendChild(buildOption('matrix multiplication'));
-        select.appendChild(buildOption('matrix subtraction'));
-        // select.appendChild(buildOption('mutliply by inverse'));
-        select.appendChild(buildOption('scalar multiplication'));
-        select.appendChild(buildOption('negation'));
-        select.appendChild(buildOption('inversion'));
-        select.appendChild(buildOption('transposition'));
-        select.appendChild(buildOption('determinant'));
+        const select = buildOptionAll(0);
 
         // Matrix A
         const labelA = document.createElement('label');
@@ -2905,54 +2875,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 answerField.innerText = 'Matrices have different rank';
             }
 
-        } else if (operatorType === 'matrix multiplication') {
-            // get matrix ranks
-            const rowRankA = Number(document.querySelector('#row-rank-a').value);
-            const colRankA = Number(document.querySelector('#col-rank-a').value);
-            const rowRankB = Number(document.querySelector('#row-rank-b').value);
-            const colRankB = Number(document.querySelector('#col-rank-b').value);
-
-            // compare ranks between matrices
-            if (rowRankA === colRankB && colRankA === rowRankB) {
-
-                // initialize strutures
-                let valsA = []; // contains all values of Matrix A in order
-                let valsB = []; // contains all values of Matrix B in order
-                let vals = []; // contains sums of all elements in valsA and valsB
-
-                for (let i = 1; i < colRankB + 1; i++) {
-                    for (let j = 1; j < rowRankA + 1; j++) {
-
-                        // clear data
-                        valsA = [];
-                        valsB = [];
-
-                        // get values
-                        document.querySelectorAll(`.matrix-A-row-${j}`).forEach((val) => {
-                            valsA.push(Number(val.value));
-                        });
-                        document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
-                            valsB.push(Number(val.value));
-                        });
-
-                        // calculate dot product
-                        let sum = 0;
-                        for (let k = 0; k < valsA.length; k++) {
-                            sum += valsA[k] * valsB[k];
-                        }
-
-                        // append solution
-                        vals.push(sum);
-                    }
-                }
-
-                displayProductMatrix(rowRankA, colRankB, vals);
-
-            } else {
-                // display error
-                answerField.innerText = 'A row ≠ B col or A col ≠ B row';
-            }
-
         } else if (operatorType === 'matrix subtraction') {
             // get matrix ranks
             const rowRankA = Number(document.querySelector('#row-rank-a').value);
@@ -3023,7 +2945,54 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 answerField.innerText = 'Matrices have different rank';
             }
 
-        } else if (operatorType === 'multiply by inverse') {
+        } else if (operatorType === 'matrix multiplication') {
+            // get matrix ranks
+            const rowRankA = Number(document.querySelector('#row-rank-a').value);
+            const colRankA = Number(document.querySelector('#col-rank-a').value);
+            const rowRankB = Number(document.querySelector('#row-rank-b').value);
+            const colRankB = Number(document.querySelector('#col-rank-b').value);
+
+            // compare ranks between matrices
+            if (rowRankA === colRankB && colRankA === rowRankB) {
+
+                // initialize strutures
+                let valsA = []; // contains all values of Matrix A in order
+                let valsB = []; // contains all values of Matrix B in order
+                let vals = []; // contains sums of all elements in valsA and valsB
+
+                for (let i = 1; i < colRankB + 1; i++) {
+                    for (let j = 1; j < rowRankA + 1; j++) {
+
+                        // clear data
+                        valsA = [];
+                        valsB = [];
+
+                        // get values
+                        document.querySelectorAll(`.matrix-A-row-${j}`).forEach((val) => {
+                            valsA.push(Number(val.value));
+                        });
+                        document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
+                            valsB.push(Number(val.value));
+                        });
+
+                        // calculate dot product
+                        let sum = 0;
+                        for (let k = 0; k < valsA.length; k++) {
+                            sum += valsA[k] * valsB[k];
+                        }
+
+                        // append solution
+                        vals.push(sum);
+                    }
+                }
+
+                displayProductMatrix(rowRankA, colRankB, vals);
+
+            } else {
+                // display error
+                answerField.innerText = 'A row ≠ B col or A col ≠ B row';
+            }
+
         } else if (operatorType === 'scalar multiplication') {
             // get scalar
             const scalar = Number(document.querySelector('#scalar').value);
@@ -3051,30 +3020,423 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             // display results
             displayProductMatrix(rowRankA, colRankA, vals);
 
-        } else if (operatorType === 'negation') {
-
+        } else if (operatorType === 'multiply by inverse') {
             // get matrix ranks
             const rowRankA = Number(document.querySelector('#row-rank-a').value);
             const colRankA = Number(document.querySelector('#col-rank-a').value);
+            const rowRankB = Number(document.querySelector('#row-rank-b').value);
+            const colRankB = Number(document.querySelector('#col-rank-b').value);
 
-            // initialize strutures
-            let valsA = []; // contains each value of Matrix A in display order
-            let vals = []; // contains negated values
+            // compare ranks between matrices
+            if (rowRankB === colRankB) {
+                // matrix to be inversed is a square matrix
+                if (rowRankA === colRankB && colRankA === rowRankB) {
+                    // valid ranks for matrix multiplication
+                    if (rowRankB < maxRank) { // exclude the maximum and beyond for safe processing
+                        // initialize strutures
+                        let matrix = []; // contains 2D array; 1st D = column number; 2nd D = row number; matrix[column][row]
+                        let identityMatrix = []; // contains the identity matrix of matrix + transforms into inverse matrix
+            
+                        // populate matrix with columns and rows
+                        for (let i = 0; i < colRankB; i++) {
+                            let column = [];
+                            const col = document.querySelectorAll(`.matrix-B-col-${i + 1}`);
+                            for (let j = 0; j < rowRankB; j++) {
+                                column.push(Math.floor(Number(col[j].value)));
+                            }
+                            matrix.push(column);
+                        }
+    
+                        // test for rows and columns with all zeroes
+                        // test for rows and columns with duplicates
+                        let zeroRows = isZeroRows(matrix); // test for zero rows first
+                        let zeroCols = true;
+                        let duplicateRows = true;
+                        let duplicateCols = true;
+                        
+                        // if no zero rows
+                        if (!zeroRows) {
+                            zeroCols = isZeroCols(matrix); // then, test for zero columns
+                            
+                            // if no zero columns
+                            if (!zeroCols) {
+                                duplicateRows = isDuplicateRows(matrix);
+    
+                                // if no duplicate rows
+                                if (!duplicateRows) {
+                                    duplicateCols = isDuplicateCols(matrix);
+                                    
+                                    // if there are duplicate columns
+                                    if (duplicateCols) {
+                                        // display error
+                                        answerField.innerText = 'contains duplicate columns';
+                                    }
+                                    
+                                } else {
+                                    // display error
+                                    answerField.innerText = 'contains duplicate rows';
+                                }
+    
+                            } else {
+                                // display error
+                                answerField.innerText = 'contains column with all zeroes';
+                            }
+    
+                        } else {
+                            // display error
+                            answerField.innerText = 'contains row with all zeroes';
+                        }
+    
+                        if (!zeroRows && !zeroCols && !duplicateRows && !duplicateCols) {
+                            
+                            // calculate determinant of matrix
+                            const determinant = getDeterminant(matrix);
+        
+                            if (determinant !== 0) {
+                                // conditions for matrix inversion
+                                // non-zero determinant
+                                // no zero rows
+                                // no zero columns
+                                // no duplicate rows
+                                // no duplicate columns
+                                // is square matrix
+                                
+                                // Method 1: Gauss Jordan Elimination
+                                // get reduced row echelon form of matrix, applying same operations to identity matrix
+                                // reduced row echelon form  = upper and lower triangle matrix for square matrices
+                                // once reduced row echelon form is achieved with the given matrix,
+                                // then, the identity matrix will be the inverse of the given matrix
+    
+                                // build identity matrix
+                                let indexOfOne = 0;
+                                for (let i = 0; i < colRankB; i++) {
+                                    let column = [];
+                                    for (let j = 0; j < rowRankB; j++) {
+                                        if (j === indexOfOne) {
+                                            column.push(1);
+                                        } else {
+                                            column.push(0);
+                                        }
+                                    }
+                                    identityMatrix.push(column);
+                                    indexOfOne += 1;
+                                }
+    
+                                let stop = false;
+                                let operating = true;
+                                let operations = 0;
+                                const maximum = (maxRank - 1) ** 2 * 10; // number of elements in the matrix * 10
+                                while (operations < maximum && operating && !zeroRows && !zeroCols) {
+                                    // determine pivot column and pivot element
+                                    for (let i = 0; i < colRankB; i++) {
+                                        for (let j = 0; j < rowRankB; j++) {
+                                            // i = pivot column index
+                                            // j = pivot element row index
+                                            // matrix[i][j] = pivot element of the matrix
+                                            const pivot = matrix[i][j];
+    
+                                            if (i === j) {
+                                                // is a diagonal
+                                                if (pivot === 1) {
+                                                    if (i === colRankB - 1) {
+                                                        // terminating condition
+                                                        // no pivot element on last element
+                                                        operating = false;
+                                                        stop = true;
+                                                        break;
+                                                    } else {
+                                                        // skip diagonals with value of one
+                                                        continue;
+                                                    }
+                                                } else if (pivot === 0) {
+                                                    // zero valued diagonal pivot element
+    
+                                                    // find row k for row interchange
+                                                    for (let k = 0; k < rowRankB; k++) {
+                                                        if (matrix[i][k] !== 0) {
+                                                            // matrix
+                                                            matrix = interchangeRows(k, j, matrix);
+                                                            // identity
+                                                            identityMatrix = interchangeRows(k, j, identityMatrix);
+                                                            break;
+                                                        }
+                                                    }
+    
+                                                    // stop iterating and determine next pivot element
+                                                    stop = true;
+                                                    break;
+                                                }
+                                                
+                                            } else if (pivot !== 0) {
+                                                // non-diagonal and non-zero pivot element
+    
+                                                for (let k = 0; k < rowRankB; k++) {
+                                                    // search for a non-zero value in other row of pivot column
+                                                    if (k !== j  && matrix[i][k] !== 0) {
+                                                        // matrix[i][k] is that value
+                                                        // get LCM of matrix[i][j] and matrix[i][k]
+                                                        const tovip = matrix[i][k];
+                                                        const LCM = lcm(pivot, tovip);
+    
+                                                        // use LCM to get scalars
+                                                        const scalarA = LCM / pivot;
+                                                        const scalarB = -(LCM / tovip);
+    
+                                                        // get rows
+                                                        let r1 = [];
+                                                        let r2 = [];
+                                                        let r1i = [];
+                                                        let r2i = [];
+                                                        for (let a = 0; a < colRankB; a++) {
+                                                            // matrix
+                                                            r1.push(matrix[a][j]);
+                                                            r2.push(matrix[a][k]);
+                                                            // identity
+                                                            r1i.push(identityMatrix[a][j]);
+                                                            r2i.push(identityMatrix[a][k]);
+                                                        }
+    
+                                                        // scale rows
+                                                        for (let a = 0; a < colRankB; a++) {
+                                                            // matrix
+                                                            r1[a] = r1[a] * scalarA;
+                                                            r2[a] = r2[a] * scalarB;
+                                                            // identity
+                                                            r1i[a] = r1i[a] * scalarA;
+                                                            r2i[a] = r2i[a] * scalarB;
+                                                        }
+    
+                                                        // add rows
+                                                        let r3 = [];
+                                                        let r3i = [];
+                                                        for (let a = 0; a < colRankB; a++) {
+                                                            // matrix
+                                                            r3.push(r1[a] + r2[a]);
+                                                            // identity
+                                                            r3i.push(r1i[a] + r2i[a]);
+                                                        }
+    
+                                                        // assign summed row to matrix
+                                                        for (let a = 0; a < colRankB; a++) {
+                                                            // matrix
+                                                            matrix[a][j] = r3[a];
+                                                            // identity
+                                                            identityMatrix[a][j] = r3i[a];
+                                                        }
+    
+                                                        break;
+                                                    }
+                                                }
+    
+                                                // test for zero rows
+                                                zeroRows = isZeroRows(matrix);
+    
+                                                // if no zero rows
+                                                if (!zeroRows) {
+                                                    zeroCols = isZeroCols(matrix); // then, test for zero columns
+    
+                                                    // if there are zero columns
+                                                    if (zeroCols) {
+                                                        // display error
+                                                        answerField.innerText = 'contains column with all zeroes';
+                                                    }
+    
+                                                } else {
+                                                    // display error
+                                                    answerField.innerText = 'contains row with all zeroes';
+                                                }
+                                                
+                                                // stop iterating and determine next pivot element
+                                                stop = true;
+                                                break;
+                                            }
+                                        }
+                                        // if stop is true, operation already performed
+                                        // so no need to search for pivot column
+                                        if (stop) {
+                                            stop = false;
+                                            break;
+                                        }
+                                    }
+                                    // count each operation
+                                    operations += 1;
+                                }
 
-            // populate valsA with columns
-            for (let i = 0; i < colRankA; i++) {
-                document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
-                    valsA.push(val.value);
-                });
+                                
+                                if (operations < maximum) {
+                                    
+                                    // perform matrix multiplication with operated identity matrix
+                                    let matrixA = [];
+                                    for (let i = 1; i < colRankA + 1; i++) {
+                                        let column = [];
+                                        document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                                            column.push(Number(val.value));
+                                        });
+                                        matrixA.push(column);
+                                    }
+
+                                    let valsA = [];
+                                    let valsB = [];
+                                    let vals = [];
+
+                                    for (let i = 0; i < colRankA; i++) {
+                                        for (let j = 0; j < rowRankB; j++) {
+
+                                            // clear data
+                                            valsA = [];
+                                            valsB = [];
+
+                                            // get values
+                                            for (let col = 0; col < matrixA.length; col++) {
+                                                valsA.push(matrixA[col][j]);
+                                            }
+                                            for (let row = 0; row < identityMatrix[i].length; row++) {
+                                                valsB.push(identityMatrix[i][row]);
+                                            }
+
+                                            // calculate dot product
+                                            let sum = 0;
+                                            for (let k = 0; k < valsA.length; k++) {
+                                                sum += valsA[k] * valsB[k];
+                                            }
+
+                                            // append solution
+                                            vals.push(sum);
+                                        }
+                                    }
+            
+                                    // display results
+                                    displayProductMatrix(rowRankB, colRankA, vals);
+                                    answerField.innerHTML = `<div class="answer-data-layout"> <div class="answer-data-col-1">Inversion Method:</div> <div class="answer-data-col-2">Gauss Jordan Elimination</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Row Operations:</div> <div class="answer-data-col-2">${operations - 1}</div> </div> </div> ${answerField.innerHTML}`;
+                                
+                                } else {
+    
+                                    // Method 2: Matrix of Minors, Cofactors, Adjugates
+    
+                                    // repopulate matrix
+                                    matrix = [];
+                                    for (let i = 0; i < colRankA; i++) {
+                                        let column = [];
+                                        const col = document.querySelectorAll(`.matrix-A-col-${i + 1}`);
+                                        for (let j = 0; j < rowRankA; j++) {
+                                            column.push(Math.floor(Number(col[j].value)));
+                                        }
+                                        matrix.push(column);
+                                    }
+    
+                                    // get matrix of minors
+                                    const minors = getMinors(matrix, true);
+                                    
+                                    for (let col = 0; col < colRankA; col++) {
+                                        for (let row = 0; row < rowRankA; row++) {
+                                            matrix[col][row] = getDeterminant(minors[col + row]);
+                                        }
+                                    }
+    
+                                    // matrix now represents a matrix of minors
+    
+                                    // get matrix of cofactors
+                                    let negate = false;
+                                    for (let col = 0; col < colRankA; col++) {
+                                        for (let row = 0; row < rowRankA; row++) {
+                                            if (negate) {
+                                                matrix[col][row] = -Math.abs(matrix[col][row]);
+                                            } else {
+                                                matrix[col][row] = Math.abs(matrix[col][row]);
+                                            }
+                                            negate = !negate;
+                                        }
+                                    }
+    
+                                    // matrix now represents a matrix of cofactors
+    
+                                    // get adjugate
+                                    let adjugate = []; // contains each column as a row
+    
+                                    // populate vals with transposed values
+                                    for (let row = 0; row < rowRankA; row++) {
+                                        let column = [];
+                                        for (let col = 0; col < colRankA; col++) {
+                                            column.push(matrix[col][row]);
+                                        }
+                                        adjugate.push(column);
+                                    }
+    
+                                    // scale by the inverse determinant
+                                    const inverseDeterminant = 1 / determinant;
+                                    for (let col = 0; col < colRankA; col++) {
+                                        for (let row = 0; row < rowRankA; row++) {
+                                            adjugate[col][row] = adjugate[col][row] * inverseDeterminant;
+                                        }
+                                    }
+
+                                    // perform matrix multiplication with scaled adjugate
+                                    let matrixA = [];
+                                    for (let i = 1; i < colRankA + 1; i++) {
+                                        let column = [];
+                                        document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                                            column.push(Number(val.value));
+                                        });
+                                        matrixA.push(column);
+                                    }
+
+                                    let valsA = [];
+                                    let valsB = [];
+                                    let vals = [];
+
+                                    for (let i = 0; i < colRankA; i++) {
+                                        for (let j = 0; j < rowRankB; j++) {
+
+                                            // clear data
+                                            valsA = [];
+                                            valsB = [];
+
+                                            // get values
+                                            for (let col = 0; col < matrixA.length; col++) {
+                                                valsA.push(matrixA[col][j]);
+                                            }
+                                            for (let row = 0; row < identityMatrix[i].length; row++) {
+                                                valsB.push(identityMatrix[i][row]);
+                                            }
+
+                                            // calculate dot product
+                                            let sum = 0;
+                                            for (let k = 0; k < valsA.length; k++) {
+                                                sum += valsA[k] * valsB[k];
+                                            }
+
+                                            // append solution
+                                            vals.push(sum);
+                                        }
+                                    }
+            
+                                    // display results
+                                    displayProductMatrix(rowRankB, colRankA, vals);
+                                    answerField.innerHTML = `<div class="answer-data-layout"> <div class="answer-data-col-1">Inversion Method:</div> <div class="answer-data-col-2">Matrix of Minors</div> </div> </div> ${answerField.innerHTML}`;
+                                }
+                                
+            
+                            } else {
+                                // display error
+                                answerField.innerText = 'Determinant is equal to zero';
+                            }
+    
+                        }
+    
+                    } else {
+                        // display error
+                        answerField.innerText = `maximum rank of ${maxRank - 1} exceeded`;
+                    }
+
+                } else {
+                    // display error
+                    answerField.innerText = 'A row ≠ B col or A col ≠ B row';
+                }
+
+            } else {
+                // display error
+                answerField.innerText = 'not a square matrix';
             }
-
-            // negate all the vals
-            valsA.forEach((val) => {
-                vals.push(-Number(val));
-            });
-
-            // display results
-            displayProductMatrix(rowRankA, colRankA, vals);
 
         } else if (operatorType === 'inversion') {
             // get matrix ranks
@@ -3418,6 +3780,31 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 // display error
                 answerField.innerText = 'not a square matrix';
             }
+
+        } else if (operatorType === 'negation') {
+
+            // get matrix ranks
+            const rowRankA = Number(document.querySelector('#row-rank-a').value);
+            const colRankA = Number(document.querySelector('#col-rank-a').value);
+
+            // initialize strutures
+            let valsA = []; // contains each value of Matrix A in display order
+            let vals = []; // contains negated values
+
+            // populate valsA with columns
+            for (let i = 0; i < colRankA; i++) {
+                document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
+                    valsA.push(val.value);
+                });
+            }
+
+            // negate all the vals
+            valsA.forEach((val) => {
+                vals.push(-Number(val));
+            });
+
+            // display results
+            displayProductMatrix(rowRankA, colRankA, vals);
 
         } else if (operatorType === 'transposition') {
             
