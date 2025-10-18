@@ -37,7 +37,8 @@ const operations = {
 // DOM selections
 const connectionStatusDisplay = document.querySelector('#connection-status');
 const loader = document.querySelector('.elipses-container');
-const errorDisplay = document.querySelector('#answer-field');
+const answerField = document.querySelector('#answer-field');
+const infoContainer = document.querySelector('#info-container');
 
 // loader animation
 function startLoader() {
@@ -97,11 +98,11 @@ window.addEventListener('offline', () => {
 // problem string validation
 function serveError(error) {
     // displays string in error argument on page for 3000 ms
-    errorDisplay.innerText = error;
+    answerField.innerText = error;
     clearTimeout(errorTimeout);
     errorTimeout = setTimeout(() => {
         clearTimeout(errorTimeout);
-        errorDisplay.innerText = '';
+        answerField.innerText = '';
     }, 3000);
 };
 
@@ -231,6 +232,9 @@ infoBtn.addEventListener('click', () => {
                 setTimeout(() => {
                     // stop loader after a single duration
                     stopLoader();
+
+                    // focus on output field
+                    infoContainer.focus();
 
                     // clear previous info
                     container.innerHTML = '';
@@ -367,6 +371,8 @@ function eval() {
                     setTimeout(() => {
                         // stop loader after a single duration
                         stopLoader();
+                        // focus on output field
+                        answerField.focus();
                         // update answer field with response
                         answer.innerText = data;
                     }, loaderDuration);

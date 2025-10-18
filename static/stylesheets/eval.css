@@ -4,7 +4,7 @@
 }
 
 .body {
-    height: 100vmin;
+    min-height: 100vh;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -21,19 +21,16 @@
 }
 
 .home-button {
-    position: absolute;
-    top: 10px;
-    left: 8px;
     background: none;
     border: 1px ridge #0dff00;
     color: #2fff2f;
-    padding: .5vw;
+    padding: .66vmin;
     border-radius: .5vw;
-    font-size: calc(var(--font-size) * .667);
+    font-size: calc(var(--font-size) * .8);
 }
 
 .title {
-    width: 70%;
+    width: 85%;
     font-size: calc(var(--font-size) * 1.667);
     margin: 1.5vw 0vw;
     position: relative;
@@ -82,22 +79,28 @@
     align-items: center;
 }
 
-#info-button {
-    margin: 15px;
-}
-
-#info-container {
-    width: calc(var(--form-width) * .97);
-    height: max-content;
-    font-size: var(--font-size);
-}
-
 .center-text {
     font-size: var(--font-size);
     width: var(--form-width);
     display: flex;
     justify-content: center;
 }
+
+input[type="text"]:focus {
+    outline: none;
+}
+
+#info-button {
+    margin: 15px;
+}
+
+#info-container {
+    width: calc(var(--form-width) * .97);
+    font-size: var(--font-size);
+    height: max-content;
+    overflow-y: scroll;
+}
+
 
 /* maximum fonts for navigation */
 /* @media(min-width: 941px) {  
@@ -106,9 +109,9 @@
 /* minimum fonts for navigation */
 @media(max-width: 712px) {
     .home-button {
-        padding: 3.5px;
+        padding: 4.5px;
         border-radius: 3.5px;
-        font-size: calc(1rem * .667);
+        font-size: calc(1rem * .8);
     }
     .title {
         font-size: calc(1rem * 1.667);
@@ -144,17 +147,29 @@
         font-size: calc( var(--font-size) * 1.1);
         width: calc(var(--form-width) / 8);
     }
+    .home-button {
+        position: absolute;
+        top: 10px;
+        left: 8px;
+    }
+}
+
+@media(max-width: 500px) {
+    .home-button {
+        background-color: #153215;
+        font-size: 1rem;
+    }
 }
 
 /* handle hover feature */
 @media (hover: none) {
     /* no hover functionality: touchscreens */
-    .field-style:focus {
+    .form-style:focus {
         border: 1px ridge #e9ede7;
     }
     .button-style:focus {
         color: #e9ede7;
-        outline: 3px ridge #e9ede7;
+        outline: 2px ridge #e9ede7;
     }
     .home-button:focus {
         color: #e9ede7;
@@ -164,12 +179,23 @@
 
 @media (hover: hover) {
     /* hover functionality: everything else */
-    .field-style:hover {
+    .form-style:focus {
+        border: 1px ridge #e9ede7;
+    }
+    .button-style:focus {
+        color: #e9ede7;
+        outline: 2px ridge #e9ede7;
+    }
+    .home-button:focus {
+        color: #e9ede7;
+        border: 1px ridge #e9ede7;
+    }
+    .form-style:hover {
         border: 1px ridge #e9ede7;
     }
     .button-style:hover {
         color: #e9ede7;
-        outline: 3px ridge #e9ede7;
+        outline: 2px ridge #e9ede7;
     }
     .home-button:hover {
         color: #e9ede7;
