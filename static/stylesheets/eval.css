@@ -34,6 +34,11 @@
     font-size: calc(var(--font-size) * 1.667);
     margin: 1.5vw 0vw;
     position: relative;
+    cursor: default;
+}
+
+.status-text {
+    cursor: default;
 }
 
 .center-form {
@@ -74,6 +79,7 @@
     margin-left: 1.6vw;
     margin-right: 1.6vw;
     transition: outline 100ms;
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;

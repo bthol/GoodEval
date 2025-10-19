@@ -5,6 +5,7 @@ const addRate = 45;
 const removeRate = 35;
 const numberOfDots = 10;
 const loaderDuration = addRate * numberOfDots + removeRate;
+const requestDuration = loaderDuration + 30000; // loader duration + 30 seconds
 
 // global state variables
 let dotInterval = {};
@@ -22,6 +23,8 @@ const error = {
     emptyString: 'Invalid: empty string',
     parenthesis: 'Invalid: parenthesis',
     operation: 'Invalid: operation',
+    connectionFailed: 'Error: connection failed',
+    connectionTimeout: 'Error: connection attempt timed out',
 };
 
 // operation characters
@@ -348,36 +351,92 @@ function eval() {
                         valid = true;
                     }
                 }
-                
             }
 
             // make request if valid
             if (valid) {
+                // 3 cases of request
+                // Case 1: responds with answer
+                // Case 2: responds with error
+                // Case 3: connection timeout
 
                 // start loader
                 startLoader();
 
-                // fetch request to Eval API
+                // start connection timeout
                 const root = 'https://eval-api-8ece55f267c1.herokuapp.com/';
-                fetch(`${root}/eval/answer`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ problem: problem, use_logs: "0" })
-                })
-                .then(response => response.json())
-                .then((data) => {
-                    setTimeout(() => {
+                const controller = new AbortController();
+                let loaderDelay = {};
+                const connectionTimeout = setTimeout(() => {
+                    // cleanup cache
+                    clearTimeout(connectionTimeout);
+                    const delay = setTimeout(() => {
+
+                        // Case 3: Connection timeout
+
+                        // abort request
+                        controller.abort();
+
+                        // cleanup cache
+                        clearTimeout(loaderDelay);
+                        clearTimeout(delay);
                         // stop loader after a single duration
                         stopLoader();
                         // focus on output field
                         answerField.focus();
-                        // update answer field with response
-                        answer.innerText = data;
-                    }, loaderDuration);
-                });
+                        // update answer field with error message
+                        answer.innerText = error.connectionTimeout;
 
+                    }, loaderDuration)
+                }, requestDuration - loaderDuration);
+
+                // fetch request to Eval API
+                try {
+                    fetch(`${root}/eval/answer`, {
+                        method: 'POST',
+                        signal: controller.signal,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ problem: problem, use_logs: "0" })
+                    })
+                    .then(response => response.json())
+                    .then((data) => {
+                        // cancel connection timeout
+                        clearTimeout(connectionTimeout);
+                        loaderDelay = setTimeout(() => {
+
+                            // Case 1: responds with answer
+
+                            // cleanup cache
+                            clearTimeout(loaderDelay);
+                            // stop loader after a single duration
+                            stopLoader();
+                            // focus on output field
+                            answerField.focus();
+                            // update answer field with answer in response
+                            answer.innerText = data;
+
+                        }, loaderDuration);
+                    })
+                } catch {
+                    // cancel connection timeout
+                    clearTimeout(connectionTimeout);
+                    loaderDelay = setTimeout(() => {
+
+                        // Case 2: responds with error
+
+                        // cleanup cache
+                        clearTimeout(loaderDelay);
+                        // stop loader after a single duration
+                        stopLoader();
+                        // focus on output field
+                        answerField.focus();
+                        // update answer field with error message
+                        answer.innerText = error.connectionFailed;
+
+                    }, loaderDuration);
+                }
             }
 
         }, 1000);
