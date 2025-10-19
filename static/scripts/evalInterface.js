@@ -19,6 +19,8 @@ const connectionStatus = [
     'online'
 ];
 
+let info = {};
+
 const error = {
     emptyString: 'Invalid: empty string',
     parenthesis: 'Invalid: parenthesis',

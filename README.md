@@ -4,9 +4,7 @@
 
 **Stack:** Django stack (Django, Python, Pip, HTML, CSS, JavaScript)
 
-**Links**
-https://goodeval-1d265775b25d.herokuapp.com/
-https://github.com/bthol/EvalAPI
+https://goodeval-1d265775b25d.herokuapp.com/ | https://github.com/bthol/EvalAPI
 
 ## Introduction
 GoodEval is a multi-page web app computational package composed of the GoodEval Calulator, its more advanced counterpart the GoodEval Evaluator powered by the Eval API, as well as a variety of form interfaces making use of the Eval API or dedicated scripts. The GoodEval Calculator is, as the name suggests, a calculator, and it offers calculation of arithmetic expressions by conventional operators and a compact selection of special functions via a skeuomorphic and themable graphical user interface. On the other hand, the Goodeval Evaluator offers a much more flexible and comprehensive functionality from a much more minimalistic interface. While both programs depend on string data, the GoodEval Evaluator takes this to its ultimate extent by beginning from a single string and performing string evaluation, whereas the Calculator uses buttons to create a problem structure that is solved when the equal button is pressed. The form interfaces offer a simplified and intuitive approach to utilizing the computational functionality of Eval API, which also powers the string evaluation for the GoodEval Evaluator.
@@ -32,10 +30,10 @@ The GoodEval Operator is a computational software for demonstrating the properti
 ## The GoodEval Operator: Operators
 Operators are the generalization or abstraction of arithemetic operations like addition or multiplication, and are important to understanding properties of operation. The arity of an operator is the number of quantities or mathematical objects involved in that operator's operation, and includes unary operators, which have one operand, binary operators, which have two operands, trinary operators, which have three operands, and n-ary operators, which have n number of operands. Operators are further differentiated by operator properties, such as commutativity, associativity, reflexivity, Idempotency, ect., and the object types that they accept as operands and produce as products of their operation, such as vectors, matrices, and sets.
 
-# The GoodEval Operator: Matrices
+## The GoodEval Operator: Matrices
 Be fair warned that matrix operations are computationally complex by nature and, while there are designed software limits to prevent excessive computation, performance of matrix operations will vary based on your system. The most computationally complex matrix operations include matrix determinant calculation and especially matrix inversion and matrix multiplication by an inverse.
 
-## Developer Resources
+# Developer Resources
 
 *REMINDER: add to Procfile once database is setup*
 $release: python manage.py migrate$

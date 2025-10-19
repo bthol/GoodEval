@@ -1,5 +1,6 @@
 .body {
     margin: 0px;
+    font-family: 'Times New Roman', Times, serif, Georgia;
 }
 
 header {
@@ -15,46 +16,32 @@ nav {
     font-size: 3.5vw;
 }
 
-.software-card-arrow {
-    cursor: pointer;
-}
-
-.arrow {
-    margin: 5px;
-    width: 15px;
-    height: 15px;
-    border-left: 5px solid black;
-    border-top: 5px solid black;
-}
-
-.arrow-up {
-    transform: rotate(45deg);
-}
-
-.arrow-down {
-    transform: rotate(-135deg);
+footer {
+    background: var(--nav-background);
 }
 
 .software-card-container {
+    min-height: 100vh;
     display: grid;
-    grid-template-rows: 1fr;
+    grid-template-rows: .1fr .1fr auto;
     grid-template-columns: 1fr 1fr;
     font-size: 3.5vw;
-    background: var(--nav-background);
+    padding: 7px;
     border-bottom: 1px double #7c7e8d;
-    padding-top: 7px;
+    background: var(--default-background);
 }
 
 .software-card {
-    background: var(--content-highlight);
-    border-radius: 7px;
-    border: 1px solid #7c7e8d;
-    margin: 0px 7px 7px 7px;
+    height: max-content;
+    padding: 14px 0px;
+    margin: 7px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 15px 0px;
+    background: var(--content-highlight);
+    border: 1px solid #7c7e8d;
+    border-radius: 7px;
     gap: 12px;
 }
 
@@ -77,6 +64,28 @@ nav {
 
 .software-card > div {
     font-size: 2vw;
+}
+
+.software-card-arrow {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.arrow {
+    margin: 5px;
+    width: 15px;
+    height: 15px;
+    border-left: 5px solid black;
+    border-top: 5px solid black;
+}
+
+.arrow-up {
+    transform: rotate(45deg);
+}
+
+.arrow-down {
+    transform: rotate(-135deg);
 }
 
 /* maximum fonts for navigation */

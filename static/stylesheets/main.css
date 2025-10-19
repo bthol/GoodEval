@@ -54,13 +54,16 @@
 }
 
 .template-theme {
-    --title-background: #fdf7a5;
+    --title-background: #fdf691;
     --nav-background: #fafafa;
-    --content-highlight: #e4f1e9;
+    --default-background: #edede9;
+    --content-highlight: #e3f3e9;
 }
 
 .body {
     background-color: #0f0f15;
+    min-height: 100vh;
+    margin: 0px;
 }
 
 a {
