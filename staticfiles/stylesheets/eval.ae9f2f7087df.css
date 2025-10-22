@@ -9,11 +9,17 @@
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
-    gap: 1vw;
     /* font-family: Cambria, Times, serif; */
     font-family: Arial, Helvetica, sans-serif;
     --font-size: 2.26vw;
     --form-width: 100vw;
+    box-sizing: border-box;
+    gap: 1.6vh;
+    padding: 0vw 1.6vw;
+}
+
+hr {
+    width: 100%;
 }
 
 .normalize-font {
@@ -32,7 +38,7 @@
 .title {
     width: 85%;
     font-size: calc(var(--font-size) * 1.667);
-    margin: 1.5vw 0vw;
+    margin-top: 1.5vw;
     position: relative;
     cursor: default;
 }
@@ -41,13 +47,20 @@
     cursor: default;
 }
 
-.center-form {
-    width: 100%;
+.row-form-layout {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 15px;
+    gap: 1.6vh;
+}
+
+.evaluate-form {
+    width: 100%;
+}
+
+.search-form {
+    width: 100%;
 }
 
 .form-style {
@@ -58,12 +71,11 @@
 }
 
 .field-style {
-    width: 95%;
+    width: 100%;
     font-size: var(--font-size);
     transition: border 300ms;
     text-wrap: nowrap;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: scroll;
 }
 
 #answer-field {
@@ -74,6 +86,20 @@
 
 .button-style {
     width: 85.8px;
+    font-size: 1.1rem;
+    border-radius: 1vw;
+    padding: 0vmin 3vmin;
+    margin-left: 1.6vw;
+    margin-right: 1.6vw;
+    transition: outline 100ms;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.drop-down-menu-style {
+    width: 100%;
     font-size: 1.1rem;
     border-radius: 1vw;
     margin-left: 1.6vw;
@@ -107,7 +133,6 @@ input[type="text"]:focus {
     overflow-y: scroll;
 }
 
-
 /* maximum fonts for navigation */
 /* @media(min-width: 941px) {  
 } */
@@ -124,13 +149,17 @@ input[type="text"]:focus {
         margin: 10.5px 0px;
     }
     .form-style {
-        padding: 3.5px;
         height: 35px;
     }
     .field-style {
         font-size: 1rem;
     }
     .button-style {
+        border-radius: 7px;
+        margin-left: 11.2px;
+        margin-right: 11.2px;
+    }
+    .drop-down-menu-style {
         border-radius: 7px;
         margin-left: 11.2px;
         margin-right: 11.2px;
@@ -142,16 +171,22 @@ input[type="text"]:focus {
 
 /* layout change breakpoint */
 @media(min-width: 500px) {
-    .center-form {
-        flex-direction: row;
+    .evaluate-form {
         gap: 0px;
     }
-    .field-style {
-        width: calc( var(--form-width) * (13/32) );
+    .search-form {
+        gap: 0px;
+    }
+    .row-form-layout {
+        flex-direction: row;
     }
     .button-style {
         font-size: calc( var(--font-size) * 1.1);
         width: calc(var(--form-width) / 8);
+    }
+    .drop-down-menu-style {
+        font-size: calc( var(--font-size) * 1.1);
+        width: max-content;
     }
     .home-button {
         position: absolute;
@@ -177,6 +212,10 @@ input[type="text"]:focus {
         color: #e9ede7;
         outline: 2px ridge #e9ede7;
     }
+    .drop-down-menu-style:focus {
+        color: #e9ede7;
+        outline: 2px ridge #e9ede7;
+    }
     .home-button:focus {
         color: #e9ede7;
         border: 1px ridge #e9ede7;
@@ -192,6 +231,10 @@ input[type="text"]:focus {
         color: #e9ede7;
         outline: 2px ridge #e9ede7;
     }
+    .drop-down-menu-style:focus {
+        color: #e9ede7;
+        outline: 2px ridge #e9ede7;
+    }
     .home-button:focus {
         color: #e9ede7;
         border: 1px ridge #e9ede7;
@@ -203,6 +246,10 @@ input[type="text"]:focus {
         color: #e9ede7;
         outline: 2px ridge #e9ede7;
     }
+    .drop-down-menu-style:hover {
+        color: #e9ede7;
+        outline: 2px ridge #e9ede7;
+    }
     .home-button:hover {
         color: #e9ede7;
         border: 1px ridge #e9ede7;
@@ -211,23 +258,34 @@ input[type="text"]:focus {
 
 /* loader style */
 .elipses-container {
+    --x: 1.7vmin;
+    height: calc(var(--x) * 3);
     width: 60%;
     display: flex;
-    gap: 4.4vw;
-    margin-top: -15px;
-    margin-bottom: 20px;
+    gap: calc(10% - 2vmin);
+    padding-bottom: calc(var(--x) * 2);
 }
 
 .elipses-dot {
-    width: 2vw;
-    height: 1vw;
+    width: 2vmin;
+    height: 1vmin;
+    background-color: #2fff2f;
     border: .6vw solid #2fff2f;
     border-radius: 10px;
     position: relative;
-    animation: 300ms linear 0s infinite alternate wave;
+    animation:
+        var(--anim-time) linear 0ms infinite alternate wave,
+        var(--anim-time) linear 0ms infinite alternate reshape;
 }
 
 @keyframes wave {
     0% {transform: translateY(0vmin)}
-    20%, 100% {transform: translateY(1.5vmin)}
+    25%, 100% {transform: translateY(var(--x))}
+}
+
+@keyframes reshape {
+    0% {height: 100%}
+    25% {height: 100%}
+    50% {height: 200%}
+    75%, 100% {height: 100%}
 }
