@@ -30,7 +30,6 @@ const error = {
     connectionTimeout: 'Error: connection attempt timed out',
     dataNotFound: 'Error: data not found',
     DOMElement: 'Error: DOM element not found',
-    DOMProperty: 'Error: DOM property not found'
 };
 
 // operation characters
@@ -120,6 +119,7 @@ function startLoader() {
         }
     }, addRate);
 };
+// startLoader();
 
 function stopLoader() {
     clearInterval(dotInterval);

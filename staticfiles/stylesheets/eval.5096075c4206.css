@@ -193,6 +193,9 @@ input[type="text"]:focus {
         top: 10.5px;
         left: 8px;
     }
+    #search-result-container {
+        font-size: var(--font-size);
+    }
 }
 
 @media(max-width: 500px) {
@@ -258,9 +261,9 @@ input[type="text"]:focus {
 
 /* loader style */
 .elipses-container {
-    --x: 1.7vmin;
+    --x: 4vmin;
     height: calc(var(--x) * 3);
-    width: 60%;
+    width: 80vmin;
     display: flex;
     gap: calc(10% - 2vmin);
     padding-bottom: calc(var(--x) * 2);
@@ -268,7 +271,7 @@ input[type="text"]:focus {
 
 .elipses-dot {
     width: 2vmin;
-    height: 1vmin;
+    height: calc(var(--x));
     background-color: #2fff2f;
     border: .6vw solid #2fff2f;
     border-radius: 10px;
