@@ -20,6 +20,8 @@ const connectionStatus = [
     'online'
 ];
 
+const keyModules = ['trigonomic', 'geometric', 'combinatoric', 'statistical', 'algebraic'];
+
 let INFORMATION = {};
 
 const error = {
@@ -119,7 +121,6 @@ function startLoader() {
         }
     }, addRate);
 };
-// startLoader();
 
 function stopLoader() {
     clearInterval(dotInterval);
@@ -324,6 +325,7 @@ function evalReq() {
                         serveError(error.connectionTimeout);
 
                     }, loaderDuration)
+
                 }, requestDuration - loaderDuration);
 
                 // fetch request to Eval API
@@ -355,6 +357,12 @@ function evalReq() {
                             }
                             // update answer field with answer in response
                             answer.innerText = data;
+                            // correct answer clipping on overflow
+                            if (answer.scrollHeight > answer.clientHeight || answer.scrollWidth > answer.clientWidth) {
+                                answer.setAttribute('style', 'justify-content: flex-start');
+                            } else {
+                                answer.setAttribute('style', 'justify-content: center');
+                            }
 
                         }, loaderDuration);
                     })
@@ -556,7 +564,7 @@ function searchReq() {
                                             const searchTypeValue = searchType.value;
                                             if (searchTypeValue === 'search-type-name') {
                                                 let searching = true;
-                                                for (let module of data.key_functions) {
+                                                for (let module of INFORMATION.key_functions) {
                                                     for (let obj of module) {
                                                         if (obj.name.toUpperCase() === query) {
                                                             // build elements for display format
@@ -597,7 +605,7 @@ function searchReq() {
             
                                             } else if (searchTypeValue === 'search-type-key') {
                                                 let searching = true;
-                                                for (let module of data.key_functions) {
+                                                for (let module of INFORMATION.key_functions) {
                                                     for (let obj of module) {
                                                         if (obj.key.toUpperCase() === query) {
                                                             // build elements for display format
@@ -635,7 +643,52 @@ function searchReq() {
                                                     // data not found
                                                     serveError(error.dataNotFound);
                                                 }
-                    
+                                            } else if (searchTypeValue === 'search-type-module') {
+                                                let searching = true;
+                                                let index = 0;
+                                                for (mod of keyModules) {
+                                                    if (query === mod.toUpperCase()) {
+                                                        searching = false;
+                                                        break;
+                                                    } else {
+                                                        index += 1;
+                                                    }
+                                                }
+                                                if (searching) {
+                                                    // serve module name error
+                                                    let errMsg = 'No Key Function Module by that name.\n\nModule Names:\n';
+                                                    for (mod of keyModules) {
+                                                        errMsg += `${mod}\n`;
+                                                    }
+                                                    const error = document.createElement('div');
+                                                    error.innerText = errMsg;
+                                                    resultContainer.appendChild(error);
+                                                } else {
+                                                    for (let obj of INFORMATION.key_functions[index]) {
+                                                        // build elements for display format
+                                                        const headTitle = document.createElement('h3');
+                                                        headTitle.innerText = `The ${obj.name} Key Function`;
+                
+                                                        const key = document.createElement('div');
+                                                        key.innerText = 'Keyword: ' + obj.key;
+                
+                                                        const syntax = document.createElement('div');
+                                                        syntax.innerText = 'Syntax: ' + obj.syntax;
+                
+                                                        const about = document.createElement('div');
+                                                        about.innerText = 'Description: ' + obj.about;
+                
+                                                        resultContainer.appendChild(headTitle);
+                                                        resultContainer.appendChild(addSpace());
+                                                        resultContainer.appendChild(key);
+                                                        resultContainer.appendChild(addSpace());
+                                                        resultContainer.appendChild(syntax);
+                                                        resultContainer.appendChild(addSpace());
+                                                        resultContainer.appendChild(about);
+                                                        resultContainer.appendChild(addSpace());
+                                                        resultContainer.appendChild(addSpace());
+                                                    }
+                                                }
                                             } else {
                                                 // data not found
                                                 serveError(error.dataNotFound);
@@ -841,6 +894,52 @@ function searchReq() {
                                 serveError(error.dataNotFound);
                             }
     
+                        } else if (searchTypeValue === 'search-type-module') {
+                            let searching = true;
+                            let index = 0;
+                            for (mod of keyModules) {
+                                if (query === mod.toUpperCase()) {
+                                    searching = false;
+                                    break;
+                                } else {
+                                    index += 1;
+                                }
+                            }
+                            if (searching) {
+                                // serve module name error
+                                let errMsg = 'No Key Function Module by that name.\n\nModule Names:\n';
+                                for (mod of keyModules) {
+                                    errMsg += `${mod}\n`;
+                                }
+                                const error = document.createElement('div');
+                                error.innerText = errMsg;
+                                resultContainer.appendChild(error);
+                            } else {
+                                for (let obj of INFORMATION.key_functions[index]) {
+                                    // build elements for display format
+                                    const headTitle = document.createElement('h3');
+                                    headTitle.innerText = `The ${obj.name} Key Function`;
+
+                                    const key = document.createElement('div');
+                                    key.innerText = 'Keyword: ' + obj.key;
+
+                                    const syntax = document.createElement('div');
+                                    syntax.innerText = 'Syntax: ' + obj.syntax;
+
+                                    const about = document.createElement('div');
+                                    about.innerText = 'Description: ' + obj.about;
+
+                                    resultContainer.appendChild(headTitle);
+                                    resultContainer.appendChild(addSpace());
+                                    resultContainer.appendChild(key);
+                                    resultContainer.appendChild(addSpace());
+                                    resultContainer.appendChild(syntax);
+                                    resultContainer.appendChild(addSpace());
+                                    resultContainer.appendChild(about);
+                                    resultContainer.appendChild(addSpace());
+                                    resultContainer.appendChild(addSpace());
+                                }
+                            }
                         } else {
                             // data not found
                             serveError(error.dataNotFound);

@@ -181,6 +181,29 @@ function isIdenticalDomain(domainA, domainB) {
     }
 };
 
+// set operations
+function getPowerset(array) {
+    let powerset = [];
+    let start = 0;
+    for (let i = 0; i < array.length; i++) {
+        let buffer = [];
+        for (let j = start; j < array.length; j++) {
+            buffer.push(array[j]);
+            set = [];
+            set += buffer;
+            powerset.push(set);
+        }
+        start += 1;
+    }
+    // comma delimit string into array
+    powerset.forEach((string, index) => {
+        powerset[index] = string.split(",");
+    });
+    return powerset;
+};
+
+// console.log(getPowerset([1, 2, 3, 4]));
+
 // binary operators (arithmetic) on quantities
 function addition(a,b) {
     return a + b;
