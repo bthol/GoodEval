@@ -195,14 +195,12 @@ function getPowerset(array) {
         }
         start += 1;
     }
-    // comma delimit string into array
-    powerset.forEach((string, index) => {
-        powerset[index] = string.split(",");
-    });
+    // comma delimit string to structure into array
+    // powerset.forEach((string, index) => {
+    //     powerset[index] = string.split(",");
+    // });
     return powerset;
 };
-
-// console.log(getPowerset([1, 2, 3, 4]));
 
 // binary operators (arithmetic) on quantities
 function addition(a,b) {
@@ -2225,6 +2223,12 @@ function updateForm() {
         option5l1.innerText = 'modulo';
         select.appendChild(option5l1);
         
+        const option6l1 = document.createElement('option');
+        option6l1.setAttribute('name', 'powerset');
+        option6l1.setAttribute('value', 'powerset');
+        option6l1.innerText = 'powerset';
+        select.appendChild(option6l1);
+        
         // operand label
         const operandLabel = document.createElement('label');
         operandLabel.innerText = 'Set Properties';
@@ -2622,6 +2626,17 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     for (let i = 1; i < set.length; i++) {
                         answer = modulo(answer,set[i]);
                     }
+                } else if (operatorType === 'powerset') {
+                    setRes = getPowerset(set);
+                    list = document.createElement('lu');
+                    subsetnum = 0;
+                    setRes.forEach((s) => {
+                        subsetnum += 1;
+                        const li = document.createElement('li');
+                        li.innerText = `${subsetnum}: {${s}}`;
+                        list.appendChild(li);
+                    });
+                    answer = list.innerHTML;
                 }
 
                 // display answer
@@ -2678,6 +2693,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     }
                     // assign operated array to answer variable as a string
                     answer = operated.toString();
+                } else if (operatorType === 'powerset') {
+                    answer = 'powerset operation requires Set operend';
                 }
 
                 // display answer
