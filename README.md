@@ -38,21 +38,6 @@ Be fair warned that matrix operations are computationally complex by nature and,
 *REMINDER: add to Procfile once database is setup*
 $release: python manage.py migrate$
 
-*NOTE: Pipenv will automatically handle virtualenv enviroment activation. Virtual environement must be deactivated before pushing to git if running manually using venv/Scripts/activate.*
-
-*NOTE: Virtual environment will be ignored in git commit by .gitignore, so it does not need to be deleted and recreated for every push to git.*
-
-### Procedures
-
-**Setup Virtual Environment**
-1) create venv: `$python -m venv env`
-2) activate venv: `$venv/Scripts/activate`
-3) add environment variables
-4) install env manager: `$pip install pipenv`
-5) install dependencies `$pipenv sync`
-6) migrate `$python manage.py migrate`
-7) run local server `$python manage.py runserver 8000`
-
 ### Commands
  - start server                             : `$python manage.py runserver 8000`
  - stop server                              : `ctrl + c`

@@ -11,7 +11,7 @@
     flex-direction: column;
     /* font-family: Cambria, Times, serif; */
     font-family: Arial, Helvetica, sans-serif;
-    --font-size: 2.26vw;
+    --font-size: 2.3vw;
     --form-width: 100vw;
     box-sizing: border-box;
     gap: 1.6vh;
@@ -30,14 +30,12 @@ hr {
     background: none;
     border: 1px ridge #0dff00;
     color: #2fff2f;
-    padding: .66vmin;
     border-radius: .5vw;
     font-size: calc(var(--font-size) * .8);
 }
 
 .title {
-    width: 85%;
-    font-size: calc(var(--font-size) * 1.667);
+    font-size: calc(var(--font-size) * 1.75);
     margin-top: 1.5vw;
     position: relative;
     cursor: default;
@@ -141,12 +139,12 @@ input[type="text"]:focus {
 /* minimum fonts for navigation */
 @media(max-width: 712px) {
     .home-button {
-        padding: 4.5px;
         border-radius: 3.5px;
         font-size: calc(1rem * .8);
+        height: 25px;
     }
     .title {
-        font-size: calc(1rem * 1.667);
+        font-size: calc(1rem * 1.75);
         margin: 10.5px 0px;
     }
     .form-style {
@@ -266,11 +264,16 @@ input[type="text"]:focus {
     height: calc(var(--x) * 3);
     width: 80vmin;
     display: flex;
-    gap: calc(10% - 2vmin);
-    padding-bottom: calc(var(--x) * 2);
+    align-items: center;
+    /* gap: calc(10% - 2vmin); */
+    padding-top: var(--x);
+    padding-bottom: var(--x);
+    /* padding-bottom: calc(var(--x) * 2); */
 }
 
 .elipses-dot {
+    margin-left: calc((10% - 2vmin) / 2);
+    margin-right: calc((10% - 2vmin) / 2);
     width: 2vmin;
     height: calc(var(--x));
     background-color: #2fff2f;
@@ -279,12 +282,13 @@ input[type="text"]:focus {
     position: relative;
     animation:
         var(--anim-time) linear 0ms infinite alternate wave,
-        var(--anim-time) linear 0ms infinite alternate reshape;
+        calc(var(--anim-time)) linear 0ms infinite alternate reshape;
 }
 
 @keyframes wave {
-    0% {transform: translateY(0vmin)}
-    25%, 100% {transform: translateY(var(--x))}
+    0% {transform: translateY(calc(var(--x)))}
+    50% {transform: translateY(calc(var(--x) * -.5))}
+    100% {transform: translateY(calc(var(--x)))}
 }
 
 @keyframes reshape {

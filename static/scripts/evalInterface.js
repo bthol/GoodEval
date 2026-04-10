@@ -1,10 +1,10 @@
 console.log('Interface Script Loaded.');
 
 // parameters
-const addRate = 50;
+const addRate = 100; // ms
 const numberOfDots = 10;
 const loaderAnimationTime = addRate * numberOfDots;
-const removeRate = loaderAnimationTime * .75;
+const removeRate = loaderAnimationTime * 1.75;
 const loaderDuration = addRate * numberOfDots + removeRate;
 const requestDuration = loaderDuration + 30000; // loader duration + 30 seconds
 
@@ -244,7 +244,7 @@ function validOp(prob) {
 };
 
 // Evaluate problem string by request to Eval API
-function evalReq() {
+async function evalReq() {
     // test for internet connection
     if (window.navigator.onLine === true) {
         // debounce to prevent excessive requests
@@ -254,19 +254,19 @@ function evalReq() {
             clearTimeout(debounceRequest);
 
             // select answer field
-            const answer = document.querySelector('#answer-field');
+            const answer = DOMit('answerField');
             
             // clear previous answer
             answer.innerText = '';
             
             // get problem string
-            const problem = document.querySelector('#problem-field').value;
+            const problem = DOMit('problemField')?.value;
             
             // validate problem
             let valid = false;
             
             // run empty string test
-            if (problem === null || problem.length === 0) {
+            if (problem === null || problem === undefined || problem.length === 0) {
 
                 // empty string
                 serveError(error.emptyString);
@@ -314,8 +314,10 @@ function evalReq() {
                         // cleanup cache
                         clearTimeout(loaderDelay);
                         clearTimeout(delay);
+
                         // stop loader after a single duration
                         stopLoader();
+
                         // focus on input field
                         const problemField = DOMit('problemField');
                         if (problemField) {
@@ -324,7 +326,7 @@ function evalReq() {
                         // update answer field with error message
                         serveError(error.connectionTimeout);
 
-                    }, loaderDuration)
+                    }, loaderDuration);
 
                 }, requestDuration - loaderDuration);
 
@@ -348,8 +350,10 @@ function evalReq() {
 
                             // cleanup cache
                             clearTimeout(loaderDelay);
+
                             // stop loader after a single duration
                             stopLoader();
+
                             // focus on output field
                             const answerField = DOMit('answerField');
                             if (answerField) {
@@ -357,6 +361,7 @@ function evalReq() {
                             }
                             // update answer field with answer in response
                             answer.innerText = data;
+
                             // correct answer clipping on overflow
                             if (answer.scrollHeight > answer.clientHeight || answer.scrollWidth > answer.clientWidth) {
                                 answer.setAttribute('style', 'justify-content: flex-start');
@@ -375,8 +380,10 @@ function evalReq() {
 
                         // cleanup cache
                         clearTimeout(loaderDelay);
+
                         // stop loader after a single duration
                         stopLoader();
+                        
                         // focus on input field
                         const problemField = DOMit('problemField');
                         if (problemField) {
@@ -408,14 +415,225 @@ function evalReq() {
     }
 };
 
-function searchReq() {
+// gets + displays result from search in INFOMRATION structure
+function searchResult() {
+    // get query data
+    const searchField = DOMit('searchField');
+    const query = searchField.value.toUpperCase();
+
+    // clear previous info
+    const resultContainer = DOMit('resultContainer');
+    resultContainer.innerHTML = '';
+
+    // use query to search through data
+    if (query === 'INFO') {
+        // returns all program info
+
+        // build elements for display format
+        const headTitle = document.createElement('h2');
+        headTitle.innerText = 'Program Information';
+        
+        const constantTitle = document.createElement('h3');
+        constantTitle.innerText = 'Constants';
+
+        const operationTitle = document.createElement('h3');
+        operationTitle.innerText = 'Operations';
+        
+        const variablesTitle = document.createElement('h3');
+        variablesTitle.innerText = 'Valid Variables';
+
+        const keysTitle = document.createElement('h3');
+        keysTitle.innerText = 'Key Functions';
+
+        // assemble and append elements to display
+        resultContainer.appendChild(headTitle);
+        
+        resultContainer.appendChild(addSpace());
+        resultContainer.appendChild(constantTitle);
+        resultContainer.appendChild(addSpace());
+        for (let i = 0; i < INFORMATION.constants.length; i++) {
+            const constant = document.createElement('div');
+            constant.innerText = `Name: ${INFORMATION.constants[i].name}\nSyntax: ${INFORMATION.constants[i].syntax}\n\n`;
+            resultContainer.appendChild(constant);
+        }
+        
+        resultContainer.appendChild(addSpace());
+        resultContainer.appendChild(operationTitle);
+        resultContainer.appendChild(addSpace());
+        for (let i = 0; i < INFORMATION.operations.length; i++) {
+            const operation = document.createElement('div');
+            operation.innerText = `Name: ${INFORMATION.operations[i].name}\nSyntax: ${INFORMATION.operations[i].syntax}\n\n`;
+            resultContainer.appendChild(operation);
+        }
+        
+        resultContainer.appendChild(addSpace());
+        resultContainer.appendChild(variablesTitle);
+        resultContainer.appendChild(addSpace());
+        const vars = document.createElement('div');
+        vars.innerText = INFORMATION.variables.join(', ');
+        resultContainer.appendChild(vars);
+        resultContainer.appendChild(addSpace());
+
+        resultContainer.appendChild(addSpace());
+        resultContainer.appendChild(keysTitle);
+        resultContainer.appendChild(addSpace());
+        for (let i = 0; i < INFORMATION.key_functions.length; i++) {
+            for (let j = 0; j < INFORMATION.key_functions[i].length; j++) {
+                const key_function = document.createElement('div');
+                key_function.innerText = `Name: ${INFORMATION.key_functions[i][j].name}\nSyntax: ${INFORMATION.key_functions[i][j].syntax}\nAbout: ${INFORMATION.key_functions[i][j].about}\n\n`;
+                resultContainer.appendChild(key_function);
+            }
+        }
+        resultContainer.appendChild(addSpace());
+    } else {
+        // search for specific function
+        const searchType = DOMit('searchType');
+        if (searchType) {
+            const searchTypeValue = searchType.value;
+            let searching = true;
+            if (searchTypeValue=== 'search-type-name') {
+                for (let module of INFORMATION.key_functions) {
+                    for (let obj of module) {
+                        if (obj.name.toUpperCase() === query) {
+                            // build elements for display format
+                            const headTitle = document.createElement('h3');
+                            headTitle.innerText = `The ${obj.name} Key Function`;
+
+                            const key = document.createElement('div');
+                            key.innerText = 'Keyword: ' + obj.key;
+
+                            const syntax = document.createElement('div');
+                            syntax.innerText = 'Syntax: ' + obj.syntax;
+
+                            const about = document.createElement('div');
+                            about.innerText = 'Description: ' + obj.about;
+
+                            resultContainer.appendChild(headTitle);
+                            resultContainer.appendChild(addSpace());
+                            resultContainer.appendChild(key);
+                            resultContainer.appendChild(addSpace());
+                            resultContainer.appendChild(syntax);
+                            resultContainer.appendChild(addSpace());
+                            resultContainer.appendChild(about);
+                            resultContainer.appendChild(addSpace());
+
+                            searching = false;
+                            break;
+                        }
+                    }
+                    if (!searching) {
+                        break;
+                    }
+                }
+
+            } else if (searchTypeValue === 'search-type-key') {
+                for (let module of INFORMATION.key_functions) {
+                    for (let obj of module) {
+                        if (obj.key.toUpperCase() === query) {
+                            // build elements for display format
+                            const headTitle = document.createElement('h3');
+                            headTitle.innerText = `The ${obj.name} Key Function`;
+
+                            const key = document.createElement('div');
+                            key.innerText = 'Keyword: ' + obj.key;
+
+                            const syntax = document.createElement('div');
+                            syntax.innerText = 'Syntax: ' + obj.syntax;
+
+                            const about = document.createElement('div');
+                            about.innerText = 'Description: ' + obj.about;
+
+                            resultContainer.appendChild(headTitle);
+                            resultContainer.appendChild(addSpace());
+                            resultContainer.appendChild(key);
+                            resultContainer.appendChild(addSpace());
+                            resultContainer.appendChild(syntax);
+                            resultContainer.appendChild(addSpace());
+                            resultContainer.appendChild(about);
+                            resultContainer.appendChild(addSpace());
+
+                            searching = false;
+                            break;
+                        }
+                    }
+                    if (!searching) {
+                        break;
+                    }
+                }
+
+            } else if (searchTypeValue === 'search-type-module') {
+                let index = 0;
+                for (mod of keyModules) {
+                    if (query === mod.toUpperCase()) {
+                        searching = false;
+                        break;
+                    } else {
+                        index += 1;
+                    }
+                }
+                if (searching) {
+                    // serve module name error
+                    let errMsg = 'No Key Function Module by that name.\n\nModule Names:\n';
+                    for (mod of keyModules) {
+                        errMsg += `${mod}\n`;
+                    }
+                    const error = document.createElement('div');
+                    error.innerText = errMsg;
+                    resultContainer.appendChild(error);
+                    searching = false;
+                } else {
+                    for (let obj of INFORMATION.key_functions[index]) {
+                        // build elements for display format
+                        const headTitle = document.createElement('h3');
+                        headTitle.innerText = `The ${obj.name} Key Function`;
+
+                        const key = document.createElement('div');
+                        key.innerText = 'Keyword: ' + obj.key;
+
+                        const syntax = document.createElement('div');
+                        syntax.innerText = 'Syntax: ' + obj.syntax;
+
+                        const about = document.createElement('div');
+                        about.innerText = 'Description: ' + obj.about;
+
+                        resultContainer.appendChild(headTitle);
+                        resultContainer.appendChild(addSpace());
+                        resultContainer.appendChild(key);
+                        resultContainer.appendChild(addSpace());
+                        resultContainer.appendChild(syntax);
+                        resultContainer.appendChild(addSpace());
+                        resultContainer.appendChild(about);
+                        resultContainer.appendChild(addSpace());
+                        resultContainer.appendChild(addSpace());
+                    }
+                }
+
+            } else {
+                // data not found
+                const err = document.createElement('div');
+                err.innerText = error.dataNotFound;
+                resultContainer.appendChild(err);
+            }
+            if (searching) {
+                // data not found
+                const err = document.createElement('div');
+                err.innerText = error.dataNotFound;
+                resultContainer.appendChild(err);
+            }
+        }
+    }
+
+    // refocus the search
+    searchField.focus();
+};
+
+async function searchReq() {
     const searchField = DOMit('searchField');
     if (searchField) {
         if (searchField.value.length === 0) {
             // empty string
             serveError(error.emptyString);
         } else {
-            const query = searchField.value.toUpperCase();
             // test for local data
             if (Object.keys(INFORMATION).length === 0) {
                 // test for internet connection
@@ -451,12 +669,14 @@ function searchReq() {
                                 // cleanup cache
                                 clearTimeout(loaderDelay);
                                 clearTimeout(delay);
+
                                 // stop loader after a single duration
                                 stopLoader();
+
                                 // focus on input field
-                                const problemField = DOMit('problemField');
-                                if (problemField) {
-                                    problemField.focus();
+                                const searchField = DOMit('searchField');
+                                if (searchField) {
+                                    searchField.focus();
                                 }
                                 // update answer field with error message
                                 serveError(error.connectionTimeout);
@@ -487,228 +707,25 @@ function searchReq() {
             
                                     // stop loader after a single duration
                                     stopLoader();
-                
-                                    // focus on output field
-                                    const resultContainer = DOMit('resultContainer');
-                                    if (resultContainer) {
-                                        resultContainer.focus();
-                                    }
-                
-                                    // clear previous info
-                                    resultContainer.innerHTML = '';
-            
-                                    // use query to search through data
-                                    if (query === 'INFO') {
-                                        // returns all program info
-            
-                                        // build elements for display format
-                                        const headTitle = document.createElement('h2');
-                                        headTitle.innerText = 'Program Information';
-                                        
-                                        const constantTitle = document.createElement('h3');
-                                        constantTitle.innerText = 'Constants';
-                    
-                                        const operationTitle = document.createElement('h3');
-                                        operationTitle.innerText = 'Operations';
-                                        
-                                        const variablesTitle = document.createElement('h3');
-                                        variablesTitle.innerText = 'Valid Variables';
-                    
-                                        const keysTitle = document.createElement('h3');
-                                        keysTitle.innerText = 'Key Functions';
-                    
-                                        // assemble and append elements to display
-                                        resultContainer.appendChild(headTitle);
-                                        
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(constantTitle);
-                                        resultContainer.appendChild(addSpace());
-                                        for (let i = 0; i < data.constants.length; i++) {
-                                            const constant = document.createElement('div');
-                                            constant.innerText = `Name: ${data.constants[i].name}\nSyntax: ${data.constants[i].syntax}\n\n`;
-                                            resultContainer.appendChild(constant);
-                                        }
-                                        
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(operationTitle);
-                                        resultContainer.appendChild(addSpace());
-                                        for (let i = 0; i < data.operations.length; i++) {
-                                            const operation = document.createElement('div');
-                                            operation.innerText = `Name: ${data.operations[i].name}\nSyntax: ${data.operations[i].syntax}\n\n`;
-                                            resultContainer.appendChild(operation);
-                                        }
-                                        
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(variablesTitle);
-                                        resultContainer.appendChild(addSpace());
-                                        const vars = document.createElement('div');
-                                        vars.innerText = data.variables.join(', ');
-                                        resultContainer.appendChild(vars);
-                                        resultContainer.appendChild(addSpace());
-            
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(keysTitle);
-                                        resultContainer.appendChild(addSpace());
-                                        for (let i = 0; i < data.key_functions.length; i++) {
-                                            for (let j = 0; j < data.key_functions[i].length; j++) {
-                                                const key_function = document.createElement('div');
-                                                key_function.innerText = `Name: ${data.key_functions[i][j].name}\nSyntax: ${data.key_functions[i][j].syntax}\nAbout: ${data.key_functions[i][j].about}\n\n`;
-                                                resultContainer.appendChild(key_function);
-                                            }
-                                        }
-                                        resultContainer.appendChild(addSpace());
-                                    } else {
-                                        // search for specific function
-                                        const searchType = DOMit('searchType');
-                                        if (searchType) {
-                                            const searchTypeValue = searchType.value;
-                                            if (searchTypeValue === 'search-type-name') {
-                                                let searching = true;
-                                                for (let module of INFORMATION.key_functions) {
-                                                    for (let obj of module) {
-                                                        if (obj.name.toUpperCase() === query) {
-                                                            // build elements for display format
-                                                            const headTitle = document.createElement('h3');
-                                                            headTitle.innerText = `The ${obj.name} Key Function`;
-                    
-                                                            const key = document.createElement('div');
-                                                            key.innerText = 'Keyword: ' + obj.key;
-                    
-                                                            const syntax = document.createElement('div');
-                                                            syntax.innerText = 'Syntax: ' + obj.syntax;
-                    
-                                                            const about = document.createElement('div');
-                                                            about.innerText = 'Description: ' + obj.about;
-                    
-                                                            resultContainer.appendChild(headTitle);
-                                                            resultContainer.appendChild(addSpace());
-                                                            resultContainer.appendChild(key);
-                                                            resultContainer.appendChild(addSpace());
-                                                            resultContainer.appendChild(syntax);
-                                                            resultContainer.appendChild(addSpace());
-                                                            resultContainer.appendChild(about);
-                                                            resultContainer.appendChild(addSpace());
-                    
-                                                            searching = false;
-                                                            break;
-                                                        }
-                                                    }
-                                                    if (!searching) {
-                                                        break;
-                                                    }
-                                                }
-            
-                                                if (searching) {
-                                                    // data not found
-                                                    serveError(error.dataNotFound);
-                                                }
-            
-                                            } else if (searchTypeValue === 'search-type-key') {
-                                                let searching = true;
-                                                for (let module of INFORMATION.key_functions) {
-                                                    for (let obj of module) {
-                                                        if (obj.key.toUpperCase() === query) {
-                                                            // build elements for display format
-                                                            const headTitle = document.createElement('h3');
-                                                            headTitle.innerText = `The ${obj.name} Key Function`;
-                    
-                                                            const key = document.createElement('div');
-                                                            key.innerText = 'Keyword: ' + obj.key;
-                    
-                                                            const syntax = document.createElement('div');
-                                                            syntax.innerText = 'Syntax: ' + obj.syntax;
-                    
-                                                            const about = document.createElement('div');
-                                                            about.innerText = 'Description: ' + obj.about;
-                    
-                                                            resultContainer.appendChild(headTitle);
-                                                            resultContainer.appendChild(addSpace());
-                                                            resultContainer.appendChild(key);
-                                                            resultContainer.appendChild(addSpace());
-                                                            resultContainer.appendChild(syntax);
-                                                            resultContainer.appendChild(addSpace());
-                                                            resultContainer.appendChild(about);
-                                                            resultContainer.appendChild(addSpace());
-                    
-                                                            searching = false;
-                                                            break;
-                                                        }
-                                                    }
-                                                    if (!searching) {
-                                                        break;
-                                                    }
-                                                }
-            
-                                                if (searching) {
-                                                    // data not found
-                                                    serveError(error.dataNotFound);
-                                                }
-                                            } else if (searchTypeValue === 'search-type-module') {
-                                                let searching = true;
-                                                let index = 0;
-                                                for (mod of keyModules) {
-                                                    if (query === mod.toUpperCase()) {
-                                                        searching = false;
-                                                        break;
-                                                    } else {
-                                                        index += 1;
-                                                    }
-                                                }
-                                                if (searching) {
-                                                    // serve module name error
-                                                    let errMsg = 'No Key Function Module by that name.\n\nModule Names:\n';
-                                                    for (mod of keyModules) {
-                                                        errMsg += `${mod}\n`;
-                                                    }
-                                                    const error = document.createElement('div');
-                                                    error.innerText = errMsg;
-                                                    resultContainer.appendChild(error);
-                                                } else {
-                                                    for (let obj of INFORMATION.key_functions[index]) {
-                                                        // build elements for display format
-                                                        const headTitle = document.createElement('h3');
-                                                        headTitle.innerText = `The ${obj.name} Key Function`;
-                
-                                                        const key = document.createElement('div');
-                                                        key.innerText = 'Keyword: ' + obj.key;
-                
-                                                        const syntax = document.createElement('div');
-                                                        syntax.innerText = 'Syntax: ' + obj.syntax;
-                
-                                                        const about = document.createElement('div');
-                                                        about.innerText = 'Description: ' + obj.about;
-                
-                                                        resultContainer.appendChild(headTitle);
-                                                        resultContainer.appendChild(addSpace());
-                                                        resultContainer.appendChild(key);
-                                                        resultContainer.appendChild(addSpace());
-                                                        resultContainer.appendChild(syntax);
-                                                        resultContainer.appendChild(addSpace());
-                                                        resultContainer.appendChild(about);
-                                                        resultContainer.appendChild(addSpace());
-                                                        resultContainer.appendChild(addSpace());
-                                                    }
-                                                }
-                                            } else {
-                                                // data not found
-                                                serveError(error.dataNotFound);
-                                            }
-                                        }
-                                    }
+                                    
+                                    // get result
+                                    searchResult();
                                     
                                 }, loaderDuration);
                             });
                         } catch {
                             // cancel connection timeout
+                            clearTimeout(connectionTimeout);
                             loaderDelay = setTimeout(() => {
             
                                 // Case 2: responds with error
             
                                 // cleanup cache
                                 clearTimeout(loaderDelay);
-                                clearTimeout(connectionTimeout);
+
                                 // stop loader after a single duration
                                 stopLoader();
+
                                 // focus on input field
                                 const searchField = DOMit('searchField');
                                 if (searchField) {
@@ -735,217 +752,8 @@ function searchReq() {
                     }, 1000);
                 }
             } else {
-    
-                // use local data
-                    
-                // focus on output field
-                const resultContainer = DOMit('resultContainer');
-                if (resultContainer) {
-                    resultContainer.focus();
-                }
-
-                // clear previous info
-                resultContainer.innerHTML = '';
-
-                // use query to search through data
-                if (query === 'INFO') {
-                    // returns all program info
-
-                    // build elements for display format
-                    const headTitle = document.createElement('h2');
-                    headTitle.innerText = 'Program Information';
-                    
-                    const constantTitle = document.createElement('h3');
-                    constantTitle.innerText = 'Constants';
-
-                    const operationTitle = document.createElement('h3');
-                    operationTitle.innerText = 'Operations';
-                    
-                    const variablesTitle = document.createElement('h3');
-                    variablesTitle.innerText = 'Valid Variables';
-
-                    const keysTitle = document.createElement('h3');
-                    keysTitle.innerText = 'Key Functions';
-
-                    // assemble and append elements to display
-                    resultContainer.appendChild(headTitle);
-                    
-                    resultContainer.appendChild(addSpace());
-                    resultContainer.appendChild(constantTitle);
-                    resultContainer.appendChild(addSpace());
-                    for (let i = 0; i < INFORMATION.constants.length; i++) {
-                        const constant = document.createElement('div');
-                        constant.innerText = `Name: ${INFORMATION.constants[i].name}\nSyntax: ${INFORMATION.constants[i].syntax}\n\n`;
-                        resultContainer.appendChild(constant);
-                    }
-                    
-                    resultContainer.appendChild(addSpace());
-                    resultContainer.appendChild(operationTitle);
-                    resultContainer.appendChild(addSpace());
-                    for (let i = 0; i < INFORMATION.operations.length; i++) {
-                        const operation = document.createElement('div');
-                        operation.innerText = `Name: ${INFORMATION.operations[i].name}\nSyntax: ${INFORMATION.operations[i].syntax}\n\n`;
-                        resultContainer.appendChild(operation);
-                    }
-                    
-                    resultContainer.appendChild(addSpace());
-                    resultContainer.appendChild(variablesTitle);
-                    resultContainer.appendChild(addSpace());
-                    const vars = document.createElement('div');
-                    vars.innerText = INFORMATION.variables.join(', ');
-                    resultContainer.appendChild(vars);
-                    resultContainer.appendChild(addSpace());
-
-                    resultContainer.appendChild(addSpace());
-                    resultContainer.appendChild(keysTitle);
-                    resultContainer.appendChild(addSpace());
-                    for (let i = 0; i < INFORMATION.key_functions.length; i++) {
-                        for (let j = 0; j < INFORMATION.key_functions[i].length; j++) {
-                            const key_function = document.createElement('div');
-                            key_function.innerText = `Name: ${INFORMATION.key_functions[i][j].name}\nSyntax: ${INFORMATION.key_functions[i][j].syntax}\nAbout: ${INFORMATION.key_functions[i][j].about}\n\n`;
-                            resultContainer.appendChild(key_function);
-                        }
-                    }
-                    resultContainer.appendChild(addSpace());
-                } else {
-                    // search for specific function
-                    const searchType = DOMit('searchType');
-                    if (searchType) {
-                        const searchTypeValue = searchType.value;
-                        if (searchTypeValue=== 'search-type-name') {
-                            let searching = true;
-                            for (let module of INFORMATION.key_functions) {
-                                for (let obj of module) {
-                                    if (obj.name.toUpperCase() === query) {
-                                        // build elements for display format
-                                        const headTitle = document.createElement('h3');
-                                        headTitle.innerText = `The ${obj.name} Key Function`;
-    
-                                        const key = document.createElement('div');
-                                        key.innerText = 'Keyword: ' + obj.key;
-    
-                                        const syntax = document.createElement('div');
-                                        syntax.innerText = 'Syntax: ' + obj.syntax;
-    
-                                        const about = document.createElement('div');
-                                        about.innerText = 'Description: ' + obj.about;
-    
-                                        resultContainer.appendChild(headTitle);
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(key);
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(syntax);
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(about);
-                                        resultContainer.appendChild(addSpace());
-    
-                                        searching = false;
-                                        break;
-                                    }
-                                }
-                                if (!searching) {
-                                    break;
-                                }
-                            }
-    
-                            if (searching) {
-                                // data not found
-                                serveError(error.dataNotFound);
-                            }
-    
-                        } else if (searchTypeValue === 'search-type-key') {
-                            let searching = true;
-                            for (let module of INFORMATION.key_functions) {
-                                for (let obj of module) {
-                                    if (obj.key.toUpperCase() === query) {
-                                        // build elements for display format
-                                        const headTitle = document.createElement('h3');
-                                        headTitle.innerText = `The ${obj.name} Key Function`;
-    
-                                        const key = document.createElement('div');
-                                        key.innerText = 'Keyword: ' + obj.key;
-    
-                                        const syntax = document.createElement('div');
-                                        syntax.innerText = 'Syntax: ' + obj.syntax;
-    
-                                        const about = document.createElement('div');
-                                        about.innerText = 'Description: ' + obj.about;
-    
-                                        resultContainer.appendChild(headTitle);
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(key);
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(syntax);
-                                        resultContainer.appendChild(addSpace());
-                                        resultContainer.appendChild(about);
-                                        resultContainer.appendChild(addSpace());
-    
-                                        searching = false;
-                                        break;
-                                    }
-                                }
-                                if (!searching) {
-                                    break;
-                                }
-                            }
-    
-                            if (searching) {
-                                // data not found
-                                serveError(error.dataNotFound);
-                            }
-    
-                        } else if (searchTypeValue === 'search-type-module') {
-                            let searching = true;
-                            let index = 0;
-                            for (mod of keyModules) {
-                                if (query === mod.toUpperCase()) {
-                                    searching = false;
-                                    break;
-                                } else {
-                                    index += 1;
-                                }
-                            }
-                            if (searching) {
-                                // serve module name error
-                                let errMsg = 'No Key Function Module by that name.\n\nModule Names:\n';
-                                for (mod of keyModules) {
-                                    errMsg += `${mod}\n`;
-                                }
-                                const error = document.createElement('div');
-                                error.innerText = errMsg;
-                                resultContainer.appendChild(error);
-                            } else {
-                                for (let obj of INFORMATION.key_functions[index]) {
-                                    // build elements for display format
-                                    const headTitle = document.createElement('h3');
-                                    headTitle.innerText = `The ${obj.name} Key Function`;
-
-                                    const key = document.createElement('div');
-                                    key.innerText = 'Keyword: ' + obj.key;
-
-                                    const syntax = document.createElement('div');
-                                    syntax.innerText = 'Syntax: ' + obj.syntax;
-
-                                    const about = document.createElement('div');
-                                    about.innerText = 'Description: ' + obj.about;
-
-                                    resultContainer.appendChild(headTitle);
-                                    resultContainer.appendChild(addSpace());
-                                    resultContainer.appendChild(key);
-                                    resultContainer.appendChild(addSpace());
-                                    resultContainer.appendChild(syntax);
-                                    resultContainer.appendChild(addSpace());
-                                    resultContainer.appendChild(about);
-                                    resultContainer.appendChild(addSpace());
-                                    resultContainer.appendChild(addSpace());
-                                }
-                            }
-                        } else {
-                            // data not found
-                            serveError(error.dataNotFound);
-                        }
-                    }
-                }
+                // just use local data to get result
+                searchResult();
             }
         }
     }
