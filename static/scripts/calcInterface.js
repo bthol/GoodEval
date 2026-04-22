@@ -275,6 +275,6 @@ scaleIt();
 
 // dynamically update scale attribute
 window.addEventListener('resize', () => {
-    debounce(conditionalRender, 10);
-    debounce2(scaleIt, 5);
+    debounce(conditionalRender, 5);
+    debounce2(scaleIt, 10);
 });
