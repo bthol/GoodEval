@@ -417,6 +417,12 @@ async function evalReq() {
 
 // gets + displays result from search in INFOMRATION structure
 function searchResult() {
+
+    console.log(INFORMATION);
+
+    // ensure loader stops
+    stopLoader();
+    
     // get query data
     const searchField = DOMit('searchField');
     const query = searchField.value.toUpperCase();
@@ -453,7 +459,7 @@ function searchResult() {
         resultContainer.appendChild(addSpace());
         for (let i = 0; i < INFORMATION.constants.length; i++) {
             const constant = document.createElement('div');
-            constant.innerText = `Name: ${INFORMATION.constants[i].name}\nSyntax: ${INFORMATION.constants[i].syntax}\n\n`;
+            constant.innerText = `Name: ${INFORMATION.constants[i].name}\nSyntax: ${INFORMATION.constants[i].syntax}\nValue: ${INFORMATION.constants[i].value}\n\n`;
             resultContainer.appendChild(constant);
         }
         
@@ -608,6 +614,111 @@ function searchResult() {
                     }
                 }
 
+            } else if (searchTypeValue === 'search-type-error') {
+                // search through errors property of INFORMATION and display matching error
+                let error = {};
+
+                // search for prestructure error
+                const prestructure = INFORMATION.error.prestructure;
+                for (let a = 0; a < prestructure.length; a++) {
+                    const err = prestructure[a]; // error object
+                    if (query === err.code) {
+                        searching = false;
+                        error = err;
+                        break;
+                    }
+                }
+                
+                // search for poststructure error
+                const poststructure = INFORMATION.error.poststructure;
+                for (let a = 0; a < poststructure.length; a++) {
+                    const err = poststructure[a]; // error object
+                    if (query === err.code) {
+                        searching = false;
+                        error = err;
+                        break;
+                    }
+                }
+                
+                // search for parameter errors
+                const parameter = INFORMATION.error.parameter;
+                const paramTypes = Object.keys(parameter); // types array
+                for (let a = 0; a < paramTypes.length; a++) {
+                    if (searching) {
+                        const params = Object.keys(parameter[paramTypes[a]]); // parameter array for type
+                        for (let b = 0; b < params.length; b++) {
+                            if (searching) {
+                                const errors = parameter[paramTypes[a]][params[b]]; // errors array for parameter
+                                for (let c = 0; c < errors.length; c++) {
+                                    if (searching) {
+                                        const err = errors[c]; // each error object
+                                        if (query === err.code) {
+                                            // found parameter error
+                                            searching = false;
+                                            error = err;
+                                        }
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                
+                // search for key function error
+                const key_function = INFORMATION.error.key_function;
+                const keyModules = Object.keys(key_function); // module array
+                for (let a = 0; a < keyModules.length; a++) {
+                    if (searching) {
+                        const keys = Object.keys(key_function[keyModules[a]]); // key array for module
+                        for (let b = 0; b < keys.length; b++) {
+                            if (searching) {
+                                const errors = key_function[keyModules[a]][keys[b]]; // errors array for key
+                                for (let c = 0; c < errors.length; c++) {
+                                    if (searching) {
+                                        const err = errors[c]; // each error object
+                                        if (query == err.code) {
+                                            // found key error
+                                            searching = false;
+                                            error = err;
+                                        }
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                
+                if (!searching) { // found error
+                    // build elements for display format
+                    const headTitle = document.createElement('h3');
+                    headTitle.innerText = 'Error Code Search';
+    
+                    const code = document.createElement('div');
+                    code.innerText = 'Code: ' + error.code;
+    
+                    const description = document.createElement('div');
+                    description.innerText = 'Description: ' + error.description;
+    
+                    resultContainer.appendChild(headTitle);
+                    resultContainer.appendChild(addSpace());
+                    resultContainer.appendChild(code);
+                    resultContainer.appendChild(addSpace());
+                    resultContainer.appendChild(description);
+                    resultContainer.appendChild(addSpace());
+                }
+                
             } else {
                 // data not found
                 const err = document.createElement('div');
