@@ -4,6 +4,10 @@
     --scale-calc-size: 100vmin;
 }
 
+footer {
+    color: white;
+}
+
 /* NAVIGATION */
 nav {
     position: absolute;
