@@ -51,17 +51,17 @@ let cursorModeCache = {};
 
 // error messages
 const error = {
-    empty: 'Error: Empty string',
-    operation: 'Error: invalid operation',
-    consecutive: 'Error: No consecutive operations',
-    paren: 'Error: Invalid parenthesis',
-    argument: 'Error: Invalid key argument',
-    reqOperation: 'Error: Requires operation',
-    reqBase: 'Error: Invalid base for exponent',
-    reqPower: 'Error: Invalid power for exponent',
-    exponent: 'Error: invalid exponent form',
-    reqRadicand: 'Error: Invalid radicand',
-    radical: 'Error: invalid radical form',
+    empty: 'Empty string',
+    operation: 'Invalid operation',
+    consecutive: 'No consecutive operations',
+    paren: 'Invalid parenthesis',
+    argument: 'Invalid key argument',
+    reqOperation: 'Requires operation',
+    reqBase: 'Invalid base for exponent',
+    reqPower: 'Invalid power for exponent',
+    exponent: 'Invalid exponent form',
+    reqRadicand: 'Invalid radicand',
+    radical: 'Invalid radical form',
 }
 
 // special number info
@@ -904,6 +904,7 @@ function isOp(i) {
     } else {
         return false;
     }
+    // return Object.values(operation).join('').includes(str);
 };
 
 function findOpen(start, open, close) {
@@ -1236,7 +1237,10 @@ function handleRadical() {
             if (str === ')') {
                 // index of radication is an expression
                 // get starting parenthesis index
-                const start = findOpen(problem.length - 1, '(', ')');
+                let start = findOpen(problem.length - 1, '(', ')');
+                if (start - 1 > -1 && problem[start - 1] === negate) {
+                    start -= 1;
+                }
                 // format section
                 let section = [];
                 for (let i = start; i < problem.length; i++) {
@@ -1322,6 +1326,76 @@ function handlePower() {
             } else {
                 // base is neither a number nor special number
                 serveError(error.reqBase);
+            }
+        }
+    }
+};
+
+function handleNegative() {
+    if (problem.length > 0 && cursorMode == false) {
+        let buffer = '';
+        let x = problem.length - 1;
+        if (removeFormatElements(x) === ')') {
+            if (x - 1 > -1) {
+                // negative becomes positive
+                x -= 1;
+                while (x > -1 && removeFormatElements(x) !== '(' && !isOp(x) && !isKey(x)) {
+                    buffer = removeFormatElements(x) + buffer;
+                    x -= 1;
+                }
+
+                if (buffer.length > 0 && removeFormatElements(x) === '(' && x - 1 > -1 && removeFormatElements(x - 1) === negate) {
+                    // test for formatting
+                    if (problem[x] === '^') {
+                        formatSuperscript = true;
+                    }
+                    // remove old number
+                    for (const i in buffer) {
+                        problem.pop();
+                    }
+                    problem.pop(); // -
+                    problem.pop(); // (
+                    problem.pop(); // )
+
+                    // insert new number
+                    for (const i in buffer) {
+                        insert(buffer[i]);
+                    }
+                    // turn off formatting for next operation
+                    if (formatSuperscript) {
+                        formatSuperscript = false;
+                    }
+                }
+            }
+
+        } else {
+            // positive becomes negative
+            while (x > -1 && !isOp(x) && !isKey(x)) {
+                // buffer = problem[x] + buffer;
+                buffer = removeFormatElements(x) + buffer;
+                x -= 1;
+            }
+
+            if (buffer.length > 0) {
+                // test for formatting
+                if (problem[x] === '^') {
+                    formatSuperscript = true;
+                }
+                // remove old number
+                for (const i in buffer) {
+                    problem.pop();
+                }
+                // insert new number
+                insert(negate);
+                insert('(');
+                for (const i in buffer) {
+                    insert(buffer[i]);
+                }
+                insert(')');
+                // turn off formatting for next operation
+                if (formatSuperscript) {
+                    formatSuperscript = false;
+                }
             }
         }
     }
@@ -1562,12 +1636,26 @@ function validOperations(prob) {
             // exponent form test
             if (prob[i] === operation.exp) {
                 if (i - 1 > -1 && i + 1 < prob.length) {
-                    if (isNaN(prob[i - 1]) && !isSpecial(i - 1)) {
+                    // bounds for test
+                    const bound1 = i + 1 < prob.length;
+                    const bound2 = i + 4 < prob.length;
+                    // valid positive power
+                    const cond1 = bound1 && prob[i + 1] === '(' || bound1 && !isNaN(prob[i + 1]);
+                    // valid negative power
+                    const cond2 = bound2 && prob[i + 1] === negate && prob[i + 2] === '(' && !isNaN(prob[i + 3]) && prob[i + 4] === ')';
+                    if (i - 1 > -1 && isNaN(prob[i - 1])) {
                         // invalid base exponent form
                         serveError(error.reqBase);
                         return false;
-                    } else if (prob[i + 1] !== '(' && isNaN(prob[i + 1]) && !isSpecial(i + 1)) {
+                    } else if (!cond1 && !cond2) { // none of the valid forms
                         // invalid power exponent form
+                        console.log("pass");
+                        console.log(cond3);
+                        console.log(i + 1 < prob.length);
+                        console.log(prob[i + 1] === '(');
+                        console.log(!isNaN(prob[i + 1]));
+
+                        // console.log(cond2);
                         serveError(error.reqPower);
                         return false;
                     }
@@ -1748,7 +1836,6 @@ function evaluate() {
     // run on equal button click
     if (validProblem()) {
         // update problem display
-        cursorMode = false;
         updateProblem();
 
         // evaluate problem structure into answer structure
@@ -1908,8 +1995,7 @@ btns.addEventListener('click', (e) => {
                     insert(operation.div);
                 }
             } else if (id === 'btn-sign' || id === 'btn-sign-sup' || id === 'btn-sign-sub') {
-                insert(negate);
-                insert('(');
+                handleNegative();
             } else if (id === 'btn-power' || id === 'btn-power-sup') {
                 handlePower();
             } else if (id === 'btn-root' || id === 'btn-root-sup') {

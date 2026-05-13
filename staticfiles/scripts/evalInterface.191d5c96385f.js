@@ -308,15 +308,15 @@ async function evalReq() {
 
                         // Case 3: Connection timeout
 
+                        // stop loader after a single duration
+                        stopLoader();
+
                         // abort request
                         controller.abort();
 
                         // cleanup cache
                         clearTimeout(loaderDelay);
                         clearTimeout(delay);
-
-                        // stop loader after a single duration
-                        stopLoader();
 
                         // focus on input field
                         const problemField = DOMit('problemField');
@@ -348,11 +348,11 @@ async function evalReq() {
 
                             // Case 1: responds with answer
 
-                            // cleanup cache
-                            clearTimeout(loaderDelay);
-
                             // stop loader after a single duration
                             stopLoader();
+
+                            // cleanup cache
+                            clearTimeout(loaderDelay);
 
                             // focus on output field
                             const answerField = DOMit('answerField');
@@ -378,11 +378,11 @@ async function evalReq() {
 
                         // Case 2: responds with error
 
-                        // cleanup cache
-                        clearTimeout(loaderDelay);
-
                         // stop loader after a single duration
                         stopLoader();
+
+                        // cleanup cache
+                        clearTimeout(loaderDelay);
                         
                         // focus on input field
                         const problemField = DOMit('problemField');
@@ -418,7 +418,7 @@ async function evalReq() {
 // gets + displays result from search in INFOMRATION structure
 function searchResult() {
 
-    console.log(INFORMATION);
+    // console.log(INFORMATION);
 
     // ensure loader stops
     stopLoader();
@@ -733,9 +733,6 @@ function searchResult() {
             }
         }
     }
-
-    // refocus the search
-    searchField.focus();
 };
 
 async function searchReq() {
