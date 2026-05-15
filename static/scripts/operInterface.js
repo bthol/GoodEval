@@ -2290,10 +2290,22 @@ function updateForm() {
         select.appendChild(option1);
         
         const option2 = document.createElement('option');
-        option2.setAttribute('name', 'disjunction');
-        option2.setAttribute('value', 'disjunction');
-        option2.innerText = 'disjunction';
+        option2.setAttribute('name', 'symmetric-disjunction');
+        option2.setAttribute('value', 'symmetric-disjunction');
+        option2.innerText = 'symmetric disjunction';
         select.appendChild(option2);
+        
+        const option3 = document.createElement('option');
+        option3.setAttribute('name', 'asymmetric-disjunction'); 
+        option3.setAttribute('value', 'asymmetric-disjunction');
+        option3.innerText = 'asymmetric disjunction';
+        select.appendChild(option3);
+        
+        const option4 = document.createElement('option');
+        option4.setAttribute('name', 'asymmetric-disjunction-alternate');
+        option4.setAttribute('value', 'asymmetric-disjunction-alternate');
+        option4.innerText = 'asymmetric disjunction alternate';
+        select.appendChild(option4);
 
         // Domain A
         const labelA = document.createElement('label');
@@ -2511,7 +2523,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
     const operatorType = document.querySelector('#operator-type').value;
 
     // calculate answer
-    
     let answer = 0;
     if (operandType === 'quantity') {
         // get quantities
@@ -2628,7 +2639,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     }
                 } else if (operatorType === 'powerset') {
                     setRes = getPowerset(set);
-                    list = document.createElement('lu');
+                    list = document.createElement('ul');
                     subsetnum = 0;
                     setRes.forEach((s) => {
                         subsetnum += 1;
@@ -2818,7 +2829,7 @@ document.querySelector('#operate-button').addEventListener('click', () => {
         domainA = removeDuplicates(domainA);
         domainB = removeDuplicates(domainB);
 
-        // linear operators
+        // linear operators (maps)
         if (operatorType === 'conjunction') {
             answer = conjunction(domainA, domainB);
             if (answer.length === 0) {
@@ -2831,10 +2842,42 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
             // display answer
             answerField.innerHTML = `<div>Conjunction</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent A: </div> <div class="answer-data-col-2">${percentA}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent B: </div> <div class="answer-data-col-2">${percentB}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${answer.toString()}</div> </div> <div>Domain A</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainA.toString()}</div> </div> <div>Domain B</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainB.toString()}</div> </div>`;
-        } else if (operatorType === 'disjunction') {
-            answer = disjunction(domainA, domainB);
+        } else if (operatorType === 'symmetric-disjunction') {
+            let conj = [];
+            for (const i in domainA) {
+                for (const j in domainB) {
+                    if (domainA[i] === domainB[j]) {
+                        conj.push(domainA[i]);
+                        break;
+                    }
+                }
+            }
+            let answer1 = [];
+            for (const i in domainA) {
+                if (!conj.includes(domainA[i])) {
+                    answer1.push(domainA[i]);
+                }
+            }
+            conj = [];
+            for (const i in domainB) {
+                for (const j in domainA) {
+                    if (domainB[i] === domainA[j]) {
+                        conj.push(domainB[i]);
+                        break;
+                    }
+                }
+            }
+            let answer2 = [];
+            for (const i in domainB) {
+                if (!conj.includes(domainB[i])) {
+                    answer2.push(domainB[i]);
+                }
+            }
+            let answer = answer1.concat(answer2);
+            answer = removeDuplicates(answer);
+            answer = answer.sort((a, b) => a - b);
             if (answer.length === 0) {
-                answer = 0;
+                answer = NaN;
             }
 
             // get display data
@@ -2843,6 +2886,58 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
             // display answer
             answerField.innerHTML = `<div>Disjunction</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent A: </div> <div class="answer-data-col-2">${percentA}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent B: </div> <div class="answer-data-col-2">${percentB}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${answer.toString()}</div> </div> <div>Domain A</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainA.toString()}</div> </div> <div>Domain B</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainB.toString()}</div> </div>`;
+        
+        } else if (operatorType === 'asymmetric-disjunction') {
+            let conj = [];
+            for (const i in domainA) {
+                for (const j in domainB) {
+                    if (domainA[i] === domainB[j]) {
+                        conj.push(domainA[i]);
+                        break;
+                    }
+                }
+            }
+            let answer = [];
+            for (const i in domainA) {
+                if (!conj.includes(domainA[i])) {
+                    answer.push(domainA[i]);
+                }
+            }
+            if (answer.length === 0) {
+                answer = NaN;
+            }
+
+            // get display data
+            const percentA = common(answer, domainA).length / domainA.length * 100;
+
+            // display answer
+            answerField.innerHTML = `<div>Disjunction</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent A: </div> <div class="answer-data-col-2">${percentA}%</div> </div> <div class="answer-data-layout"> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${answer.toString()}</div> </div> <div>Domain A</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainA.toString()}</div> </div> <div>Domain B</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainB.toString()}</div> </div>`;
+        
+        } else if (operatorType === 'asymmetric-disjunction-alternate') {
+            let conj = [];
+            for (const i in domainB) {
+                for (const j in domainA) {
+                    if (domainB[i] === domainA[j]) {
+                        conj.push(domainB[i]);
+                        break;
+                    }
+                }
+            }
+            let answer = [];
+            for (const i in domainB) {
+                if (!conj.includes(domainB[i])) {
+                    answer.push(domainB[i]);
+                }
+            }
+            if (answer.length === 0) {
+                answer = NaN;
+            }
+
+            // get display data
+            const percentB = common(answer, domainB).length / domainB.length * 100;
+
+            // display answer
+            answerField.innerHTML = `<div>Disjunction</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Percent B: </div> <div class="answer-data-col-2">${percentB}%</div> </div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${answer.toString()}</div> </div> <div>Domain A</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainA.toString()}</div> </div> <div>Domain B</div> <div class="answer-data-layout"> <div class="answer-data-col-1">Elements: </div> <div class="answer-data-col-2">${domainB.toString()}</div> </div>`;
         }
     } else if (operandType === 'matrix') {
         if (operatorType === 'matrix addition') {
