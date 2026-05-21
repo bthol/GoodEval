@@ -3150,12 +3150,30 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             let valsA = []; // contains each value of Matrix A in display order
             let vals = []; // contains negated values
 
-            // populate valsA with rows
-            for (let i = 0; i < colRankA; i++) {
-                document.querySelectorAll(`.matrix-A-row-${i + 1}`).forEach((val) => {
-                    valsA.push(val.value);
-                });
+            // determine larger rank
+            if (rowRankA < colRankA) {
+
+                // columns have larger rank
+                
+                // populate valsA with rows
+                for (let i = 0; i < colRankA; i++) {
+                    document.querySelectorAll(`.matrix-A-row-${i + 1}`).forEach((val) => {
+                        valsA.push(val.value);
+                    });
+                }
+                
+            } else {
+                
+                // ranks are the same or rows have larger rank
+                
+                // populate valsA with rows
+                for (let i = 0; i < rowRankA; i++) {
+                    document.querySelectorAll(`.matrix-A-row-${i + 1}`).forEach((val) => {
+                        valsA.push(val.value);
+                    });
+                }
             }
+
 
             // negate all the vals
             valsA.forEach((val) => {
