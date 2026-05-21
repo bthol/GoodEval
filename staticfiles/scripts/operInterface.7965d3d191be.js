@@ -351,8 +351,8 @@ function buildMatrix(mat, row, col) {
     const matrixContainer = document.createElement('div');
     matrixContainer.setAttribute('id',`matrix-id-${mat}`);
     matrixContainer.setAttribute('class',`matrix`);
-    for (let c = 1; c < Number(col) + 1; c++) {
-        for (let r = 1; r < Number(row) + 1; r++) {
+    for (let r = 1; r < Number(row) + 1; r++) {
+        for (let c = 1; c < Number(col) + 1; c++) {
             // store matrix value id
             const matVal = `${mat} ${r},${c}`;
 
@@ -385,8 +385,8 @@ function displayProductMatrix(rows, cols, vals) {
     matProd.setAttribute('class','matrix');
     
     let count = 0;
-    for (let c = 1; c < cols + 1; c++) {
-        for (let r = 1; r < rows + 1; r++) {
+    for (let r = 1; r < rows + 1; r++) {
+        for (let c = 1; c < cols + 1; c++) {
             // build elements
             const label = document.createElement('div');
             label.innerText = `C ${r},${c}`;
@@ -1113,8 +1113,16 @@ function calculateMatrix(scalar, matrix) {
     return (matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]) * scalar;
 };
 
-function getDeterminant(matrix) {
+function calcDet(matrix) {
     let rank = matrix.length;
+    const rank2 = matrix[0].length;
+    if (rank !== rank2) {
+        // non-square matrix
+        return 'non-square matrix';
+    } else if (rank >= maxRank || rank2 >= maxRank) {
+        // exceeding max rank
+        return `maximum rank of ${maxRank - 1} exceeded`;
+    }
     if (rank === 2) {
         // find det(A) for 2 X 2 matrix
         // where A is a 2 x 2 matrix with rows a,b and d,c, det(A) = ad − bc
@@ -1135,6 +1143,7 @@ function getDeterminant(matrix) {
         // break matrix into minors
         while (x < maxRank - 2 && test > 2) {
             // runs for matrices with rank 4 and up to maxrank
+            // runs from original rank down to rank 2
             
             if (x === 1) { // rank 4
                 // get new set of minors + new set of scalars
@@ -1257,6 +1266,7 @@ function getDeterminant(matrix) {
         // console.log(scalars);
 
         // calculate determinant with minors and scalars
+        // runs only the original rank
         if (rank === 3) {
             // compile solution
             compile = 0;
@@ -2507,7 +2517,7 @@ function updateForm() {
         answerField.setAttribute('style', 'padding-bottom: 0px');
     }
 };
-updateForm();
+updateForm(); // init form
 document.querySelector('#operand-type').addEventListener('change', updateForm);
 
 // operate button click
@@ -2985,14 +2995,14 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
                     // populate valsA
                     for (let i = 1; i < rowRankA + 1; i++) {
-                        document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                        document.querySelectorAll(`.matrix-A-row-${i}`).forEach((val) => {
                             valsA.push(Number(val.value));
                         });
                     }
                     
                     // populate valsB
                     for (let i = 1; i < rowRankB + 1; i++) {
-                        document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
+                        document.querySelectorAll(`.matrix-B-row-${i}`).forEach((val) => {
                             valsB.push(Number(val.value));
                         });
                     }
@@ -3055,14 +3065,14 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
                     // populate valsA
                     for (let i = 1; i < rowRankA + 1; i++) {
-                        document.querySelectorAll(`.matrix-A-col-${i}`).forEach((val) => {
+                        document.querySelectorAll(`.matrix-A-row-${i}`).forEach((val) => {
                             valsA.push(Number(val.value));
                         });
                     }
                     
                     // populate valsB
                     for (let i = 1; i < rowRankB + 1; i++) {
-                        document.querySelectorAll(`.matrix-B-col-${i}`).forEach((val) => {
+                        document.querySelectorAll(`.matrix-B-row-${i}`).forEach((val) => {
                             valsB.push(Number(val.value));
                         });
                     }
@@ -3095,8 +3105,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                 let valsB = []; // contains all values of Matrix B in order
                 let vals = []; // contains sums of all elements in valsA and valsB
 
+                for (let j = 1; j < rowRankA + 1; j++) {
                 for (let i = 1; i < colRankB + 1; i++) {
-                    for (let j = 1; j < rowRankA + 1; j++) {
 
                         // clear data
                         valsA = [];
@@ -3140,9 +3150,9 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             let valsA = []; // contains each value of Matrix A in display order
             let vals = []; // contains negated values
 
-            // populate valsA with columns
+            // populate valsA with rows
             for (let i = 0; i < colRankA; i++) {
-                document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
+                document.querySelectorAll(`.matrix-A-row-${i + 1}`).forEach((val) => {
                     valsA.push(val.value);
                 });
             }
@@ -3225,9 +3235,12 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                         if (!zeroRows && !zeroCols && !duplicateRows && !duplicateCols) {
                             
                             // calculate determinant of matrix
-                            const determinant = getDeterminant(matrix);
-        
-                            if (determinant !== 0) {
+                            const determinant = calcDet(matrix);
+                            if (typeof determinant === 'String') {
+                                // display error
+                                answerField.innerText = determinant;
+
+                            } else if (determinant !== 0) {
                                 // conditions for matrix inversion
                                 // non-zero determinant
                                 // no zero rows
@@ -3396,7 +3409,6 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                                     // count each operation
                                     operations += 1;
                                 }
-
                                 
                                 if (operations < maximum) {
                                     
@@ -3461,11 +3473,19 @@ document.querySelector('#operate-button').addEventListener('click', () => {
     
                                     // get matrix of minors
                                     const minors = getMinors(matrix, true);
-                                    
+                                    let breakout = false;
                                     for (let col = 0; col < colRankA; col++) {
                                         for (let row = 0; row < rowRankA; row++) {
-                                            matrix[col][row] = getDeterminant(minors[col + row]);
+                                            const determinant = calcDet(minors[col + row]);
+                                            if (typeof determinant === "string") {
+                                                // display error
+                                                answerField.innerText = determinant;
+                                                breakout = True;
+                                                break;
+                                            }
+                                            matrix[col][row] = determinant;
                                         }
+                                        if (breakout) {break};
                                     }
     
                                     // matrix now represents a matrix of minors
@@ -3640,9 +3660,12 @@ document.querySelector('#operate-button').addEventListener('click', () => {
                     if (!zeroRows && !zeroCols && !duplicateRows && !duplicateCols) {
                         
                         // calculate determinant of matrix
-                        const determinant = getDeterminant(matrix);
-    
-                        if (determinant !== 0) {
+                        const determinant = calcDet(matrix);
+                        if (typeof determinant === "string") {
+                            // display error
+                            answerField.innerText = determinant;
+
+                        } else if (determinant !== 0) {
                             // conditions for matrix inversion
                             // non-zero determinant
                             // no zero rows
@@ -3814,8 +3837,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
                             if (operations < maximum) {
                                 // format solution into vals structure
-                                for (let i = 0; i < identityMatrix.length; i++) {
-                                    for (let j = 0; j < identityMatrix[i].length; j++) {
+                                for (let j = 0; j < identityMatrix[0].length; j++) {
+                                    for (let i = 0; i < identityMatrix.length; i++) {
                                         vals.push(identityMatrix[i][j]);
                                     }
                                 }
@@ -3841,60 +3864,70 @@ document.querySelector('#operate-button').addEventListener('click', () => {
 
                                 // get matrix of minors
                                 const minors = getMinors(matrix, true);
-                                
+                                let breakout = false;
                                 for (let col = 0; col < colRankA; col++) {
                                     for (let row = 0; row < rowRankA; row++) {
-                                        matrix[col][row] = getDeterminant(minors[col + row]);
-                                    }
-                                }
-
-                                // matrix now represents a matrix of minors
-
-                                // get matrix of cofactors
-                                let negate = false;
-                                for (let col = 0; col < colRankA; col++) {
-                                    for (let row = 0; row < rowRankA; row++) {
-                                        if (negate) {
-                                            matrix[col][row] = -Math.abs(matrix[col][row]);
-                                        } else {
-                                            matrix[col][row] = Math.abs(matrix[col][row]);
+                                        const determinant = calcDet(minors[col + row]);
+                                        if (typeof determinant === 'string') {
+                                            answerField.innerText = determinant;
+                                            breakout = true;
+                                            break;
                                         }
-                                        negate = !negate;
+                                        matrix[col][row] = determinant;
                                     }
+                                    if (breakout) {break};
                                 }
 
-                                // matrix now represents a matrix of cofactors
-
-                                // get adjugate
-                                let adjugate = []; // contains each column as a row
-
-                                // populate vals with transposed values
-                                for (let row = 0; row < rowRankA; row++) {
-                                    let column = [];
+                                if (!breakout) {
+                                    // matrix now represents a matrix of minors
+    
+                                    // get matrix of cofactors
+                                    let negate = false;
                                     for (let col = 0; col < colRankA; col++) {
-                                        column.push(matrix[col][row]);
+                                        for (let row = 0; row < rowRankA; row++) {
+                                            if (negate) {
+                                                matrix[col][row] = -Math.abs(matrix[col][row]);
+                                            } else {
+                                                matrix[col][row] = Math.abs(matrix[col][row]);
+                                            }
+                                            negate = !negate;
+                                        }
                                     }
-                                    adjugate.push(column);
-                                }
-
-                                // scale by the inverse determinant
-                                const inverseDeterminant = 1 / determinant;
-                                for (let col = 0; col < colRankA; col++) {
+    
+                                    // matrix now represents a matrix of cofactors
+    
+                                    // get adjugate
+                                    let adjugate = []; // contains each column as a row
+    
+                                    // populate vals with transposed values
                                     for (let row = 0; row < rowRankA; row++) {
-                                        adjugate[col][row] = adjugate[col][row] * inverseDeterminant;
+                                        let column = [];
+                                        for (let col = 0; col < colRankA; col++) {
+                                            column.push(matrix[col][row]);
+                                        }
+                                        adjugate.push(column);
                                     }
-                                }
-
-                                // format solution into vals structure
-                                for (let col = 0; col < colRankA; col++) {
+    
+                                    // scale by the inverse determinant
+                                    const inverseDeterminant = 1 / determinant;
+                                    for (let col = 0; col < colRankA; col++) {
+                                        for (let row = 0; row < rowRankA; row++) {
+                                            adjugate[col][row] = adjugate[col][row] * inverseDeterminant;
+                                        }
+                                    }
+    
+                                    // format solution into vals structure
                                     for (let row = 0; row < rowRankA; row++) {
-                                        vals.push(adjugate[col][row]);
+                                        for (let col = 0; col < colRankA; col++) {
+                                            vals.push(adjugate[col][row]);
+                                        }
                                     }
+            
+                                    // display results
+                                    displayProductMatrix(rowRankA, colRankA, vals);
+                                    answerField.innerHTML = `<div class="answer-data-layout"> <div class="answer-data-col-1">Inversion Method:</div> <div class="answer-data-col-2">Matrix of Minors</div> </div> </div> ${answerField.innerHTML}`;
+                                
                                 }
-        
-                                // display results
-                                displayProductMatrix(rowRankA, colRankA, vals);
-                                answerField.innerHTML = `<div class="answer-data-layout"> <div class="answer-data-col-1">Inversion Method:</div> <div class="answer-data-col-2">Matrix of Minors</div> </div> </div> ${answerField.innerHTML}`;
                             
                             }
                             
@@ -3926,9 +3959,9 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             let valsA = []; // contains each value of Matrix A in display order
             let vals = []; // contains negated values
 
-            // populate valsA with columns
+            // populate valsA with rows
             for (let i = 0; i < colRankA; i++) {
-                document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
+                document.querySelectorAll(`.matrix-A-row-${i + 1}`).forEach((val) => {
                     valsA.push(val.value);
                 });
             }
@@ -3961,8 +3994,8 @@ document.querySelector('#operate-button').addEventListener('click', () => {
             }
 
             // populate vals with transposed values
-            for (let i = 0; i < rowRankA; i++) {
-                for (let j = 0; j < colRankA; j++) {
+            for (let j = 0; j < colRankA; j++) {
+                for (let i = 0; i < rowRankA; i++) {
                     vals.push(valsA[j][i]);
                 }
             }
@@ -3973,25 +4006,30 @@ document.querySelector('#operate-button').addEventListener('click', () => {
         } else if (operatorType === 'determinant') {
             // get matrix ranks
             const colRankA = Number(document.querySelector('#col-rank-a').value);
-
-            // initialize strutures
-            let matrix = [];
-
-            // populate matrix with columns
-            for (let i = 0; i < colRankA; i++) {
-                let column = [];
-                document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
-                    column.push(Number(val.value));
-                });
-                matrix.push(column);
-            }
-
-            if (matrix.length >= maxRank) {
+            const rowRankA = Number(document.querySelector('#row-rank-a').value);
+            // prevent crazy ranks
+            if (colRankA >= maxRank || rowRankA >= maxRank) {
                 // display error
                 answerField.innerText = `maximum rank of ${maxRank - 1} exceeded`;
+            } else if (colRankA !== rowRankA) {
+                // display error
+                answerField.innerText = `non-sqaure matrix`;
             } else {
+
+                // initialize struture
+                let matrix = [];
+
+                // populate matrix with columns
+                for (let i = 0; i < colRankA; i++) {
+                    let column = [];
+                    document.querySelectorAll(`.matrix-A-col-${i + 1}`).forEach((val) => {
+                        column.push(Number(val.value));
+                    });
+                    matrix.push(column);
+                }
+
                 // display answer
-                answerField.innerText = `${getDeterminant(matrix)}`;
+                answerField.innerText = `${calcDet(matrix)}`;
             }
 
 
