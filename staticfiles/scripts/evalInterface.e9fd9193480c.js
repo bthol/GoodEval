@@ -244,7 +244,7 @@ function validOp(prob) {
 };
 
 // Evaluate problem string by request to Eval API
-async function evalReq() {
+function evalReq() {
     // test for internet connection
     if (window.navigator.onLine === true) {
         // debounce to prevent excessive requests
