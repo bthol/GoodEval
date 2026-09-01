@@ -3,10 +3,10 @@ console.log('Interface Script Loaded.');
 // parameters
 const addRate = 100; // ms
 const numberOfDots = 10;
-const loaderAnimationTime = addRate * numberOfDots;
-const removeRate = loaderAnimationTime * 1.75;
-const loaderDuration = addRate * numberOfDots + removeRate;
-const requestDuration = loaderDuration + 30000; // loader duration + 30 seconds
+const loaderAnimationTime = addRate * numberOfDots; // ms
+const removeRate = loaderAnimationTime * 1.75; // ms
+const loaderDuration = addRate * numberOfDots + removeRate; // 2.75 seconds
+const requestDuration = loaderDuration * 12; // 30X loader duration ~33 seconds
 
 // global state variables
 let dotInterval = {};
@@ -134,18 +134,30 @@ function stopLoader() {
 // problem string validation
 function serveError(error) {
     // displays string in error argument on page for 3000 ms
-    const answerField = DOMit('answerField');
-    if (answerField) {
-        answerField.innerText = error;
+    const answer = DOMit('answerField');
+    if (answer) {
+        // display error
+        answer.innerText = error;
+
+        // correct answer clipping on overflow
+        if (answer.scrollHeight > answer.clientHeight || answer.scrollWidth > answer.clientWidth) {
+            answer.setAttribute('style', 'justify-content: flex-start');
+        } else {
+            answer.setAttribute('style', 'justify-content: center');
+        }
+
+        // focus on error
+        answer.focus();
+
     }
     clearTimeout(errorTimeout);
     errorTimeout = setTimeout(() => {
         clearTimeout(errorTimeout);
-        const answerField = DOMit('answerField');
-        if (answerField) {
-            answerField.innerText = '';
+        const answer = DOMit('answerField');
+        if (answer) {
+            answer.innerText = '';
         }
-    }, 3000);
+    }, 10000);
 };
 
 function validParen(prob) {
@@ -252,9 +264,6 @@ function evalReq() {
         debounceRequest = setTimeout(() => {
             // debounced
             clearTimeout(debounceRequest);
-
-            // select answer field
-            const answer = DOMit('answerField');
             
             // clear previous answer
             answer.innerText = '';
@@ -300,35 +309,24 @@ function evalReq() {
                 // start connection timeout
                 const root = 'https://eval-api-8ece55f267c1.herokuapp.com/';
                 const controller = new AbortController();
-                let loaderDelay = {};
+
+                // Case 3: Connection timeout
                 const connectionTimeout = setTimeout(() => {
+
+                    // abort request
+                    controller.abort();
+
+                    // stop loader
+                    stopLoader();
+
+                    // update answer field with error message
+                    serveError(error.connectionTimeout);
+
                     // cleanup cache
                     clearTimeout(connectionTimeout);
-                    const delay = setTimeout(() => {
 
-                        // Case 3: Connection timeout
-
-                        // stop loader after a single duration
-                        stopLoader();
-
-                        // abort request
-                        controller.abort();
-
-                        // cleanup cache
-                        clearTimeout(loaderDelay);
-                        clearTimeout(delay);
-
-                        // focus on input field
-                        const problemField = DOMit('problemField');
-                        if (problemField) {
-                            problemField.focus();
-                        }
-                        // update answer field with error message
-                        serveError(error.connectionTimeout);
-
-                    }, loaderDuration);
-
-                }, requestDuration - loaderDuration);
+                }, requestDuration);
+                
 
                 // fetch request to Eval API
                 try {
@@ -342,57 +340,49 @@ function evalReq() {
                     })
                     .then(response => response.json())
                     .then((data) => {
+                        
+                        // Case 1: responds with answer
+
                         // cancel connection timeout
                         clearTimeout(connectionTimeout);
-                        loaderDelay = setTimeout(() => {
 
-                            // Case 1: responds with answer
+                        // store data in temporary variable
+                        const dat = data;
 
-                            // stop loader after a single duration
-                            stopLoader();
-
-                            // cleanup cache
-                            clearTimeout(loaderDelay);
-
-                            // focus on output field
-                            const answerField = DOMit('answerField');
-                            if (answerField) {
-                                answerField.focus();
-                            }
+                        // select answer field
+                        const answer = DOMit('answerField');
+                        if (answer) {
                             // update answer field with answer in response
-                            answer.innerText = data;
-
+                            answer.innerText = dat;
+    
                             // correct answer clipping on overflow
                             if (answer.scrollHeight > answer.clientHeight || answer.scrollWidth > answer.clientWidth) {
                                 answer.setAttribute('style', 'justify-content: flex-start');
                             } else {
                                 answer.setAttribute('style', 'justify-content: center');
                             }
+    
+                            // focus on output field
+                            answer.focus();
+                        }
 
-                        }, loaderDuration);
-                    })
-                } catch {
-                    // cancel connection timeout
-                    clearTimeout(connectionTimeout);
-                    loaderDelay = setTimeout(() => {
-
-                        // Case 2: responds with error
-
-                        // stop loader after a single duration
+                        // stop loader
                         stopLoader();
 
-                        // cleanup cache
-                        clearTimeout(loaderDelay);
-                        
-                        // focus on input field
-                        const problemField = DOMit('problemField');
-                        if (problemField) {
-                            problemField.focus();
-                        }
-                        // update answer field with error message
-                        serveError(error.connectionFailed);
+                    })
 
-                    }, loaderDuration);
+                } catch {
+                    
+                    // Case 2: responds with error
+
+                    // cancel connection timeout
+                    clearTimeout(connectionTimeout);
+
+                    // stop loader after a single duration
+                    stopLoader();
+
+                    // update answer field with error message
+                    serveError(error.connectionFailed);
                 }
             }
 
@@ -751,6 +741,9 @@ async function searchReq() {
                     debounceRequest = setTimeout(() => {
                         // debounced
                         clearTimeout(debounceRequest);
+
+                        // select answer field
+                        const answer = DOMit('answerField');
                             
                         // start loader
                         startLoader();
@@ -763,34 +756,23 @@ async function searchReq() {
                         // fetch request to Eval API
                         const root = 'https://eval-api-8ece55f267c1.herokuapp.com/';
                         const controller = new AbortController();
-                        let loaderDelay = {};
+
+                        // Case 3: Connection timeout
                         const connectionTimeout = setTimeout(() => {
+
+                            // abort request
+                            controller.abort();
+                            
+                            // stop loader
+                            stopLoader();
+
+                            // update answer field with error message
+                            serveError(error.connectionTimeout);
+
                             // cleanup cache
                             clearTimeout(connectionTimeout);
-                            const delay = setTimeout(() => {
-            
-                                // Case 3: Connection timeout
-                                
-                                // abort request
-                                controller.abort();
-                                
-                                // cleanup cache
-                                clearTimeout(loaderDelay);
-                                clearTimeout(delay);
 
-                                // stop loader after a single duration
-                                stopLoader();
-
-                                // focus on input field
-                                const searchField = DOMit('searchField');
-                                if (searchField) {
-                                    searchField.focus();
-                                }
-                                // update answer field with error message
-                                serveError(error.connectionTimeout);
-            
-                            }, loaderDuration)
-                        }, requestDuration - loaderDuration);
+                        }, requestDuration);
             
                         try {
                             fetch(`${root}/eval/info`, {
@@ -802,47 +784,34 @@ async function searchReq() {
                             })
                             .then(response => response.json())
                             .then((data) => {
-                                loaderDelay = setTimeout(() => {
             
-                                    // Case 1: responds with answer
-    
-                                    // store in local data structure
-                                    INFORMATION = data;
-            
-                                    // cleanup cache
-                                    clearTimeout(loaderDelay);
-                                    clearTimeout(connectionTimeout);
-            
-                                    // stop loader after a single duration
-                                    stopLoader();
-                                    
-                                    // get result
-                                    searchResult();
-                                    
-                                }, loaderDuration);
-                            });
-                        } catch {
-                            // cancel connection timeout
-                            clearTimeout(connectionTimeout);
-                            loaderDelay = setTimeout(() => {
-            
-                                // Case 2: responds with error
-            
-                                // cleanup cache
-                                clearTimeout(loaderDelay);
+                                // Case 1: responds with answer
 
-                                // stop loader after a single duration
+                                // cleanup cache
+                                clearTimeout(connectionTimeout);
+
+                                // store in local data structure
+                                INFORMATION = data;
+                                
+                                // get result
+                                searchResult();
+
+                                // stop loader
                                 stopLoader();
 
-                                // focus on input field
-                                const searchField = DOMit('searchField');
-                                if (searchField) {
-                                    searchField.focus();
-                                }
-                                // update answer field with error message
-                                serveError(error.connectionFailed);
-            
-                            }, loaderDuration);
+                            });
+                        } catch {
+
+                            // Case 2: responds with error
+                            
+                            // cancel connection timeout
+                            clearTimeout(connectionTimeout);
+
+                            // stop loader after a single duration
+                            stopLoader();
+
+                            // update answer field with error message
+                            serveError(error.connectionFailed);
                         }
                     }, 1000);
                 } else {
