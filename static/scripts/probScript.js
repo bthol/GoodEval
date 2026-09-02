@@ -1643,17 +1643,12 @@ function validOperations(prob) {
                     const cond1 = bound1 && prob[i + 1] === '(' || bound1 && !isNaN(prob[i + 1]);
                     // valid negative power
                     const cond2 = bound2 && prob[i + 1] === negate && prob[i + 2] === '(' && !isNaN(prob[i + 3]) && prob[i + 4] === ')';
-                    if (i - 1 > -1 && isNaN(prob[i - 1])) {
+                    if (i - 1 > -1 && isNaN(prob[i - 1]) && !isSpecial(i - 1)) {
                         // invalid base exponent form
                         serveError(error.reqBase);
                         return false;
                     } else if (!cond1 && !cond2) { // none of the valid forms
                         // invalid power exponent form
-                        console.log("pass");
-                        console.log(cond3);
-                        console.log(i + 1 < prob.length);
-                        console.log(prob[i + 1] === '(');
-                        console.log(!isNaN(prob[i + 1]));
 
                         // console.log(cond2);
                         serveError(error.reqPower);
