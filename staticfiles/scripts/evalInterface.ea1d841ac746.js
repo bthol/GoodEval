@@ -265,9 +265,6 @@ function evalReq() {
             // debounced
             clearTimeout(debounceRequest);
             
-            // clear previous answer
-            answer.innerText = '';
-            
             // get problem string
             const problem = DOMit('problemField')?.value;
             
@@ -476,11 +473,13 @@ function searchResult() {
         for (let i = 0; i < INFORMATION.key_functions.length; i++) {
             for (let j = 0; j < INFORMATION.key_functions[i].length; j++) {
                 const key_function = document.createElement('div');
-                key_function.innerText = `Name: ${INFORMATION.key_functions[i][j].name}\nSyntax: ${INFORMATION.key_functions[i][j].syntax}\nAbout: ${INFORMATION.key_functions[i][j].about}\n\n`;
+                const obj = INFORMATION.key_functions[i][j];
+                key_function.innerText = `Name: ${obj.name}\nKey: ${obj.key}\nSyntax: ${obj.syntax}\nAbout: ${obj.about}\n\n`;
                 resultContainer.appendChild(key_function);
             }
         }
         resultContainer.appendChild(addSpace());
+
     } else {
         // search for specific function
         const searchType = DOMit('searchType');

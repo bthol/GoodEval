@@ -3,6 +3,14 @@ console.log('Problem Script Loaded.');
 // Development Plan
 //  - create a manual accessible via the navbar for the calculator
 
+// window.MathJax = {
+//   loader: { load: ['[tex]/color', '[tex]/html'] },
+//   tex: {
+//     packages: {'[+]': ['color', 'html']},
+//     color: { padding: '2px' }
+//   }
+// };
+
 // Display
 const T = document.querySelector('#screen-toggles');
 const Q = document.querySelector('#screen-content');
@@ -244,9 +252,9 @@ const keyInfo = [
     
     {key: '!', funct: (x) => factorial(x)}, // factorial of x
     {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
-    {key: 'Σain', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
-    {key: `Σn${operation.div}ai`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
-    {key: `Σai${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
+    {key: 'Σxin', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
+    {key: `Σn${operation.div}xi`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
+    {key: `Σxi${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
 ];
 
 function getScale() {
@@ -279,21 +287,28 @@ function toggleShiftMode() {
         shiftBtn5.innerHTML = '!x';
         shiftBtn6.innerHTML = 'rndx';
     } else if (shiftMode === 2) {
+        // shift 2
         shiftBtn1.innerText = 'sinh';
         shiftBtn2.innerText = 'cosh';
         shiftBtn3.innerText = 'tanh';
         shiftBtn4.innerHTML = 'ln';
-        shiftBtn5.innerHTML = 'Σn';
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key mathjax-scaling">\\( \\sum_{i=1}^{n} x_i \\)</div>`;
         shiftBtn6.innerHTML = 'rndy';
     } else if (shiftMode === 3) {
+        // Σ = html entity: &sum; + html code: &#8721;
+        // ∏ = html entity: &prod; + html code: &#8719;
         shiftBtn1.innerText = 'asinh';
         shiftBtn2.innerText = 'acosh';
         shiftBtn3.innerText = 'atanh';
-        // Σ = html entity: &sum; + html code: &#8721;
-        // ∏ = html entity: &prod; + html code: &#8719;
-        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>n</div></div>`;
-        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${.025 * getScale()}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub></div></div>`;
-        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>${operation.div}n</div></div>`;
+        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key mathjax-scaling-block">$$ \\sum_{i=1}^{n} x_i n $$</div>`;
+        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key mathjax-scaling-block">$$ \\sum_{i=1}^{n} \\frac{n}{x_i} $$</div>`;
+        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key mathjax-scaling-block">$$ \\sum_{i=1}^{n} \\frac{x_i}{n} $$</div>`;
+    }
+    // rerun MathJax Engine for DOM mutation
+    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function' && typeof window.MathJax.typesetClear === 'function') {
+        const buttons = [shiftBtn4, shiftBtn5, shiftBtn6];
+        MathJax.typesetClear(buttons);
+        MathJax.typesetPromise(buttons);
     }
 };
 
@@ -307,17 +322,6 @@ function debounce3(funct, defer) {
         funct();
     }, defer)
 };
-
-function formatShiftBtn() {
-    // updates shift buttons along with scaleIt function in indexInterface.js
-    if (shiftMode === 3) {
-        shiftBtn4.innerHTML = `<div id="btn-shift-4-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-4-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>n</div></div>`;
-        shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-5-div-child" class="key" style="font-size: ${.025 * getScale()}px">n${operation.div}a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub></div></div>`;
-        shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key" style="display: flex; align-items: center; font-size: ${.035 * getScale()}px">Σ<div id="btn-shift-6-div-child" class="key" style="font-size: ${.025 * getScale()}px">a<sub id="btn-shift-6-sub" class="key" style="font-size:${.020 * getScale()}px">i</sub>${operation.div}n</div></div>`;
-    }
-};
-
-window.addEventListener('resize', () => debounce3(formatShiftBtn, 10));
 
 // Cursor Mode Toggles
 function cursorDefault(cursor = null) {
@@ -634,7 +638,7 @@ function keyFunction(key, funct, prob) {
     let x = 0;
     while (x < 100 && idx !== false) {
         x += 1;
-        let solution = funct(Number(prob[idx + 1]));
+        const solution = funct(Number(prob[idx + 1]));
         prob = restructure(solution, idx, idx + 1, prob);
         idx = getIdx(key, prob);
     }
@@ -2061,7 +2065,7 @@ btns.addEventListener('click', (e) => {
             }
         
         // key function buttons
-        } else if (type === 'key') {
+        } else if (type === 'key' || e.target.closest('.key') !== null) {
             if (id === 'btn-shift-1') {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
@@ -2101,7 +2105,7 @@ btns.addEventListener('click', (e) => {
                         insert('atanh');
                     }
                 }
-            } else if (id === 'btn-shift-4' || id === 'btn-shift-4-div' || id === 'btn-shift-4-div-child' || id === 'btn-shift-4-sub') {
+            } else if (id === 'btn-shift-4' || id === 'btn-shift-4-div' || e.target.closest('#btn-shift-4-div') !== null) {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         // default
@@ -2111,10 +2115,10 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('ln');
                     } else if (shiftMode === 3) {
-                        insert(`Σa<sub>i</sub>n`);
+                        insert(`Σx<sub>i</sub>n`);
                     }
                 }
-            } else if (id === 'btn-shift-5' || id === 'btn-shift-5-div' || id === 'btn-shift-5-div-child') {
+            } else if (id === 'btn-shift-5' || id === 'btn-shift-5-div' || e.target.closest('#btn-shift-5-div') !== null) {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         insert('round');
@@ -2123,10 +2127,10 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('Σn');
                     } else if (shiftMode === 3) {
-                        insert(`Σn${operation.div}a<sub>i</sub>`);
+                        insert(`Σn${operation.div}x<sub>i</sub>`);
                     }
                 }
-            } else if (id === 'btn-shift-6' || id === 'btn-shift-6-div' || id === 'btn-shift-6-div-child' || id === 'btn-shift-6-sub') {
+            } else if (id === 'btn-shift-6' || id === 'btn-shift-6-div' || e.target.closest('#btn-shift-6-div') !== null) {
                 if (validQuant(true)) {
                     if (shiftMode === 0) {
                         insert(`${Math.random()}`); // rand button generates a random number between 0 - 1 && not 1
@@ -2135,7 +2139,7 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('rndy');
                     } else if (shiftMode === 3) {
-                        insert(`Σa<sub>i</sub>${operation.div}n`);
+                        insert(`Σx<sub>i</sub>${operation.div}n`);
                     }
                 }
             }

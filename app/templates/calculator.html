@@ -8,6 +8,7 @@
         <title>GoodEval Calculator</title>
         <link rel="stylesheet" href="{% static 'stylesheets/main.css'%}">
         <link rel="stylesheet" href="{% static 'stylesheets/calc.css'%}">
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
         <script defer src="{% static 'scripts/calcInterface.js'%}"></script>
         <script defer src="{% static 'scripts/probScript.js'%}"></script>
         <script defer src="{% static 'scripts/numberfall.js'%}"></script>
@@ -52,6 +53,7 @@
     </nav>
 
     <div class="calculator-wrapper">
+        <!-- <div style="color:aliceblue">\( \sum_{i=1}^{n} x_i \)</div> -->
         <div class="calculator-background color-theme-1">
             <div class="screen">
                 <div>

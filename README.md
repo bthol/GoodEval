@@ -2,7 +2,7 @@
 
 **Developer:** Blake Thollaug
 
-**Stack:** Django stack (Django, Python, Pip, HTML, CSS, JavaScript)
+**Stack:** Django stack (Django, Python, Pip, HTML, CSS, JavaScript), MathJax
 
 https://goodeval-1d265775b25d.herokuapp.com/ | https://github.com/bthol/EvalAPI
 

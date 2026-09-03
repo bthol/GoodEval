@@ -16,6 +16,8 @@ let navBorderHeight = window.getComputedStyle(document.querySelector('nav')).get
 navBorderHeight = Number(navBorderHeight.substring(0, navBorderHeight.length - 2));
 
 const navHeight = navContentHeight + navBorderHeight * 4;
+
+// initialize navState to open
 let navState = false;
 
 // logic for opening and closing the nav menu via the arrow
@@ -278,3 +280,16 @@ window.addEventListener('resize', () => {
     debounce(conditionalRender, 5);
     debounce2(scaleIt, 10);
 });
+
+// open nav menu if available space (calculated using updated calculator dimensions)
+if (vh - ch >= navHeight) { // difference of viewport height and calculator height allows for nav height
+    // initialize navState to open
+    navState = true;
+    // orientation
+    navArrowContainer.classList.remove('downward-arrow');
+    navArrowContainer.classList.add('upward-arrow');
+    // animation
+    arrowNav.classList.remove('downward-arrow-anim');
+    arrowNav.classList.add('upward-arrow-anim');
+    nav.style.top = '0px';
+}

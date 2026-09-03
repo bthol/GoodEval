@@ -534,3 +534,24 @@ nav {
         cursor: pointer;
     }
 }
+
+/* MathJax */
+.key > mjx-container[display] {
+    text-align: initial !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.key > mjx-container:not([display="true"]) {
+    text-align: initial !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.mathjax-scaling {
+    font-size: calc(var(--scale-calc-size) * .02);
+}
+
+.mathjax-scaling-block {
+    font-size: calc(var(--scale-calc-size) * .012);
+}
