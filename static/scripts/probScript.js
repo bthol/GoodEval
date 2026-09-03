@@ -257,11 +257,6 @@ const keyInfo = [
     {key: `Σxi${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
 ];
 
-function getScale() {
-    const x = getComputedStyle(document.body).getPropertyValue('--scale-calc-size');
-    return Number(x.substring(0, x.length - 2));
-};
-
 // Shift Mode Toggles
 function toggleShiftMode() {
     if (shiftMode !== 3) {

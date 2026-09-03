@@ -61,43 +61,25 @@ navArrowContainer.addEventListener('mouseover', () => {
 });
 
 // themes for Calculator
-function setThemeModern() {
-    calc.classList.remove('color-theme-2');
-    calc.classList.remove('color-theme-3');
-    calc.classList.remove('color-theme-4');
-    calc.classList.add('color-theme-1');
-};
-
-function setThemeRetro() {
-    calc.classList.remove('color-theme-1');
-    calc.classList.remove('color-theme-3');
-    calc.classList.remove('color-theme-4');
-    calc.classList.add('color-theme-2');
-};
-
-function setThemeSleek() {
-    calc.classList.remove('color-theme-1');
-    calc.classList.remove('color-theme-2');
-    calc.classList.remove('color-theme-4');
-    calc.classList.add('color-theme-3');
-};
-
-function setThemeUmbral() {
-    calc.classList.remove('color-theme-1');
-    calc.classList.remove('color-theme-2');
-    calc.classList.remove('color-theme-3');
-    calc.classList.add('color-theme-4');
-};
-
 themeSelect.addEventListener('change', () => {
+    calc.classList.remove('color-theme-1');
+    calc.classList.remove('color-theme-2');
+    calc.classList.remove('color-theme-3');
+    calc.classList.remove('color-theme-4');
+    calc.classList.remove('color-theme-5');
+    calc.classList.remove('color-theme-6');
     if (themeSelect.value === 'modern-theme') {
-        setThemeModern();
+        calc.classList.add('color-theme-1');
     } else if (themeSelect.value === 'retro-theme') {
-        setThemeRetro();
+        calc.classList.add('color-theme-2');
     } else if (themeSelect.value === 'sleek-theme') {
-        setThemeSleek();
+        calc.classList.add('color-theme-3');
     } else if (themeSelect.value === 'umbral-theme') {
-        setThemeUmbral();
+        calc.classList.add('color-theme-4');
+    } else if (themeSelect.value === 'luminous-theme') {
+        calc.classList.add('color-theme-5');
+    } else if (themeSelect.value === 'primary-theme') {
+        calc.classList.add('color-theme-6');
     }
 });
 

@@ -553,5 +553,5 @@ nav {
 }
 
 .mathjax-scaling-block {
-    font-size: calc(var(--scale-calc-size) * .012);
+    font-size: calc(var(--scale-calc-size) * .014);
 }
