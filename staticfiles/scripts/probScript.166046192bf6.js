@@ -671,7 +671,8 @@ function calculate(prob) {
     let expIdx = getIdx(operation.exp, prob);
     let radIdx = getIdx(operation.rad, prob);
     count = 0;
-    while (count < max && expIdx !== false || count <max && radIdx !== false) {
+
+    while (count < max && expIdx !== false || count < max && radIdx !== false) {
         count += 1;
         if (radIdx === false && expIdx !== false) {
             // only exponents
@@ -679,7 +680,7 @@ function calculate(prob) {
             const power = Number(prob[expIdx + 1]);
             const exponentiation = base**power;
             prob = restructure(exponentiation, expIdx - 1, expIdx + 1, prob);
-            expIdx = getIdx(operation.mult, prob);
+            expIdx = getIdx(operation.exp, prob);
 
         } else if (expIdx === false && radIdx !== false) {
             // only radicals
@@ -690,25 +691,24 @@ function calculate(prob) {
                 const radicand = Number(prob[radIdx + 1]);
                 const radication = radicand**(1/2);
                 prob = restructure(radication, radIdx, radIdx + 1, prob);
-                radIdx = getIdx(operation.div, prob);
+                radIdx = getIdx(operation.rad, prob);
             } else {
                 // use index of radication
                 const index = Number(prob[radIdx - 1]);
                 const radicand = Number(prob[radIdx + 1]);
                 const radication = radicand**(1/index);
                 prob = restructure(radication, radIdx - 1, radIdx + 1, prob);
-                radIdx = getIdx(operation.div, prob);
+                radIdx = getIdx(operation.rad, prob);
             }
 
         } else if (expIdx !== false && radIdx !== false && expIdx < radIdx) {
-            // exponents
+            // exponent
             const base = Number(prob[expIdx - 1]);
             const power = Number(prob[expIdx + 1]);
             const exponentiation = base**power;
             prob = restructure(exponentiation, expIdx - 1, expIdx + 1, prob);
-            expIdx = getIdx(operation.mult, prob);
-            radIdx = getIdx(operation.div, prob);
-            // then radicals
+            radIdx = getIdx(operation.rad, prob);
+            // then radical
             if (radIdx === 0 || radIdx - 1 > -1 && isOp(radIdx - 1) || radIdx - 1 > -1 && isKey(radIdx - 1)) {
                 // if radical symbol at start or operation just before radical symbol or key function just before radical symbol
                 // then no index of radication,
@@ -716,15 +716,16 @@ function calculate(prob) {
                 const radicand = Number(prob[radIdx + 1]);
                 const radication = radicand**(1/2);
                 prob = restructure(radication, radIdx, radIdx + 1, prob);
-                radIdx = getIdx(operation.div, prob);
             } else {
                 // use index of radication
                 const index = Number(prob[radIdx - 1]);
                 const radicand = Number(prob[radIdx + 1]);
                 const radication = radicand**(1/index);
                 prob = restructure(radication, radIdx - 1, radIdx + 1, prob);
-                radIdx = getIdx(operation.div, prob);
             }
+            // update index due to restructure
+            expIdx = getIdx(operation.exp, prob);
+            radIdx = getIdx(operation.rad, prob);
 
         } else if (expIdx !== false && radIdx !== false && expIdx > radIdx) {
             // radicals
@@ -735,23 +736,23 @@ function calculate(prob) {
                 const radicand = Number(prob[radIdx + 1]);
                 const radication = radicand**(1/2);
                 prob = restructure(radication, radIdx, radIdx + 1, prob);
-                radIdx = getIdx(operation.div, prob);
             } else {
                 // use index of radication
                 const index = Number(prob[radIdx - 1]);
                 const radicand = Number(prob[radIdx + 1]);
                 const radication = radicand**(1/index);
                 prob = restructure(radication, radIdx - 1, radIdx + 1, prob);
-                radIdx = getIdx(operation.div, prob);
             }
             // update index due to restructure
-            expIdx = getIdx(operation.mult, prob);
+            expIdx = getIdx(operation.exp, prob);
             // then exponents
             const base = Number(prob[expIdx - 1]);
             const power = Number(prob[expIdx + 1]);
             const exponentiation = base**power;
             prob = restructure(exponentiation, expIdx - 1, expIdx + 1, prob);
-            expIdx = getIdx(operation.mult, prob);
+            // update index due to restructure
+            expIdx = getIdx(operation.exp, prob);
+            radIdx = getIdx(operation.rad, prob);
         }
     }
 
@@ -783,7 +784,6 @@ function calculate(prob) {
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
-            mIdx = getIdx(operation.mult, prob);
             // update index due to restructure
             dIdx = getIdx(operation.div, prob);
             // then divide
@@ -791,7 +791,9 @@ function calculate(prob) {
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
+            // update index due to restructure
             dIdx = getIdx(operation.div, prob);
+            mIdx = getIdx(operation.mult, prob);
 
         } else if (mIdx !== false && dIdx !== false && mIdx > dIdx) {
             // divide
@@ -799,7 +801,6 @@ function calculate(prob) {
             const divisor = Number(prob[dIdx + 1]);
             const quotient = dividend / divisor;
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
-            dIdx = getIdx(operation.div, prob);
             // update index due to restructure
             mIdx = getIdx(operation.mult, prob);
             // then multiply
@@ -807,7 +808,9 @@ function calculate(prob) {
             const mulitplicand = Number(prob[mIdx + 1]);
             const product = multiplier * mulitplicand;
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
+            // update index due to restructure
             mIdx = getIdx(operation.mult, prob);
+            dIdx = getIdx(operation.div, prob);
         }
     }
     
@@ -839,7 +842,6 @@ function calculate(prob) {
             const addend = Number(prob[aIdx + 1]);
             const total = augend + addend;
             prob = restructure(total, aIdx - 1, aIdx + 1, prob);
-            aIdx = getIdx(operation.add, prob);
             // update index due to restructure
             sIdx = getIdx(operation.sub, prob);
             // then subtract
@@ -847,6 +849,8 @@ function calculate(prob) {
             const subtrahend = Number(prob[sIdx + 1]);
             const difference = minuend - subtrahend;
             prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
+            // update index due to restructure
+            aIdx = getIdx(operation.add, prob);
             sIdx = getIdx(operation.sub, prob);
 
         } else if (aIdx !== false && sIdx !== false && aIdx > sIdx) {
@@ -863,7 +867,9 @@ function calculate(prob) {
             const addend = Number(prob[aIdx + 1]);
             const total = augend + addend;
             prob = restructure(total, aIdx - 1, aIdx + 1, prob);
+            // update index due to restructure
             aIdx = getIdx(operation.add, prob);
+            sIdx = getIdx(operation.sub, prob);
         }
     }
 
