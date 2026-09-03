@@ -1316,11 +1316,11 @@ function handlePower() {
         if (!cursorMode) {
             const i = problem.length - 1;
             // default mode
-            if (!isNaN(removeFormatElements(i)) || isSpecial(i)) {
+            if (!isNaN(removeFormatElements(i)) || isSpecial(i) || problem[i] === ')') {
                 // base is a number or a special number
                 insert(operation.exp);
             } else {
-                // base is neither a number nor special number
+                // base is neither a number nor special number nor a parenthetical section
                 serveError(error.reqBase);
             }
         } else {
@@ -1648,7 +1648,7 @@ function validOperations(prob) {
                     const cond1 = bound1 && prob[i + 1] === '(' || bound1 && !isNaN(prob[i + 1]);
                     // valid negative power
                     const cond2 = bound2 && prob[i + 1] === negate && prob[i + 2] === '(' && !isNaN(prob[i + 3]) && prob[i + 4] === ')';
-                    if (i - 1 > -1 && isNaN(prob[i - 1]) && !isSpecial(i - 1)) {
+                    if (i - 1 > -1 && isNaN(prob[i - 1]) && !isSpecial(i - 1) && prob[i - 1] !== ')') {
                         // invalid base exponent form
                         serveError(error.reqBase);
                         return false;
