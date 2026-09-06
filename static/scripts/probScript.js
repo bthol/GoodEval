@@ -251,8 +251,8 @@ const keyInfo = [
 
     
     {key: '!', funct: (x) => factorial(x)}, // factorial of x
-    {key: 'Σn', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
-    {key: 'Σxin', funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
+    {key: 'Σxi', funct: (x) => summateVariable(x)}, // summation from 1 to x, where x represents the upper bound n
+    {key: `Σxi${operation.mult}n`, funct: (x) => productSum(x)}, // product sum : i * n, where 0 < i < x && 0 < x
     {key: `Σn${operation.div}xi`, funct: (x) => quotientSum2(x)}, // quotient sum : n / i, where 0 < i < x && 0 < x
     {key: `Σxi${operation.div}n`, funct: (x) => quotientSum1(x)}, // quotient sum : i / n, where 0 < i < x && 0 < x
 ];
@@ -279,7 +279,7 @@ function toggleShiftMode() {
         shiftBtn2.innerText = 'acos';
         shiftBtn3.innerText = 'atan';
         shiftBtn4.innerHTML = 'log<sub id="btn-shift-4-sub" class="key">2</sub>';
-        shiftBtn5.innerHTML = '!x';
+        shiftBtn5.innerHTML = '\\( !x \\)'; // !x
         shiftBtn6.innerHTML = 'rndx';
     } else if (shiftMode === 2) {
         // shift 2
@@ -1906,6 +1906,7 @@ btns.addEventListener('click', (e) => {
         // get target info
         const type = e.target.classList[0];
         const id = e.target.id;
+
         // clear answer to previous problem on input of new problem
         if (answered) {
             answered = false;
@@ -1922,7 +1923,7 @@ btns.addEventListener('click', (e) => {
         // reduce number of tests by testing types
         // tested from largest to smallest number of members in type
         // member ids tested from most to least estimated frequency of usage
-        if (type === 'numpad') {
+        if (type === 'numpad' || e.target.closest('.numpad') !== null) {
             if (id === 'btn-num0') {
                 if (validQuant()) {
                     insert('0');
@@ -1963,21 +1964,21 @@ btns.addEventListener('click', (e) => {
                 if (validQuant()) {
                     insert('9');
                 }
-            } else if (id === 'btn-pi') {
+            } else if (id === 'btn-pi' || e.target.closest('#btn-pi') !== null) {
                 if (validQuant(false, true)) {
                     insert(specialInfo[0].symbol);
                 }
-            } else if (id === 'btn-tau') {
+            } else if (id === 'btn-tau' || e.target.closest('#btn-tau') !== null) {
                 if (validQuant(false, true)) {
                     insert(specialInfo[1].symbol);
                 }
-            } else if (id === 'btn-euler') {
+            } else if (id === 'btn-euler' || e.target.closest('#btn-euler') !== null) {
                 if (validQuant(false, true)) {
                     insert(specialInfo[2].symbol);
                 }
             }
 
-        } else if (type === 'operation') {
+        } else if (type === 'operation' || e.target.closest('.operation') !== null) {
             if (id === 'btn-plus') {
                 if (validOp()) {
                     insert(operation.add);
@@ -2000,15 +2001,16 @@ btns.addEventListener('click', (e) => {
                 handlePower();
             } else if (id === 'btn-root' || id === 'btn-root-sup') {
                 handleRadical();
-            } else if (id === 'btn-absolute-value') {
+            } else if (id === 'btn-absolute-value' || e.target.closest('#btn-absolute-value') !== null) {
+                console.log('clicked');
                 if (validQuant(true)) {
                     insert('abs');
                 }
-            } else if (id === 'btn-floor') {
+            } else if (id === 'btn-floor' || e.target.closest('#btn-floor') !== null) {
                 if (validQuant(true)) {
                     insert('floor');
                 }
-            } else if (id === 'btn-ceil') {
+            } else if (id === 'btn-ceil' || e.target.closest('#btn-ceil') !== null) {
                 if (validQuant(true)) {
                     insert('ceil');
                 }
@@ -2116,7 +2118,7 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 2) {
                         insert('ln');
                     } else if (shiftMode === 3) {
-                        insert(`Σx<sub>i</sub>n`);
+                        insert(`Σx<sub>i</sub>${operation.mult}n`);
                     }
                 }
             } else if (id === 'btn-shift-5' || id === 'btn-shift-5-div' || e.target.closest('#btn-shift-5-div') !== null) {
@@ -2126,7 +2128,7 @@ btns.addEventListener('click', (e) => {
                     } else if (shiftMode === 1) {;
                         insert('!');
                     } else if (shiftMode === 2) {
-                        insert('Σn');
+                        insert('Σx<sub>i</sub>');
                     } else if (shiftMode === 3) {
                         insert(`Σn${operation.div}x<sub>i</sub>`);
                     }

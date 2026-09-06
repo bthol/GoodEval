@@ -255,8 +255,8 @@ nav {
 
 .top-button-container {
     white-space: nowrap;
-    margin: calc(.015 * var(--scale-calc-size)) calc(.01 * var(--scale-calc-size));
-    height: calc(.05 * var(--scale-calc-size));
+    margin: calc(.01 * var(--scale-calc-size));
+    height: calc(.06 * var(--scale-calc-size));
 }
 
 .top-button {
@@ -549,9 +549,9 @@ nav {
 }
 
 .mathjax-scaling {
-    font-size: calc(var(--scale-calc-size) * .02);
+    font-size: calc(var(--scale-calc-size) * .025);
 }
 
 .mathjax-scaling-block {
-    font-size: calc(var(--scale-calc-size) * .014);
+    font-size: calc(var(--scale-calc-size) * .018);
 }
