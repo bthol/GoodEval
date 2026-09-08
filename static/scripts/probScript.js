@@ -1331,7 +1331,7 @@ function handleNegative() {
     if (problem.length > 0 && cursorMode == false) {
         let buffer = '';
         let x = problem.length - 1;
-        if (removeFormatElements(x) === ')') {
+        if (removeFormatElements(x) === ')') { // test for negation symbol
             if (x - 1 > -1) {
                 // negative becomes positive
                 x -= 1;
@@ -1342,7 +1342,8 @@ function handleNegative() {
 
                 if (buffer.length > 0 && removeFormatElements(x) === '(' && x - 1 > -1 && removeFormatElements(x - 1) === negate) {
                     // test for formatting
-                    if (problem[x] === '^') {
+                    const init = formatSuperscript;
+                    if (x - problem[x] === '^' ) {
                         formatSuperscript = true;
                     }
                     // remove old number
@@ -1358,15 +1359,15 @@ function handleNegative() {
                         insert(buffer[i]);
                     }
                     // turn off formatting for next operation
-                    if (formatSuperscript) {
-                        formatSuperscript = false;
+                    if (formatSuperscript && !init) { // turned on and wasn't initially on
+                        formatSuperscript = false; // then turn off
                     }
                 }
             }
 
         } else {
             // positive becomes negative
-            while (x > -1 && !isOp(x) && !isKey(x)) {
+            while (x > -1 && removeFormatElements(x) !== '(' && !isOp(x) && !isKey(x)) { // terminating condition for start of negation
                 // buffer = problem[x] + buffer;
                 buffer = removeFormatElements(x) + buffer;
                 x -= 1;
@@ -1374,6 +1375,7 @@ function handleNegative() {
 
             if (buffer.length > 0) {
                 // test for formatting
+                const init = formatSuperscript;
                 if (problem[x] === '^') {
                     formatSuperscript = true;
                 }
@@ -1389,8 +1391,8 @@ function handleNegative() {
                 }
                 insert(')');
                 // turn off formatting for next operation
-                if (formatSuperscript) {
-                    formatSuperscript = false;
+                if (formatSuperscript && !init) { // turned on and wasn't initially on
+                    formatSuperscript = false; // then turn off
                 }
             }
         }
@@ -1634,11 +1636,12 @@ function validOperations(prob) {
                 if (i - 1 > -1 && i + 1 < prob.length) {
                     // bounds for test
                     const bound1 = i + 1 < prob.length;
-                    const bound2 = i + 4 < prob.length;
+                    const bound2 = i + 3 < prob.length;
                     // valid positive power
-                    const cond1 = bound1 && prob[i + 1] === '(' || bound1 && !isNaN(prob[i + 1]);
+                    const cond1 = bound1 && prob[i + 1] === '(' || bound1 && !isNaN(prob[i + 1]) || bound1 && isSpecial(i + 1); // x^(a+b-c) || x^a, a = number or a = special
                     // valid negative power
-                    const cond2 = bound2 && prob[i + 1] === negate && prob[i + 2] === '(' && !isNaN(prob[i + 3]) && prob[i + 4] === ')';
+                    const cond2 = bound2 && prob[i + 1] === negate && prob[i + 2] === '(' && !isNaN(prob[i + 3]); // 
+
                     if (i - 1 > -1 && isNaN(prob[i - 1]) && !isSpecial(i - 1) && prob[i - 1] !== ')') {
                         // invalid base exponent form
                         serveError(error.reqBase);
@@ -1646,7 +1649,6 @@ function validOperations(prob) {
                     } else if (!cond1 && !cond2) { // none of the valid forms
                         // invalid power exponent form
 
-                        // console.log(cond2);
                         serveError(error.reqPower);
                         return false;
                     }
@@ -1689,16 +1691,14 @@ function validNegations(prob) {
     for (let i = 0; i < prob.length - 1; i++) {
         if (prob[i] === negate) {
             // case of negation
-            if (i + 1 < prob.length - 1) {
+            if (i + 2 < prob.length - 1) {
                 // test value after negate
                 if (prob[i + 1] !== '(') {
                     // not negating an expression
-                    if (!isSpecial(i + 1) && !isNaN(prob[i + 1])) {
-                        // not negating a special or regular number
+                    if (isNaN(prob[i + 2] && !isSpecial(i + 2))) {
+                        // not negating a regular or special number
                         return false;
                     }
-                } else {
-                    continue;
                 }
             } else {
                 // no negation at end
@@ -1706,6 +1706,7 @@ function validNegations(prob) {
             }
         }
     }
+    return true;
 };
 
 function validKeys(prob) {
@@ -1750,17 +1751,15 @@ function validProblem() {
             if (validOperations(prob)) {
                 // validate key functions
                 if (validKeys(prob)) {
-                    // add further validation here
-                    return true;
-                } else {
-                    return false;
+                    // valid negations
+                    if (validNegations(prob)) {
+                        // add further validation here
+                        return true;
+                    }
                 }
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 };
 
@@ -1993,7 +1992,6 @@ btns.addEventListener('click', (e) => {
             } else if (id === 'btn-root' || id === 'btn-root-sup') {
                 handleRadical();
             } else if (id === 'btn-absolute-value' || e.target.closest('#btn-absolute-value') !== null) {
-                console.log('clicked');
                 if (validQuant(true)) {
                     insert('abs');
                 }
@@ -2027,7 +2025,12 @@ btns.addEventListener('click', (e) => {
             } else if (id === 'btn-shift') {
                 toggleShiftMode();
             } else if (id === 'btn-decimal') {
-                if (isNaN(problem[problem.length - 1])) {
+                const last = removeFormatElements(problem.length - 1);
+                if (isNaN(last)) {
+                    if (last === operation.exp) {
+                        formatSuperscript = true;
+                        insert('(');
+                    }
                     insert('0');
                     insert('.');
                 } else {
