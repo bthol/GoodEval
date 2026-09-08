@@ -8,8 +8,17 @@
         <title>GoodEval Calculator</title>
         <link rel="stylesheet" href="{% static 'stylesheets/main.css'%}">
         <link rel="stylesheet" href="{% static 'stylesheets/calc.css'%}">
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "Decimal": "{% static 'decimal.js/decimal.mjs' %}"
+                }
+            }
+        </script>
+        <script defer type="module" src="{% static 'scripts/probScript.js'%}"></script>
+
         <script defer src="{% static 'scripts/calcInterface.js'%}"></script>
-        <script defer src="{% static 'scripts/probScript.js'%}"></script>
         <script defer src="{% static 'scripts/numberfall.js'%}"></script>
         <!-- MathJax -->
         <style>body { visibility: hidden; }</style>

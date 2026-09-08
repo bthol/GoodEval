@@ -1,0 +1,23 @@
+{
+  "name": "goodeval",
+  "version": "1.0.0",
+  "description": "**Developer:** Blake Thollaug",
+  "homepage": "https://github.com/bthol/GoodEval#readme",
+  "bugs": {
+    "url": "https://github.com/bthol/GoodEval/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bthol/GoodEval.git"
+  },
+  "license": "ISC",
+  "author": "Blake Thollaug",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "decimal.js": "^10.6.0"
+  }
+}

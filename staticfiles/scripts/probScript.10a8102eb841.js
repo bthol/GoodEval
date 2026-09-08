@@ -1,5 +1,7 @@
 console.log('Problem Script Loaded.');
 
+import Decimal from 'Decimal';
+
 // Development Plan
 //  - create a manual accessible via the navbar for the calculator
 
@@ -305,17 +307,6 @@ function toggleShiftMode() {
         MathJax.typesetClear(buttons);
         MathJax.typesetPromise(buttons);
     }
-};
-
-// RESPONSIVE SUMMATION KEY FUNCTION BUTTONS
-// NOTE: must use a different identifier than in indexInterface.js debouncer for function and global variable
-let debounceCache3 = {};
-function debounce3(funct, defer) {
-    clearTimeout(debounceCache3);
-    debounceCache3 = setTimeout(() => {
-        clearTimeout(debounceCache3);
-        funct();
-    }, defer)
 };
 
 // Cursor Mode Toggles
@@ -676,8 +667,8 @@ function calculate(prob) {
         count += 1;
         if (radIdx === false && expIdx !== false) {
             // only exponents
-            const base = Number(prob[expIdx - 1]);
-            const power = Number(prob[expIdx + 1]);
+            const base = new Decimal(prob[expIdx - 1]);
+            const power = new Decimal(prob[expIdx + 1]);
             const exponentiation = base**power;
             prob = restructure(exponentiation, expIdx - 1, expIdx + 1, prob);
             expIdx = getIdx(operation.exp, prob);
@@ -688,24 +679,24 @@ function calculate(prob) {
                 // if radical symbol at start or operation just before radical symbol or key function just before radical symbol
                 // then no index of radication,
                 // so assume square root
-                const radicand = Number(prob[radIdx + 1]);
-                const radication = radicand**(1/2);
+                const radicand = new Decimal(prob[radIdx + 1]);
+                const radication = Decimal.pow(radicand, 0.5);
                 prob = restructure(radication, radIdx, radIdx + 1, prob);
                 radIdx = getIdx(operation.rad, prob);
             } else {
                 // use index of radication
-                const index = Number(prob[radIdx - 1]);
-                const radicand = Number(prob[radIdx + 1]);
-                const radication = radicand**(1/index);
+                const index = new Decimal(prob[radIdx - 1]);
+                const radicand = new Decimal(prob[radIdx + 1]);
+                const radication = Decimal.pow(radicand, Decimal.div(1, index));
                 prob = restructure(radication, radIdx - 1, radIdx + 1, prob);
                 radIdx = getIdx(operation.rad, prob);
             }
 
         } else if (expIdx !== false && radIdx !== false && expIdx < radIdx) {
             // exponent
-            const base = Number(prob[expIdx - 1]);
-            const power = Number(prob[expIdx + 1]);
-            const exponentiation = base**power;
+            const base = new Decimal(prob[expIdx - 1]);
+            const power = new Decimal(prob[expIdx + 1]);
+            const exponentiation = Decimal.pow(base, power);
             prob = restructure(exponentiation, expIdx - 1, expIdx + 1, prob);
             radIdx = getIdx(operation.rad, prob);
             // then radical
@@ -713,14 +704,14 @@ function calculate(prob) {
                 // if radical symbol at start or operation just before radical symbol or key function just before radical symbol
                 // then no index of radication,
                 // so assume square root
-                const radicand = Number(prob[radIdx + 1]);
-                const radication = radicand**(1/2);
+                const radicand = new Decimal(prob[radIdx + 1]);
+                const radication = Decimal.pow(radicand, 0.5);
                 prob = restructure(radication, radIdx, radIdx + 1, prob);
             } else {
                 // use index of radication
-                const index = Number(prob[radIdx - 1]);
-                const radicand = Number(prob[radIdx + 1]);
-                const radication = radicand**(1/index);
+                const index = new Decimal(prob[radIdx - 1]);
+                const radicand = new Decimal(prob[radIdx + 1]);
+                const radication = Decimal.pow(radicand, Decimal.div(1, index));
                 prob = restructure(radication, radIdx - 1, radIdx + 1, prob);
             }
             // update index due to restructure
@@ -733,22 +724,22 @@ function calculate(prob) {
                 // if radical symbol at start or operation just before radical symbol or key function just before radical symbol
                 // then no index of radication,
                 // so assume square root
-                const radicand = Number(prob[radIdx + 1]);
-                const radication = radicand**(1/2);
+                const radicand = new Decimal(prob[radIdx + 1]);
+                const radication = Decimal.pow(radicand, 0.5);
                 prob = restructure(radication, radIdx, radIdx + 1, prob);
             } else {
                 // use index of radication
-                const index = Number(prob[radIdx - 1]);
-                const radicand = Number(prob[radIdx + 1]);
-                const radication = radicand**(1/index);
+                const index = new Decimal(prob[radIdx - 1]);
+                const radicand = new Decimal(prob[radIdx + 1]);
+                const radication = Decimal.pow(radicand, Decimal.div(1, index));
                 prob = restructure(radication, radIdx - 1, radIdx + 1, prob);
             }
             // update index due to restructure
             expIdx = getIdx(operation.exp, prob);
             // then exponents
-            const base = Number(prob[expIdx - 1]);
-            const power = Number(prob[expIdx + 1]);
-            const exponentiation = base**power;
+            const base = new Decimal(prob[expIdx - 1]);
+            const power = new Decimal(prob[expIdx + 1]);
+            const exponentiation = Decimal.pow(base, power);
             prob = restructure(exponentiation, expIdx - 1, expIdx + 1, prob);
             // update index due to restructure
             expIdx = getIdx(operation.exp, prob);
@@ -764,32 +755,32 @@ function calculate(prob) {
         count += 1;
         if (dIdx === false && mIdx !== false) {
             // only multiplication
-            const multiplier = Number(prob[mIdx - 1]);
-            const mulitplicand = Number(prob[mIdx + 1]);
-            const product = multiplier * mulitplicand;
+            const multiplier = new Decimal(prob[mIdx - 1]);
+            const mulitplicand = new Decimal(prob[mIdx + 1]);
+            const product = Decimal.mul(multiplier, mulitplicand);
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
             mIdx = getIdx(operation.mult, prob);
 
         } else if (mIdx === false && dIdx !== false) {
             // only division
-            const dividend = Number(prob[dIdx - 1]);
-            const divisor = Number(prob[dIdx + 1]);
-            const quotient = dividend / divisor;
+            const dividend = new Decimal(prob[dIdx - 1]);
+            const divisor = new Decimal(prob[dIdx + 1]);
+            const quotient = Decimal.div(dividend, divisor);
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
             dIdx = getIdx(operation.div, prob);
 
         } else if (mIdx !== false && dIdx !== false && mIdx < dIdx) {
             // multiply
-            const multiplier = Number(prob[mIdx - 1]);
-            const mulitplicand = Number(prob[mIdx + 1]);
-            const product = multiplier * mulitplicand;
+            const multiplier = new Decimal(prob[mIdx - 1]);
+            const mulitplicand = new Decimal(prob[mIdx + 1]);
+            const product = Decimal.mul(multiplier, mulitplicand);
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
             // update index due to restructure
             dIdx = getIdx(operation.div, prob);
             // then divide
-            const dividend = Number(prob[dIdx - 1]);
-            const divisor = Number(prob[dIdx + 1]);
-            const quotient = dividend / divisor;
+            const dividend = new Decimal(prob[dIdx - 1]);
+            const divisor = new Decimal(prob[dIdx + 1]);
+            const quotient = Decimal.div(dividend, divisor);
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
             // update index due to restructure
             dIdx = getIdx(operation.div, prob);
@@ -797,16 +788,16 @@ function calculate(prob) {
 
         } else if (mIdx !== false && dIdx !== false && mIdx > dIdx) {
             // divide
-            const dividend = Number(prob[dIdx - 1]);
-            const divisor = Number(prob[dIdx + 1]);
-            const quotient = dividend / divisor;
+            const dividend = new Decimal(prob[dIdx - 1]);
+            const divisor = new Decimal(prob[dIdx + 1]);
+            const quotient = Decimal.div(dividend, divisor);
             prob = restructure(quotient, dIdx - 1, dIdx + 1, prob);
             // update index due to restructure
             mIdx = getIdx(operation.mult, prob);
             // then multiply
-            const multiplier = Number(prob[mIdx - 1]);
-            const mulitplicand = Number(prob[mIdx + 1]);
-            const product = multiplier * mulitplicand;
+            const multiplier = new Decimal(prob[mIdx - 1]);
+            const mulitplicand = new Decimal(prob[mIdx + 1]);
+            const product = Decimal.mul(multiplier, mulitplicand);
             prob = restructure(product, mIdx - 1, mIdx + 1, prob);
             // update index due to restructure
             mIdx = getIdx(operation.mult, prob);
@@ -822,32 +813,32 @@ function calculate(prob) {
         count += 1;
         if (sIdx === false && aIdx !== false) {
             // only addition
-            const augend = Number(prob[aIdx - 1]);
-            const addend = Number(prob[aIdx + 1]);
-            const total = augend + addend;
+            const augend = new Decimal(prob[aIdx - 1]);
+            const addend = new Decimal(prob[aIdx + 1]);
+            const total = Decimal.add(augend, addend);
             prob = restructure(total, aIdx - 1, aIdx + 1, prob);
             aIdx = getIdx(operation.add, prob);
 
         } else if (aIdx === false && sIdx !== false) {
             // only subtraction
-            const minuend = Number(prob[sIdx - 1]);
-            const subtrahend = Number(prob[sIdx + 1]);
-            const difference = minuend - subtrahend;
+            const minuend = new Decimal(prob[sIdx - 1]);
+            const subtrahend = new Decimal(prob[sIdx + 1]);
+            const difference = Decimal.sub(minuend, subtrahend);
             prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             sIdx = getIdx(operation.sub, prob);
 
         } else if (aIdx !== false && sIdx !== false && aIdx < sIdx) {
             // add
-            const augend = Number(prob[aIdx - 1]);
-            const addend = Number(prob[aIdx + 1]);
-            const total = augend + addend;
+            const augend = new Decimal(prob[aIdx - 1]);
+            const addend = new Decimal(prob[aIdx + 1]);
+            const total = Decimal.add(augend, addend);
             prob = restructure(total, aIdx - 1, aIdx + 1, prob);
             // update index due to restructure
             sIdx = getIdx(operation.sub, prob);
             // then subtract
-            const minuend = Number(prob[sIdx - 1]);
-            const subtrahend = Number(prob[sIdx + 1]);
-            const difference = minuend - subtrahend;
+            const minuend = new Decimal(prob[sIdx - 1]);
+            const subtrahend = new Decimal(prob[sIdx + 1]);
+            const difference = Decimal.sub(minuend, subtrahend);
             prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             // update index due to restructure
             aIdx = getIdx(operation.add, prob);
@@ -855,17 +846,17 @@ function calculate(prob) {
 
         } else if (aIdx !== false && sIdx !== false && aIdx > sIdx) {
             // subtract
-            const minuend = Number(prob[sIdx - 1]);
-            const subtrahend = Number(prob[sIdx + 1]);
-            const difference = minuend - subtrahend;
+            const minuend = new Decimal(prob[sIdx - 1]);
+            const subtrahend = new Decimal(prob[sIdx + 1]);
+            const difference = Decimal.sub(minuend, subtrahend);
             prob = restructure(difference, sIdx - 1, sIdx + 1, prob);
             sIdx = getIdx(operation.sub, prob);
             // update index due to restructure
             aIdx = getIdx(operation.add, prob);
             // then add
-            const augend = Number(prob[aIdx - 1]);
-            const addend = Number(prob[aIdx + 1]);
-            const total = augend + addend;
+            const augend = new Decimal(prob[aIdx - 1]);
+            const addend = new Decimal(prob[aIdx + 1]);
+            const total = Decimal.add(augend, addend);
             prob = restructure(total, aIdx - 1, aIdx + 1, prob);
             // update index due to restructure
             aIdx = getIdx(operation.add, prob);
