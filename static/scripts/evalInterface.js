@@ -10,6 +10,7 @@ const requestDuration = loaderDuration * 12; // 30X loader duration ~33 seconds
 
 // global state variables
 let dotInterval = {};
+let dotIntervalReset = {};
 let dotCount = 1;
 let debounceRequest = {};
 let errorTimeout = {};
@@ -110,8 +111,8 @@ function startLoader() {
         } else {
             clearInterval(dotInterval);
             dotCount = 1;
-            const x = setTimeout(() => {
-                clearTimeout(x);
+            dotIntervalReset = setTimeout(() => {
+                clearTimeout(dotIntervalReset);
                 const loaderElement = DOMit('loaderElement');
                 if (loaderElement) {
                     loaderElement.innerHTML = '';
@@ -124,6 +125,7 @@ function startLoader() {
 
 function stopLoader() {
     clearInterval(dotInterval);
+    clearTimeout(dotIntervalReset);
     dotCount = 1;
     const loaderElement = DOMit('loaderElement');
     if (loaderElement) {
