@@ -258,10 +258,10 @@ conditionalRender();
 scaleIt();
 
 // dynamically update scale attribute
-// window.addEventListener('resize', () => {
-//     debounce(conditionalRender, 5);
-//     debounce2(scaleIt, 10);
-// });
+window.addEventListener('resize', () => {
+    debounce(conditionalRender, 5);
+    debounce2(scaleIt, 10);
+});
 
 // open nav menu if available space (calculated using updated calculator dimensions)
 if (vh - ch >= navHeight) { // difference of viewport height and calculator height allows for nav height
