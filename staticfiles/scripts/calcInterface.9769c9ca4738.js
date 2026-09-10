@@ -1,6 +1,7 @@
 console.log('Interface Script Loaded.');
 
 // DOM selections
+const calcWrapper = document.body.querySelector('.calculator-wrapper');
 const calc = document.body.querySelector('.calculator-background');
 const nav = document.body.querySelector('nav');
 const themeSelect = document.body.querySelector('#select-theme');
@@ -142,17 +143,17 @@ function scaleIt() {
                     // use height scale
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                    calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 } else if (hScale > wScale) {
                     // use width scale
                     scale = wScale;
                     // set the new scale attribute to trigger style re-render
-                    document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                    calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 } else {
                     // use either bc they are the same
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                    calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 }
 
             // both negative
@@ -162,17 +163,17 @@ function scaleIt() {
                     // use width scale
                     scale = wScale;
                     // set the new scale attribute to trigger style re-render
-                    document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                    calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 } else if (hScale < wScale) {
                     // use height scale
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                    calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 } else {
                     // use either bc they are the same
                     scale = hScale;
                     // set the new scale attribute to trigger style re-render
-                    document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                    calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 }
             
             // negative height
@@ -180,14 +181,14 @@ function scaleIt() {
                 // scale to max height
                 scale = hScale;
                 // set the new scale attribute to trigger style re-render
-                document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
                 
             // negative width
             } else if (hDiff > 0 && wDiff < 0) {
                 // scale to max width
                 scale = wScale;
                 // set the new scale attribute to trigger style re-render
-                document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
             }
         
         } else {
@@ -196,7 +197,7 @@ function scaleIt() {
                 // scale down from max width by height
                 scale = (ch + hDiff) / cHeight;
                 // set the new scale attribute to trigger style re-render
-                document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+                calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
             } // no difference of width and positive difference of height = overscaling width
         }
         
@@ -208,7 +209,7 @@ function scaleIt() {
             // scale down from max height by width
             scale = (cw + wDiff) / cWidth;
             // set the new scale attribute to trigger style re-render
-            document.body.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
+            calcWrapper.setAttribute('style', `--scale-calc-size: ${scale * cHeight}px`);
         } // no difference of height and positive difference of width = overscaling height
     }
 };
@@ -253,25 +254,39 @@ function debounce2(funct, defer) {
     }, defer)
 };
 
-// call functions on loadtime
-conditionalRender();
-scaleIt();
 
-// dynamically update scale attribute
-window.addEventListener('resize', () => {
-    debounce(conditionalRender, 5);
-    debounce2(scaleIt, 10);
-});
+MathJax = {
+    // configure mathjax for post render logic
+    startup: {
+        ready: () => {
+            MathJax.startup.defaultReady();
+            MathJax.startup.promise.then(() => {
+                // mathjax rendered => run interface rending logic
+                conditionalRender();
+                scaleIt();
+                
+                // dynamically update scale attribute
+                window.addEventListener('resize', () => {
+                    debounce(conditionalRender, 5);
+                    debounce2(scaleIt, 10);
+                });
+                
+                // open nav menu if available space (calculated using updated calculator dimensions)
+                if (vh - ch >= navHeight) { // difference of viewport height and calculator height allows for nav height
+                    // initialize navState to open
+                    navState = true;
+                    // orientation
+                    navArrowContainer.classList.remove('downward-arrow');
+                    navArrowContainer.classList.add('upward-arrow');
+                    // animation
+                    arrowNav.classList.remove('downward-arrow-anim');
+                    arrowNav.classList.add('upward-arrow-anim');
+                    nav.style.top = '0px';
+                }
 
-// open nav menu if available space (calculated using updated calculator dimensions)
-if (vh - ch >= navHeight) { // difference of viewport height and calculator height allows for nav height
-    // initialize navState to open
-    navState = true;
-    // orientation
-    navArrowContainer.classList.remove('downward-arrow');
-    navArrowContainer.classList.add('upward-arrow');
-    // animation
-    arrowNav.classList.remove('downward-arrow-anim');
-    arrowNav.classList.add('upward-arrow-anim');
-    nav.style.top = '0px';
-}
+                // display final render
+                document.body.style.visibility = 'visible';
+            });
+        }
+    },
+};

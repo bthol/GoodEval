@@ -16,15 +16,16 @@
                 }
             }
         </script>
-        <script defer type="module" src="{% static 'scripts/probScript.js'%}"></script>
 
         <script defer src="{% static 'scripts/calcInterface.js'%}"></script>
+
+        <script defer type="module" src="{% static 'scripts/probScript.js'%}"></script>
+
         <script defer src="{% static 'scripts/numberfall.js'%}"></script>
         <!-- MathJax -->
-        <style>body { visibility: hidden; }</style>
         <script>
             // MathJax Configuration
-
+            
             // fonts list
             // mathjax-newcm
             // mathjax-asana
@@ -37,17 +38,8 @@
             // mathjax-stix2
             // mathjax-termes
             // mathjax-tex
-
+            
             MathJax = {
-                // displays after rendering
-                startup: {
-                    ready: () => {
-                        MathJax.startup.defaultReady();
-                        MathJax.startup.promise.then(() => {
-                            document.body.style.visibility = 'visible';
-                        });
-                    }
-                },
                 // font
                 output: {
                     font: 'mathjax-fira'
@@ -74,11 +66,11 @@
                     }
                 }
             };
-        </script>
+            </script>
         <!-- MathJax Import-->
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 </head>
-<body class="body template-theme">
+<body style="visibility: hidden;" class="body template-theme">
     <nav>
         <div class="title-container">
             <h1>GoodEval Calculator</h1>
