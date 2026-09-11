@@ -22,53 +22,9 @@
         <script defer type="module" src="{% static 'scripts/probScript.js'%}"></script>
 
         <script defer src="{% static 'scripts/numberfall.js'%}"></script>
-        <!-- MathJax -->
-        <script>
-            // MathJax Configuration
-            
-            // fonts list
-            // mathjax-newcm
-            // mathjax-asana
-            // mathjax-bonum
-            // mathjax-dejavu
-            // mathjax-fira
-            // mathjax-modern
-            // mathjax-pagella
-            // mathjax-schola
-            // mathjax-stix2
-            // mathjax-termes
-            // mathjax-tex
-            
-            MathJax = {
-                // font
-                output: {
-                    font: 'mathjax-fira'
-                },
-                // delimiters
-                tex: {
-                    inlineMath: [['$', '$'], ['\\(', '\\)']],
-                    displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                    processEscapes: true
-                },
-                svg: {
-                    fontCache: 'global'
-                },
-                // menu settings
-                options: {
-                    enableMenu: false, // Disables the contextual right-click menu and dialogs
-                    enableExplorer: false, // Disables expression explorer / interactive features
-                    menuOptions: {
-                        settings: {
-                            speech: false,
-                            braille: false,
-                            enrich: false // optional: disables semantic enrichment entirely if needed
-                        }
-                    }
-                }
-            };
-            </script>
+
         <!-- MathJax Import-->
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
 </head>
 <body style="visibility: hidden;" class="body template-theme">
     <nav>

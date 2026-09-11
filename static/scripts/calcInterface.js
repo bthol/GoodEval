@@ -255,8 +255,8 @@ function debounce2(funct, defer) {
 };
 
 
+// configure mathjax
 MathJax = {
-    // configure mathjax for post render logic
     startup: {
         ready: () => {
             MathJax.startup.defaultReady();
@@ -289,4 +289,45 @@ MathJax = {
             });
         }
     },
+
+    // fonts list
+    // mathjax-newcm
+    // mathjax-asana
+    // mathjax-bonum
+    // mathjax-dejavu
+    // mathjax-fira
+    // mathjax-modern
+    // mathjax-pagella
+    // mathjax-schola
+    // mathjax-stix2
+    // mathjax-termes
+    // mathjax-tex
+
+    // font
+    output: {
+        font: 'mathjax-fira'
+    },
+
+    // delimiters
+    tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+    },
+    svg: {
+        fontCache: 'global'
+    },
+
+    // menu settings
+    options: {
+        enableMenu: false, // Disables the contextual right-click menu and dialogs
+        enableExplorer: false, // Disables expression explorer / interactive features
+        menuOptions: {
+            settings: {
+                speech: false,
+                braille: false,
+                enrich: false // optional: disables semantic enrichment entirely if needed
+            }
+        }
+    }
 };
