@@ -254,7 +254,6 @@ function debounce2(funct, defer) {
     }, defer)
 };
 
-
 // configure mathjax
 MathJax = {
     startup: {
@@ -264,6 +263,9 @@ MathJax = {
                 // mathjax rendered => run interface rending logic
                 conditionalRender();
                 scaleIt();
+
+                // scroll calculator bottom to bottom of screen
+                calcWrapper.scrollIntoView(false);
                 
                 // dynamically update scale attribute
                 window.addEventListener('resize', () => {
