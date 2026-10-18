@@ -79,9 +79,8 @@ nav {
     position: relative;
     height: var(--arrow-size);
     width: var(--arrow-size);
-    margin: 0px auto;
-    border-left: calc(.05 * var(--scale-calc-size)) double #f0ede6;
-    border-top: calc(.05 * var(--scale-calc-size)) double #303050;
+    border-left: var(--arrow-size) double #f0ede6;
+    border-top: var(--arrow-size) double #303050;
 }
 
 .upward-arrow > div.arrow {
@@ -95,9 +94,13 @@ nav {
 .arrow-container {
     position: relative;
     cursor: pointer;
-    --arrow-size: calc(.05 * var(--scale-calc-size));
-    height: var(--arrow-size);
-    width: var(--arrow-size);
+    --arrow-size: 40px;
+    /* multiply side length by root 2 to get diagonal */
+    height: calc(1.4142135623730950488016887242097 * var(--arrow-size));
+    width: calc(1.4142135623730950488016887242097 * var(--arrow-size));
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 /* container for calculator */
@@ -141,11 +144,13 @@ nav {
 
 #screen-toggles {
     width: 100%;
-    margin: 0px;
     grid-column: 1 / span 4;
     display: grid;
-    grid-template-columns: 7fr 1fr 1fr 1fr;
-    font-size: calc(.018 * var(--scale-calc-size));
+    grid-template-columns: 5fr 1fr 1fr 1fr;
+    margin: 0px;
+    padding-right: 5px;
+    gap: 5px;
+    font-size: calc(.025 * var(--scale-calc-size));
 }
 
 .shift-mode {
@@ -540,12 +545,23 @@ nav {
     text-align: initial !important;
     margin: 0px !important;
     padding: 0px !important;
+
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    max-width: 100% !important;
+
+    scrollbar-gutter: stable;
 }
 
 .key > mjx-container:not([display="true"]) {
     text-align: initial !important;
     margin: 0px !important;
     padding: 0px !important;
+
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: visible;
 }
 
 .mathjax-scaling {
@@ -553,5 +569,5 @@ nav {
 }
 
 .mathjax-scaling-block {
-    font-size: calc(var(--scale-calc-size) * .018);
+    font-size: calc(var(--scale-calc-size) * .016);
 }

@@ -2,7 +2,7 @@
 
 **Developer:** Blake Thollaug
 
-**Stack:** Django stack (Django, Python, Pip, HTML, CSS, JavaScript), MathJax, Decimal.js, 
+**Stack:** Django stack (Django, Python, Pip, HTML, CSS, JavaScript), MathJax, Decimal.js
 
 https://goodeval-1d265775b25d.herokuapp.com/ | https://github.com/bthol/EvalAPI
 
@@ -51,7 +51,7 @@ $release: python manage.py migrate$
  - deactivate virtualenv                    : `$exit`
  - run in virtualenv                        : `$pipenv run`
  - list pipenv installments                 : `$pipenv graph`
- - update static files                      : `$python manage.py collectstatic --noinput`
+ - update static files                      : `$python manage.py collectstatic --noinput --clear`
  - update Pipfile.lock                      : `$pipenv lock`
  - update requirements.txt                  : `$pip freeze > requirements.txt`
  - import pipfile from requirements.txt     : `$pipenv install -r path/to/requirements.txt`

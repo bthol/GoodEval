@@ -263,9 +263,6 @@ MathJax = {
                 // mathjax rendered => run interface rending logic
                 conditionalRender();
                 scaleIt();
-
-                // scroll calculator bottom to bottom of screen
-                calcWrapper.scrollIntoView(false);
                 
                 // dynamically update scale attribute
                 window.addEventListener('resize', () => {
@@ -320,8 +317,13 @@ MathJax = {
         fontCache: 'global'
     },
 
+    chtml: {
+        adaptiveCSS: true /* Ensures CSS shifts dynamically with viewports */
+    },
+
     // menu settings
     options: {
+        overflow: 'Scale', // Options: 'Scroll', 'Scale', 'Truncate', or 'LineBreak'
         enableMenu: false, // Disables the contextual right-click menu and dialogs
         enableExplorer: false, // Disables expression explorer / interactive features
         menuOptions: {

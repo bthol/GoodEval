@@ -2,17 +2,6 @@ console.log('Problem Script Loaded.');
 
 import Decimal from 'Decimal';
 
-// Development Plan
-//  - create a manual accessible via the navbar for the calculator
-
-// window.MathJax = {
-//   loader: { load: ['[tex]/color', '[tex]/html'] },
-//   tex: {
-//     packages: {'[+]': ['color', 'html']},
-//     color: { padding: '2px' }
-//   }
-// };
-
 // Display
 const T = document.querySelector('#screen-toggles');
 const Q = document.querySelector('#screen-content');
@@ -42,6 +31,7 @@ let problem = [];
 let answer = [];
 
 // Mode toggles
+let shiftable = true; // prevents shifting before last shift is complete
 let shiftMode = 0; // stores a shift mode in the shift cycle
 let cursorMode = false; // controls activation of cursor mode features
 let cursorModeToggled = false; // prevents defaulting on timeout cursor navigation
@@ -260,7 +250,14 @@ const keyInfo = [
 ];
 
 // Shift Mode Toggles
-function toggleShiftMode() {
+async function toggleShiftMode() {
+    // prevent asynchronous calls from allowing shifting before each shift completion
+    if (!shiftable) {
+        return;
+    } else {
+        shiftable = false;
+    };
+    // clamp mode shift at max
     if (shiftMode !== 3) {
         shiftMode += 1;
     } else {
@@ -301,12 +298,39 @@ function toggleShiftMode() {
         shiftBtn5.innerHTML = `<div id="btn-shift-5-div" class="key mathjax-scaling-block">$$ \\sum_{i=1}^{n} \\frac{n}{x_i} $$</div>`;
         shiftBtn6.innerHTML = `<div id="btn-shift-6-div" class="key mathjax-scaling-block">$$ \\sum_{i=1}^{n} \\frac{x_i}{n} $$</div>`;
     }
-    // rerun MathJax Engine for DOM mutation
+    
+    // rerun MathJax Engine for dynamic typesetting
     if (window.MathJax && typeof window.MathJax.typesetPromise === 'function' && typeof window.MathJax.typesetClear === 'function') {
+        
+        // collect elements containing the mathjax to be typeset
         const buttons = [shiftBtn4, shiftBtn5, shiftBtn6];
-        MathJax.typesetClear(buttons);
-        MathJax.typesetPromise(buttons);
+        
+        // constrain the height and width of the elements
+        const height = 1; // pixels
+        const width = 1; // pixels
+        buttons.forEach((btn) => {
+            btn.style.setProperty('visibility', 'hidden');
+            btn.style.setProperty('height', `${height}px`);
+            btn.style.setProperty('width', `${width}px`);
+        });
+        
+        // Wait for MathJax startup, then preload dynamic files
+        await window.MathJax.startup.document.outputJax.font.loadDynamicFiles();
+        
+        // apply typesetting to elements
+        await MathJax.typesetClear(buttons);
+        await MathJax.typesetPromise(buttons);
+
+        // free the elements from their constraints
+        buttons.forEach((btn) => {
+            btn.style.setProperty('height', 'auto');
+            btn.style.setProperty('width', 'min-content');
+            btn.style.setProperty('visibility', 'visible');
+        });
     }
+
+    // allow future shifting
+    shiftable = true;
 };
 
 // Cursor Mode Toggles
@@ -1891,8 +1915,10 @@ function evaluate() {
 btns.addEventListener('click', (e) => {
     // exclude the container elements
     if (e.target.classList[0] !== 'top-button-container' && e.target.classList[0] !== 'bottom-button-container') {
+        
         // clear cache for input while error is displaying
         clearTimeout(formatErrorCache);
+
         // get target info
         const type = e.target.classList[0];
         const id = e.target.id;

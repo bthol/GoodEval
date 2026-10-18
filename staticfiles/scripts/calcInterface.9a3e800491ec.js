@@ -254,7 +254,6 @@ function debounce2(funct, defer) {
     }, defer)
 };
 
-
 // configure mathjax
 MathJax = {
     startup: {
@@ -318,8 +317,13 @@ MathJax = {
         fontCache: 'global'
     },
 
+    chtml: {
+        adaptiveCSS: true /* Ensures CSS shifts dynamically with viewports */
+    },
+
     // menu settings
     options: {
+        overflow: 'Scale', // Options: 'Scroll', 'Scale', 'Truncate', or 'LineBreak'
         enableMenu: false, // Disables the contextual right-click menu and dialogs
         enableExplorer: false, // Disables expression explorer / interactive features
         menuOptions: {
