@@ -95,6 +95,18 @@ hr {
     justify-content: center;
     align-items: center;
 }
+.copy-button-style {
+    font-size: 1.1rem;
+    outline: 1px solid #0dff00;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+    margin-left: 8px;
+}
 
 .drop-down-menu-style {
     width: 100%;
@@ -226,6 +238,8 @@ input[type="text"]:focus {
 
 @media (hover: hover) {
     /* hover functionality: everything else */
+    
+    /* focus */
     .form-style:focus {
         border: 1px ridge #e9ede7;
     }
@@ -241,12 +255,17 @@ input[type="text"]:focus {
         color: #e9ede7;
         border: 1px ridge #e9ede7;
     }
+
+    /* hover */
     .form-style:hover {
         border: 1px ridge #e9ede7;
     }
     .button-style:hover {
         color: #e9ede7;
         outline: 2px ridge #e9ede7;
+    }
+    .copy-button-style:hover {
+        background: hsla(100, 14%, 92%, .4);
     }
     .drop-down-menu-style:hover {
         color: #e9ede7;

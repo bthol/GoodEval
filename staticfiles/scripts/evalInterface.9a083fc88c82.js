@@ -405,6 +405,18 @@ function evalReq() {
 };
 
 // gets + displays result from search in INFOMRATION structure
+function copyButton(string) {
+    // creates a button which copies string to clipboard when pressed
+    const button = document.createElement('button');
+    button.setAttribute('class', 'copy-button-style');
+    button.innerText = '❐';
+    button.addEventListener('click', () => {
+        navigator.clipboard.writeText(string);
+        button.innerText = '✔';
+    });
+    return button;
+};
+
 function searchResult() {
 
     // console.log(INFORMATION);
@@ -447,18 +459,55 @@ function searchResult() {
         resultContainer.appendChild(constantTitle);
         resultContainer.appendChild(addSpace());
         for (let i = 0; i < INFORMATION.constants.length; i++) {
-            const constant = document.createElement('div');
-            constant.innerText = `Name: ${INFORMATION.constants[i].name}\nSyntax: ${INFORMATION.constants[i].syntax}\nValue: ${INFORMATION.constants[i].value}\n\n`;
-            resultContainer.appendChild(constant);
+            // create container
+            const container = document.createElement('div');
+
+            // build name
+            const name = document.createElement('div');
+            name.innerText = `Name: ${INFORMATION.constants[i].name}`;
+
+            // build syntax
+            const syntax = document.createElement('div');
+            syntax.style.display = 'flex';
+            syntax.style.justifyContent = 'center';
+            syntax.style.alignItems = 'center';
+            syntax.innerText = `Syntax: ${INFORMATION.constants[i].syntax}`;
+            const copy = copyButton(INFORMATION.constants[i].syntax);
+            syntax.appendChild(copy);
+
+            // build value
+            const value = document.createElement('div');
+            value.innerText = `Value: ${INFORMATION.constants[i].value}`;
+
+            // assemble and add
+            container.appendChild(name);
+            container.appendChild(syntax);
+            container.appendChild(value);
+            resultContainer.appendChild(container);
+            resultContainer.appendChild(addSpace())
         }
         
         resultContainer.appendChild(addSpace());
         resultContainer.appendChild(operationTitle);
         resultContainer.appendChild(addSpace());
         for (let i = 0; i < INFORMATION.operations.length; i++) {
-            const operation = document.createElement('div');
-            operation.innerText = `Name: ${INFORMATION.operations[i].name}\nSyntax: ${INFORMATION.operations[i].syntax}\n\n`;
-            resultContainer.appendChild(operation);
+            const container = document.createElement('div');
+            // build name
+            const name = document.createElement('div');
+            name.innerText = `Name: ${INFORMATION.operations[i].name}`;
+            // build syntax
+            const syntax = document.createElement('div');
+            syntax.style.display = 'flex';
+            syntax.style.justifyContent = 'center';
+            syntax.style.alignItems = 'center';
+            syntax.innerText = `Syntax: ${INFORMATION.operations[i].syntax}`;
+            const copy = copyButton(INFORMATION.operations[i].syntax);
+            syntax.appendChild(copy);
+            // assemble and add
+            container.appendChild(name);
+            container.appendChild(syntax);
+            resultContainer.appendChild(container);
+            resultContainer.appendChild(addSpace());
         }
         
         resultContainer.appendChild(addSpace());
@@ -474,10 +523,33 @@ function searchResult() {
         resultContainer.appendChild(addSpace());
         for (let i = 0; i < INFORMATION.key_functions.length; i++) {
             for (let j = 0; j < INFORMATION.key_functions[i].length; j++) {
-                const key_function = document.createElement('div');
+                const container = document.createElement('div');
                 const obj = INFORMATION.key_functions[i][j];
-                key_function.innerText = `Name: ${obj.name}\nKey: ${obj.key}\nSyntax: ${obj.syntax}\nAbout: ${obj.about}\n\n`;
-                resultContainer.appendChild(key_function);
+                // build name
+                const name = document.createElement('div');
+                name.innerText = `Name: ${obj.name}`;
+                // build key
+                const key = document.createElement('div');
+                key.innerText = `Keyword: ${obj.key}`;
+                // build syntax
+                const syntax = document.createElement('div');
+                syntax.style.display = 'flex';
+                syntax.style.justifyContent = 'center';
+                syntax.style.alignItems = 'center';
+                syntax.innerText = `Syntax: ${obj.syntax}`;
+                const copy = copyButton(obj.syntax);
+                syntax.appendChild(copy);
+                // build about
+                const about = document.createElement('div');
+                about.style.padding = '0vw 20vw';
+                about.innerText = `Description: ${obj.about}`;
+                // assemble and add
+                container.appendChild(name);
+                container.appendChild(key);
+                container.appendChild(syntax);
+                container.appendChild(about);
+                resultContainer.appendChild(container);
+                resultContainer.appendChild(addSpace());
             }
         }
         resultContainer.appendChild(addSpace());
@@ -495,16 +567,21 @@ function searchResult() {
                             // build elements for display format
                             const headTitle = document.createElement('h3');
                             headTitle.innerText = `The ${obj.name} Key Function`;
-
+                            // build key
                             const key = document.createElement('div');
                             key.innerText = 'Keyword: ' + obj.key;
-
+                            // build syntax
                             const syntax = document.createElement('div');
+                            syntax.style.display = 'flex';
+                            syntax.style.justifyContent = 'center';
+                            syntax.style.alignItems = 'center';
                             syntax.innerText = 'Syntax: ' + obj.syntax;
-
+                            syntax.appendChild(copyButton(obj.syntax));
+                            // build about
                             const about = document.createElement('div');
+                            about.style.padding = '0vw 20vw';
                             about.innerText = 'Description: ' + obj.about;
-
+                            // assemble and add
                             resultContainer.appendChild(headTitle);
                             resultContainer.appendChild(addSpace());
                             resultContainer.appendChild(key);
@@ -530,14 +607,19 @@ function searchResult() {
                             // build elements for display format
                             const headTitle = document.createElement('h3');
                             headTitle.innerText = `The ${obj.name} Key Function`;
-
+                            // build key
                             const key = document.createElement('div');
                             key.innerText = 'Keyword: ' + obj.key;
-
+                            // build syntax
                             const syntax = document.createElement('div');
+                            syntax.style.display = 'flex';
+                            syntax.style.justifyContent = 'center';
+                            syntax.style.alignItems = 'center';
                             syntax.innerText = 'Syntax: ' + obj.syntax;
-
+                            syntax.appendChild(copyButton(obj.syntax));
+                            // build about
                             const about = document.createElement('div');
+                            about.style.padding = '0vw 20vw';
                             about.innerText = 'Description: ' + obj.about;
 
                             resultContainer.appendChild(headTitle);
@@ -570,12 +652,17 @@ function searchResult() {
                 }
                 if (searching) {
                     // serve module name error
-                    let errMsg = 'No Key Function Module by that name.\n\nModule Names:\n';
-                    for (mod of keyModules) {
-                        errMsg += `${mod}\n`;
-                    }
                     const error = document.createElement('div');
-                    error.innerText = errMsg;
+                    error.innerText = 'No Key Function Module by that name.\n\nModule Names:\n';
+                    for (mod of keyModules) {
+                        const div = document.createElement('div');
+                        div.style.display = 'flex';
+                        div.style.justifyContent = 'center';
+                        div.style.alignItems = 'center';
+                        div.innerText = `${mod}\n`;
+                        div.appendChild(copyButton(mod));
+                        error.appendChild(div);
+                    }
                     resultContainer.appendChild(error);
                     searching = false;
                 } else {
@@ -588,9 +675,14 @@ function searchResult() {
                         key.innerText = 'Keyword: ' + obj.key;
 
                         const syntax = document.createElement('div');
+                        syntax.style.display = 'flex';
+                        syntax.style.justifyContent = 'center';
+                        syntax.style.alignItems = 'center';
                         syntax.innerText = 'Syntax: ' + obj.syntax;
+                        syntax.appendChild(copyButton(obj.syntax));
 
                         const about = document.createElement('div');
+                        about.style.padding = '0vw 20vw';
                         about.innerText = 'Description: ' + obj.about;
 
                         resultContainer.appendChild(headTitle);
